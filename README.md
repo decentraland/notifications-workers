@@ -96,22 +96,13 @@ This endpoint will query the notifications table for user notifications and will
 Returns a stream of all the notifications
 
 
-- `GET /notifications/stream`
+- `GET /notifications/events`
 - Authentication: signed fetch, the user id will be infered from that
 
-Return a stream of:
-```json
-  {
-    "id": "..",
-    "timestamp": 213132,
-    "source": "Marketplace",
-    "type": "item-sold",
-    "thumbnailUrl": "",
-    "title": "",
-    "description": "",
-    "link": "",
-    "read": false
-  }
+```
+event: item-sold
+id: abcdef
+data: { "id": "..", "timestamp": 213132, "source": "Marketplace", "type": "item-sold", "thumbnailUrl": "", "title": "", "description": "", "link": "", "read": false }
 ```
 
 ## Change notification read status
