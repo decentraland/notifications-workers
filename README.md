@@ -32,7 +32,7 @@ This worker will get from Push server all new notifications from all the subscri
 sequenceDiagram
   Processor->>DB: get all subscribed users 
   Processor->>Push: get new events from users 
-  Publisher->>DB: store in db new events from all subscribed users
+  Processor->>DB: store in db new events from all subscribed users
 ```
 
 ## Inbox worker
