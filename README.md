@@ -2,72 +2,70 @@
 
 The service will be split in 3 workers for scalability and availability.
 
-- Publisher worker: will be responsable for handling notification creation requests, it's crucial for this service to be highly available, otherwise notifications will be lost.
-- Processor worker: will process the notification queue and handle push notifications.
-- Inbox worker: will serve the API to get and handle users notifications.
+- Publisher worker: will be responsable for handling notification creation requests, in this first approach, it will get all updates from Push service for the subscribed users
+- Processor worker: will handle the users subscription to events
+- Inbox worker: will serve the API to get and handle users notifications
 
-Example notification:
-
-```typescript
-enum NotificationSource {
-  Marketplace
-}
-
-type BaseNotification = {
-  address: string
-  timestamp: number
-  source: NotificationSource
-}
-
-type ItemSoldNotification = BaseNotification & {
-  thumbnailUrl: string
-  itemName: string
-  link: string
-}
-```
+The three workers will share a database to store the notifications and the subscribed users with their privacy configurations.
 
 ## Publisher worker
 
-This worker listenes to updates and send them to the queue.
+This worker is responsible of proxing the users requests that want to subscribe to notifications. The Publisher worker is a proxy between the user and the Push Service, this way it will store the users (and their privacy configurations) to the Database.
+
+### Use Case: A user subscribes to event updates
+
+```mermaid
+sequenceDiagram
+  user->>Publisher: subscribe to notifications (+ sign)
+  Publisher->>Push: subscribe to notifications (+ sign)
+  Publisher->>DB: store in db subscribed user
+```
 
 ## Processor worker
 
-This worker will listen to the queue system, insert the notification in the db and publish a push message for the user.
+This worker will get from Push server all new notifications from all the subscribed users and store them in the database so then they can be send to the users
 
-```
-table: notifications
 
-id | address | timestamp | type | source | metadata | read
+### Use Case: Get new events from all subscribed users
+
+```mermaid
+sequenceDiagram
+  Processor->>DB: get all subscribed users 
+  Processor->>Push: get new events from users 
+  Publisher->>DB: store in db new events from all subscribed users
 ```
 
 ## Inbox worker
 
-retrieve all notifications
+The worker in charge or retrieving the notifications to the user
 
-# Exposed API
+### Use Case: Subscribe to notifications
 
-The workers will expose the API:
+Returns a stream of all the notifications
 
-## Send a new notification
+**Endpoint**
+- `GET /notifications/events`
+- Authentication: signed fetch, the user id will be infered from that
 
-- `POST /notifications`
-- Authentication: shared secret
-
-Body:
-
-```json
-{
-  "to": ["0x21313", "0xAbce"],
-  "source": "Marketplace",
-  "type": "item-sold",
-  "thumbnailUrl": "",
-  "itemName": "",
-  "link": ""
-}
+```
+event: item-sold
+id: abcdef
+data: { "id": "..", "timestamp": 213132, "source": "Marketplace", "type": "item-sold", "thumbnailUrl": "", "title": "", "description": "", "link": "", "read": false }
 ```
 
-This endpoint will validate the notification (probably using a json validator), and put a message in a queue (probably sqs).
+```mermaid
+sequenceDiagram
+  User->>Inbox: Get stream of notifications
+  Inbox->>Db: get new events from user
+  Inbox->>User: stream notifications
+  Inbox->>Db: get new events from user
+  Inbox->>User: stream notifications
+  Inbox->>Db: get new events from user
+  Inbox->>User: stream notifications
+```
 
+
+<!-- 
 ## Get notifications
 - `GET /notifications?from=&size=&only-new=true`
 - Authentication: signed fetch, the user id will be infered from that
@@ -91,19 +89,6 @@ Return:
 
 This endpoint will query the notifications table for user notifications and will contain (probably as harcoded string templates in the first version) a way to transform the notification data into the actual notification fields expected by the UI. If filtering by the only-read parameter, then only not read notifications will be retrieved.
 
-## Subscribe to notifications
-
-Returns a stream of all the notifications
-
-
-- `GET /notifications/events`
-- Authentication: signed fetch, the user id will be infered from that
-
-```
-event: item-sold
-id: abcdef
-data: { "id": "..", "timestamp": 213132, "source": "Marketplace", "type": "item-sold", "thumbnailUrl": "", "title": "", "description": "", "link": "", "read": false }
-```
 
 ## Change notification read status
 
@@ -116,4 +101,18 @@ We need to remember to ensure only the user notifications can be updated, for ex
 
 ```sql
 UPDATE notifications SET read = ${read} WHERE id = ${id} and address = ${address}
+```
+ -->
+
+
+## Database
+
+```
+table: notifications
+
+id | address | timestamp | type | source | metadata | read
+
+
+table: users
+address | subscribed
 ```
