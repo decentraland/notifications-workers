@@ -1,13 +1,13 @@
 # Overview
 
-The service will be split in 3 workers for scalability and availability.
+The service will be split in 2 workers for scalability and availability.
 
-- Publisher worker: will be responsable for handling notification creation requests, in this first approach, it will get all updates from Push service for the subscribed users
+<!-- - Publisher worker: will be responsable for handling notification creation requests, in this first approach, it will get all updates from Push service for the subscribed users -->
 - Processor worker: will handle the users subscription to events
 - Inbox worker: will serve the API to get and handle users notifications
 
-The three workers will share a database to store the notifications and the subscribed users with their privacy configurations.
-
+The workers will share a database to store the notifications and the subscribed users with their privacy configurations.
+<!-- 
 ## Publisher worker
 
 This worker is responsible of proxing the users requests that want to subscribe to notifications. The Publisher worker is a proxy between the user and the Push Service, this way it will store the users (and their privacy configurations) to the Database.
@@ -19,7 +19,7 @@ sequenceDiagram
   user->>Publisher: subscribe to notifications (+ sign)
   Publisher->>Push: subscribe to notifications (+ sign)
   Publisher->>DB: store in db subscribed user
-```
+``` -->
 
 ## Processor worker
 
@@ -30,8 +30,8 @@ This worker will get from Push server all new notifications from all the subscri
 
 ```mermaid
 sequenceDiagram
-  Processor->>DB: get all subscribed users 
-  Processor->>Push: get new events from users 
+  Push->>SQS: send new notifications for channel
+  SQS->>Processor: send new notifications for channel
   Processor->>DB: store in db new events from all subscribed users
 ```
 
