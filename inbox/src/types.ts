@@ -7,10 +7,12 @@ import type {
   IFetchComponent
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from './metrics'
+import { IPgComponent } from '@well-known-components/pg-component'
 
 export type GlobalContext = {
   components: BaseComponents
 }
+
 
 // components used in every environment
 export type BaseComponents = {
@@ -18,6 +20,7 @@ export type BaseComponents = {
   logs: ILoggerComponent
   server: IHttpServerComponent<GlobalContext>
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
+  pg: IPgComponent
 }
 
 // components used in runtime

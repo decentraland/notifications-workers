@@ -65,12 +65,12 @@ sequenceDiagram
 ```
 
 
-<!-- 
 ## Get notifications
 - `GET /notifications?from=&size=&only-new=true`
 - Authentication: signed fetch, the user id will be infered from that
 
 Return:
+
 ```json
 [
   {
@@ -102,17 +102,17 @@ We need to remember to ensure only the user notifications can be updated, for ex
 ```sql
 UPDATE notifications SET read = ${read} WHERE id = ${id} and address = ${address}
 ```
- -->
 
 
 ## Database
 
 ```
 table: notifications
+id | timestamp | type | source | metadata
 
-id | address | timestamp | type | source | metadata | read
-
+table: users_notifications
+notification_id | user_id | read
 
 table: users
-address | subscribed
+id | address
 ```
