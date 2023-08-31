@@ -103,16 +103,3 @@ We need to remember to ensure only the user notifications can be updated, for ex
 UPDATE notifications SET read = ${read} WHERE id = ${id} and address = ${address}
 ```
 
-
-## Database
-
-```
-table: notifications
-id | timestamp | type | source | metadata
-
-table: users_notifications
-notification_id | user_id | read
-
-table: users
-id | address
-```

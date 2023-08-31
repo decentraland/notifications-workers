@@ -13,7 +13,6 @@ export type GlobalContext = {
   components: BaseComponents
 }
 
-
 // components used in every environment
 export type BaseComponents = {
   config: IConfigComponent
