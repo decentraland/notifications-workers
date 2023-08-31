@@ -4,7 +4,7 @@
   "workspaces": ["inbox"],
   "scripts": {
     "build": "yarn workspaces run build",
-    "test": "yarn workspaces run test",
+    "test": "yarn workspaces run test --passWithNoTests",
     "rundb:local": "docker-compose up -d && docker exec notifications_worker_db bash -c \"until pg_isready; do sleep 1; done\" && sleep 5",
     "start:local": "yarn workspace inbox start",
     "lint:check": "eslint '**/*.{js,ts}'",

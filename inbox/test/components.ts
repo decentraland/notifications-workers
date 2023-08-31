@@ -6,7 +6,6 @@ import { createRunner, createLocalFetchCompoment } from '@well-known-components/
 import { main } from '../src/service'
 import { TestComponents } from '../src/types'
 import { initComponents as originalInitComponents } from '../src/components'
-import { createLocalNatsComponent } from '@well-known-components/nats-component/dist/test-component'
 import { createTestMetricsComponent } from '@well-known-components/metrics'
 import { metricDeclarations } from '../src/metrics'
 import { createConfigComponent } from '@well-known-components/env-config-provider'
@@ -35,14 +34,11 @@ async function initComponents(): Promise<TestComponents> {
     HANDSHAKE_TIMEOUT: '100'
   })
 
-  const nats = await createLocalNatsComponent()
-
   return {
     ...components,
     logs: await createLogComponent({ config }),
     config,
     localFetch: await createLocalFetchCompoment(config),
-    nats: nats,
     metrics: createTestMetricsComponent(metricDeclarations)
   }
 }
