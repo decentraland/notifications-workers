@@ -45,3 +45,44 @@ export type HandlerContextWithPath<
 >
 
 export type Context<Path extends string = any> = IHttpServerComponent.PathAwareContext<GlobalContext, Path>
+
+export type NotificationError = {
+  error: string
+  message: string
+}
+
+export class InvalidRequestError extends Error {
+  constructor(message: string) {
+    super(message)
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+export class NotFoundError extends Error {
+  constructor(message: string) {
+    super(message)
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+/// DB
+
+export type UsersNotification = {
+  id: string
+  address: string
+  notification_id: string
+  timestamp: number
+  read: boolean
+  created_at: number
+  updated_at: number
+}
+
+export type Notification = {
+  id: string
+  type: string
+  source: string
+  metadata: any
+  timestamp: number
+  created_at: number
+  updated_at: number
+}
