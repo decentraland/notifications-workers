@@ -11,6 +11,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       type: PgType.VARCHAR,
       notNull: true
     },
+    timestamp: { type: PgType.TIMESTAMP, notNull: true },
     read: { type: PgType.BOOLEAN, notNull: true, default: false },
     created_at: { type: PgType.TIMESTAMP, notNull: true },
     updated_at: { type: PgType.TIMESTAMP, notNull: true }
