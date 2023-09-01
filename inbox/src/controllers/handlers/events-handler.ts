@@ -42,8 +42,6 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
     for (const notification of notifications.rows) {
       stream.push(`data: ${JSON.stringify(notification)}\n\n`)
     }
-    logger.debug(`new From: ${notifications.rows[0]?.created_at}`)
-    logger.debug(`from: ${from}`)
     const lastTimestamp = notifications.rows[0]?.created_at
     from = lastTimestamp ?? from
   }, 15000)
