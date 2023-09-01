@@ -1,4 +1,4 @@
-import { IHttpServerComponent } from '@well-known-components/interfaces';
+import { IHttpServerComponent } from '@well-known-components/interfaces'
 import { InvalidRequestError, NotFoundError, NotificationError } from '../../types'
 
 function handleError(error: any): { status: number; body: NotificationError } {
