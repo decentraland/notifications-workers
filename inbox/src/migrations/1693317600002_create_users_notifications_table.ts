@@ -2,19 +2,18 @@ import { MigrationBuilder, PgType } from 'node-pg-migrate'
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createTable('users_notifications', {
-    id: { type: PgType.VARCHAR, notNull: true, primaryKey: true },
+    id: { type: PgType.UUID, notNull: true, primaryKey: true },
     address: {
       type: PgType.VARCHAR,
       notNull: true
     },
     notification_id: {
-      type: PgType.VARCHAR,
+      type: PgType.UUID,
       notNull: true
     },
-    timestamp: { type: PgType.TIMESTAMP, notNull: true },
     read: { type: PgType.BOOLEAN, notNull: true, default: false },
-    created_at: { type: PgType.TIMESTAMP, notNull: true },
-    updated_at: { type: PgType.TIMESTAMP, notNull: true }
+    created_at: { type: PgType.TIMESTAMP, notNull: true, default: pgm.func('current_timestamp') },
+    updated_at: { type: PgType.TIMESTAMP, notNull: true, default: pgm.func('current_timestamp') }
   })
 
   pgm.sql(`

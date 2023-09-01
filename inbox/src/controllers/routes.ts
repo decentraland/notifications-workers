@@ -4,6 +4,7 @@ import { statusHandler } from './handlers/status-handler'
 import { eventsHandler } from './handlers/events-handler'
 import { notificationsHandler, readNotificationsHandler } from './handlers/notifications-handler'
 import { errorHandler } from './handlers/error-handler'
+import { createNotificationsHandler } from './handlers/internal-handler'
 
 // We return the entire router because it will be easier to test than a whole server
 export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContext>> {
@@ -14,6 +15,7 @@ export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContex
   router.get('/status', statusHandler)
   router.get('/notifications/events', eventsHandler)
   router.get('/notifications', notificationsHandler)
+  router.post('/notifications', createNotificationsHandler)
   router.put('/notifications/read', readNotificationsHandler)
 
   return router
