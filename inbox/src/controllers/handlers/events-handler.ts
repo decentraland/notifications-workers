@@ -15,7 +15,7 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
   }
 
   const interval = setInterval(async () => {
-    // Every second, send a "ping" event.
+    // Every interval, send a "ping" event.
     stream.push(`event: ping\n`)
 
     const query = SQL`SELECT * FROM users_notifications u JOIN notifications n ON u.notification_id = n.id
