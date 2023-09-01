@@ -92,7 +92,7 @@ This endpoint will query the notifications table for user notifications and will
 
 ## Change notification read status
 
-- `PUT /notifications/read { notification-ids: ['notification-id-1', 'notification-id-2'], from: 12343435345 }`
+- `PUT /notifications/read { notificationIds: ['notification-id-1', 'notification-id-2'], from: 12343435345 }`
 - Authentication: signed fetch
 
 Mark notification as read, this action is unreversible. The notifications to be marked as read will be infered from the ids in the request body, or it will mark all notifications as read from a given timestamp. Exactly one of them must be present in the body.

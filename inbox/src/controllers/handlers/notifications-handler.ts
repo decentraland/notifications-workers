@@ -3,9 +3,10 @@ import { HandlerContextWithPath, InvalidRequestError } from '../../types'
 import SQL, { SQLStatement } from 'sql-template-strings'
 
 export async function notificationsHandler(
-  context: Pick<HandlerContextWithPath<'pg', '/notifications'>, 'url' | 'components'>
+  context: Pick<HandlerContextWithPath<'pg' | 'logs', '/notifications'>, 'url' | 'components'>
 ) {
-  const { pg } = context.components
+  const { pg, logs } = context.components
+  const logger = logs.getLogger('notifications-handler')
   const from = context.url.searchParams.get('from')
   const onlyNew = context.url.searchParams.get('onlyNew')
   const userId = context.url.searchParams.get('userId')
@@ -20,7 +21,7 @@ export async function notificationsHandler(
 
   const whereClause: SQLStatement[] = [SQL`LOWER(u.address) = LOWER(${userId})`]
   if (!!from) {
-    whereClause.push(SQL`n.timestamp >= ${from}`)
+    whereClause.push(SQL`n.timestamp >= to_timestamp(${from} / 1000.0)`)
   }
   if (!!onlyNew) {
     whereClause.push(SQL`u.read = false`)
@@ -33,7 +34,7 @@ export async function notificationsHandler(
   query.append(where)
   query.append(SQL` ORDER BY n.timestamp DESC`)
 
-  console.log(query)
+  logger.debug(`Query: ${query.text}`)
 
   const notifications = pg.query<any>(query)
   return {
@@ -41,5 +42,47 @@ export async function notificationsHandler(
       'Access-Control-Allow-Origin': '*'
     },
     body: notifications
+  }
+}
+
+export async function readNotificationsHandler(
+  context: Pick<HandlerContextWithPath<'pg' | 'logs', '/notifications'>, 'url' | 'request' | 'components'>
+) {
+  const userId = context.url.searchParams.get('userId')
+  const { pg, logs } = context.components
+  const logger = logs.getLogger('read-notifications-handler')
+
+  if (!userId || userId === '') {
+    throw new InvalidRequestError('Missing userId')
+  }
+
+  let body
+  try {
+    body = await context.request.json()
+  } catch (error: any) {
+    throw new InvalidRequestError('Invalid body')
+  }
+  const notificationIds = body.notificationIds
+  const fromTimestamp = body.from
+
+  let whereClause
+  if (!!notificationIds) {
+    whereClause = SQL`id IN (${notificationIds}) AND LOWER(address) = LOWER(${userId})`
+  } else if (!!fromTimestamp) {
+    whereClause = SQL`timestamp >= to_timestamp(${fromTimestamp} / 1000.0) AND LOWER(address) = LOWER(${userId})`
+  } else {
+    throw new InvalidRequestError('Missing notificationIds or from')
+  }
+
+  const query = SQL`UPDATE users_notifications SET read = true WHERE `.append(whereClause)
+
+  logger.debug(`Query: ${query.text}`)
+
+  const response = pg.query<any>(query)
+  return {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: response
   }
 }
