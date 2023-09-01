@@ -110,6 +110,4 @@ export async function readNotificationsHandler(
     logger.error(`Error updating notifications: ${error.message}`)
     throw new InvalidRequestError('Invalid UUID')
   }
-
-
 }
