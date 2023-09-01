@@ -16,12 +16,23 @@ export async function notificationsHandler(
   }
 
   const query: SQLStatement = SQL`
-    SELECT * FROM notifications n
+    SELECT 
+      n.id AS notification_id,
+      n.origin_id AS origin_id,
+      n.type AS type,
+      n.source AS source,
+      date_part('epoch', n.timestamp) * 1000 AS timestamp,
+      date_part('epoch', u.created_at) * 1000 AS created_at,
+      date_part('epoch', u.updated_at) * 1000 AS updated_at,
+      u.address AS address, 
+      u.read AS read,
+      n.metadata AS metadata
+    FROM notifications n
     JOIN users_notifications u ON n.id = u.notification_id`
 
   const whereClause: SQLStatement[] = [SQL`LOWER(u.address) = LOWER(${userId})`]
   if (!!from) {
-    whereClause.push(SQL`n.timestamp >= to_timestamp(${from} / 1000.0)`)
+    whereClause.push(SQL`n.created_at >= to_timestamp(${from} / 1000.0)`)
   }
   if (!!onlyNew) {
     whereClause.push(SQL`u.read = false`)
@@ -32,16 +43,16 @@ export async function notificationsHandler(
   }
 
   query.append(where)
-  query.append(SQL` ORDER BY n.timestamp DESC`)
+  query.append(SQL` ORDER BY n.created_at DESC`)
 
   logger.debug(`Query: ${query.text}`)
 
-  const notifications = pg.query<any>(query)
+  const notifications = await pg.query<any>(query)
   return {
     headers: {
       'Access-Control-Allow-Origin': '*'
     },
-    body: notifications
+    body: notifications.rows
   }
 }
 
@@ -65,24 +76,38 @@ export async function readNotificationsHandler(
   const notificationIds = body.notificationIds
   const fromTimestamp = body.from
 
-  let whereClause
+  const query = SQL`UPDATE users_notifications
+  SET read = true, updated_at = NOW()
+  WHERE read = false AND LOWER(address) = LOWER(${userId}) AND `
+
   if (!!notificationIds) {
-    whereClause = SQL`id IN (${notificationIds}) AND LOWER(address) = LOWER(${userId})`
+    query.append(SQL`notification_id IN (`)
+    const ids = Array.from(notificationIds).map((id, idx) => {
+      console.log(id)
+      return idx < notificationIds.length - 1 ? SQL`${id}, ` : SQL`${id}`
+    })
+    ids.forEach((id) => query.append(id))
+    query.append(SQL`)`)
   } else if (!!fromTimestamp) {
-    whereClause = SQL`timestamp >= to_timestamp(${fromTimestamp} / 1000.0) AND LOWER(address) = LOWER(${userId})`
+    query.append(SQL`created_at >= to_timestamp(${fromTimestamp} / 1000.0)`)
   } else {
     throw new InvalidRequestError('Missing notificationIds or from')
   }
 
-  const query = SQL`UPDATE users_notifications SET read = true WHERE `.append(whereClause)
-
   logger.debug(`Query: ${query.text}`)
 
-  const response = pg.query<any>(query)
-  return {
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
-    body: response
+  try {
+    const response = await pg.query(query)
+    return {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: {
+        updated: response.rowCount
+      }
+    }
+  } catch (error: any) {
+    logger.error(`Error updating notifications: ${error.message}`)
+    throw new InvalidRequestError('Invalid UUID')
   }
 }
