@@ -64,3 +64,25 @@ export class NotFoundError extends Error {
     Error.captureStackTrace(this, this.constructor)
   }
 }
+
+/// DB
+
+export type UsersNotification = {
+  id: string
+  address: string
+  notification_id: string
+  timestamp: number
+  read: boolean
+  created_at: number
+  updated_at: number
+}
+
+export type Notification = {
+  id: string
+  type: string
+  source: string
+  metadata: any
+  timestamp: number
+  created_at: number
+  updated_at: number
+}
