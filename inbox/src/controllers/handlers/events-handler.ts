@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream'
-import { HandlerContextWithPath, InvalidRequestError, NotificationEvent, UsersNotification } from '../../types'
+import { HandlerContextWithPath, InvalidRequestError, NotificationEvent } from '../../types'
 
 import SQL from 'sql-template-strings'
 

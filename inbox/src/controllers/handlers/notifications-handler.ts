@@ -1,4 +1,4 @@
-import { HandlerContextWithPath, InvalidRequestError, NotificationEvent } from '../../types'
+import { HandlerContextWithPath, InvalidRequestError } from '../../types'
 
 import SQL, { SQLStatement } from 'sql-template-strings'
 
