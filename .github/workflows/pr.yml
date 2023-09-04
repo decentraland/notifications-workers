@@ -7,5 +7,5 @@ jobs:
   pr:
     uses: decentraland/platform-actions/.github/workflows/apps-pr.yml@main
     with:
-      service-name: archipelago-workers
+      service-name: notifications-workers
     secrets: inherit
