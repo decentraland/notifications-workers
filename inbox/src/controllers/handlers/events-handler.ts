@@ -8,10 +8,11 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
   const logger = logs.getLogger('Events Handler')
 
   let from = context.url.searchParams.get('from') || 0
-  const userId = context.url.searchParams.get('userId')?.toString()
+
+  const userId: string | undefined = context.verification?.auth
 
   if (!userId || userId === '') {
-    throw new InvalidRequestError('Missing userId')
+    throw new InvalidRequestError('Missing caller')
   }
 
   const interval = setInterval(async () => {

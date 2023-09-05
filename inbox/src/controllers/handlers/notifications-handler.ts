@@ -3,13 +3,14 @@ import { HandlerContextWithPath, InvalidRequestError } from '../../types'
 import SQL, { SQLStatement } from 'sql-template-strings'
 
 export async function notificationsHandler(
-  context: Pick<HandlerContextWithPath<'pg' | 'logs', '/notifications'>, 'url' | 'components'>
+  context: Pick<HandlerContextWithPath<'pg' | 'logs', '/notifications'>, 'url' | 'components' | 'verification'>
 ) {
   const { pg, logs } = context.components
   const logger = logs.getLogger('notifications-handler')
   const from = context.url.searchParams.get('from')
   const onlyNew = context.url.searchParams.get('onlyNew')
-  const userId = context.url.searchParams.get('userId')
+
+  const userId: string | undefined = context.verification?.auth
 
   if (!userId || userId === '') {
     throw new InvalidRequestError('Missing userId')
@@ -57,11 +58,15 @@ export async function notificationsHandler(
 }
 
 export async function readNotificationsHandler(
-  context: Pick<HandlerContextWithPath<'pg' | 'logs', '/notifications'>, 'url' | 'request' | 'components'>
+  context: Pick<
+    HandlerContextWithPath<'pg' | 'logs', '/notifications'>,
+    'url' | 'request' | 'components' | 'verification'
+  >
 ) {
-  const userId = context.url.searchParams.get('userId')
   const { pg, logs } = context.components
   const logger = logs.getLogger('read-notifications-handler')
+
+  const userId: string | undefined = context.verification?.auth
 
   if (!userId || userId === '') {
     throw new InvalidRequestError('Missing userId')
