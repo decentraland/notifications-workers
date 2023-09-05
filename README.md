@@ -114,5 +114,6 @@ yarn rundb:local
 Then, start the server
 
 ```
+yarn install
 yarn start:local
 ```
