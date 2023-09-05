@@ -103,3 +103,16 @@ We need to remember to ensure only the user notifications can be updated, for ex
 UPDATE notifications SET read = ${read} WHERE id = ${id} and address = ${address}
 ```
 
+# Run locally
+
+First you need Docker running and the config in `.env`, then start the database
+
+```
+yarn rundb:local
+```
+
+Then, start the server
+
+```
+yarn start:local
+```
