@@ -12,7 +12,7 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
   const userId: string | undefined = context.verification?.auth
 
   if (!userId || userId === '') {
-    throw new InvalidRequestError('Missing caller')
+    throw new InvalidRequestError('Missing signature to verify caller')
   }
 
   const interval = setInterval(async () => {

@@ -13,7 +13,7 @@ export async function notificationsHandler(
   const userId: string | undefined = context.verification?.auth
 
   if (!userId || userId === '') {
-    throw new InvalidRequestError('Missing userId')
+    throw new InvalidRequestError('Missing signature to verify caller')
   }
 
   const query: SQLStatement = SQL`
@@ -69,7 +69,7 @@ export async function readNotificationsHandler(
   const userId: string | undefined = context.verification?.auth
 
   if (!userId || userId === '') {
-    throw new InvalidRequestError('Missing userId')
+    throw new InvalidRequestError('Missing signature to verify caller')
   }
 
   let body
