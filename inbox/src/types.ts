@@ -8,6 +8,7 @@ import type {
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
+import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -42,9 +43,8 @@ export type HandlerContextWithPath<
     components: Pick<AppComponents, ComponentNames>
   }>,
   Path
->
-
-export type Context<Path extends string = any> = IHttpServerComponent.PathAwareContext<GlobalContext, Path>
+> &
+  authorizationMiddleware.DecentralandSignatureContext
 
 export type NotificationError = {
   error: string

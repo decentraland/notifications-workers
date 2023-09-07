@@ -8,11 +8,8 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
   const logger = logs.getLogger('Events Handler')
 
   let from = context.url.searchParams.get('from') || 0
-  const userId = context.url.searchParams.get('userId')?.toString()
 
-  if (!userId || userId === '') {
-    throw new InvalidRequestError('Missing userId')
-  }
+  const userId: string | undefined = context.verification!.auth
 
   const interval = setInterval(async () => {
     // Every interval, send a "ping" event.
