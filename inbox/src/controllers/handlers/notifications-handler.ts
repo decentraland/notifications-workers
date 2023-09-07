@@ -10,11 +10,7 @@ export async function notificationsHandler(
   const from = context.url.searchParams.get('from')
   const onlyNew = context.url.searchParams.get('onlyNew')
 
-  const userId: string | undefined = context.verification?.auth
-
-  if (!userId || userId === '') {
-    throw new InvalidRequestError('Missing signature to verify caller')
-  }
+  const userId: string | undefined = context.verification!.auth
 
   const query: SQLStatement = SQL`
     SELECT 
@@ -66,11 +62,7 @@ export async function readNotificationsHandler(
   const { pg, logs } = context.components
   const logger = logs.getLogger('read-notifications-handler')
 
-  const userId: string | undefined = context.verification?.auth
-
-  if (!userId || userId === '') {
-    throw new InvalidRequestError('Missing signature to verify caller')
-  }
+  const userId: string | undefined = context.verification!.auth
 
   let body
   try {

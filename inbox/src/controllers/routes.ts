@@ -22,7 +22,7 @@ export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContex
   router.get(
     '/notifications/events',
     authorizationMiddleware.wellKnownComponents({
-      optional: true,
+      optional: false,
       expiration: FIVE_MINUTES
     }),
     eventsHandler
@@ -30,7 +30,7 @@ export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContex
   router.get(
     '/notifications',
     authorizationMiddleware.wellKnownComponents({
-      optional: true,
+      optional: false,
       expiration: FIVE_MINUTES
     }),
     notificationsHandler
@@ -38,7 +38,7 @@ export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContex
   router.put(
     '/notifications/read',
     authorizationMiddleware.wellKnownComponents({
-      optional: true,
+      optional: false,
       expiration: FIVE_MINUTES
     }),
     readNotificationsHandler
