@@ -18,7 +18,6 @@ export async function initComponents(): Promise<AppComponents> {
 
   await instrumentHttpServerWithMetrics({ server, metrics, config })
 
-
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
 
   if (!databaseUrl) {
