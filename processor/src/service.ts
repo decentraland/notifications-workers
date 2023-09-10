@@ -21,7 +21,4 @@ export async function main(program: Lifecycle.EntryPointParameters<AppComponents
 
   // start ports: db, listeners, synchronizations, etc
   await startComponents()
-
-  // start listener to SQS queue
-  await startListenSQS()
 }
