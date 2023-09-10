@@ -58,7 +58,7 @@ export async function startListenSQS(components: Pick<AppComponents, 'logs' | 'p
   const logger = components.logs.getLogger('Listen SQS')
   const consumer = new SQSConsumer(sqs, params)
 
-  const interval = setInterval(async () => {
+  setInterval(async () => {
     logger.log('Start scenes_consumer')
     const sqsConsumed = await consumer.consume(taskRunnerSqs, components)
 
