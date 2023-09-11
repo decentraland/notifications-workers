@@ -32,7 +32,7 @@ export async function initComponents(): Promise<AppComponents> {
   const pg = await createPgComponent({ logs, config, metrics })
 
   // start listener to SQS queue
-  await startListenSQS({ logs, pg }) // This worker writes on the database but does not run the migrations
+  await startListenSQS({ config, logs, pg }) // This worker writes on the database but does not run the migrations
 
   return {
     config,
