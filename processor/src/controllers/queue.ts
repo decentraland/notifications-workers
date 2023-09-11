@@ -6,7 +6,6 @@ import { randomUUID } from 'crypto'
 import SQL, { SQLStatement } from 'sql-template-strings'
 
 export async function taskRunnerSqs(job: NotificationToSqs, components: Pick<AppComponents, 'logs' | 'pg'>) {
-
   const logger = components.logs.getLogger('Task Runner SQS')
 
   logger.info(`Processing job`)
@@ -59,7 +58,7 @@ export async function startListenSQS(components: Pick<AppComponents, 'config' | 
     WaitTimeSeconds: 15,
     VisibilityTimeout: 3 * 3600 // 3 hours
   }
-  
+
   const consumer = new SQSConsumer(sqs, params)
 
   setInterval(async () => {
