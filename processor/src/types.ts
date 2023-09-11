@@ -8,7 +8,6 @@ import type {
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
-import { SQSConsumer } from './ports/consumer'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -21,7 +20,6 @@ export type BaseComponents = {
   server: IHttpServerComponent<GlobalContext>
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
-  sqsConsumer: SQSConsumer
 }
 
 // components used in runtime
@@ -47,3 +45,7 @@ export type HandlerContextWithPath<
 >
 
 export type Context<Path extends string = any> = IHttpServerComponent.PathAwareContext<GlobalContext, Path>
+
+export type NotificationToSqs = {
+  metadata: any
+}

@@ -1,6 +1,5 @@
 import { SQS } from 'aws-sdk'
-import { NotificationToSqs, SQSConsumer } from '../ports/consumer'
-import { AppComponents } from '../types'
+import { AppComponents, NotificationToSqs } from '../types'
 import { randomUUID } from 'crypto'
 
 import SQL, { SQLStatement } from 'sql-template-strings'
@@ -42,17 +41,57 @@ export async function taskRunnerSqs(job: NotificationToSqs, components: Pick<App
   }
 }
 
-export async function startListenSQS(components: Pick<AppComponents, 'config' | 'logs' | 'pg' | 'sqsConsumer'>) {
-  const logger = components.logs.getLogger('Listen SQS')
+export async function startListenSQS(components: Pick<AppComponents, 'config' | 'logs' | 'pg'>) {
+  const { logs, config } = components
+  const logger = logs.getLogger('Listen SQS')
+  const queueUrl = await config.requireString('SQS_QUEUE_URL')
+  const region = await config.requireString('SQS_QUEUE_REGION')
 
-  setInterval(async () => {
-    logger.log('Start notifications_consumer')
-    const sqsConsumed = await components.sqsConsumer.consume(taskRunnerSqs, components)
+  const sqs = new SQS({ region: region })
+  const params = {
+    AttributeNames: ['SentTimestamp'],
+    MaxNumberOfMessages: 10,
+    MessageAttributeNames: ['All'],
+    QueueUrl: queueUrl,
+    WaitTimeSeconds: 15,
+    VisibilityTimeout: 3 * 3600 // 3 hours
+  }
 
-    if (!sqsConsumed) {
-      logger.log(`Check the logs`)
-      return
+  async function receiveMessages(): Promise<void> {
+    const response = await sqs.receiveMessage(params).promise()
+    if (response?.Messages && response.Messages.length > 0) {
+      for (const it of response.Messages) {
+        const messageId = it.MessageId!
+        const body: NotificationToSqs = JSON.parse(it.Body!)
+
+        try {
+          logger.log(`Processing job {
+              id: ${messageId},
+              message: ${body},
+              QueueUrl: ${params.QueueUrl},
+              ReceiptHandle: ${it.ReceiptHandle!},
+            }`)
+
+          await taskRunnerSqs({ metadata: body }, components)
+
+          logger.info(`Processed job { id: ${messageId}}`)
+        } catch (err: any) {
+          // TODO: add metric here
+          logger.error(`Error processing job { id: ${messageId}}`)
+        } finally {
+          logger.info(`Deleting message from job { id: ${messageId}}`)
+          await sqs
+            .deleteMessage({
+              QueueUrl: params.QueueUrl,
+              ReceiptHandle: it.ReceiptHandle!
+            })
+            .promise()
+        }
+      }
     }
-    logger.log(JSON.stringify(sqsConsumed, null, 2))
-  }, 15000)
+
+    return receiveMessages()
+  }
+
+  receiveMessages().catch(logger.error)
 }

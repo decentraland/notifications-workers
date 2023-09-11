@@ -5,9 +5,6 @@ import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-k
 import { createPgComponent } from '@well-known-components/pg-component'
 import { AppComponents, GlobalContext } from './types'
 import { metricDeclarations } from './metrics'
-import { startListenSQS } from './controllers/queue'
-import { SQS } from 'aws-sdk'
-import { SQSConsumer } from './ports/consumer'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -33,27 +30,12 @@ export async function initComponents(): Promise<AppComponents> {
 
   const pg = await createPgComponent({ logs, config, metrics })
 
-  const queueUrl = await config.requireString('SQS_QUEUE_URL')
-  const region = await config.requireString('SQS_QUEUE_REGION')
-
-  const sqs = new SQS({ region: region })
-  const params = {
-    AttributeNames: ['SentTimestamp'],
-    MaxNumberOfMessages: 10,
-    MessageAttributeNames: ['All'],
-    QueueUrl: queueUrl,
-    WaitTimeSeconds: 15,
-    VisibilityTimeout: 3 * 3600 // 3 hours
-  }
-  const sqsConsumer = new SQSConsumer(sqs, params)
-
   return {
     config,
     logs,
     server,
     statusChecks,
     metrics,
-    pg,
-    sqsConsumer
+    pg
   }
 }

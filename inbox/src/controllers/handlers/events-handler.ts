@@ -33,8 +33,6 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
     AND u.created_at > to_timestamp(${from} / 1000.0)
     ORDER BY u.created_at DESC`
 
-    logger.debug(`Query: ${query.text}`)
-
     const notifications = await pg.query<NotificationEvent>(query)
     for (const notification of notifications.rows) {
       stream.push(`data: ${JSON.stringify(notification)}\n\n`)
