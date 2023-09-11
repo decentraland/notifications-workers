@@ -53,7 +53,7 @@ export async function startListenSQS(components: Pick<AppComponents, 'config' | 
     MaxNumberOfMessages: 10,
     MessageAttributeNames: ['All'],
     QueueUrl: queueUrl,
-    WaitTimeSeconds: 0,
+    WaitTimeSeconds: 15,
     VisibilityTimeout: 3 * 3600 // 3 hours
   }
 
