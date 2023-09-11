@@ -1,6 +1,7 @@
 import { Lifecycle } from '@well-known-components/interfaces'
 import { setupRouter } from './controllers/routes'
 import { AppComponents, GlobalContext, TestComponents } from './types'
+import { startListenSQS } from './controllers/queue'
 
 // this function wires the business logic (adapters & controllers) with the components (ports)
 export async function main(program: Lifecycle.EntryPointParameters<AppComponents | TestComponents>) {
@@ -20,4 +21,7 @@ export async function main(program: Lifecycle.EntryPointParameters<AppComponents
 
   // start ports: db, listeners, synchronizations, etc
   await startComponents()
+
+  // start listener to SQS queue
+  await startListenSQS(components) // This worker writes on the database but does not run the migrations
 }

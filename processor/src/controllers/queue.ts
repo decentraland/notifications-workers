@@ -42,28 +42,12 @@ export async function taskRunnerSqs(job: NotificationToSqs, components: Pick<App
   }
 }
 
-export async function startListenSQS(components: Pick<AppComponents, 'config' | 'logs' | 'pg'>) {
+export async function startListenSQS(components: Pick<AppComponents, 'config' | 'logs' | 'pg' | 'sqsConsumer'>) {
   const logger = components.logs.getLogger('Listen SQS')
-
-  const queueUrl = await components.config.requireString('SQS_QUEUE_URL')
-  const region = await components.config.requireString('SQS_QUEUE_REGION')
-
-  const sqs = new SQS({ region: region })
-
-  const params = {
-    AttributeNames: ['SentTimestamp'],
-    MaxNumberOfMessages: 10,
-    MessageAttributeNames: ['All'],
-    QueueUrl: queueUrl,
-    WaitTimeSeconds: 15,
-    VisibilityTimeout: 3 * 3600 // 3 hours
-  }
-
-  const consumer = new SQSConsumer(sqs, params)
 
   setInterval(async () => {
     logger.log('Start notifications_consumer')
-    const sqsConsumed = await consumer.consume(taskRunnerSqs, components)
+    const sqsConsumed = await components.sqsConsumer.consume(taskRunnerSqs, components)
 
     if (!sqsConsumed) {
       logger.log(`Check the logs`)
