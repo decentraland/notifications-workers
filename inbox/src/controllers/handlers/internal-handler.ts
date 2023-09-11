@@ -24,7 +24,7 @@ export async function createNotificationsHandler(
   // While this service uses the created_at to order and retrieve notifications
   const createNotificationQuery: SQLStatement = SQL`
     INSERT INTO notifications (id, origin_id, type, source, metadata, timestamp)
-    VALUES (${notificationUuid}, ${body.sid}, 'test', 'manual', ${body}, to_timestamp(${epoch}));`
+    VALUES (${notificationUuid}, ${body.sid}, 'internal', 'dcl_api', ${body}, to_timestamp(${epoch}));`
   logger.debug(`Query: ${createNotificationQuery.text}`)
   try {
     await pg.query<Notification>(createNotificationQuery)

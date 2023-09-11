@@ -117,3 +117,69 @@ Then, start the server
 yarn install
 yarn start:local
 ```
+
+Then you need to run the SQS queue, for that you need to have installed python, localstack and awslocal
+
+
+### Prerequisites
+
+Please make sure to install the following tools on your machine before moving ahead:
+
+```
+python (Python 3.7 up to 3.10 is supported)
+pip (Python package manager)
+docker
+```
+
+### Installation
+
+Install localstack using the Python package manager.
+
+```
+$ python3 -m pip install localstack
+```
+
+Then follow the steps to install the [awslocal](https://docs.localstack.cloud/user-guide/integrations/aws-cli/).
+
+
+
+## Create the queue
+
+```
+awslocal sqs create-queue --queue-name localstack-queue
+```
+
+## Send a notification to the queue
+
+```
+awslocal sqs send-message --queue-url http://localhost:4566/000000000000/sample-queue \
+--message-body '{
+	"sid": 121,
+	"users": ["0x35B84d6848D16415177c64D64504663b998A6ab4"],
+	"sender": "0x35B84d6848D16415177c64D64504663b998A6ab4",
+	"payload": {
+		"data": {
+			"app": "Shunya",
+			"sid": "121",
+			"url": "https://shunya.fi/",
+			"acta": "https://shunya.fi",
+			"aimg": "https://shunya.fi/_nuxt/img/shunya.cfece51.png",
+			"amsg": "Your portfolio is up by 0.08% since yesterday.",
+			"asub": "Assets Daily",
+			"icon": "https://gateway.ipfs.io/ipfs/QmQM97KUTGTT6nt6Xd7xAJpdGB8adiJ1LVUJoN8RoFUYfx",
+			"type": "3",
+			"epoch": "1660554419",
+			"appbot": "0",
+			"hidden": "0",
+			"secret": ""
+		},
+		"notification": {
+			"body": "Your portfolio is up by 0.08% since yesterday.",
+			"title": "Shunya - Assets Daily"
+		}
+	},
+	"epoch": "1660554419",
+	"topic": "Notification",
+	"subtopic": "Channel"
+}'
+```
