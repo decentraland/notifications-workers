@@ -5,8 +5,6 @@ import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-k
 import { createPgComponent } from '@well-known-components/pg-component'
 import { AppComponents, GlobalContext } from './types'
 import { metricDeclarations } from './metrics'
-import { startListenSQS } from './controllers/queue'
-import { SQS } from 'aws-sdk'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
