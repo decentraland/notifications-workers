@@ -8,8 +8,7 @@
     "rundb:local": "docker-compose up -d && docker exec notifications_worker_db bash -c \"until pg_isready; do sleep 1; done\" && sleep 5",
     "start:local": "yarn workspaces run build && yarn workspace processor start & yarn workspace inbox start",
     "lint:check": "eslint '**/*.{js,ts}'",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "queue:activate-env": "source notifications-queue/bin/activate"
+    "lint:fix": "eslint . --ext .ts --fix"
   },
   "license": "Apache-2.0"
 }
