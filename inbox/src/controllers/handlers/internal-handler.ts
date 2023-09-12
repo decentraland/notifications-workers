@@ -4,15 +4,23 @@ import { randomUUID } from 'crypto'
 import SQL, { SQLStatement } from 'sql-template-strings'
 
 export async function createNotificationsHandler(
-  context: Pick<HandlerContextWithPath<'pg' | 'logs', '/notifications'>, 'url' | 'request' | 'components'>
+  context: Pick<HandlerContextWithPath<'pg' | 'logs' | 'config', '/notifications'>, 'url' | 'request' | 'components'>
 ) {
   const { pg, logs } = context.components
   const logger = logs.getLogger('notifications-handler')
+
+  const apiKey = context.request.headers.get('Authorization')
+
+  if (!(apiKey === `Bearer ${context.components.config.getString('INTERNAL_API_KEY')}`)) {
+    logger.debug(`Invalid API Key`)
+    throw new InvalidRequestError('Invalid API Key')
+  }
 
   let body
   try {
     body = await context.request.json()
   } catch (error: any) {
+    logger.debug(`Error parsing body: ${error.message}`)
     throw new InvalidRequestError('Invalid body')
   }
 
@@ -25,7 +33,7 @@ export async function createNotificationsHandler(
   const createNotificationQuery: SQLStatement = SQL`
     INSERT INTO notifications (id, origin_id, type, source, metadata, timestamp)
     VALUES (${notificationUuid}, ${body.sid}, 'internal', 'dcl_api', ${body}, to_timestamp(${epoch}));`
-  logger.debug(`Query: ${createNotificationQuery.text}`)
+  logger.debug(`Running Query: ${createNotificationQuery.text}`)
   try {
     await pg.query<Notification>(createNotificationQuery)
   } catch (error: any) {
@@ -39,7 +47,7 @@ export async function createNotificationsHandler(
     const createUserNotificationQuery: SQLStatement = SQL`
       INSERT INTO users_notifications (id, address, notification_id)
       VALUES (${userUuid}, ${user}, ${notificationUuid});`
-    logger.debug(`Query: ${createUserNotificationQuery.text}`)
+    logger.debug(`Running query: ${createUserNotificationQuery.text}`)
     try {
       await pg.query<Notification>(createUserNotificationQuery)
     } catch (error: any) {

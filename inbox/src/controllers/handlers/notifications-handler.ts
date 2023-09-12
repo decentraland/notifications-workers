@@ -7,10 +7,16 @@ export async function notificationsHandler(
 ) {
   const { pg, logs } = context.components
   const logger = logs.getLogger('notifications-handler')
-  const from = context.url.searchParams.get('from')
+  const from = parseInt(context.url.searchParams.get('from') || '')
   const onlyNew = context.url.searchParams.get('onlyNew')
+  const limitParam = parseInt(context.url.searchParams.get('limit') || '')
+  const limit = !!limitParam && limitParam > 0 && limitParam <= 50 ? limitParam : 20
 
   const userId: string | undefined = context.verification!.auth
+  if (!userId) {
+    logger.debug(`Invalid userId ${userId} in authChain`)
+    throw new InvalidRequestError('Invalid userId in authChain')
+  }
 
   const query: SQLStatement = SQL`
     SELECT 
@@ -18,7 +24,7 @@ export async function notificationsHandler(
       n.origin_id AS origin_id,
       n.type AS type,
       n.source AS source,
-      date_part('epoch', n.timestamp) * 1000 AS timestamp,
+      date_part('epoch', n.timestamp) * 1000 AS origin_timestamp,
       date_part('epoch', u.created_at) * 1000 AS created_at,
       date_part('epoch', u.updated_at) * 1000 AS updated_at,
       u.address AS address, 
@@ -28,7 +34,7 @@ export async function notificationsHandler(
     JOIN users_notifications u ON n.id = u.notification_id`
 
   const whereClause: SQLStatement[] = [SQL`LOWER(u.address) = LOWER(${userId})`]
-  if (!!from) {
+  if (!!from && from > 0) {
     whereClause.push(SQL`n.created_at >= to_timestamp(${from} / 1000.0)`)
   }
   if (!!onlyNew) {
@@ -41,8 +47,9 @@ export async function notificationsHandler(
 
   query.append(where)
   query.append(SQL` ORDER BY n.created_at DESC`)
-
-  logger.debug(`Query: ${query.text}`)
+  query.append(SQL` LIMIT ${limit}`)
+  
+  logger.debug(`Running query: ${query.text}`)
 
   const notifications = await pg.query<any>(query)
   return {
@@ -55,7 +62,7 @@ export async function notificationsHandler(
 
 export async function readNotificationsHandler(
   context: Pick<
-    HandlerContextWithPath<'pg' | 'logs', '/notifications'>,
+    HandlerContextWithPath<'pg' | 'logs', '/notifications/read'>,
     'url' | 'request' | 'components' | 'verification'
   >
 ) {
@@ -63,15 +70,19 @@ export async function readNotificationsHandler(
   const logger = logs.getLogger('read-notifications-handler')
 
   const userId: string | undefined = context.verification!.auth
+  if (!userId) {
+    logger.debug(`Invalid userId ${userId} in authChain`)
+    throw new InvalidRequestError('Invalid userId in authChain')
+  }
 
   let body
   try {
     body = await context.request.json()
   } catch (error: any) {
-    throw new InvalidRequestError('Invalid body')
+    logger.debug(`Error parsing body: ${error.message}`)
+    throw new InvalidRequestError('Invalid body, must be JSON with notificationIds array field')
   }
   const notificationIds = body.notificationIds
-  const fromTimestamp = body.from
 
   const query = SQL`UPDATE users_notifications
   SET read = true, updated_at = NOW()
@@ -85,13 +96,12 @@ export async function readNotificationsHandler(
     })
     ids.forEach((id) => query.append(id))
     query.append(SQL`)`)
-  } else if (!!fromTimestamp) {
-    query.append(SQL`created_at >= to_timestamp(${fromTimestamp} / 1000.0)`)
   } else {
-    throw new InvalidRequestError('Missing notificationIds or from')
+    logger.debug(`Missing notificationIds in body ${body}`)
+    throw new InvalidRequestError('Missing notificationIds')
   }
 
-  logger.debug(`Query: ${query.text}`)
+  logger.debug(`Running query: ${query.text}`)
 
   try {
     const response = await pg.query(query)
@@ -105,6 +115,6 @@ export async function readNotificationsHandler(
     }
   } catch (error: any) {
     logger.error(`Error updating notifications: ${error.message}`)
-    throw new InvalidRequestError('Invalid UUID')
+    throw new InvalidRequestError('Invalid origin_id and type, as they already exist')
   }
 }

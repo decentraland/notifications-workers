@@ -34,9 +34,15 @@ Returns a stream of all the notifications
 - Authentication: signed fetch, the user id will be infered from that
 
 ```
-event: item-sold
-id: abcdef
-data: { "id": "..", "timestamp": 213132, "source": "Marketplace", "type": "item-sold", "thumbnailUrl": "", "title": "", "description": "", "link": "", "read": false }
+retry: 10000
+
+event: ping
+
+data: {"notification_id":"7d9e62e7-93a1-452d-8397-ab7f8e37a325","origin_id":"91","type":"push","source":"sqs","origin_timestamp":1660554419000,"created_at":1694464865660.472,"updated_at":1694464865660.472,"address":"0xb5D7D1A05f553b5098D9274Df6B292e4e8222314","read":false,"metadata":{"sid":91,"epoch":"1660554419","topic":"Notification","users":["0xb5D7D1A05f553b5098D9274Df6B292e4e8222314"],"sender":"0x35B84d6848D16415177c64D64504663b998A6ab4","payload":{"data":{"app":"Shunya","sid":"121","url":"https://shunya.fi/","acta":"https://shunya.fi","aimg":"https://shunya.fi/_nuxt/img/shunya.cfece51.png","amsg":"Your portfolio is up by 0.08% since yesterday.","asub":"Assets Daily","icon":"https://gateway.ipfs.io/ipfs/QmQM97KUTGTT6nt6Xd7xAJpdGB8adiJ1LVUJoN8RoFUYfx","type":"3","epoch":"1660554419","appbot":"0","hidden":"0","secret":""},"notification":{"body":"Your portfolio is up by 0.08% since yesterday.","title":"Shunya - Assets Daily"}},"subtopic":"Channel"}}
+
+data: {"notification_id":"ad2e1b7d-8b4e-4f5f-9b88-6852c3cd6e2d","origin_id":"152","type":"test","source":"manual","origin_timestamp":1660554419000,"created_at":1694004397627.816,"updated_at":1694004397627.816,"address":"0xb5d7d1a05f553b5098d9274df6b292e4e8222314","read":false,"metadata":{"sid":152,"epoch":"1660554419","topic":"Notification","users":["0xb5d7d1a05f553b5098d9274df6b292e4e8222314"],"sender":"0x35B84d6848D16415177c64D64504663b998A6ab4","payload":{"data":{"app":"Shunya","sid":"121","url":"https://shunya.fi/","acta":"https://shunya.fi","aimg":"https://shunya.fi/_nuxt/img/shunya.cfece51.png","amsg":"Your portfolio is up by 0.08% since yesterday.","asub":"Assets Daily","icon":"https://gateway.ipfs.io/ipfs/QmQM97KUTGTT6nt6Xd7xAJpdGB8adiJ1LVUJoN8RoFUYfx","type":"3","epoch":"1660554419","appbot":"0","hidden":"0","secret":""},"notification":{"body":"Your portfolio is up by 0.08% since yesterday.","title":"Shunya - Assets Daily"}},"subtopic":"Channel"}}
+
+event: ping
 ```
 
 ```mermaid
@@ -63,7 +69,134 @@ Params:
 Return:
 
 ```json
-
+[
+   {
+      "notification_id":"7d9e62e7-93a1-452d-8397-ab7f8e37a325",
+      "origin_id":"91",
+      "type":"push",
+      "source":"sqs",
+      "origin_timestamp":1660554419000,
+      "created_at":1694464865660.472,
+      "updated_at":1694464865660.472,
+      "address":"0xb5D7D1A05f553b5098D9274Df6B292e4e8222314",
+      "read":false,
+      "metadata":{
+         "sid":91,
+         "epoch":"1660554419",
+         "topic":"Notification",
+         "users":[
+            "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314"
+         ],
+         "sender":"0x35B84d6848D16415177c64D64504663b998A6ab4",
+         "payload":{
+            "data":{
+               "app":"Shunya",
+               "sid":"121",
+               "url":"https://shunya.fi/",
+               "acta":"https://shunya.fi",
+               "aimg":"https://shunya.fi/_nuxt/img/shunya.cfece51.png",
+               "amsg":"Your portfolio is up by 0.08% since yesterday.",
+               "asub":"Assets Daily",
+               "icon":"https://gateway.ipfs.io/ipfs/QmQM97KUTGTT6nt6Xd7xAJpdGB8adiJ1LVUJoN8RoFUYfx",
+               "type":"3",
+               "epoch":"1660554419",
+               "appbot":"0",
+               "hidden":"0",
+               "secret":""
+            },
+            "notification":{
+               "body":"Your portfolio is up by 0.08% since yesterday.",
+               "title":"Shunya - Assets Daily"
+            }
+         },
+         "subtopic":"Channel"
+      }
+   },
+   {
+      "notification_id":"ad2e1b7d-8b4e-4f5f-9b88-6852c3cd6e2d",
+      "origin_id":"152",
+      "type":"test",
+      "source":"manual",
+      "origin_timestamp":1660554419000,
+      "created_at":1694004397627.816,
+      "updated_at":1694004397627.816,
+      "address":"0xb5d7d1a05f553b5098d9274df6b292e4e8222314",
+      "read":false,
+      "metadata":{
+         "sid":152,
+         "epoch":"1660554419",
+         "topic":"Notification",
+         "users":[
+            "0xb5d7d1a05f553b5098d9274df6b292e4e8222314"
+         ],
+         "sender":"0x35B84d6848D16415177c64D64504663b998A6ab4",
+         "payload":{
+            "data":{
+               "app":"Shunya",
+               "sid":"121",
+               "url":"https://shunya.fi/",
+               "acta":"https://shunya.fi",
+               "aimg":"https://shunya.fi/_nuxt/img/shunya.cfece51.png",
+               "amsg":"Your portfolio is up by 0.08% since yesterday.",
+               "asub":"Assets Daily",
+               "icon":"https://gateway.ipfs.io/ipfs/QmQM97KUTGTT6nt6Xd7xAJpdGB8adiJ1LVUJoN8RoFUYfx",
+               "type":"3",
+               "epoch":"1660554419",
+               "appbot":"0",
+               "hidden":"0",
+               "secret":""
+            },
+            "notification":{
+               "body":"Your portfolio is up by 0.08% since yesterday.",
+               "title":"Shunya - Assets Daily"
+            }
+         },
+         "subtopic":"Channel"
+      }
+   },
+   {
+      "notification_id":"7e2dfb6e-b6ae-4b3d-8002-f43c94f3bfc2",
+      "origin_id":"150",
+      "type":"test",
+      "source":"manual",
+      "origin_timestamp":1660554419000,
+      "created_at":1693998943256.702,
+      "updated_at":1694004012157.416,
+      "address":"0xb5d7d1a05f553b5098d9274df6b292e4e8222314",
+      "read":true,
+      "metadata":{
+         "sid":150,
+         "epoch":"1660554419",
+         "topic":"Notification",
+         "users":[
+            "0xb5d7d1a05f553b5098d9274df6b292e4e8222314"
+         ],
+         "sender":"0x35B84d6848D16415177c64D64504663b998A6ab4",
+         "payload":{
+            "data":{
+               "app":"Shunya",
+               "sid":"121",
+               "url":"https://shunya.fi/",
+               "acta":"https://shunya.fi",
+               "aimg":"https://shunya.fi/_nuxt/img/shunya.cfece51.png",
+               "amsg":"Your portfolio is up by 0.08% since yesterday.",
+               "asub":"Assets Daily",
+               "icon":"https://gateway.ipfs.io/ipfs/QmQM97KUTGTT6nt6Xd7xAJpdGB8adiJ1LVUJoN8RoFUYfx",
+               "type":"3",
+               "epoch":"1660554419",
+               "appbot":"0",
+               "hidden":"0",
+               "secret":""
+            },
+            "notification":{
+               "body":"Your portfolio is up by 0.08% since yesterday.",
+               "title":"Shunya - Assets Daily"
+            }
+         },
+         "subtopic":"Channel"
+      }
+   }
+]
 ```
 
 
@@ -71,6 +204,13 @@ Return:
 
 - `PUT /notifications/read { notificationIds: ['notification-id-1', 'notification-id-2'] }`
 - Authentication: signed fetch
+
+Response
+```json
+{
+	"updated": 2
+}
+```
 
 Mark notifications as read, this action is unreversible. The notifications to be marked as read will be infered from the ids in the request body.
 
