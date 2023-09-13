@@ -8,10 +8,10 @@ export async function createNotificationsHandler(
 ) {
   const { pg, logs } = context.components
   const logger = logs.getLogger('notifications-handler')
+  const apiKey = await context.components.config.getString('INTERNAL_API_KEY')
+  const authorization = context.request.headers.get('Authorization')
 
-  const apiKey = context.request.headers.get('Authorization')
-
-  if (!(apiKey === `Bearer ${context.components.config.getString('INTERNAL_API_KEY')}`)) {
+  if (!(authorization === `Bearer ${apiKey}`)) {
     logger.debug(`Invalid API Key`)
     throw new InvalidRequestError('Invalid API Key')
   }
