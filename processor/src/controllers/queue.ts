@@ -98,7 +98,7 @@ export async function startListenSQS(components: Pick<AppComponents, 'config' | 
   receiveMessages().catch(logger.error)
 }
 
-async function storeFailedNotification(body: string, components: Pick<AppComponents, "logs" | "pg">) {
+async function storeFailedNotification(body: string, components: Pick<AppComponents, 'logs' | 'pg'>) {
   const logger = components.logs.getLogger('Store Failed Notification')
   const notificationUuid = randomUUID()
   logger.debug(`metadata: ${body}`)
@@ -112,4 +112,3 @@ async function storeFailedNotification(body: string, components: Pick<AppCompone
     logger.error(`Error: ${error}`)
   }
 }
-
