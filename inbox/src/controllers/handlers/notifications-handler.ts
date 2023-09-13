@@ -48,7 +48,7 @@ export async function notificationsHandler(
   query.append(where)
   query.append(SQL` ORDER BY n.created_at DESC`)
   query.append(SQL` LIMIT ${limit}`)
-  
+
   logger.debug(`Running query: ${query.text}`)
 
   const notifications = await pg.query<any>(query)

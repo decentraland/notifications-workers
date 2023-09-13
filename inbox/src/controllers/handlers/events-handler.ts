@@ -59,7 +59,7 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
       'Access-Control-Allow-Origin': '*',
       'Cache-Control': 'no-cache',
       'Content-Type': 'text/event-stream',
-      'Connection': 'keep-alive'
+      Connection: 'keep-alive'
     },
     body: stream
   }
