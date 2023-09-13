@@ -47,6 +47,8 @@ export async function initComponents(): Promise<AppComponents> {
     }
   )
 
+  await config.requireString('INTERNAL_API_KEY')
+
   return {
     config,
     logs,

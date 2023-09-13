@@ -21,7 +21,7 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
       n.origin_id AS origin_id,
       n.type AS type,
       n.source AS source,
-      date_part('epoch', n.timestamp) * 1000 AS timestamp,
+      date_part('epoch', n.timestamp) * 1000 AS origin_timestamp,
       date_part('epoch', u.created_at) * 1000 AS created_at,
       date_part('epoch', u.updated_at) * 1000 AS updated_at,
       u.address AS address,
@@ -56,6 +56,7 @@ export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg
 
   return {
     headers: {
+      'Access-Control-Allow-Origin': '*',
       'Cache-Control': 'no-cache',
       'Content-Type': 'text/event-stream',
       Connection: 'keep-alive'
