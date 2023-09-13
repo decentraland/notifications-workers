@@ -24,6 +24,8 @@ export async function taskRunnerSqs(job: NotificationToSqs, components: Pick<App
     await components.pg.query<Notification>(createNotificationQuery)
   } catch (error: any) {
     logger.error(`Error: ${error}`)
+    await storeFailedNotification(notification, components)
+    return
   }
 
   const users = notification.users
@@ -62,9 +64,8 @@ export async function startListenSQS(components: Pick<AppComponents, 'config' | 
     if (response?.Messages && response.Messages.length > 0) {
       for (const it of response.Messages) {
         const messageId = it.MessageId!
-        const body: NotificationToSqs = JSON.parse(it.Body!)
-
         try {
+          const body: NotificationToSqs = JSON.parse(it.Body!)
           logger.log(`Processing job {
               id: ${messageId},
               message: ${body},
@@ -77,7 +78,8 @@ export async function startListenSQS(components: Pick<AppComponents, 'config' | 
           logger.info(`Processed job { id: ${messageId}}`)
         } catch (err: any) {
           // TODO: add metric here
-          logger.error(`Error processing job { id: ${messageId}}`)
+          logger.error(`Error processing job { id: ${messageId}, body: ${it.Body!}}`)
+          await storeFailedNotification(it.Body!, components)
         } finally {
           logger.info(`Deleting message from job { id: ${messageId}}`)
           await sqs
@@ -94,4 +96,19 @@ export async function startListenSQS(components: Pick<AppComponents, 'config' | 
   }
 
   receiveMessages().catch(logger.error)
+}
+
+async function storeFailedNotification(body: string, components: Pick<AppComponents, 'logs' | 'pg'>) {
+  const logger = components.logs.getLogger('Store Failed Notification')
+  const notificationUuid = randomUUID()
+  logger.debug(`metadata: ${body}`)
+  const createNotificationQuery: SQLStatement = SQL`
+  INSERT INTO failed_notifications (id, type, source, metadata)
+  VALUES (${notificationUuid}, 'push', 'sqs', ${body});`
+  logger.debug(`Query: ${createNotificationQuery.text}`)
+  try {
+    await components.pg.query<Notification>(createNotificationQuery)
+  } catch (error: any) {
+    logger.error(`Error: ${error}`)
+  }
 }
