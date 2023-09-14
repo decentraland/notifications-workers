@@ -5,7 +5,8 @@ FROM node:lts-alpine as builderenv
 WORKDIR /app
 
 # some packages require a build step
-RUN apk update && apk add wget
+RUN apt-get update
+RUN apt-get upgrade -y
 
 # build the app
 COPY . /app
@@ -21,7 +22,9 @@ RUN yarn install --prod --frozen-lockfile
 
 FROM node:lts-alpine
 
-RUN apk update && apk add wget
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get -y -qq install tini
 
 # NODE_ENV is used to configure some runtime options, like JSON logger
 ENV NODE_ENV production
