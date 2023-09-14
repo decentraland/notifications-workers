@@ -6,4 +6,4 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.sql(`ALTER TABLE failed_notifications ALTER COLUMN id SET DEFAULT gen_random_uuid();`)
 }
 
-export async function down(pgm: MigrationBuilder): Promise<void> {}
+export async function down(_pgm: MigrationBuilder): Promise<void> {}
