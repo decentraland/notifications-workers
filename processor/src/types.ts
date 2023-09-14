@@ -47,5 +47,9 @@ export type HandlerContextWithPath<
 export type Context<Path extends string = any> = IHttpServerComponent.PathAwareContext<GlobalContext, Path>
 
 export type NotificationToSqs = {
-  metadata: any
+  metadata: {
+    sid: string
+    users: string[]
+    epoch: number
+  }
 }
