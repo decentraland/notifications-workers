@@ -21,7 +21,7 @@ RUN yarn install --prod --frozen-lockfile
 
 FROM node:lts-alpine
 
-RUN apk update && apk add wget
+RUN apk update && apk add --update wget && apk add --update tini
 
 # NODE_ENV is used to configure some runtime options, like JSON logger
 ENV NODE_ENV production
