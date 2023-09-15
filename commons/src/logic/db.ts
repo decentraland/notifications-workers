@@ -1,16 +1,6 @@
 import { IPgComponent } from '@well-known-components/pg-component'
 import SQL from 'sql-template-strings'
-
-export type NotificationToSqs = {
-  sid: string
-  users: string[]
-  epoch: number
-}
-
-export type NotificationContext = {
-  type: string
-  source: string
-}
+import { NotificationContext, NotificationToSqs } from '../types'
 
 export async function insertNotification(
   pg: IPgComponent,
@@ -27,7 +17,7 @@ export async function insertNotification(
     // While this service uses the created_at to order and retrieve notifications
     const createNotificationQuery = SQL`
       INSERT INTO notifications (origin_id, type, source, metadata, timestamp)
-VALUES (${notification.sid}, ${context.type}, ${context.source}, ${notification}, to_timestamp(${epoch})) RETURNING id;`
+      VALUES (${notification.sid}, ${context.type}, ${context.source}, ${notification}, to_timestamp(${epoch})) RETURNING id;`
     const notificationId = (await client.query<any>(createNotificationQuery)).rows[0].id
 
     const users = notification.users

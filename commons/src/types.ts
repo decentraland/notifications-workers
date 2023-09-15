@@ -99,3 +99,14 @@ export type NotificationEvent = {
   updated_at: number
   address: string
 }
+
+export type NotificationToSqs = {
+  sid: string
+  users: string[]
+  epoch: number
+}
+
+export type NotificationContext = {
+  type: string
+  source: string
+}

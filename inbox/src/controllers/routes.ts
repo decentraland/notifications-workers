@@ -1,11 +1,11 @@
 import { Router } from '@well-known-components/http-server'
-import { GlobalContext } from '../types'
 import { statusHandler } from './handlers/status-handler'
 import { eventsHandler } from './handlers/events-handler'
 import { notificationsHandler, readNotificationsHandler } from './handlers/notifications-handler'
 import { errorHandler } from './handlers/error-handler'
 import { createNotificationsHandler } from './handlers/internal-handler'
 import * as authorizationMiddleware from 'decentraland-crypto-middleware'
+import { GlobalContext } from 'commons/dist/types'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 

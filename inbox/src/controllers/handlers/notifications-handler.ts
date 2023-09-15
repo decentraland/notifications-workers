@@ -1,5 +1,6 @@
-import { HandlerContextWithPath, InvalidRequestError } from '../../types'
 
+
+import { HandlerContextWithPath, InvalidRequestError } from 'commons/dist/types'
 import SQL, { SQLStatement } from 'sql-template-strings'
 
 export async function notificationsHandler(

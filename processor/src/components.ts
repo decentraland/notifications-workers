@@ -3,15 +3,16 @@ import { createServerComponent, createStatusCheckComponent } from '@well-known-c
 import { createLogComponent } from '@well-known-components/logger'
 import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-known-components/metrics'
 import { createPgComponent } from '@well-known-components/pg-component'
-import { AppComponents, GlobalContext } from './types'
 import { metricDeclarations } from './metrics'
+import { createSQSAdapter } from './controllers/queue'
+import { ProcessorComponents, ProcessorGlobalContext } from './types'
 
 // Initialize all the components of the app
-export async function initComponents(): Promise<AppComponents> {
+export async function initComponents(): Promise<ProcessorComponents> {
   const config = await createDotEnvConfigComponent({ path: ['.env.default', '.env'] })
 
   const logs = await createLogComponent({})
-  const server = await createServerComponent<GlobalContext>({ config, logs }, {})
+  const server = await createServerComponent<ProcessorGlobalContext>({ config, logs }, {})
   const statusChecks = await createStatusCheckComponent({ server, config })
   const metrics = await createMetricsComponent(metricDeclarations, { config })
 
@@ -30,12 +31,15 @@ export async function initComponents(): Promise<AppComponents> {
 
   const pg = await createPgComponent({ logs, config, metrics })
 
+  const sqs = await createSQSAdapter({ config, logs, pg }) // This worker writes on the database but does not run the migrations
+
   return {
     config,
     logs,
     server,
     statusChecks,
     metrics,
-    pg
+    pg,
+    sqs
   }
 }

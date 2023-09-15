@@ -1,5 +1,5 @@
+import { HandlerContextWithPath, NotificationEvent } from 'commons/dist/types'
 import { Readable } from 'node:stream'
-import { HandlerContextWithPath, NotificationEvent } from '../../types'
 
 import SQL from 'sql-template-strings'
 

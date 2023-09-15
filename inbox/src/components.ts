@@ -1,11 +1,11 @@
 import { createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
 import { createLogComponent } from '@well-known-components/logger'
 import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-known-components/metrics'
-import { AppComponents, GlobalContext } from './types'
 import { metricDeclarations } from './metrics'
 import { createServerComponent, createStatusCheckComponent } from '@well-known-components/http-server'
 import { createPgComponent } from '@well-known-components/pg-component'
 import path from 'path'
+import { AppComponents, GlobalContext } from 'commons/dist/types'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {

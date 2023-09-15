@@ -1,10 +1,13 @@
-import { insertNotification } from 'commons/dist/logic/db'
-import { HandlerContextWithPath, InvalidRequestError } from 'commons/dist/types'
+import { InvalidRequestError } from 'commons/dist/types'
+import { ProcessorHandlerContextWithPath } from '../../types'
 
-export async function createNotificationsHandler(
-  context: Pick<HandlerContextWithPath<'pg' | 'logs' | 'config', '/notifications'>, 'url' | 'request' | 'components'>
+export async function sendNotificationsToSqsHandler(
+  context: Pick<
+    ProcessorHandlerContextWithPath<'pg' | 'logs' | 'config' | 'sqs', '/notifications'>,
+    'url' | 'request' | 'components'
+  >
 ) {
-  const { pg, logs } = context.components
+  const { logs } = context.components
   const logger = logs.getLogger('notifications-handler')
   const apiKey = await context.components.config.getString('INTERNAL_API_KEY')
   const authorization = context.request.headers.get('Authorization')
@@ -22,10 +25,7 @@ export async function createNotificationsHandler(
     throw new InvalidRequestError('Invalid body')
   }
 
-  await insertNotification(pg, body, {
-    type: 'internal',
-    source: 'dcl_api'
-  })
+  await context.components.sqs.publish(body)
 
   return {
     headers: {
