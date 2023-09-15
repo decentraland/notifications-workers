@@ -1,5 +1,3 @@
-
-
 import { HandlerContextWithPath, InvalidRequestError } from 'commons/dist/types'
 import SQL, { SQLStatement } from 'sql-template-strings'
 
