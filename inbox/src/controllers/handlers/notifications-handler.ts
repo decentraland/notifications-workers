@@ -1,4 +1,3 @@
-
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { HandlerContextWithPath, InvalidRequestError } from '../../types'
 

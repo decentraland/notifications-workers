@@ -1,4 +1,4 @@
-import { HandlerContextWithPath } from "../../types"
+import { HandlerContextWithPath } from '../../types'
 
 export async function statusHandler(context: Pick<HandlerContextWithPath<'config', '/status'>, 'url' | 'components'>) {
   const {
