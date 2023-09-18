@@ -30,7 +30,7 @@ export async function createSQSAdapter(
           for (const it of response.Messages) {
             const messageId = it.MessageId!
             try {
-              const body = await JSON.parse(it.Body!)
+              const body = JSON.parse(it.Body!)
               logger.log(`Processing job {
                   id: ${messageId},
                   message: ${body},
@@ -38,17 +38,16 @@ export async function createSQSAdapter(
                   ReceiptHandle: ${it.ReceiptHandle!},
                 }`)
 
-              const notification = await JSON.parse(body.Message)
+              const notification = JSON.parse(body.Message)
               const source = extractSource(notification)
-              
-              if ((!source || source === 'push') && notification.payload.data.app !== dcl_channel_app) {
+              // TODO (!source || source === 'push')
+              if (notification.payload.data.app === dcl_channel_app) {
+                await insertNotification(pg, notification, { type: 'dcl', source })
+              } else {
                 logger.debug(
                   `Notification ${notification.sid} is not from Decentraland Channel and it's from Push Service`
                 )
-                break
               }
-
-              await insertNotification(pg, notification, { type: 'dcl', source: source })
 
               logger.info(`Processed job { id: ${messageId}}`)
             } catch (err: any) {
