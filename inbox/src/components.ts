@@ -22,7 +22,7 @@ export async function initComponents(): Promise<AppComponents> {
   )
   await instrumentHttpServerWithMetrics({ server, metrics, config })
   const statusChecks = await createStatusCheckComponent({ server, config })
-  
+
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
   if (!databaseUrl) {
     const dbUser = await config.requireString('PG_COMPONENT_PSQL_USER')
@@ -32,7 +32,7 @@ export async function initComponents(): Promise<AppComponents> {
     const dbPassword = await config.requireString('PG_COMPONENT_PSQL_PASSWORD')
     databaseUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbDatabaseName}`
   }
-   // This worker reads from the database but does not write, so it doesnt run the migrations
+  // This worker reads from the database but does not write, so it doesnt run the migrations
   const pg = await createPgComponent({ logs, config, metrics })
 
   return {
