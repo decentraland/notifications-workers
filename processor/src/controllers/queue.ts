@@ -39,13 +39,14 @@ export async function createSQSAdapter(
                 }`)
 
               const notification = await JSON.parse(body.Message)
+              const source = extractSource(notification)
 
-              if (notification.payload.data.app !== dcl_channel_app) {
-                logger.debug(`Notification ${notification.sid} is not from Decentraland Channel`)
+              if (source === 'push' && notification.payload.data.app !== dcl_channel_app) {
+                logger.debug(`Notification ${notification.sid} is not from Decentraland Channel and it's from Push Service`)
                 break
               }
 
-              await insertNotification(pg, notification, { type: 'push', source: 'sqs' })
+              await insertNotification(pg, notification, { type: 'dcl', source: source })
 
               logger.info(`Processed job { id: ${messageId}}`)
             } catch (err: any) {
@@ -80,6 +81,10 @@ export async function createSQSAdapter(
       return published.MessageId!
     }
   }
+}
+
+function extractSource(notification: any) {
+  return notification.source || 'push'
 }
 
 async function storeFailedNotification(body: string, components: Pick<ProcessorComponents, 'logs' | 'pg'>) {

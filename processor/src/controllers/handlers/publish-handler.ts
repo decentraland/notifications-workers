@@ -19,6 +19,7 @@ export async function sendNotificationsToSqsHandler(
   let body
   try {
     body = await context.request.json()
+    body.source = body.source || 'dcl-internal'
   } catch (error: any) {
     logger.debug(`Error parsing body: ${error.message}`)
     throw new InvalidRequestError('Invalid body')
