@@ -2,9 +2,7 @@ import { IPgComponent } from '@well-known-components/pg-component'
 import SQL from 'sql-template-strings'
 
 export type NotificationToSqs = {
-  sid: string
-  users: string[]
-  epoch: number
+  Message: any // Do not change this name is from SQS
 }
 
 export type NotificationContext = {
@@ -29,14 +27,22 @@ export type NotificationEvent = {
 
 export async function insertNotification(
   pg: IPgComponent,
-  notification: NotificationToSqs,
+  notificationSqs: NotificationToSqs,
   context: NotificationContext
 ) {
   const client = await pg.getPool().connect()
 
   try {
     await client.query('BEGIN')
+    const notification = JSON.parse(notificationSqs.Message)
     const epoch = notification.epoch
+
+    // TODO: Move to an env variable
+    if (notification.payload.data.app !== 'Decentraland Channel') {
+      // TODO: Use logger here
+      console.debug(`Notification ${notification.sid} is not from Decentraland Channel`)
+      return
+    }
 
     // The value stored in timestamp is the one from the origin of the notification
     // While this service uses the created_at to order and retrieve notifications
@@ -50,7 +56,8 @@ export async function insertNotification(
     const createUserNotificationQuery = SQL`INSERT INTO users_notifications (address, notification_id) VALUES `
 
     for (let i = 0; i < users.length; ++i) {
-      const user = users[i]
+      // The user is stored in Push Server as eip155:0x1234 where 0x1234 is the address
+      const user = users[i].replace('eip155:', '')
       createUserNotificationQuery.append(SQL`(${user}, ${notificationId})`)
       if (i < users.length - 1) {
         createUserNotificationQuery.append(SQL`, `)

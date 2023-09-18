@@ -3,7 +3,6 @@ import { statusHandler } from './handlers/status-handler'
 import { eventsHandler } from './handlers/events-handler'
 import { notificationsHandler, readNotificationsHandler } from './handlers/notifications-handler'
 import { errorHandler } from './handlers/error-handler'
-import { createNotificationsHandler } from './handlers/internal-handler'
 import * as authorizationMiddleware from 'decentraland-crypto-middleware'
 import { GlobalContext } from '../types'
 
@@ -16,8 +15,6 @@ export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContex
   router.use(errorHandler)
 
   router.get('/status', statusHandler)
-
-  router.post('/notifications', createNotificationsHandler)
 
   router.get(
     '/notifications/events',

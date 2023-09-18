@@ -4,7 +4,7 @@ import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-k
 import { metricDeclarations } from './metrics'
 import { createServerComponent, createStatusCheckComponent } from '@well-known-components/http-server'
 import { createPgComponent } from '@well-known-components/pg-component'
-import path from 'path'
+
 import { AppComponents, GlobalContext } from './types'
 
 // Initialize all the components of the app
@@ -21,10 +21,9 @@ export async function initComponents(): Promise<AppComponents> {
     }
   )
   await instrumentHttpServerWithMetrics({ server, metrics, config })
-
   const statusChecks = await createStatusCheckComponent({ server, config })
+  
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
-
   if (!databaseUrl) {
     const dbUser = await config.requireString('PG_COMPONENT_PSQL_USER')
     const dbDatabaseName = await config.requireString('PG_COMPONENT_PSQL_DATABASE')
@@ -33,21 +32,8 @@ export async function initComponents(): Promise<AppComponents> {
     const dbPassword = await config.requireString('PG_COMPONENT_PSQL_PASSWORD')
     databaseUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbDatabaseName}`
   }
-
-  const pg = await createPgComponent(
-    { logs, config, metrics },
-    {
-      migration: {
-        databaseUrl,
-        dir: path.resolve(__dirname, 'migrations'),
-        migrationsTable: 'pgmigrations',
-        ignorePattern: '.*\\.map',
-        direction: 'up'
-      }
-    }
-  )
-
-  await config.requireString('INTERNAL_API_KEY')
+   // This worker reads from the database but does not write, so it doesnt run the migrations
+  const pg = await createPgComponent({ logs, config, metrics })
 
   return {
     config,

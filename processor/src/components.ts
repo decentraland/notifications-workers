@@ -6,20 +6,18 @@ import { createPgComponent } from '@well-known-components/pg-component'
 import { metricDeclarations } from './metrics'
 import { createSQSAdapter } from './controllers/queue'
 import { ProcessorComponents, ProcessorGlobalContext } from './types'
+import path from 'path'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<ProcessorComponents> {
   const config = await createDotEnvConfigComponent({ path: ['.env.default', '.env'] })
-
   const logs = await createLogComponent({})
-  const server = await createServerComponent<ProcessorGlobalContext>({ config, logs }, {})
-  const statusChecks = await createStatusCheckComponent({ server, config })
   const metrics = await createMetricsComponent(metricDeclarations, { config })
-
+  const server = await createServerComponent<ProcessorGlobalContext>({ config, logs }, {})
   await instrumentHttpServerWithMetrics({ server, metrics, config })
+  const statusChecks = await createStatusCheckComponent({ server, config })
 
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
-
   if (!databaseUrl) {
     const dbUser = await config.requireString('PG_COMPONENT_PSQL_USER')
     const dbDatabaseName = await config.requireString('PG_COMPONENT_PSQL_DATABASE')
@@ -28,10 +26,20 @@ export async function initComponents(): Promise<ProcessorComponents> {
     const dbPassword = await config.requireString('PG_COMPONENT_PSQL_PASSWORD')
     databaseUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbDatabaseName}`
   }
-
-  const pg = await createPgComponent({ logs, config, metrics })
-
-  const sqs = await createSQSAdapter({ config, logs, pg }) // This worker writes on the database but does not run the migrations
+  // This worker writes to the database, so it runs the migrations
+  const pg = await createPgComponent(
+    { logs, config, metrics },
+    {
+      migration: {
+        databaseUrl,
+        dir: path.resolve(__dirname, 'migrations'),
+        migrationsTable: 'pgmigrations',
+        ignorePattern: '.*\\.map',
+        direction: 'up'
+      }
+    }
+  )
+  const sqs = await createSQSAdapter({ config, logs, pg })
 
   return {
     config,
