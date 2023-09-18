@@ -27,22 +27,14 @@ export type NotificationEvent = {
 
 export async function insertNotification(
   pg: IPgComponent,
-  notificationSqs: NotificationToSqs,
+  notification: any,
   context: NotificationContext
 ) {
   const client = await pg.getPool().connect()
 
   try {
     await client.query('BEGIN')
-    const notification = JSON.parse(notificationSqs.Message)
     const epoch = notification.epoch
-
-    // TODO: Move to an env variable
-    if (notification.payload.data.app !== 'Decentraland Channel') {
-      // TODO: Use logger here
-      console.debug(`Notification ${notification.sid} is not from Decentraland Channel`)
-      return
-    }
 
     // The value stored in timestamp is the one from the origin of the notification
     // While this service uses the created_at to order and retrieve notifications
