@@ -42,7 +42,7 @@ export async function createSQSAdapter(
 
               if (notification.payload.data.app !== dcl_channel_app) {
                 logger.debug(`Notification ${notification.sid} is not from Decentraland Channel`)
-                return
+                break
               }
 
               await insertNotification(pg, notification, { type: 'push', source: 'sqs' })
