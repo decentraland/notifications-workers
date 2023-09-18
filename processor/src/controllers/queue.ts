@@ -39,14 +39,14 @@ export async function createSQSAdapter(components: Pick<AppComponents, 'config' 
               const notification = JSON.parse(body.Message)
               const source = extractSource(notification)
               // TODO (!source || source === 'push')
-              if (notification.payload.data.app === dcl_channel_app) {
-                await insertNotification(pg, notification, { type: 'dcl', source })
-              } else {
+              if (notification.payload.data.app !== dcl_channel_app) {
                 logger.debug(
                   `Notification ${notification.sid} is not from Decentraland Channel and it's from Push Service`
                 )
+                continue
               }
 
+              await insertNotification(pg, notification, { type: 'dcl', source })
               logger.info(`Processed job { id: ${messageId}}`)
             } catch (err: any) {
               // TODO: add metric here
