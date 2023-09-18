@@ -1,6 +1,6 @@
 import { Lifecycle } from '@well-known-components/interfaces'
 import { setupRouter } from './controllers/routes'
-import { AppComponents, GlobalContext, TestComponents } from 'commons/dist/types'
+import { AppComponents, GlobalContext, TestComponents } from './types'
 
 // this function wires the business logic (adapters & controllers) with the components (ports)
 export async function main(program: Lifecycle.EntryPointParameters<AppComponents | TestComponents>) {

@@ -1,6 +1,16 @@
 import { IPgComponent } from '@well-known-components/pg-component'
 import SQL from 'sql-template-strings'
-import { NotificationContext, NotificationToSqs } from '../types'
+
+export type NotificationToSqs = {
+  sid: string
+  users: string[]
+  epoch: number
+}
+
+export type NotificationContext = {
+  type: string
+  source: string
+}
 
 export async function insertNotification(
   pg: IPgComponent,

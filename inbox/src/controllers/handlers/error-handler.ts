@@ -1,5 +1,5 @@
 import { IHttpServerComponent } from '@well-known-components/interfaces'
-import { InvalidRequestError, NotFoundError, NotificationError } from 'commons/dist/types'
+import { InvalidRequestError, NotFoundError, NotificationError } from '../../types';
 
 function handleError(error: any): { status: number; body: NotificationError } {
   if (error instanceof InvalidRequestError) {

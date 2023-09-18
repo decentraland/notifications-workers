@@ -1,8 +1,7 @@
 import { SQS } from 'aws-sdk'
-import { insertNotification } from 'commons/dist/logic/db'
+import { NotificationToSqs, insertNotification } from 'commons/dist/logic/db'
 import SQL from 'sql-template-strings'
 import { IQueue, ProcessorComponents } from '../types'
-import { NotificationToSqs } from 'commons/dist/types'
 
 export async function createSQSAdapter(
   components: Pick<ProcessorComponents, 'config' | 'logs' | 'pg'>

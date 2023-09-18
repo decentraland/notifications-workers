@@ -5,7 +5,7 @@ import { metricDeclarations } from './metrics'
 import { createServerComponent, createStatusCheckComponent } from '@well-known-components/http-server'
 import { createPgComponent } from '@well-known-components/pg-component'
 import path from 'path'
-import { AppComponents, GlobalContext } from 'commons/dist/types'
+import { AppComponents, GlobalContext } from './types'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {

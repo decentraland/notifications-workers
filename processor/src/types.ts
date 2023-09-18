@@ -7,8 +7,8 @@ import {
   IMetricsComponent
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from '@well-known-components/logger'
-import { NotificationToSqs } from 'commons/dist/types'
 import { IPgComponent } from '@well-known-components/pg-component'
+import { NotificationToSqs } from 'commons/dist/logic/db'
 import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
 
 export type IQueue = {
@@ -46,4 +46,23 @@ export type ProcessorGlobalContext = {
 export type ProcessorTestComponents = ProcessorComponents & {
   // A fetch component that only hits the test server
   localFetch: IFetchComponent
+}
+
+export type NotificationError = {
+  error: string
+  message: string
+}
+
+export class InvalidRequestError extends Error {
+  constructor(message: string) {
+    super(message)
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+export class NotFoundError extends Error {
+  constructor(message: string) {
+    super(message)
+    Error.captureStackTrace(this, this.constructor)
+  }
 }

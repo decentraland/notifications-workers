@@ -1,5 +1,4 @@
-import { InvalidRequestError } from 'commons/dist/types'
-import { ProcessorHandlerContextWithPath } from '../../types'
+import { InvalidRequestError, ProcessorHandlerContextWithPath } from '../../types'
 
 export async function sendNotificationsToSqsHandler(
   context: Pick<

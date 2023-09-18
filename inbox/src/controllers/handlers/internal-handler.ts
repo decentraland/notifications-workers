@@ -1,5 +1,5 @@
 import { insertNotification } from 'commons/dist/logic/db'
-import { HandlerContextWithPath, InvalidRequestError } from 'commons/dist/types'
+import { HandlerContextWithPath, InvalidRequestError } from '../../types'
 
 export async function createNotificationsHandler(
   context: Pick<HandlerContextWithPath<'pg' | 'logs' | 'config', '/notifications'>, 'url' | 'request' | 'components'>

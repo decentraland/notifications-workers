@@ -5,7 +5,7 @@ import { notificationsHandler, readNotificationsHandler } from './handlers/notif
 import { errorHandler } from './handlers/error-handler'
 import { createNotificationsHandler } from './handlers/internal-handler'
 import * as authorizationMiddleware from 'decentraland-crypto-middleware'
-import { GlobalContext } from 'commons/dist/types'
+import { GlobalContext } from '../types'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 

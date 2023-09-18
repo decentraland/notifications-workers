@@ -1,5 +1,6 @@
-import { HandlerContextWithPath, InvalidRequestError } from 'commons/dist/types'
+
 import SQL, { SQLStatement } from 'sql-template-strings'
+import { HandlerContextWithPath, InvalidRequestError } from '../../types'
 
 export async function notificationsHandler(
   context: Pick<HandlerContextWithPath<'pg' | 'logs', '/notifications'>, 'url' | 'components' | 'verification'>
