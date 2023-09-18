@@ -1,8 +1,8 @@
-import { InvalidRequestError, ProcessorHandlerContextWithPath } from '../../types'
+import { InvalidRequestError, HandlerContextWithPath } from '../../types'
 
 export async function sendNotificationsToSqsHandler(
   context: Pick<
-    ProcessorHandlerContextWithPath<'pg' | 'logs' | 'config' | 'sqs', '/notifications'>,
+    HandlerContextWithPath<'pg' | 'logs' | 'config' | 'sqs', '/notifications'>,
     'url' | 'request' | 'components'
   >
 ) {

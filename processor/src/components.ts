@@ -5,15 +5,15 @@ import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-k
 import { createPgComponent } from '@well-known-components/pg-component'
 import { metricDeclarations } from './metrics'
 import { createSQSAdapter } from './controllers/queue'
-import { ProcessorComponents, ProcessorGlobalContext } from './types'
+import { AppComponents, GlobalContext } from './types'
 import path from 'path'
 
 // Initialize all the components of the app
-export async function initComponents(): Promise<ProcessorComponents> {
+export async function initComponents(): Promise<AppComponents> {
   const config = await createDotEnvConfigComponent({ path: ['.env.default', '.env'] })
   const logs = await createLogComponent({})
   const metrics = await createMetricsComponent(metricDeclarations, { config })
-  const server = await createServerComponent<ProcessorGlobalContext>({ config, logs }, {})
+  const server = await createServerComponent<GlobalContext>({ config, logs }, {})
   await instrumentHttpServerWithMetrics({ server, metrics, config })
   const statusChecks = await createStatusCheckComponent({ server, config })
 

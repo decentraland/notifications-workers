@@ -1,11 +1,11 @@
 import { Lifecycle } from '@well-known-components/interfaces'
 import { setupRouter } from './controllers/routes'
-import { ProcessorComponents, ProcessorGlobalContext, ProcessorTestComponents } from './types'
+import { AppComponents, GlobalContext, TestComponents } from './types'
 
 // this function wires the business logic (adapters & controllers) with the components (ports)
-export async function main(program: Lifecycle.EntryPointParameters<ProcessorComponents | ProcessorTestComponents>) {
+export async function main(program: Lifecycle.EntryPointParameters<AppComponents | TestComponents>) {
   const { components, startComponents } = program
-  const globalContext: ProcessorGlobalContext = {
+  const globalContext: GlobalContext = {
     components
   }
 
@@ -22,7 +22,7 @@ export async function main(program: Lifecycle.EntryPointParameters<ProcessorComp
   await startComponents()
 
   // start listener to SQS queue
-  components.sqs.receiveMessages().catch((e) => {
+  components.sqs.receiveMessages().catch((e: any) => {
     components.logs.getLogger('Listen SQS').error(`Error receiving messages from SQS: ${e}`)
   })
 }

@@ -1,11 +1,9 @@
 import { SQS } from 'aws-sdk'
 import { NotificationToSqs, insertNotification } from 'commons/dist/logic/db'
 import SQL from 'sql-template-strings'
-import { IQueue, ProcessorComponents } from '../types'
+import { IQueue, AppComponents } from '../types'
 
-export async function createSQSAdapter(
-  components: Pick<ProcessorComponents, 'config' | 'logs' | 'pg'>
-): Promise<IQueue> {
+export async function createSQSAdapter(components: Pick<AppComponents, 'config' | 'logs' | 'pg'>): Promise<IQueue> {
   const { logs, config, pg } = components
   const logger = logs.getLogger('Listen SQS')
   const queueUrl = await config.requireString('SQS_QUEUE_URL')
@@ -88,7 +86,7 @@ function extractSource(notification: any) {
   return notification.source || 'push'
 }
 
-async function storeFailedNotification(body: string, components: Pick<ProcessorComponents, 'logs' | 'pg'>) {
+async function storeFailedNotification(body: string, components: Pick<AppComponents, 'logs' | 'pg'>) {
   const logger = components.logs.getLogger('Store Failed Notification')
   const query = SQL`INSERT INTO failed_notifications (type, source, metadata) VALUES ('push', 'sqs', ${body});`
   try {

@@ -16,10 +16,10 @@ export type IQueue = {
   publish(job: NotificationToSqs): Promise<string>
 }
 
-export type ProcessorComponents = {
+export type AppComponents = {
   config: IConfigComponent
   logs: ILoggerComponent
-  server: IHttpServerComponent<ProcessorGlobalContext>
+  server: IHttpServerComponent<GlobalContext>
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
   statusChecks: IBaseComponent
@@ -27,23 +27,23 @@ export type ProcessorComponents = {
 }
 
 // this type simplifies the typings of http handlers
-export type ProcessorHandlerContextWithPath<
-  ComponentNames extends keyof ProcessorComponents,
+export type HandlerContextWithPath<
+  ComponentNames extends keyof AppComponents,
   Path extends string = any
 > = IHttpServerComponent.PathAwareContext<
   IHttpServerComponent.DefaultContext<{
-    components: Pick<ProcessorComponents, ComponentNames>
+    components: Pick<AppComponents, ComponentNames>
   }>,
   Path
 > &
   authorizationMiddleware.DecentralandSignatureContext
 
-export type ProcessorGlobalContext = {
-  components: ProcessorComponents
+export type GlobalContext = {
+  components: AppComponents
 }
 
 // components used in tests
-export type ProcessorTestComponents = ProcessorComponents & {
+export type TestComponents = AppComponents & {
   // A fetch component that only hits the test server
   localFetch: IFetchComponent
 }
