@@ -42,7 +42,9 @@ export async function createSQSAdapter(
               const source = extractSource(notification)
 
               if (source === 'push' && notification.payload.data.app !== dcl_channel_app) {
-                logger.debug(`Notification ${notification.sid} is not from Decentraland Channel and it's from Push Service`)
+                logger.debug(
+                  `Notification ${notification.sid} is not from Decentraland Channel and it's from Push Service`
+                )
                 break
               }
 
