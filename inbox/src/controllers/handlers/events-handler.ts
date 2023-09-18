@@ -1,7 +1,8 @@
 import { Readable } from 'node:stream'
 
 import SQL from 'sql-template-strings'
-import { HandlerContextWithPath, NotificationEvent } from '../../types'
+import { HandlerContextWithPath } from '../../types'
+import { NotificationEvent } from 'commons/dist/logic/db'
 
 export async function eventsHandler(context: HandlerContextWithPath<'logs' | 'pg', '/notifications/events'>) {
   const { pg, logs } = context.components
