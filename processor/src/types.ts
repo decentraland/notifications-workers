@@ -8,8 +8,11 @@ import {
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
-import { NotificationToSqs } from 'commons/dist/logic/db'
 import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
+
+export type NotificationToSqs = {
+  Message: any // Do not change this name is from SQS
+}
 
 export type IQueue = {
   receiveMessages(): Promise<void>

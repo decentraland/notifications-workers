@@ -1,7 +1,7 @@
 import { SQS } from 'aws-sdk'
-import { NotificationToSqs, insertNotification } from 'commons/dist/logic/db'
+import { insertNotification } from 'commons/dist/logic/db'
 import SQL from 'sql-template-strings'
-import { IQueue, AppComponents } from '../types'
+import { IQueue, AppComponents, NotificationToSqs } from '../types'
 
 export async function createSQSAdapter(components: Pick<AppComponents, 'config' | 'logs' | 'pg'>): Promise<IQueue> {
   const { logs, config, pg } = components

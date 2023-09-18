@@ -1,10 +1,6 @@
 import { IPgComponent } from '@well-known-components/pg-component'
 import SQL from 'sql-template-strings'
 
-export type NotificationToSqs = {
-  Message: any // Do not change this name is from SQS
-}
-
 export type NotificationContext = {
   type: string
   source: string
@@ -25,7 +21,13 @@ export type NotificationEvent = {
   address: string
 }
 
-export async function insertNotification(pg: IPgComponent, notification: any, context: NotificationContext) {
+export type Notification = {
+  sid: string
+  epoch: number
+  users: string
+}
+
+export async function insertNotification(pg: IPgComponent, notification: Notification, context: NotificationContext) {
   const client = await pg.getPool().connect()
 
   try {
