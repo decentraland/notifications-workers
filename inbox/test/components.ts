@@ -28,12 +28,8 @@ export const test = createRunner<TestComponents>({
 async function initComponents(): Promise<TestComponents> {
   const components = await originalInitComponents()
   const config = createConfigComponent({
-    LIVEKIT_API_KEY: 'key',
-    LIVEKIT_API_SECRET: 'secret',
-    LIVEKIT_HOST: 'wss://test-livekit',
     ...process.env,
-    LOG_LEVEL: 'INFO',
-    HANDSHAKE_TIMEOUT: '100'
+    LOG_LEVEL: 'INFO'
   })
 
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
