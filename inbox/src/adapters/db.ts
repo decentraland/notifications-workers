@@ -7,9 +7,7 @@ export type DbComponent = {
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
 }
 
-export function createDbComponent({ logs, pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
-  const logger = logs.getLogger('db')
-
+export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
   async function findNotifications(
     users: string[],
     onlyNew: boolean,
@@ -46,8 +44,6 @@ export function createDbComponent({ logs, pg }: Pick<AppComponents, 'pg' | 'logs
     query.append(where)
     query.append(SQL` ORDER BY n.created_at DESC`)
     query.append(SQL` LIMIT ${limit}`)
-
-    logger.debug(`Running query: ${query.text}`)
 
     return (await pg.query<NotificationEvent>(query)).rows
   }
