@@ -1,23 +1,21 @@
-import SQL from 'sql-template-strings'
 import { HandlerContextWithPath, InvalidRequestError } from '../../types'
+import { parseJson } from './utils'
 
 export async function notificationsHandler(
   context: Pick<HandlerContextWithPath<'db' | 'logs', '/notifications'>, 'url' | 'components' | 'verification'>
 ) {
-  const { db, logs } = context.components
-  const logger = logs.getLogger('notifications-handler')
-  const from = parseInt(context.url.searchParams.get('from') || '')
+  const { db } = context.components
+  const from = parseInt(context.url.searchParams.get('from') || '0', 10)
   const onlyNew = !!context.url.searchParams.get('onlyNew')
-  const limitParam = parseInt(context.url.searchParams.get('limit') || '')
+  const limitParam = parseInt(context.url.searchParams.get('limit') || '20', 10)
   const limit = !!limitParam && limitParam > 0 && limitParam <= 50 ? limitParam : 20
 
   const userId: string | undefined = context.verification!.auth
   if (!userId) {
-    logger.debug(`Invalid userId ${userId} in authChain`)
     throw new InvalidRequestError('Invalid userId in authChain')
   }
 
-  const notifications = await db.findNotifications([userId.toLowerCase()], onlyNew, limit, from || 0)
+  const notifications = await db.findNotifications([userId.toLowerCase()], onlyNew, limit, from)
   return {
     headers: {
       'Access-Control-Allow-Origin': '*'
@@ -37,17 +35,10 @@ export async function readNotificationsHandler(
 
   const userId: string | undefined = context.verification!.auth
   if (!userId) {
-    logger.debug(`Invalid userId ${userId} in authChain`)
     throw new InvalidRequestError('Invalid userId in authChain')
   }
 
-  let body
-  try {
-    body = await context.request.json()
-  } catch (error: any) {
-    logger.debug(`Error parsing body: ${error.message}`)
-    throw new InvalidRequestError('Invalid body, must be JSON with notificationIds array field')
-  }
+  const body = await parseJson(context.request)
   const notificationIds = body.notificationIds
 
   if (!Array.isArray(notificationIds) || notificationIds.length === 0) {
