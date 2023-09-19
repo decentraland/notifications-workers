@@ -7,7 +7,6 @@ import { createPgComponent } from '@well-known-components/pg-component'
 
 import { AppComponents, GlobalContext } from './types'
 import { createDbComponent } from './adapters/db'
-import path from 'path'
 import { createEventsDispatcherComponent } from './adapters/events-dispatcher'
 
 // Initialize all the components of the app

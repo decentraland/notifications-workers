@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto'
 import { Readable } from 'node:stream'
 
 import { HandlerContextWithPath } from '../../types'
@@ -11,7 +10,6 @@ export async function eventsHandler(
 
   const userId = context.verification!.auth
 
-  let session: string
   const stream = new Readable({
     read() {
       // this fn is called every time the readable "needs" a message
@@ -21,7 +19,7 @@ export async function eventsHandler(
       eventsDispatcher.removeClient(session)
     }
   })
-  session = eventsDispatcher.addClient({ userId, stream })
+  const session = eventsDispatcher.addClient({ userId, stream })
 
   stream // Tell the client to retry every 10 seconds if connectivity is lost
     .push('retry: 10000\n\n')
