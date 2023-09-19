@@ -21,13 +21,17 @@ export type NotificationEvent = {
   address: string
 }
 
-export type Notification = {
+export type PushNotification = {
   sid: string
   epoch: number
   users: string
 }
 
-export async function insertNotification(pg: IPgComponent, notification: Notification, context: NotificationContext) {
+export async function insertNotification(
+  pg: IPgComponent,
+  notification: PushNotification,
+  context: NotificationContext
+) {
   const client = await pg.getPool().connect()
 
   try {
