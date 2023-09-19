@@ -28,11 +28,11 @@ export async function notificationsHandler(
 
 export async function readNotificationsHandler(
   context: Pick<
-    HandlerContextWithPath<'pg' | 'logs', '/notifications/read'>,
+    HandlerContextWithPath<'db' | 'logs', '/notifications/read'>,
     'url' | 'request' | 'components' | 'verification'
   >
 ) {
-  const { pg, logs } = context.components
+  const { db, logs } = context.components
   const logger = logs.getLogger('read-notifications-handler')
 
   const userId: string | undefined = context.verification!.auth
@@ -50,33 +50,19 @@ export async function readNotificationsHandler(
   }
   const notificationIds = body.notificationIds
 
-  const query = SQL`UPDATE users_notifications
-  SET read = true, updated_at = NOW()
-  WHERE read = false AND LOWER(address) = LOWER(${userId}) AND `
-
-  if (!!notificationIds) {
-    query.append(SQL`notification_id IN (`)
-    const ids = Array.from(notificationIds).map((id, idx) => {
-      console.log(id)
-      return idx < notificationIds.length - 1 ? SQL`${id}, ` : SQL`${id}`
-    })
-    ids.forEach((id) => query.append(id))
-    query.append(SQL`)`)
-  } else {
+  if (!Array.isArray(notificationIds) || notificationIds.length === 0) {
     logger.debug(`Missing notificationIds in body ${body}`)
     throw new InvalidRequestError('Missing notificationIds')
   }
 
-  logger.debug(`Running query: ${query.text}`)
-
   try {
-    const response = await pg.query(query)
+    const rowCount = await db.markNotificationsAsRead(userId, notificationIds)
     return {
       headers: {
         'Access-Control-Allow-Origin': '*'
       },
       body: {
-        updated: response.rowCount
+        updated: rowCount
       }
     }
   } catch (error: any) {

@@ -39,7 +39,7 @@ export async function createSQSAdapter(components: Pick<AppComponents, 'config' 
               const notification = JSON.parse(body.Message)
               const source = notification.source || 'push'
               // Only for notifications from push we need to validate that the channel is Decentraland Channel
-              if (isPushNotification(notification) && isNotDCLChannel(notification, dcl_channel_app)) {
+              if (notification.source === 'push' && isNotDCLChannel(notification, dcl_channel_app)) {
                 logger.debug(
                   `Notification ${notification.sid} is not from Decentraland Channel and it's from Push Service`
                 )
@@ -84,11 +84,6 @@ export async function createSQSAdapter(components: Pick<AppComponents, 'config' 
 
 function isNotDCLChannel(notification: any, dcl_channel_app: string) {
   return notification.payload.data.app !== dcl_channel_app
-}
-
-function isPushNotification(notification: any) {
-  // The notifications from push don't have the source field
-  return !notification.source || notification.source === 'push'
 }
 
 async function storeFailedNotification(body: string, components: Pick<AppComponents, 'logs' | 'pg'>) {

@@ -4,6 +4,7 @@ import { AppComponents } from '../types'
 
 export type DbComponent = {
   findNotifications(users: string[], onlyNew: boolean, limit: number, from: number): Promise<NotificationEvent[]>
+  markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
 }
 
 export function createDbComponent({ logs, pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
@@ -51,7 +52,15 @@ export function createDbComponent({ logs, pg }: Pick<AppComponents, 'pg' | 'logs
     return (await pg.query<NotificationEvent>(query)).rows
   }
 
+  async function markNotificationsAsRead(userId: string, notificationIds: string[]) {
+    const query = SQL`UPDATE users_notifications
+  SET read = true, updated_at = NOW()
+WHERE read = false AND LOWER(address) = LOWER(${userId}) AND notification_id = ANY (${notificationIds})`
+    return (await pg.query<NotificationEvent>(query)).rowCount
+  }
+
   return {
-    findNotifications
+    findNotifications,
+    markNotificationsAsRead
   }
 }
