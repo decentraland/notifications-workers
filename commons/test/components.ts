@@ -36,30 +36,8 @@ async function initComponents(): Promise<TestComponents> {
     HANDSHAKE_TIMEOUT: '100'
   })
 
-  // This worker reads from the database but does not write, so it doesnt run the migrations
-  let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
-  if (!databaseUrl) {
-    const dbUser = await config.requireString('PG_COMPONENT_PSQL_USER')
-    const dbDatabaseName = await config.requireString('PG_COMPONENT_PSQL_DATABASE')
-    const dbPort = await config.requireString('PG_COMPONENT_PSQL_PORT')
-    const dbHost = await config.requireString('PG_COMPONENT_PSQL_HOST')
-    const dbPassword = await config.requireString('PG_COMPONENT_PSQL_PASSWORD')
-    databaseUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbDatabaseName}`
-  }
-  // This worker writes to the database, so it runs the migrations
-  const pg = await createPgComponent(components, {
-    migration: {
-      databaseUrl,
-      dir: path.resolve(__dirname, '../../../processor/src/migrations'),
-      migrationsTable: 'pgmigrations',
-      ignorePattern: '.*\\.map',
-      direction: 'up'
-    }
-  })
-
   return {
     ...components,
-    pg,
     logs: await createLogComponent({ config }),
     config,
     localFetch: await createLocalFetchCompoment(config),

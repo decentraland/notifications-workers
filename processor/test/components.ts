@@ -6,7 +6,6 @@ import { createRunner, createLocalFetchCompoment } from '@well-known-components/
 import { main } from '../src/service'
 import { TestComponents } from '../src/types'
 import { initComponents as originalInitComponents } from '../src/components'
-import { createLocalNatsComponent } from '@well-known-components/nats-component'
 import { createTestMetricsComponent } from '@well-known-components/metrics'
 import { metricDeclarations } from '../src/metrics'
 
@@ -27,10 +26,8 @@ async function initComponents(): Promise<TestComponents> {
 
   const { config } = components
 
-  const nats = await createLocalNatsComponent()
   return {
     ...components,
-    nats,
     metrics: createTestMetricsComponent(metricDeclarations),
     localFetch: await createLocalFetchCompoment(config)
   }
