@@ -24,7 +24,7 @@ export type NotificationEvent = {
 export type PushNotification = {
   sid: string
   epoch: number
-  users: string
+  users: string[]
 }
 
 export async function insertNotification(

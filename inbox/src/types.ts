@@ -9,6 +9,7 @@ import type {
 import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
 import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
+import { DbComponent } from './adapters/db'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -21,6 +22,7 @@ export type BaseComponents = {
   server: IHttpServerComponent<GlobalContext>
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
+  db: DbComponent
 }
 
 // components used in runtime
