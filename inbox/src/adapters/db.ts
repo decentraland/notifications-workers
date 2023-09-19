@@ -3,17 +3,17 @@ import { NotificationEvent } from 'commons/dist/logic/db'
 import { AppComponents } from '../types'
 
 export type DbComponent = {
-  findNotifications(userId: string, onlyNew: boolean, limit: number, from: number): Promise<NotificationEvent[]>
+  findNotifications(users: string[], onlyNew: boolean, limit: number, from: number): Promise<NotificationEvent[]>
 }
 
 export function createDbComponent({ logs, pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
   const logger = logs.getLogger('db')
 
   async function findNotifications(
-    userId: string,
+    users: string[],
     onlyNew: boolean,
     limit: number,
-    from?: number
+    from: number
   ): Promise<NotificationEvent[]> {
     const query: SQLStatement = SQL`
     SELECT
@@ -30,11 +30,11 @@ export function createDbComponent({ logs, pg }: Pick<AppComponents, 'pg' | 'logs
     FROM notifications n
     JOIN users_notifications u ON n.id = u.notification_id`
 
-    const whereClause: SQLStatement[] = [SQL`LOWER(u.address) = LOWER(${userId})`]
-    if (!!from && from > 0) {
+    const whereClause: SQLStatement[] = [SQL`LOWER(u.address) = ANY (${users})`]
+    if (from > 0) {
       whereClause.push(SQL`n.created_at >= to_timestamp(${from} / 1000.0)`)
     }
-    if (!!onlyNew) {
+    if (onlyNew) {
       whereClause.push(SQL`u.read = false`)
     }
     let where = SQL` WHERE `.append(whereClause[0])

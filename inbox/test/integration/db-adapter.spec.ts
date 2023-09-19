@@ -25,7 +25,7 @@ test('db adapter integration tests', function ({ components, stubComponents }) {
     await insertNotification(pg, notification1, { type: 'dcl', source: 'push' })
     await insertNotification(pg, notification2, { type: 'dcl', source: 'push' })
 
-    const notifications = await db.findNotifications('user1', false, 50, 0)
+    const notifications = await db.findNotifications(['user1'], false, 50, 0)
     expect(notifications).toEqual('asdad')
   })
 })

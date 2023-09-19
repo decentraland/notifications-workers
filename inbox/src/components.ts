@@ -8,6 +8,7 @@ import { createPgComponent } from '@well-known-components/pg-component'
 import { AppComponents, GlobalContext } from './types'
 import { createDbComponent } from './adapters/db'
 import path from 'path'
+import { createEventsDispatcherComponent } from './adapters/events-dispatcher'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -25,31 +26,11 @@ export async function initComponents(): Promise<AppComponents> {
   await instrumentHttpServerWithMetrics({ server, metrics, config })
   const statusChecks = await createStatusCheckComponent({ server, config })
 
-  // This worker reads from the database but does not write, so it doesnt run the migrations
-  let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
-  if (!databaseUrl) {
-    const dbUser = await config.requireString('PG_COMPONENT_PSQL_USER')
-    const dbDatabaseName = await config.requireString('PG_COMPONENT_PSQL_DATABASE')
-    const dbPort = await config.requireString('PG_COMPONENT_PSQL_PORT')
-    const dbHost = await config.requireString('PG_COMPONENT_PSQL_HOST')
-    const dbPassword = await config.requireString('PG_COMPONENT_PSQL_PASSWORD')
-    databaseUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbDatabaseName}`
-  }
   // This worker writes to the database, so it runs the migrations
-  const pg = await createPgComponent(
-    { logs, config, metrics },
-    {
-      migration: {
-        databaseUrl,
-        dir: path.resolve(__dirname, '../../processor/src/migrations'),
-        migrationsTable: 'pgmigrations',
-        ignorePattern: '.*\\.map',
-        direction: 'up'
-      }
-    }
-  )
+  const pg = await createPgComponent({ logs, config, metrics })
 
   const db = createDbComponent({ logs, pg })
+  const eventsDispatcher = createEventsDispatcherComponent({ db, logs })
 
   return {
     config,
@@ -58,6 +39,7 @@ export async function initComponents(): Promise<AppComponents> {
     statusChecks,
     metrics,
     pg,
-    db
+    db,
+    eventsDispatcher
   }
 }

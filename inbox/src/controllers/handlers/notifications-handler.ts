@@ -17,7 +17,7 @@ export async function notificationsHandler(
     throw new InvalidRequestError('Invalid userId in authChain')
   }
 
-  const notifications = await db.findNotifications(userId, onlyNew, limit, from || 0)
+  const notifications = await db.findNotifications([userId.toLowerCase()], onlyNew, limit, from || 0)
   return {
     headers: {
       'Access-Control-Allow-Origin': '*'
