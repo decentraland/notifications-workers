@@ -1,7 +1,7 @@
-import { insertNotification } from 'commons/dist/logic/db'
+import { insertNotification } from '@notifications/commons'
 import { test } from '../components'
 
-test('db adapter integration tests', function ({ components, stubComponents }) {
+test('db adapter integration tests', function ({ components }) {
   beforeEach(async () => {
     const { pg } = components
     await pg.query('TRUNCATE notifications, users_notifications')

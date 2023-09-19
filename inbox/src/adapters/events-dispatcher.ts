@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { AppComponents } from '../types'
 import { Readable } from 'node:stream'
-import { NotificationEvent } from 'commons/dist/logic/db'
+import { NotificationEvent } from '@notifications/commons'
 
 export type Session = {
   userId: string

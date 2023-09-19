@@ -1,5 +1,5 @@
 import { SQS } from 'aws-sdk'
-import { insertNotification } from 'commons/dist/logic/db'
+import { insertNotification } from '@notifications/commons'
 import SQL from 'sql-template-strings'
 import { IQueue, AppComponents, NotificationToSqs } from '../types'
 

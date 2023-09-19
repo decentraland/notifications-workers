@@ -9,7 +9,7 @@ import {
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
-import { PushNotification } from 'commons/dist/logic/db'
+import { PushNotification } from '@notifications/commons'
 
 export type NotificationToSqs = {
   Message: PushNotification // Do not change this name is from SQS

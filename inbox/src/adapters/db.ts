@@ -1,5 +1,5 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { NotificationEvent } from 'commons/dist/logic/db'
+import { NotificationEvent } from '@notifications/commons'
 import { AppComponents } from '../types'
 
 export type DbComponent = {
