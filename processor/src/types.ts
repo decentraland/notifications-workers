@@ -10,14 +10,11 @@ import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
 import { PushNotification } from '@notifications/commons'
+import { SQSComponent } from './adapters/sqs'
+import { ProcessorComponent } from './adapters/processor'
 
 export type NotificationToSqs = {
   Message: PushNotification // Do not change this name is from SQS
-}
-
-export type IQueue = {
-  receiveMessages(): Promise<void>
-  publish(job: NotificationToSqs): Promise<string>
 }
 
 export type AppComponents = {
@@ -27,7 +24,8 @@ export type AppComponents = {
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
   statusChecks: IBaseComponent
-  sqs: IQueue
+  sqs: SQSComponent
+  processor: ProcessorComponent
 }
 
 // this type simplifies the typings of http handlers
@@ -65,6 +63,13 @@ export class InvalidRequestError extends Error {
 }
 
 export class NotFoundError extends Error {
+  constructor(message: string) {
+    super(message)
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+export class NotAuthorizedError extends Error {
   constructor(message: string) {
     super(message)
     Error.captureStackTrace(this, this.constructor)

@@ -4,9 +4,10 @@ import { createLogComponent } from '@well-known-components/logger'
 import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-known-components/metrics'
 import { createPgComponent } from '@well-known-components/pg-component'
 import { metricDeclarations } from './metrics'
-import { createSQSAdapter } from './controllers/queue'
 import { AppComponents, GlobalContext } from './types'
 import path from 'path'
+import { createSQSComponent } from './adapters/sqs'
+import { createProcessorComponent } from './adapters/processor'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -39,7 +40,8 @@ export async function initComponents(): Promise<AppComponents> {
       }
     }
   )
-  const sqs = await createSQSAdapter({ config, logs, pg })
+  const sqs = await createSQSComponent({ config, logs })
+  const processor = await createProcessorComponent({ config, logs, sqs, pg })
 
   return {
     config,
@@ -48,6 +50,7 @@ export async function initComponents(): Promise<AppComponents> {
     statusChecks,
     metrics,
     pg,
-    sqs
+    sqs,
+    processor
   }
 }

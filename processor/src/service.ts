@@ -22,7 +22,7 @@ export async function main(program: Lifecycle.EntryPointParameters<AppComponents
   await startComponents()
 
   // start listener to SQS queue
-  components.sqs.receiveMessages().catch((e: any) => {
+  components.processor.loop().catch((e: any) => {
     components.logs.getLogger('Listen SQS').error(`Error receiving messages from SQS: ${e}`)
   })
 }

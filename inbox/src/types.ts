@@ -50,11 +50,6 @@ export type HandlerContextWithPath<
 > &
   authorizationMiddleware.DecentralandSignatureContext
 
-export type NotificationError = {
-  error: string
-  message: string
-}
-
 export class InvalidRequestError extends Error {
   constructor(message: string) {
     super(message)
@@ -63,6 +58,13 @@ export class InvalidRequestError extends Error {
 }
 
 export class NotFoundError extends Error {
+  constructor(message: string) {
+    super(message)
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+export class NotAuthorizedError extends Error {
   constructor(message: string) {
     super(message)
     Error.captureStackTrace(this, this.constructor)
