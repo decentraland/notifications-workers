@@ -3,7 +3,7 @@ import { Readable } from 'node:stream'
 import { HandlerContextWithPath } from '../../types'
 
 export async function eventsHandler(
-  context: HandlerContextWithPath<'logs' | 'eventsDispatcher', '/notifications/events'>
+  context: Pick<HandlerContextWithPath<'eventsDispatcher', '/notifications/events'>, 'components' | 'verification'>
 ) {
   const { eventsDispatcher } = context.components
 

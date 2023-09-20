@@ -17,27 +17,24 @@ export type EventsDispatcherComponent = {
   sessionsCount(): number
 }
 
-export function createEventsDispatcherComponent({
-  logs,
-  db
-}: Pick<AppComponents, 'db' | 'logs'>): EventsDispatcherComponent {
-  const logger = logs.getLogger('events-dispatcher')
-
+export function createEventsDispatcherComponent({ db }: Pick<AppComponents, 'db' | 'logs'>): EventsDispatcherComponent {
   const sessions = new Map<string, Client>()
 
   function addClient(c: Client): string {
-    logger.debug('add client')
     const uuid = randomUUID()
     sessions.set(uuid, c)
     return uuid
   }
 
   function removeClient(uuid: string): void {
-    logger.debug('remove client')
     sessions.delete(uuid)
   }
 
   async function poll(from: number) {
+    if (sessions.size === 0) {
+      return
+    }
+
     const users = new Set(Array.from(sessions.values()).map((s) => s.userId))
     const notifications = await db.findNotifications(Array.from(users), true, 100, from)
 
