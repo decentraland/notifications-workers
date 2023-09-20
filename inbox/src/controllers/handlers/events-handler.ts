@@ -5,8 +5,7 @@ import { HandlerContextWithPath } from '../../types'
 export async function eventsHandler(
   context: HandlerContextWithPath<'logs' | 'eventsDispatcher', '/notifications/events'>
 ) {
-  const { logs, eventsDispatcher } = context.components
-  const logger = logs.getLogger('Events Handler')
+  const { eventsDispatcher } = context.components
 
   const userId = context.verification!.auth
 
@@ -15,7 +14,6 @@ export async function eventsHandler(
       // this fn is called every time the readable "needs" a message
     },
     destroy() {
-      logger.debug('destroyed')
       eventsDispatcher.removeClient(session)
     }
   })

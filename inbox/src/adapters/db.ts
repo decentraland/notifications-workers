@@ -3,14 +3,14 @@ import { NotificationEvent } from '@notifications/commons'
 import { AppComponents } from '../types'
 
 export type DbComponent = {
-  findNotifications(users: string[], onlyNew: boolean, limit: number, from: number): Promise<NotificationEvent[]>
+  findNotifications(users: string[], onlyUnread: boolean, limit: number, from: number): Promise<NotificationEvent[]>
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
 }
 
 export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
   async function findNotifications(
     users: string[],
-    onlyNew: boolean,
+    onlyUnread: boolean,
     limit: number,
     from: number
   ): Promise<NotificationEvent[]> {
@@ -33,7 +33,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     if (from > 0) {
       whereClause.push(SQL`n.created_at >= to_timestamp(${from} / 1000.0)`)
     }
-    if (onlyNew) {
+    if (onlyUnread) {
       whereClause.push(SQL`u.read = false`)
     }
     let where = SQL` WHERE `.append(whereClause[0])
