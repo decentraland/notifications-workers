@@ -8,6 +8,7 @@ import { createPgComponent } from '@well-known-components/pg-component'
 import { AppComponents, GlobalContext } from './types'
 import { createDbComponent } from './adapters/db'
 import { createEventsDispatcherComponent } from './adapters/events-dispatcher'
+import { createFetchComponent } from '@well-known-components/fetch-component'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -31,6 +32,8 @@ export async function initComponents(): Promise<AppComponents> {
   const db = createDbComponent({ logs, pg })
   const eventsDispatcher = createEventsDispatcherComponent({ db, logs })
 
+  const fetcher = createFetchComponent()
+
   return {
     config,
     logs,
@@ -39,6 +42,7 @@ export async function initComponents(): Promise<AppComponents> {
     metrics,
     pg,
     db,
-    eventsDispatcher
+    eventsDispatcher,
+    fetcher
   }
 }

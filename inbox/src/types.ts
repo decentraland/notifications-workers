@@ -8,7 +8,7 @@ import type {
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
-import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
+import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { DbComponent } from './adapters/db'
 import { EventsDispatcherComponent } from './adapters/events-dispatcher'
 
@@ -25,6 +25,7 @@ export type BaseComponents = {
   pg: IPgComponent
   db: DbComponent
   eventsDispatcher: EventsDispatcherComponent
+  fetcher: IFetchComponent
 }
 
 // components used in runtime
@@ -48,7 +49,7 @@ export type HandlerContextWithPath<
   }>,
   Path
 > &
-  authorizationMiddleware.DecentralandSignatureContext
+  DecentralandSignatureContext<any>
 
 export class InvalidRequestError extends Error {
   constructor(message: string) {

@@ -8,7 +8,7 @@ import {
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
-import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
+import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { PushNotification } from '@notifications/commons'
 import { SQSComponent } from './adapters/sqs'
 import { ProcessorComponent } from './adapters/processor'
@@ -38,7 +38,7 @@ export type HandlerContextWithPath<
   }>,
   Path
 > &
-  authorizationMiddleware.DecentralandSignatureContext
+  DecentralandSignatureContext<any>
 
 export type GlobalContext = {
   components: AppComponents
