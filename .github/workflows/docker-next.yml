@@ -12,31 +12,18 @@ jobs:
       service-name: notifications-workers
     secrets: inherit
 
-  notifications-inbox-deployment:
-    needs: [cd]
-    name: "Deploy inbox to: dev"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger deployment (notifications-inbox)
-        id: deploy
-        uses: decentraland/dcl-deploy-action@main
-        with:
-          dockerImage: "quay.io/decentraland/notifications-workers:next"
-          serviceName: notifications-inbox
-          env: dev
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   notifications-processor-deployment:
-    needs: [cd]
-    name: "Deploy processor to: dev"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger deployment (notifications-processor)
-        id: deploy
-        uses: decentraland/dcl-deploy-action@main
-        with:
-          dockerImage: "quay.io/decentraland/notifications-workers:next"
-          serviceName: notifications-processor
-          env: dev
-          token: ${{ secrets.GITHUB_TOKEN }}
-        
+    uses: decentraland/platform-actions/.github/workflows/apps-docker-next.yml@main
+    with:
+      service-name: notifications-processor
+      image-name: notifications-workers
+      deployment-environment: dev
+    secrets: inherit
+
+  notifications-inbox-deployment:
+    uses: decentraland/platform-actions/.github/workflows/apps-docker-next.yml@main
+    with:
+      service-name: notifications-inbox
+      image-name: notifications-workers
+      deployment-environment: dev
+    secrets: inherit
