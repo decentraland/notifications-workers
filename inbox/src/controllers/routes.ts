@@ -1,45 +1,48 @@
 import { Router } from '@well-known-components/http-server'
-import { GlobalContext } from '../types'
 import { statusHandler } from './handlers/status-handler'
 import { eventsHandler } from './handlers/events-handler'
-import { notificationsHandler, readNotificationsHandler } from './handlers/notifications-handler'
+import { notificationsHandler } from './handlers/notifications-handler'
 import { errorHandler } from './handlers/error-handler'
-import { createNotificationsHandler } from './handlers/internal-handler'
-import * as authorizationMiddleware from 'decentraland-crypto-middleware'
+import { wellKnownComponents as authorizationMiddleware } from '@dcl/platform-crypto-middleware'
+import { GlobalContext } from '../types'
+import { readNotificationsHandler } from './handlers/read-notifications-handler'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 
 // We return the entire router because it will be easier to test than a whole server
-export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContext>> {
+export async function setupRouter({ components }: GlobalContext): Promise<Router<GlobalContext>> {
   const router = new Router<GlobalContext>()
+
+  const { fetcher } = components
 
   router.use(errorHandler)
 
   router.get('/status', statusHandler)
 
-  router.post('/notifications', createNotificationsHandler)
-
   router.get(
     '/notifications/events',
-    authorizationMiddleware.wellKnownComponents({
+    authorizationMiddleware({
       optional: false,
-      expiration: FIVE_MINUTES
+      expiration: FIVE_MINUTES,
+      fetcher
     }),
     eventsHandler
   )
   router.get(
     '/notifications',
-    authorizationMiddleware.wellKnownComponents({
+    authorizationMiddleware({
       optional: false,
-      expiration: FIVE_MINUTES
+      expiration: FIVE_MINUTES,
+      fetcher
     }),
     notificationsHandler
   )
   router.put(
     '/notifications/read',
-    authorizationMiddleware.wellKnownComponents({
+    authorizationMiddleware({
       optional: false,
-      expiration: FIVE_MINUTES
+      expiration: FIVE_MINUTES,
+      fetcher
     }),
     readNotificationsHandler
   )

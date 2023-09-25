@@ -8,7 +8,9 @@ import type {
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
-import type * as authorizationMiddleware from 'decentraland-crypto-middleware'
+import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
+import { DbComponent } from './adapters/db'
+import { EventsDispatcherComponent } from './adapters/events-dispatcher'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -21,6 +23,9 @@ export type BaseComponents = {
   server: IHttpServerComponent<GlobalContext>
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
+  db: DbComponent
+  eventsDispatcher: EventsDispatcherComponent
+  fetcher: IFetchComponent
 }
 
 // components used in runtime
@@ -44,12 +49,7 @@ export type HandlerContextWithPath<
   }>,
   Path
 > &
-  authorizationMiddleware.DecentralandSignatureContext
-
-export type NotificationError = {
-  error: string
-  message: string
-}
+  DecentralandSignatureContext<any>
 
 export class InvalidRequestError extends Error {
   constructor(message: string) {
@@ -65,37 +65,9 @@ export class NotFoundError extends Error {
   }
 }
 
-/// DB
-
-export type UsersNotification = {
-  id: string
-  address: string
-  notification_id: string
-  timestamp: number
-  read: boolean
-  created_at: number
-  updated_at: number
-}
-
-export type Notification = {
-  id: string
-  type: string
-  source: string
-  metadata: any
-  timestamp: number
-  created_at: number
-  updated_at: number
-}
-
-export type NotificationEvent = {
-  notification_id: string
-  origin_id: string
-  type: string
-  source: string
-  metadata: any
-  timestamp: number
-  read: boolean
-  created_at: number
-  updated_at: number
-  address: string
+export class NotAuthorizedError extends Error {
+  constructor(message: string) {
+    super(message)
+    Error.captureStackTrace(this, this.constructor)
+  }
 }

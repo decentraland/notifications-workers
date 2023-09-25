@@ -58,13 +58,13 @@ sequenceDiagram
 
 
 ## Get notifications
-- `GET /notifications?from=&size=&only-new=true&limit=10`
+- `GET /notifications?from=&size=&onlyUnread=true&limit=10`
 - Authentication: signed fetch, the user id will be infered from that
 
 Params:
 - `from`: the timestamp of `created_at` to filter the results from (this means all retrieved notifications will have a created_at timestamp >= from)
 - `limit`: the amount of items retrieved in the query, default 20 and max 50
-- `only-new`: if true, then only no-read notifications will be retrieved. If false, notifications will not filtered by the read status.
+- `onlyUnread`: if true, then only unread notifications will be retrieved. If false, notifications will not filtered by the read status.
 
 Return:
 

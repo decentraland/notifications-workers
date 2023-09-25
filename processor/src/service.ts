@@ -1,5 +1,4 @@
 import { Lifecycle } from '@well-known-components/interfaces'
-import { startListenSQS } from './controllers/queue'
 import { setupRouter } from './controllers/routes'
 import { AppComponents, GlobalContext, TestComponents } from './types'
 
@@ -23,5 +22,7 @@ export async function main(program: Lifecycle.EntryPointParameters<AppComponents
   await startComponents()
 
   // start listener to SQS queue
-  await startListenSQS(components) // This worker writes on the database but does not run the migrations
+  components.processor.loop().catch((e: any) => {
+    components.logs.getLogger('Listen SQS').error(`Error receiving messages from SQS: ${e}`)
+  })
 }

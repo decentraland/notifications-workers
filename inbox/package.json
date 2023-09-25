@@ -1,5 +1,5 @@
 {
-  "name": "inbox",
+  "name": "@notifications/inbox",
   "version": "0.0.0",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -23,14 +23,15 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "commons": "0.0.0",
+    "@dcl/platform-crypto-middleware": "^1.0.2",
+    "@notifications/commons": "0.0.0",
     "@well-known-components/env-config-provider": "^1.2.0",
+    "@well-known-components/fetch-component": "^2.0.2",
     "@well-known-components/http-server": "^2.0.0",
     "@well-known-components/interfaces": "^1.4.2",
     "@well-known-components/logger": "^3.1.3",
     "@well-known-components/metrics": "^2.0.1",
     "@well-known-components/pg-component": "^0.2.2",
-    "decentraland-crypto-middleware": "^1.1.0",
     "node-pg-migrate": "^6.2.2"
   }
 }

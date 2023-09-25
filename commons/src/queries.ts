@@ -1,20 +1,35 @@
 import { IPgComponent } from '@well-known-components/pg-component'
 import SQL from 'sql-template-strings'
 
-export type NotificationToSqs = {
-  sid: string
-  users: string[]
-  epoch: number
-}
-
 export type NotificationContext = {
   type: string
   source: string
 }
 
+/// DB entities
+
+export type NotificationEvent = {
+  notification_id: string
+  origin_id: string
+  type: string
+  source: string
+  metadata: any
+  timestamp: number
+  read: boolean
+  created_at: number
+  updated_at: number
+  address: string
+}
+
+export type PushNotification = {
+  sid: string
+  epoch: number
+  users: string[]
+}
+
 export async function insertNotification(
   pg: IPgComponent,
-  notification: NotificationToSqs,
+  notification: PushNotification,
   context: NotificationContext
 ) {
   const client = await pg.getPool().connect()
@@ -27,7 +42,7 @@ export async function insertNotification(
     // While this service uses the created_at to order and retrieve notifications
     const createNotificationQuery = SQL`
       INSERT INTO notifications (origin_id, type, source, metadata, timestamp)
-VALUES (${notification.sid}, ${context.type}, ${context.source}, ${notification}, to_timestamp(${epoch})) RETURNING id;`
+      VALUES (${notification.sid}, ${context.type}, ${context.source}, ${notification}, to_timestamp(${epoch})) RETURNING id;`
     const notificationId = (await client.query<any>(createNotificationQuery)).rows[0].id
 
     const users = notification.users
@@ -35,7 +50,8 @@ VALUES (${notification.sid}, ${context.type}, ${context.source}, ${notification}
     const createUserNotificationQuery = SQL`INSERT INTO users_notifications (address, notification_id) VALUES `
 
     for (let i = 0; i < users.length; ++i) {
-      const user = users[i]
+      // The user is stored in Push Server as eip155:0x1234 where 0x1234 is the address
+      const user = users[i].replace('eip155:', '')
       createUserNotificationQuery.append(SQL`(${user}, ${notificationId})`)
       if (i < users.length - 1) {
         createUserNotificationQuery.append(SQL`, `)
