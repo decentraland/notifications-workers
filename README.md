@@ -266,13 +266,13 @@ Then follow the steps to install the [awslocal](https://docs.localstack.cloud/us
 ## Create the queue
 
 ```
-awslocal sqs create-queue --queue-name localstack-queue
+awslocal sqs create-queue --queue-name notifications-queue
 ```
 
 ## Send a notification to the queue
 
 ```
-awslocal sqs send-message --queue-url http://localhost:4566/000000000000/sample-queue \
+awslocal sqs send-message --queue-url http://localhost:4566/000000000000/notifications-queue \
 --message-body '{
 	"sid": 121,
 	"users": ["0x35B84d6848D16415177c64D64504663b998A6ab4"],

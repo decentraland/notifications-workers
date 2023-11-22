@@ -10,7 +10,7 @@ export async function parseJson(request: IHttpServerComponent.IRequest) {
 }
 
 export async function sendNotificationsToSqsHandler(
-  context: Pick<HandlerContextWithPath<'config' | 'sqs', '/notifications'>, 'request' | 'components'>
+  context: Pick<HandlerContextWithPath<'config' | 'pg', '/notifications'>, 'request' | 'components'>
 ) {
   const apiKey = await context.components.config.requireString('INTERNAL_API_KEY')
   const authorization = context.request.headers.get('Authorization')
@@ -24,7 +24,7 @@ export async function sendNotificationsToSqsHandler(
 
   // TODO: probably we want to validate the payload
 
-  await context.components.sqs.publish(JSON.stringify({ Message: JSON.stringify(body) }))
+  // await context.components.sqs.publish(JSON.stringify({ Message: JSON.stringify(body) }))
 
   return {
     status: 204,

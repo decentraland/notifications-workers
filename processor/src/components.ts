@@ -6,8 +6,10 @@ import { createPgComponent } from '@well-known-components/pg-component'
 import { metricDeclarations } from './metrics'
 import { AppComponents, GlobalContext } from './types'
 import path from 'path'
-import { createSQSComponent } from './adapters/sqs'
-import { createProcessorComponent } from './adapters/processor'
+import { createSubgraphComponent } from '@well-known-components/thegraph-component'
+import { createCheckUpdatesJob } from './adapters/check-updates-job'
+import { createFetchComponent } from './adapters/fetch'
+import { createDbComponent } from './adapters/db'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -40,8 +42,18 @@ export async function initComponents(): Promise<AppComponents> {
       }
     }
   )
-  const sqs = await createSQSComponent({ config, logs })
-  const processor = await createProcessorComponent({ config, logs, sqs, pg })
+
+  const db = createDbComponent({ pg, logs })
+
+  const fetch = await createFetchComponent()
+
+  const marketplaceSubGraphUrl = await config.requireString('MARKETPLACE_SUBGRAPH_URL')
+  const marketplaceSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, marketplaceSubGraphUrl)
+
+  const rentalsSubGraphUrl = await config.requireString('RENTALS_SUBGRAPH_URL')
+  const rentalsSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, rentalsSubGraphUrl)
+
+  const checkUpdatesJob = createCheckUpdatesJob({ logs, marketplaceSubGraph, db })
 
   return {
     config,
@@ -49,8 +61,10 @@ export async function initComponents(): Promise<AppComponents> {
     server,
     statusChecks,
     metrics,
+    db,
     pg,
-    sqs,
-    processor
+    checkUpdatesJob,
+    marketplaceSubGraph,
+    rentalsSubGraph
   }
 }

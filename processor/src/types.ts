@@ -9,12 +9,12 @@ import {
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
-import { PushNotification } from '@notifications/commons'
-import { SQSComponent } from './adapters/sqs'
-import { ProcessorComponent } from './adapters/processor'
+import { NotificationRecord } from '@notifications/commons'
+import { ISubgraphComponent } from '@well-known-components/thegraph-component'
+import { DbComponent } from './adapters/db'
 
 export type NotificationToSqs = {
-  Message: PushNotification // Do not change this name is from SQS
+  Message: NotificationRecord // Do not change this name is from SQS
 }
 
 export type AppComponents = {
@@ -23,9 +23,11 @@ export type AppComponents = {
   server: IHttpServerComponent<GlobalContext>
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
+  db: DbComponent
   statusChecks: IBaseComponent
-  sqs: SQSComponent
-  processor: ProcessorComponent
+  checkUpdatesJob: IRunnable<void>
+  marketplaceSubGraph: ISubgraphComponent
+  rentalsSubGraph: ISubgraphComponent
 }
 
 // this type simplifies the typings of http handlers
@@ -53,6 +55,11 @@ export type TestComponents = AppComponents & {
 export type NotificationError = {
   error: string
   message: string
+}
+
+export type IRunnable<T> = {
+  run(): Promise<T>
+  start(): Promise<void>
 }
 
 export class InvalidRequestError extends Error {
