@@ -9,13 +9,9 @@ import {
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
-import { NotificationRecord } from '@notifications/commons'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { DbComponent } from './adapters/db'
-
-export type NotificationToSqs = {
-  Message: NotificationRecord // Do not change this name is from SQS
-}
+import { NotificationRecord } from '@notifications/commons'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -25,7 +21,7 @@ export type AppComponents = {
   pg: IPgComponent
   db: DbComponent
   statusChecks: IBaseComponent
-  checkUpdatesJob: IRunnable<void>
+  checkUpdatesJob: IBaseComponent
   marketplaceSubGraph: ISubgraphComponent
   rentalsSubGraph: ISubgraphComponent
 }
@@ -57,9 +53,19 @@ export type NotificationError = {
   message: string
 }
 
-export type IRunnable<T> = {
+export type IRunnable<T> = IBaseComponent & {
   run(): Promise<T>
-  start(): Promise<void>
+}
+
+export type INotificationProducer = {
+  run(since: Date): Promise<INotificationProducerResult>
+  notificationType: string
+}
+
+export type INotificationProducerResult = {
+  notificationType: string
+  records: NotificationRecord[]
+  lastRun: Date
 }
 
 export class InvalidRequestError extends Error {

@@ -2,14 +2,10 @@ import SQL from 'sql-template-strings'
 import { AppComponents } from '../types'
 import { NotificationRecord } from '@notifications/commons'
 
-type ResultWithId = {
-  id: string
-}
-
 export type DbComponent = {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
   updateLastUpdateForNotificationType(notificationType: string, timestamp: Date): Promise<void>
-  insertNotification(notificationRecord: NotificationRecord): Promise<void>
+  insertNotifications(notificationRecord: NotificationRecord[]): Promise<void>
 }
 
 export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
@@ -38,19 +34,33 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     await pg.query<any>(query)
   }
 
-  async function insertNotification(notificationRecord: NotificationRecord) {
-    const createNotificationQuery = SQL`
+  async function insertNotifications(notificationRecords: NotificationRecord[]) {
+    console.log('insertNotifications', notificationRecords.length, notificationRecords.slice(0, 5))
+    if (notificationRecords.length === 0) {
+      return
+    }
+
+    const buildQuery = SQL`
         INSERT INTO notifications (type, address, metadata, i18n, read_at)
-        VALUES (${notificationRecord.type}, ${notificationRecord.address}, ${notificationRecord.metadata}::jsonb,
-                ${notificationRecord.i18n}::jsonb, NULL)
-        RETURNING id;
-    `
-    await pg.query<ResultWithId>(createNotificationQuery)
+        VALUES `
+    for (let i = 0; i < notificationRecords.length; i++) {
+      const notificationRecord = notificationRecords[i]
+      buildQuery.append(
+        SQL`(${notificationRecord.type}, ${notificationRecord.address}, ${notificationRecord.metadata}::jsonb, ${notificationRecord.i18n}::jsonb, NULL)`
+      )
+      if (i < notificationRecords.length - 1) {
+        buildQuery.append(',')
+      }
+    }
+    buildQuery.append(';')
+    console.log('buildQuery', buildQuery)
+
+    await pg.query(buildQuery)
   }
 
   return {
     fetchLastUpdateForNotificationType,
     updateLastUpdateForNotificationType,
-    insertNotification
+    insertNotifications
   }
 }

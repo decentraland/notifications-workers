@@ -53,7 +53,7 @@ export async function initComponents(): Promise<AppComponents> {
   const rentalsSubGraphUrl = await config.requireString('RENTALS_SUBGRAPH_URL')
   const rentalsSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, rentalsSubGraphUrl)
 
-  const checkUpdatesJob = createCheckUpdatesJob({ logs, marketplaceSubGraph, db })
+  const checkUpdatesJob = await createCheckUpdatesJob({ logs, marketplaceSubGraph, db })
 
   return {
     config,
