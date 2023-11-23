@@ -11,9 +11,13 @@ export async function createProducer(
   let lastSuccessfulRun: Date | undefined
 
   async function runProducer() {
-    logger.info('Checking for updates since ' + lastSuccessfulRun!.toISOString())
+    if (!lastSuccessfulRun) {
+      lastSuccessfulRun = new Date(await db.fetchLastUpdateForNotificationType(producer.notificationType))
+    }
 
-    const produced = await producer.run(lastSuccessfulRun!)
+    logger.info('Checking for updates since ' + lastSuccessfulRun.toISOString())
+
+    const produced = await producer.run(lastSuccessfulRun)
     await db.insertNotifications(produced.records)
     await db.updateLastUpdateForNotificationType(produced.notificationType, produced.lastRun)
     lastSuccessfulRun = produced.lastRun
@@ -22,8 +26,6 @@ export async function createProducer(
 
   async function run(): Promise<void> {
     logger.info('Scheduling check updates job')
-
-    lastSuccessfulRun = new Date(await db.fetchLastUpdateForNotificationType(producer.notificationType))
 
     const job = new CronJob(
       '0/30 * * * * *',

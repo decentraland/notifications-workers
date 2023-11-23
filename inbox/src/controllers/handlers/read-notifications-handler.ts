@@ -1,5 +1,6 @@
 import { IHttpServerComponent } from '@well-known-components/interfaces'
-import { HandlerContextWithPath, InvalidRequestError } from '../../types'
+import { HandlerContextWithPath } from '../../types'
+import { InvalidRequestError } from '@notifications/commons'
 
 export async function parseJson(request: IHttpServerComponent.IRequest) {
   try {

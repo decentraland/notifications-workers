@@ -1,5 +1,6 @@
-import { InvalidRequestError, HandlerContextWithPath, NotAuthorizedError } from '../../types'
+import { HandlerContextWithPath } from '../../types'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
+import { InvalidRequestError, NotAuthorizedError } from '@notifications/commons'
 
 export async function parseJson(request: IHttpServerComponent.IRequest) {
   try {

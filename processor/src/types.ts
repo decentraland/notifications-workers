@@ -11,7 +11,6 @@ import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { DbComponent } from './adapters/db'
-import { NotificationRecord } from '@notifications/commons'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -48,11 +47,6 @@ export type TestComponents = AppComponents & {
   localFetch: IFetchComponent
 }
 
-export type NotificationError = {
-  error: string
-  message: string
-}
-
 export type IRunnable<T> = IBaseComponent & {
   run(): Promise<T>
 }
@@ -62,29 +56,14 @@ export type INotificationProducer = {
   notificationType: string
 }
 
+export type NotificationRecord = {
+  type: string
+  address: string
+  metadata: any
+}
+
 export type INotificationProducerResult = {
   notificationType: string
   records: NotificationRecord[]
   lastRun: Date
-}
-
-export class InvalidRequestError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
-}
-
-export class NotFoundError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
-}
-
-export class NotAuthorizedError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
 }

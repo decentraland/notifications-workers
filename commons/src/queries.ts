@@ -1,14 +1,3 @@
-export type Language = 'en' | 'es' | 'zh'
-
-export type LocalizedNotification = { title: string; description: string }
-
-export type NotificationRecord = {
-  type: string
-  address: string
-  metadata: any
-  i18n: Record<Language, LocalizedNotification>
-}
-
 /// DB entities
 
 export type NotificationEvent = {

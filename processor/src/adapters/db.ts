@@ -1,6 +1,5 @@
 import SQL from 'sql-template-strings'
-import { AppComponents } from '../types'
-import { NotificationRecord } from '@notifications/commons'
+import { AppComponents, NotificationRecord } from '../types'
 
 export type DbComponent = {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
@@ -35,25 +34,23 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
   }
 
   async function insertNotifications(notificationRecords: NotificationRecord[]) {
-    console.log('insertNotifications', notificationRecords.length, notificationRecords.slice(0, 5))
     if (notificationRecords.length === 0) {
       return
     }
 
     const buildQuery = SQL`
-        INSERT INTO notifications (type, address, metadata, i18n, read_at)
+        INSERT INTO notifications (type, address, metadata, read_at)
         VALUES `
     for (let i = 0; i < notificationRecords.length; i++) {
       const notificationRecord = notificationRecords[i]
       buildQuery.append(
-        SQL`(${notificationRecord.type}, ${notificationRecord.address}, ${notificationRecord.metadata}::jsonb, ${notificationRecord.i18n}::jsonb, NULL)`
+        SQL`(${notificationRecord.type}, ${notificationRecord.address}, ${notificationRecord.metadata}::jsonb, NULL)`
       )
       if (i < notificationRecords.length - 1) {
         buildQuery.append(',')
       }
     }
     buildQuery.append(';')
-    console.log('buildQuery', buildQuery)
 
     await pg.query(buildQuery)
   }

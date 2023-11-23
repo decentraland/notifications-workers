@@ -38,7 +38,7 @@ export async function errorHandler(
       }
     }
 
-    console.log(`Error handling ${ctx.url.toString()}: ${error.message}`)
+    console.warn(`Error handling ${ctx.url.toString()}: ${error.message}`)
 
     return {
       status: 500,

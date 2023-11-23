@@ -6,7 +6,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     type: { type: PgType.VARCHAR, notNull: true },
     address: { type: PgType.VARCHAR, notNull: true },
     metadata: { type: PgType.JSONB, notNull: true },
-    i18n: { type: PgType.JSONB, notNull: false },
     read_at: { type: PgType.BOOLEAN, notNull: false },
     created_at: { type: PgType.TIMESTAMP, notNull: true, default: pgm.func('current_timestamp') },
     updated_at: { type: PgType.TIMESTAMP, notNull: true, default: pgm.func('current_timestamp') }
