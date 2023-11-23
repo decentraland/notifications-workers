@@ -1,6 +1,5 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { NotificationEvent } from '@notifications/commons'
-import { AppComponents } from '../types'
+import { AppComponents, NotificationEvent } from '../types'
 
 export type DbComponent = {
   findNotifications(users: string[], onlyUnread: boolean, limit: number, from: number): Promise<NotificationEvent[]>
@@ -27,7 +26,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
       u.read AS read,
       n.metadata AS metadata
     FROM notifications n
-    JOIN users_notifications u ON n.id = u.notification_id`
+    `
 
     const whereClause: SQLStatement[] = [SQL`LOWER(u.address) = ANY (${users})`]
     if (from > 0) {

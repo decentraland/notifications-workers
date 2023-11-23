@@ -44,7 +44,9 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     for (let i = 0; i < notificationRecords.length; i++) {
       const notificationRecord = notificationRecords[i]
       buildQuery.append(
-        SQL`(${notificationRecord.type}, ${notificationRecord.address}, ${notificationRecord.metadata}::jsonb, NULL)`
+        SQL`(${notificationRecord.type}, ${notificationRecord.address.toLowerCase()}, ${
+          notificationRecord.metadata
+        }::jsonb, NULL)`
       )
       if (i < notificationRecords.length - 1) {
         buildQuery.append(',')

@@ -12,8 +12,6 @@ export async function createCheckUpdatesJob(
   const producers: INotificationProducer[] = []
 
   async function start(): Promise<void> {
-    logger.info('Scheduling check updates job')
-
     // Add more producers here
     producers.push(itemSoldProducer(components))
 

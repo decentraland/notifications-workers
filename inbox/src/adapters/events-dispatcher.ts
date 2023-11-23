@@ -1,7 +1,6 @@
 import { randomUUID } from 'node:crypto'
-import { AppComponents } from '../types'
+import { AppComponents, NotificationEvent } from '../types'
 import { Readable } from 'node:stream'
-import { NotificationEvent } from '@notifications/commons'
 
 export type Client = {
   userId: string
