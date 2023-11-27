@@ -52,14 +52,11 @@ export type HandlerContextWithPath<
   DecentralandSignatureContext<any>
 
 export type NotificationEvent = {
-  notification_id: string
-  origin_id: string
+  id: string
   type: string
-  source: string
-  metadata: any
-  timestamp: number
-  read: boolean
-  created_at: number
-  updated_at: number
   address: string
+  metadata: any
+  read_at?: Date
+  created_at: Date
+  updated_at: Date
 }

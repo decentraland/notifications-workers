@@ -14,26 +14,23 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     from: number
   ): Promise<NotificationEvent[]> {
     const query: SQLStatement = SQL`
-    SELECT
-      n.id AS notification_id,
-      n.origin_id AS origin_id,
-      n.type AS type,
-      n.source AS source,
-      date_part('epoch', n.timestamp) * 1000 AS origin_timestamp,
-      date_part('epoch', u.created_at) * 1000 AS created_at,
-      date_part('epoch', u.updated_at) * 1000 AS updated_at,
-      u.address AS address,
-      u.read AS read,
-      n.metadata AS metadata
-    FROM notifications n
+        SELECT id,
+               type,
+               address,
+               metadata,
+               read_at,
+               created_at,
+               updated_at
+        FROM notifications
     `
 
-    const whereClause: SQLStatement[] = [SQL`LOWER(u.address) = ANY (${users})`]
+    const lowercaseUsers = users.map((u) => u.toLowerCase())
+    const whereClause: SQLStatement[] = [SQL`address = ANY (${lowercaseUsers})`]
     if (from > 0) {
-      whereClause.push(SQL`n.created_at >= to_timestamp(${from} / 1000.0)`)
+      whereClause.push(SQL`created_at >= to_timestamp(${from})`)
     }
     if (onlyUnread) {
-      whereClause.push(SQL`u.read = false`)
+      whereClause.push(SQL`read_at IS NULL`)
     }
     let where = SQL` WHERE `.append(whereClause[0])
     for (const condition of whereClause.slice(1)) {
@@ -41,16 +38,21 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     }
 
     query.append(where)
-    query.append(SQL` ORDER BY n.created_at DESC`)
+    query.append(SQL` ORDER BY created_at DESC`)
     query.append(SQL` LIMIT ${limit}`)
 
     return (await pg.query<NotificationEvent>(query)).rows
   }
 
   async function markNotificationsAsRead(userId: string, notificationIds: string[]) {
-    const query = SQL`UPDATE users_notifications
-  SET read = true, updated_at = NOW()
-WHERE read = false AND LOWER(address) = LOWER(${userId}) AND notification_id = ANY (${notificationIds})`
+    const query = SQL`
+        UPDATE users_notifications
+        SET read       = ${new Date()},
+            updated_at = NOW()
+        WHERE read = false
+          AND address = ${userId.toLowerCase()}
+          AND notification_id = ANY (${notificationIds})
+    `
     return (await pg.query<NotificationEvent>(query)).rowCount
   }
 

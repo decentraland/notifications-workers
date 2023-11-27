@@ -2,7 +2,7 @@ import { createConfigComponent } from '@well-known-components/env-config-provide
 import { Request } from 'node-fetch'
 import { SQSComponent } from '../../src/adapters/sqs'
 import { sendNotificationsToSqsHandler } from '../../src/controllers/handlers/publish-handler'
-import { NotAuthorizedError } from '../../src/types'
+import { NotAuthorizedError } from '@notifications/commons'
 
 const INTERNAL_API_KEY = '123456'
 
