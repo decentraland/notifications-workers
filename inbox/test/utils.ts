@@ -4,6 +4,7 @@ import { AuthChain } from '@dcl/schemas'
 import { AUTH_CHAIN_HEADER_PREFIX, AUTH_METADATA_HEADER, AUTH_TIMESTAMP_HEADER } from '@dcl/platform-crypto-middleware'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { NotificationEvent } from '../src/types'
+import { IFetchComponent } from '@well-known-components/interfaces'
 
 export async function cleanup(pg: IPgComponent): Promise<void> {
   await pg.query(`TRUNCATE notifications, cursors`)
@@ -51,12 +52,34 @@ export function getAuthHeaders(
   return headers
 }
 
-export function randomNotification(identity: Identity): NotificationEvent {
+export function makeRequest(localFetch: IFetchComponent, path: string, identity: Identity, options: any = {}) {
+  return localFetch.fetch(path, {
+    method: 'GET',
+    ...options,
+    headers: {
+      ...getAuthHeaders(options.method || 'GET', path, {}, (payload) =>
+        Authenticator.signPayload(
+          {
+            ephemeralIdentity: identity.ephemeralIdentity,
+            expiration: new Date(),
+            authChain: identity.authChain.authChain
+          },
+          payload
+        )
+      )
+    }
+  })
+}
+
+export function randomNotification(address: string): NotificationEvent {
   return {
     id: '',
     type: 'test',
-    address: identity.realAccount.address.toLowerCase(),
-    metadata: {},
+    address,
+    metadata: {
+      test: `This is a test at ${new Date().toISOString()}`
+    },
+    timestamp: Date.now(),
     read_at: null,
     created_at: new Date(),
     updated_at: new Date()

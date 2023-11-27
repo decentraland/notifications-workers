@@ -50,10 +50,16 @@ export async function initComponents(): Promise<AppComponents> {
   const marketplaceSubGraphUrl = await config.requireString('MARKETPLACE_SUBGRAPH_URL')
   const marketplaceSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, marketplaceSubGraphUrl)
 
+  const l2CollectionsSubGraphUrl = await config.requireString('COLLECTIONS_L2_SUBGRAPH_URL')
+  const l2CollectionsSubGraph = await createSubgraphComponent(
+    { config, logs, metrics, fetch },
+    l2CollectionsSubGraphUrl
+  )
+
   const rentalsSubGraphUrl = await config.requireString('RENTALS_SUBGRAPH_URL')
   const rentalsSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, rentalsSubGraphUrl)
 
-  const checkUpdatesJob = await createCheckUpdatesJob({ logs, marketplaceSubGraph, db })
+  const checkUpdatesJob = await createCheckUpdatesJob({ config, db, logs, l2CollectionsSubGraph })
 
   return {
     config,
@@ -65,6 +71,7 @@ export async function initComponents(): Promise<AppComponents> {
     pg,
     checkUpdatesJob,
     marketplaceSubGraph,
+    l2CollectionsSubGraph,
     rentalsSubGraph
   }
 }

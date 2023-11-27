@@ -56,6 +56,7 @@ export type NotificationEvent = {
   type: string
   address: string
   metadata: any
+  timestamp: number
   read_at?: Date
   created_at: Date
   updated_at: Date

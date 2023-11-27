@@ -1,28 +1,7 @@
 import { test } from '../components'
-import { getAuthHeaders, getIdentity, Identity } from '../utils'
-import { Authenticator } from '@dcl/crypto'
+import { getIdentity, Identity, makeRequest, randomNotification } from '../utils'
 
 test('GET /notifications', function ({ components }) {
-  function makeRequest(path: string, identity: Identity, options: any = {}) {
-    const { localFetch } = components
-    return localFetch.fetch(path, {
-      method: 'GET',
-      ...options,
-      headers: {
-        ...getAuthHeaders(options.method || 'GET', path, {}, (payload) =>
-          Authenticator.signPayload(
-            {
-              ephemeralIdentity: identity.ephemeralIdentity,
-              expiration: new Date(),
-              authChain: identity.authChain.authChain
-            },
-            payload
-          )
-        )
-      }
-    })
-  }
-
   let identity: Identity
   beforeAll(async () => {
     identity = await getIdentity()
@@ -37,13 +16,16 @@ test('GET /notifications', function ({ components }) {
     const { pg, db } = components
 
     console.log(identity.realAccount.address)
-    const metadata = { test: `test at ${new Date().toISOString()}` }
+
+    const notificationEvent = randomNotification(identity.realAccount.address.toLowerCase())
     await pg.query(`
-        INSERT INTO notifications (type, address, metadata)
-        VALUES ('test', '${identity.realAccount.address.toLowerCase()}', '${JSON.stringify(metadata)}')
+        INSERT INTO notifications (type, address, metadata, timestamp)
+        VALUES ('test', '${identity.realAccount.address.toLowerCase()}', '${JSON.stringify(
+      notificationEvent.metadata
+    )}', ${notificationEvent.timestamp})
     `)
 
-    const r = await makeRequest(`/notifications`, identity)
+    const r = await makeRequest(components.localFetch, `/notifications`, identity)
     expect(r.status).toEqual(200)
     expect(await r.json()).toMatchObject([
       {

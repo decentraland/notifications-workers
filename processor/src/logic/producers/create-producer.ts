@@ -2,7 +2,7 @@ import { AppComponents, INotificationProducer, IRunnable } from '../../types'
 import { CronJob } from 'cron'
 
 export async function createProducer(
-  components: Pick<AppComponents, 'logs' | 'marketplaceSubGraph' | 'db'>,
+  components: Pick<AppComponents, 'logs' | 'l2CollectionsSubGraph' | 'db'>,
   producer: INotificationProducer
 ): Promise<IRunnable<void>> {
   const { logs, db } = components

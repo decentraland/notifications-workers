@@ -1,5 +1,49 @@
 import { AppComponents, INotificationProducer, NotificationRecord } from '../../types'
 
+const SOLD_ITEMS_QUERY = `
+    query Sales($since: BigInt!) {
+      sales(
+        where: {timestamp_gte: $since}
+        orderBy: timestamp
+        orderDirection: asc
+      ) {
+        id
+        type
+        buyer
+        seller
+        nft {
+          id
+          category
+          image
+          metadata {
+            id
+            wearable {
+              id
+              name
+              description
+              rarity
+            }
+            emote {
+              id
+              name
+              description
+              rarity
+            }
+          }
+          contractAddress
+          tokenId
+        }
+        searchContractAddress
+        searchCategory
+        price
+        txHash
+        timestamp
+      }
+    }
+  `
+
+export const PAGE_SIZE = 100
+
 type SalesResponse = {
   sales: {
     id: string
@@ -8,10 +52,23 @@ type SalesResponse = {
     seller: string
     nft: {
       id: string
-      category: string
+      category: 'wearable' | 'emote'
       image: string
-      name: string
-      searchWearableRarity: string
+      metadata: {
+        id: string
+        wearable?: {
+          id: string
+          name: string
+          description: string
+          rarity: string
+        }
+        emote?: {
+          id: string
+          name: string
+          description: string
+          rarity: string
+        }
+      }
       contractAddress: string
       tokenId: string
     }
@@ -21,58 +78,55 @@ type SalesResponse = {
 
 const notificationType = 'item_sold'
 
-export function itemSoldProducer(components: Pick<AppComponents, 'marketplaceSubGraph'>): INotificationProducer {
-  const { marketplaceSubGraph } = components
+export async function itemSoldProducer(
+  components: Pick<AppComponents, 'config' | 'l2CollectionsSubGraph'>
+): Promise<INotificationProducer> {
+  const { config, l2CollectionsSubGraph } = components
+
+  const marketplaceBaseUrl = await config.requireString('MARKETPLACE_BASE_URL')
 
   async function run(since: Date) {
     const now = new Date()
-    const query = `
-      query Sales($since: BigInt!) {
-        sales(
-          where: {timestamp_gte: $since, type: order}
-          orderBy: timestamp
-          orderDirection: desc
-        ) {
-          id
-          type
-          buyer
-          seller
-          nft {
-            id
-            category
-            image
-            name
-            searchWearableRarity
-            contractAddress
-            tokenId
-          }
-          timestamp
-        }
-      }
-    `
-    const updates = await marketplaceSubGraph.query<SalesResponse>(query, {
-      since: Math.floor(since.getTime() / 1000)
-    })
-
     const produced: NotificationRecord[] = []
-    for (const sale of updates.sales) {
-      const notificationRecord = {
-        type: notificationType,
-        address: sale.seller,
-        metadata: {
-          image: sale.nft.image,
-          seller: sale.seller,
-          category: sale.nft.category,
-          rarity: sale.nft.searchWearableRarity,
-          link: `https://market.decentraland.org/contracts/${sale.nft.contractAddress}/tokens/${sale.nft.tokenId}`,
-          timestamp: sale.timestamp,
-          nftName: sale.nft.name,
-          title: 'Item Sold',
-          description: `You just sold this ${sale.nft.name}`
-        }
+    let sinceDate: number = Math.floor(since.getTime() / 1000)
+
+    let result: SalesResponse
+    do {
+      result = await l2CollectionsSubGraph.query<SalesResponse>(SOLD_ITEMS_QUERY, {
+        since: sinceDate
+      })
+      console.log('the graph', result.sales.length, sinceDate)
+
+      if (result.sales.length === 0) {
+        break
       }
-      produced.push(notificationRecord)
-    }
+
+      for (const sale of result.sales) {
+        const notificationRecord = {
+          type: notificationType,
+          address: sale.seller,
+          metadata: {
+            image: sale.nft.image,
+            seller: sale.seller,
+            category: sale.nft.category,
+            rarity: sale.nft.metadata[sale.nft.category]?.rarity,
+            link: `${marketplaceBaseUrl}/contracts/${sale.nft.contractAddress}/tokens/${sale.nft.tokenId}`,
+            nftName: sale.nft.metadata[sale.nft.category]?.name,
+            title: 'Item Sold',
+            description: `You just sold this ${sale.nft.metadata[sale.nft.category]?.name}`
+          },
+          timestamp: sale.timestamp
+        }
+        produced.push(notificationRecord)
+      }
+
+      const idFromLastElement = produced[produced.length - 1].timestamp
+      if (!idFromLastElement) {
+        throw new Error('Error getting id from last entity from previous page')
+      }
+
+      sinceDate = idFromLastElement
+    } while (result.sales.length === PAGE_SIZE)
 
     return {
       notificationType: notificationType,

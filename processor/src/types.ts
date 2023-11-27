@@ -21,6 +21,7 @@ export type AppComponents = {
   db: DbComponent
   statusChecks: IBaseComponent
   checkUpdatesJob: IBaseComponent
+  l2CollectionsSubGraph: ISubgraphComponent
   marketplaceSubGraph: ISubgraphComponent
   rentalsSubGraph: ISubgraphComponent
 }
@@ -60,6 +61,7 @@ export type NotificationRecord = {
   type: string
   address: string
   metadata: any
+  timestamp: number
 }
 
 export type INotificationProducerResult = {
