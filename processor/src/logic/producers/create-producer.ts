@@ -28,7 +28,7 @@ export async function createProducer(
     logger.info('Scheduling check updates job')
 
     const job = new CronJob(
-      '0/30 * * * * *',
+      '0 * * * * *',
       async function () {
         await runProducer()
       },
