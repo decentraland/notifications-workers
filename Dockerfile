@@ -26,14 +26,16 @@ RUN apk update && apk add --update wget && apk add --update tini
 ENV NODE_ENV production
 
 ARG COMMIT_HASH=local
-RUN echo "COMMIT_HASH=$COMMIT_HASH" >> .env
+ENV COMMIT_HASH=${COMMIT_HASH:-local}
 
 ARG CURRENT_VERSION=Unknown
-RUN echo "CURRENT_VERSION=CURRENT_VERSION" >> .env
 ENV CURRENT_VERSION=${CURRENT_VERSION:-Unknown}
 
 WORKDIR /app
 COPY --from=builderenv /app /app
+
+RUN echo "" > /app/inbox/.env
+RUN echo "" > /app/processor/.env
 
 # Please _DO NOT_ use a custom ENTRYPOINT because it may prevent signals
 # (i.e. SIGTERM) to reach the service

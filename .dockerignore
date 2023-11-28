@@ -1,1 +1,9 @@
-**/node_modules
+**/node_modules/
+.git/
+.github/
+.idea/
+**/coverage/
+**/.env
+**/.eslintignore
+**/.eslintrc.json
+**/jest.config.js
