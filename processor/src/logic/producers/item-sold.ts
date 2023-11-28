@@ -95,7 +95,6 @@ export async function itemSoldProducer(
       result = await l2CollectionsSubGraph.query<SalesResponse>(SOLD_ITEMS_QUERY, {
         since: sinceDate
       })
-      console.log('the graph', result.sales.length, sinceDate)
 
       if (result.sales.length === 0) {
         break
@@ -113,7 +112,8 @@ export async function itemSoldProducer(
             link: `${marketplaceBaseUrl}/contracts/${sale.nft.contractAddress}/tokens/${sale.nft.tokenId}`,
             nftName: sale.nft.metadata[sale.nft.category]?.name,
             title: 'Item Sold',
-            description: `You just sold this ${sale.nft.metadata[sale.nft.category]?.name}`
+            description: `You just sold this ${sale.nft.metadata[sale.nft.category]?.name}`,
+            network: 'polygon'
           },
           timestamp: sale.timestamp
         }
