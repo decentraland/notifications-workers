@@ -26,9 +26,10 @@ RUN apk update && apk add --update wget && apk add --update tini
 ENV NODE_ENV production
 
 ARG COMMIT_HASH=local
-ENV COMMIT_HASH=${COMMIT_HASH:-local}
+RUN echo "COMMIT_HASH=$COMMIT_HASH" >> .env
 
 ARG CURRENT_VERSION=Unknown
+RUN echo "CURRENT_VERSION=CURRENT_VERSION" >> .env
 ENV CURRENT_VERSION=${CURRENT_VERSION:-Unknown}
 
 WORKDIR /app
