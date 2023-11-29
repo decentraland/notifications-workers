@@ -17,9 +17,9 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
         SELECT id,
                type,
                address,
-               metadata,
+               metadata, 
                timestamp,
-               read_at,
+               CASE WHEN read_at IS NOT NULL THEN true ELSE false END AS read,
                created_at,
                updated_at
         FROM notifications
