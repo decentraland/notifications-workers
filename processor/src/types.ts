@@ -20,7 +20,7 @@ export type AppComponents = {
   pg: IPgComponent
   db: DbComponent
   statusChecks: IBaseComponent
-  checkUpdatesJob: IBaseComponent
+  producerRegistry: IProducerRegistry
   l2CollectionsSubGraph: ISubgraphComponent
   marketplaceSubGraph: ISubgraphComponent
   rentalsSubGraph: ISubgraphComponent
@@ -48,13 +48,18 @@ export type TestComponents = AppComponents & {
   localFetch: IFetchComponent
 }
 
-export type IRunnable<T> = IBaseComponent & {
-  run(): Promise<T>
+export type INotificationProducer = {
+  init: () => Promise<void>
+  notificationType: () => string
 }
 
-export type INotificationProducer = {
+export type INotificationGenerator = {
   run(since: Date): Promise<INotificationProducerResult>
   notificationType: string
+}
+
+export type IProducerRegistry = IBaseComponent & {
+  addProducer: (producer: INotificationProducer) => void
 }
 
 export type NotificationRecord = {

@@ -1,4 +1,4 @@
-import { AppComponents, INotificationProducer, NotificationRecord } from '../../types'
+import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 import { formatMana } from '../utils'
 
 const ROYALTIES_EARNED_QUERY = `
@@ -85,7 +85,7 @@ const notificationType = 'royalties_earned'
 
 export async function royaltiesEarnedProducer(
   components: Pick<AppComponents, 'config' | 'l2CollectionsSubGraph'>
-): Promise<INotificationProducer> {
+): Promise<INotificationGenerator> {
   const { config, l2CollectionsSubGraph } = components
 
   const marketplaceBaseUrl = await config.requireString('MARKETPLACE_BASE_URL')

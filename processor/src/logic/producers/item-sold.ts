@@ -1,4 +1,4 @@
-import { AppComponents, INotificationProducer, NotificationRecord } from '../../types'
+import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 
 const SOLD_ITEMS_QUERY = `
     query Sales($since: BigInt!) {
@@ -80,7 +80,7 @@ const notificationType = 'item_sold'
 
 export async function itemSoldProducer(
   components: Pick<AppComponents, 'config' | 'l2CollectionsSubGraph'>
-): Promise<INotificationProducer> {
+): Promise<INotificationGenerator> {
   const { config, l2CollectionsSubGraph } = components
 
   const marketplaceBaseUrl = await config.requireString('MARKETPLACE_BASE_URL')

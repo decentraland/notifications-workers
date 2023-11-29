@@ -7,9 +7,12 @@ import { metricDeclarations } from './metrics'
 import { AppComponents, GlobalContext } from './types'
 import path from 'path'
 import { createSubgraphComponent } from '@well-known-components/thegraph-component'
-import { createCheckUpdatesJob } from './adapters/check-updates-job'
+import { createProducerRegistry } from './adapters/producer-registry'
 import { createFetchComponent } from './adapters/fetch'
 import { createDbComponent } from './adapters/db'
+import { itemSoldProducer } from './logic/producers/item-sold'
+import { royaltiesEarnedProducer } from './logic/producers/royalties-earned'
+import { createProducer } from './adapters/create-producer'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -59,7 +62,14 @@ export async function initComponents(): Promise<AppComponents> {
   const rentalsSubGraphUrl = await config.requireString('RENTALS_SUBGRAPH_URL')
   const rentalsSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, rentalsSubGraphUrl)
 
-  const checkUpdatesJob = await createCheckUpdatesJob({ config, db, logs, l2CollectionsSubGraph })
+  // Create the producer registry and add all the producers
+  const producerRegistry = await createProducerRegistry({ logs })
+  producerRegistry.addProducer(
+    await createProducer({ db, logs }, await itemSoldProducer({ config, l2CollectionsSubGraph }))
+  )
+  producerRegistry.addProducer(
+    await createProducer({ db, logs }, await royaltiesEarnedProducer({ config, l2CollectionsSubGraph }))
+  )
 
   return {
     config,
@@ -69,7 +79,7 @@ export async function initComponents(): Promise<AppComponents> {
     metrics,
     db,
     pg,
-    checkUpdatesJob,
+    producerRegistry,
     marketplaceSubGraph,
     l2CollectionsSubGraph,
     rentalsSubGraph

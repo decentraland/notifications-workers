@@ -1,10 +1,10 @@
-import { AppComponents, INotificationProducer, IRunnable } from '../../types'
+import { AppComponents, INotificationGenerator, INotificationProducer } from '../types'
 import { CronJob } from 'cron'
 
 export async function createProducer(
-  components: Pick<AppComponents, 'logs' | 'l2CollectionsSubGraph' | 'db'>,
-  producer: INotificationProducer
-): Promise<IRunnable<void>> {
+  components: Pick<AppComponents, 'logs' | 'db'>,
+  producer: INotificationGenerator
+): Promise<INotificationProducer> {
   const { logs, db } = components
   const logger = logs.getLogger(`producer-${producer.notificationType}`)
 
@@ -24,8 +24,8 @@ export async function createProducer(
     logger.info(`Created ${produced.records.length} new notifications`)
   }
 
-  async function run(): Promise<void> {
-    logger.info('Scheduling check updates job')
+  async function init(): Promise<void> {
+    logger.info(`Scheduling producer for ${producer.notificationType}.`)
 
     const job = new CronJob(
       '0 * * * * *',
@@ -40,6 +40,7 @@ export async function createProducer(
   }
 
   return {
-    run
+    init,
+    notificationType: () => producer.notificationType
   }
 }
