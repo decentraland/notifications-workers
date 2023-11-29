@@ -1,6 +1,6 @@
 ARG RUN
 
-FROM node:lts-alpine as builderenv
+FROM node:18-alpine as builderenv
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ RUN yarn install --prod --frozen-lockfile
 
 ########################## END OF BUILD STAGE ##########################
 
-FROM node:lts-alpine
+FROM node:18-alpine
 
 RUN apk update && apk add --update wget && apk add --update tini
 
