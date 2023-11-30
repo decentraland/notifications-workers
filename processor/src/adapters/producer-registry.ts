@@ -14,9 +14,7 @@ export async function createProducerRegistry(components: Pick<AppComponents, 'lo
   }
 
   async function start(): Promise<void> {
-    for (const [_, value] of producers) {
-      await value.init()
-    }
+    await Promise.all([...producers.values()].map((producer) => producer.start()))
   }
 
   function getProducer(notificationType: string): INotificationProducer {

@@ -24,7 +24,7 @@ export async function createProducer(
     logger.info(`Created ${produced.records.length} new notifications`)
   }
 
-  async function init(): Promise<void> {
+  async function start(): Promise<void> {
     logger.info(`Scheduling producer for ${producer.notificationType}.`)
 
     const job = new CronJob(
@@ -40,7 +40,7 @@ export async function createProducer(
   }
 
   return {
-    init,
+    start,
     notificationType: () => producer.notificationType,
     setLastSuccessfulRun: (date: Date) => {
       lastSuccessfulRun = date
