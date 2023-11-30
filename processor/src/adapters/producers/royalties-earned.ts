@@ -1,5 +1,5 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
-import { formatMana } from '../utils'
+import { formatMana } from '../../logic/utils'
 
 const ROYALTIES_EARNED_QUERY = `
     query Sales($since: BigInt!, $paginationId: ID) {

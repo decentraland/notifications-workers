@@ -10,8 +10,8 @@ import { createSubgraphComponent } from '@well-known-components/thegraph-compone
 import { createProducerRegistry } from './adapters/producer-registry'
 import { createFetchComponent } from './adapters/fetch'
 import { createDbComponent } from './adapters/db'
-import { itemSoldProducer } from './logic/producers/item-sold'
-import { royaltiesEarnedProducer } from './logic/producers/royalties-earned'
+import { itemSoldProducer } from './adapters/producers/item-sold'
+import { royaltiesEarnedProducer } from './adapters/producers/royalties-earned'
 import { createProducer } from './adapters/create-producer'
 
 // Initialize all the components of the app
