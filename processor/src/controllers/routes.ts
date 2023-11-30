@@ -3,6 +3,7 @@ import { sendNotificationsToSqsHandler } from './handlers/publish-handler'
 import { GlobalContext } from '../types'
 import { errorHandler } from '@notifications/commons'
 import { statusHandler } from './handlers/status-handler'
+import { setCursorHandler } from './handlers/set-cursor-handler'
 
 // We return the entire router because it will be easier to test than a whole server
 export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContext>> {
@@ -12,6 +13,7 @@ export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContex
   router.get('/status', statusHandler)
 
   router.post('/notifications', sendNotificationsToSqsHandler)
+  router.post('/producers/:producer/set-since', setCursorHandler)
 
   return router
 }

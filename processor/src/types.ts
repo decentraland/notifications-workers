@@ -51,6 +51,7 @@ export type TestComponents = AppComponents & {
 export type INotificationProducer = {
   init: () => Promise<void>
   notificationType: () => string
+  setLastSuccessfulRun(date: Date): void
 }
 
 export type INotificationGenerator = {
@@ -60,6 +61,7 @@ export type INotificationGenerator = {
 
 export type IProducerRegistry = IBaseComponent & {
   addProducer: (producer: INotificationProducer) => void
+  getProducer: (notificationType: string) => INotificationProducer
 }
 
 export type NotificationRecord = {

@@ -19,8 +19,17 @@ export async function createProducerRegistry(components: Pick<AppComponents, 'lo
     }
   }
 
+  function getProducer(notificationType: string): INotificationProducer {
+    const producer = producers.get(notificationType)
+    if (!producer) {
+      throw new Error(`Producer for ${notificationType} not found`)
+    }
+    return producer
+  }
+
   return {
     addProducer,
+    getProducer,
     start
   }
 }

@@ -41,6 +41,9 @@ export async function createProducer(
 
   return {
     init,
-    notificationType: () => producer.notificationType
+    notificationType: () => producer.notificationType,
+    setLastSuccessfulRun: (date: Date) => {
+      lastSuccessfulRun = date
+    }
   }
 }
