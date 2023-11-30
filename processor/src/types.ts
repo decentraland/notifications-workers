@@ -63,6 +63,7 @@ export type IProducerRegistry = IBaseComponent & {
 }
 
 export type NotificationRecord = {
+  eventKey: string
   type: string
   address: string
   metadata: any

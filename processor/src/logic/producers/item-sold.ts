@@ -1,9 +1,9 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 
 const SOLD_ITEMS_QUERY = `
-    query Sales($since: BigInt!) {
+    query Sales($since: BigInt!, $paginationId: ID) {
       sales(
-        where: {timestamp_gte: $since}
+        where: {timestamp_gte: $since, id_gt: $paginationId}
         orderBy: timestamp
         orderDirection: asc
       ) {
@@ -72,6 +72,7 @@ type SalesResponse = {
       contractAddress: string
       tokenId: string
     }
+    txHash: string
     timestamp: number
   }[]
 }
@@ -88,12 +89,14 @@ export async function itemSoldProducer(
   async function run(since: Date) {
     const now = new Date()
     const produced: NotificationRecord[] = []
-    let sinceDate: number = Math.floor(since.getTime() / 1000)
+    const sinceDate: number = Math.floor(since.getTime() / 1000)
 
     let result: SalesResponse
+    let paginationId = ''
     do {
       result = await l2CollectionsSubGraph.query<SalesResponse>(SOLD_ITEMS_QUERY, {
-        since: sinceDate
+        since: sinceDate,
+        paginationId
       })
 
       if (result.sales.length === 0) {
@@ -104,6 +107,7 @@ export async function itemSoldProducer(
         const notificationRecord = {
           type: notificationType,
           address: sale.seller,
+          eventKey: sale.txHash,
           metadata: {
             image: sale.nft.image,
             seller: sale.seller,
@@ -118,14 +122,9 @@ export async function itemSoldProducer(
           timestamp: sale.timestamp
         }
         produced.push(notificationRecord)
-      }
 
-      const idFromLastElement = produced[produced.length - 1].timestamp
-      if (!idFromLastElement) {
-        throw new Error('Error getting id from last entity from previous page')
+        paginationId = sale.id
       }
-
-      sinceDate = idFromLastElement
     } while (result.sales.length === PAGE_SIZE)
 
     return {

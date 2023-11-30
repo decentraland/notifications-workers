@@ -39,12 +39,12 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     }
 
     const buildQuery = SQL`
-        INSERT INTO notifications (type, address, metadata, timestamp, read_at)
+        INSERT INTO notifications (event_key, type, address, metadata, timestamp, read_at)
         VALUES `
     for (let i = 0; i < notificationRecords.length; i++) {
       const notificationRecord = notificationRecords[i]
       buildQuery.append(
-        SQL`(${notificationRecord.type}, ${notificationRecord.address.toLowerCase()}, ${
+        SQL`(${notificationRecord.eventKey}, ${notificationRecord.type}, ${notificationRecord.address.toLowerCase()}, ${
           notificationRecord.metadata
         }::jsonb, ${notificationRecord.timestamp}, NULL)`
       )
