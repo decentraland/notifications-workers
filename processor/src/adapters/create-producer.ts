@@ -30,7 +30,11 @@ export async function createProducer(
     const job = new CronJob(
       '0 * * * * *',
       async function () {
-        await runProducer()
+        try {
+          await runProducer()
+        } catch (e: any) {
+          logger.error(`Couldn't run producer: ${e.message}`)
+        }
       },
       null,
       false,
