@@ -13,6 +13,7 @@ import { createDbComponent } from './adapters/db'
 import { itemSoldProducer } from './adapters/producers/item-sold'
 import { royaltiesEarnedProducer } from './adapters/producers/royalties-earned'
 import { createProducer } from './adapters/create-producer'
+import { bidReceivedProducer } from './adapters/producers/bid-received'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -69,6 +70,9 @@ export async function initComponents(): Promise<AppComponents> {
   )
   producerRegistry.addProducer(
     await createProducer({ db, logs }, await royaltiesEarnedProducer({ config, l2CollectionsSubGraph }))
+  )
+  producerRegistry.addProducer(
+    await createProducer({ db, logs }, await bidReceivedProducer({ config, l2CollectionsSubGraph }))
   )
 
   return {

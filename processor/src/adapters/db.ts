@@ -15,7 +15,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
         WHERE id = ${notificationType};
     `)
     if (result.rowCount === 0) {
-      return new Date().getTime() - 1000 * 60 * 60 * 24 * 180 // 180 days before
+      return new Date().getTime()
     }
 
     return result.rows[0].last_successful_run_at
