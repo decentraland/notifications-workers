@@ -74,6 +74,7 @@ export function makeRequest(localFetch: IFetchComponent, path: string, identity:
 export function randomNotification(address: string): NotificationEvent {
   return {
     id: '',
+    event_key: 'some-event-key',
     type: 'test',
     address,
     metadata: {

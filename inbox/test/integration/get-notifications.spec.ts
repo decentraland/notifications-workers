@@ -18,11 +18,15 @@ test('GET /notifications', function ({ components }) {
     console.log(identity.realAccount.address)
 
     const notificationEvent = randomNotification(identity.realAccount.address.toLowerCase())
-    await pg.query(`
-        INSERT INTO notifications (type, address, metadata, timestamp)
-        VALUES ('test', '${identity.realAccount.address.toLowerCase()}', '${JSON.stringify(
-      notificationEvent.metadata
-    )}', ${notificationEvent.timestamp})
+    await pg.query(SQL`
+        INSERT INTO notifications (event_key, type, address, metadata, timestamp, created_at, updated_at)
+        VALUES (${notificationEvent.event_key},
+                ${notificationEvent.type},
+                ${identity.realAccount.address.toLowerCase()},
+                ${notificationEvent.metadata}::jsonb,
+                ${notificationEvent.timestamp},
+                ${new Date()},
+                ${new Date()});
     `)
 
     const r = await makeRequest(components.localFetch, `/notifications`, identity)

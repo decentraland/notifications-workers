@@ -53,6 +53,7 @@ export type HandlerContextWithPath<
 
 export type NotificationEvent = {
   id: string
+  event_key: string
   type: string
   address: string
   metadata: any
