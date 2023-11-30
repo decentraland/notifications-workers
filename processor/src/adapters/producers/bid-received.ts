@@ -5,7 +5,7 @@ const BIDS_QUERY = `
     query Bids($since: BigInt!, $paginationId: ID) {
       bids(
         where: {createdAt_gte: $since, id_gt: $paginationId}
-        orderBy: createdAt
+        orderBy: id
         orderDirection: asc
       ) {
         id
@@ -42,7 +42,7 @@ const BIDS_QUERY = `
 
 export const PAGE_SIZE = 100
 
-type SalesResponse = {
+type BidsResponse = {
   bids: {
     id: string
     type: string
@@ -90,10 +90,10 @@ export async function bidReceivedProducer(
     const produced: NotificationRecord[] = []
     const sinceDate: number = Math.floor(since.getTime() / 1000)
 
-    let result: SalesResponse
+    let result: BidsResponse
     let paginationId = ''
     do {
-      result = await l2CollectionsSubGraph.query<SalesResponse>(BIDS_QUERY, {
+      result = await l2CollectionsSubGraph.query<BidsResponse>(BIDS_QUERY, {
         since: sinceDate,
         paginationId
       })

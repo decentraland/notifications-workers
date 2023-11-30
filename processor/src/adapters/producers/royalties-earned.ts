@@ -5,7 +5,7 @@ const ROYALTIES_EARNED_QUERY = `
     query Sales($since: BigInt!, $paginationId: ID) {
       sales(
         where: {timestamp_gte: $since, royaltiesCut_not: "0", id_gt: $paginationId}
-        orderBy: timestamp
+        orderBy: id
         orderDirection: asc
       ) {
         id

@@ -1,15 +1,15 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
+import { formatMana } from '../../logic/utils'
 
-const SOLD_ITEMS_QUERY = `
-    query Sales($since: BigInt!, $paginationId: ID) {
-      sales(
-        where: {timestamp_gte: $since, id_gt: $paginationId}
+const BIDS_QUERY = `
+    query Bids($since: BigInt!, $paginationId: ID) {
+      bids(
+        where: {updatedAt_gte: $since, id_gt: $paginationId, status: sold}
         orderBy: id
-        orderDirection: asc
+        orderDirection: desc
       ) {
         id
-        type
-        buyer
+        bidder
         seller
         nft {
           id
@@ -33,22 +33,20 @@ const SOLD_ITEMS_QUERY = `
           contractAddress
           tokenId
         }
-        searchContractAddress
-        searchCategory
+        updatedAt
         price
-        txHash
-        timestamp
+        blockchainId
       }
     }
-  `
+`
 
 export const PAGE_SIZE = 100
 
-type SalesResponse = {
-  sales: {
+type BidsResponse = {
+  bids: {
     id: string
     type: string
-    buyer: string
+    bidder: string
     seller: string
     nft: {
       id: string
@@ -72,14 +70,15 @@ type SalesResponse = {
       contractAddress: string
       tokenId: string
     }
-    txHash: string
-    timestamp: number
+    updatedAt: number
+    price: string
+    blockchainId: string
   }[]
 }
 
-const notificationType = 'item_sold'
+const notificationType = 'bid_accepted'
 
-export async function itemSoldProducer(
+export async function bidAcceptedProducer(
   components: Pick<AppComponents, 'config' | 'l2CollectionsSubGraph'>
 ): Promise<INotificationGenerator> {
   const { config, l2CollectionsSubGraph } = components
@@ -91,41 +90,44 @@ export async function itemSoldProducer(
     const produced: NotificationRecord[] = []
     const sinceDate: number = Math.floor(since.getTime() / 1000)
 
-    let result: SalesResponse
+    let result: BidsResponse
     let paginationId = ''
     do {
-      result = await l2CollectionsSubGraph.query<SalesResponse>(SOLD_ITEMS_QUERY, {
+      result = await l2CollectionsSubGraph.query<BidsResponse>(BIDS_QUERY, {
         since: sinceDate,
         paginationId
       })
 
-      if (result.sales.length === 0) {
+      if (result.bids.length === 0) {
         break
       }
 
-      for (const sale of result.sales) {
+      for (const bid of result.bids) {
         const notificationRecord = {
           type: notificationType,
-          address: sale.seller,
-          eventKey: sale.txHash,
+          address: bid.bidder,
+          eventKey: bid.blockchainId,
           metadata: {
-            image: sale.nft.image,
-            seller: sale.seller,
-            category: sale.nft.category,
-            rarity: sale.nft.metadata[sale.nft.category]?.rarity,
-            link: `${marketplaceBaseUrl}/contracts/${sale.nft.contractAddress}/tokens/${sale.nft.tokenId}`,
-            nftName: sale.nft.metadata[sale.nft.category]?.name,
-            title: 'Item Sold',
-            description: `You just sold this ${sale.nft.metadata[sale.nft.category]?.name}`,
+            image: bid.nft.image,
+            seller: bid.seller,
+            category: bid.nft.category,
+            rarity: bid.nft.metadata[bid.nft.category]?.rarity,
+            link: `${marketplaceBaseUrl}/contracts/${bid.nft.contractAddress}/tokens/${bid.nft.tokenId}`,
+            nftName: bid.nft.metadata[bid.nft.category]?.name,
+            title: 'Bid Accepted',
+            description: `
+            Your bid for ${formatMana(bid.price)} MANA for this ${
+              bid.nft.metadata[bid.nft.category]?.name
+            } was accepted.`,
             network: 'polygon'
           },
-          timestamp: sale.timestamp
+          timestamp: bid.updatedAt
         }
         produced.push(notificationRecord)
 
-        paginationId = sale.id
+        paginationId = bid.id
       }
-    } while (result.sales.length === PAGE_SIZE)
+    } while (result.bids.length === PAGE_SIZE)
 
     return {
       notificationType: notificationType,
