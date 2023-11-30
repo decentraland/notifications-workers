@@ -6,4 +6,4 @@
 **/.env
 **/.eslintignore
 **/.eslintrc.json
-**/jest.config.js
+#**/jest.config.js
