@@ -26,7 +26,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
   it('should publish a new notification', async () => {
     const { pg, db, localFetch } = components
 
-    let notification = {
+    const notification = {
       eventKey: 'some-event-key',
       type: 'test',
       address: identity.realAccount.address,
@@ -36,6 +36,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
       timestamp: Date.now(),
       read_at: null
     }
+
     const response = await localFetch.fetch('/notifications', {
       method: 'POST',
       headers: {
