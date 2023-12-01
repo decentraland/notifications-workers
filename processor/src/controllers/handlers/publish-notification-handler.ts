@@ -1,7 +1,7 @@
 import { HandlerContextWithPath, NotificationRecord } from '../../types'
 import { NotAuthorizedError, parseJson } from '@notifications/commons'
 
-export async function sendNotificationsToSqsHandler(
+export async function publishNotificationHandler(
   context: Pick<HandlerContextWithPath<'config' | 'db', '/notifications'>, 'request' | 'components'>
 ) {
   const apiKey = await context.components.config.requireString('INTERNAL_API_KEY')

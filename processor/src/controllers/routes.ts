@@ -1,5 +1,5 @@
 import { Router } from '@well-known-components/http-server'
-import { sendNotificationsToSqsHandler } from './handlers/publish-handler'
+import { publishNotificationHandler } from './handlers/publish-notification-handler'
 import { GlobalContext } from '../types'
 import { errorHandler } from '@notifications/commons'
 import { statusHandler } from './handlers/status-handler'
@@ -12,7 +12,7 @@ export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContex
 
   router.get('/status', statusHandler)
 
-  router.post('/notifications', sendNotificationsToSqsHandler)
+  router.post('/notifications', publishNotificationHandler)
   router.post('/producers/:producer/set-since', setCursorHandler)
 
   return router
