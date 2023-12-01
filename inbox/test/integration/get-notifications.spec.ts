@@ -33,12 +33,14 @@ test('GET /notifications', function ({ components }) {
 
     const r = await makeRequest(components.localFetch, `/notifications`, identity)
     expect(r.status).toEqual(200)
-    expect(await r.json()).toMatchObject([
-      {
-        address: identity.realAccount.address.toLowerCase(),
-        type: 'test',
-        metadata: {}
-      }
-    ])
+    expect(await r.json()).toMatchObject({
+      notifications: [
+        {
+          address: identity.realAccount.address.toLowerCase(),
+          type: 'test',
+          metadata: {}
+        }
+      ]
+    })
   })
 })
