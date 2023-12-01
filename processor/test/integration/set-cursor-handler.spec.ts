@@ -1,11 +1,19 @@
 import { test } from '../components'
 import SQL from 'sql-template-strings'
 import { makeid } from '../utils'
+import { INotificationProducer } from '../../src/types'
 
 test('POST /producers/:producer/set-since', function ({ components, stubComponents }) {
+  let producerMock: INotificationProducer
+
   beforeEach(async () => {
     const { config } = stubComponents
     config.requireString.withArgs('INTERNAL_API_KEY').resolves('some-api-key')
+    producerMock = {
+      start: () => jest.fn() as any,
+      notificationType: jest.fn(),
+      setLastSuccessfulRun: jest.fn()
+    }
   })
 
   async function findCursor(cursorName: string) {
@@ -24,52 +32,30 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     )
   }
 
-  // it('should change a new notification', async () => {
-  //   const { pg, db, localFetch } = components
-  //
-  //   const response = await localFetch.fetch('/notifications', {
-  //     method: 'POST',
-  //     headers: {
-  //       Authorization: `Bearer some-api-key`
-  //     },
-  //     body: JSON.stringify(notification)
-  //   })
-  //
-  //   expect(response.status).toEqual(204)
-  //
-  //   const found = await findNotification('some-event-key', 'test', identity.realAccount.address)
-  //   expect(found).toBeDefined()
-  //   expect(found.metadata).toEqual(notification.metadata)
-  //   expect(found.read_at).toBeNull()
-  //   expect(found.timestamp).toEqual(`${notification.timestamp}`)
-  // })
-
   it('should should work', async () => {
-    const { pg, db, localFetch } = components
+    const { localFetch } = components
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
     await createCursor(cursorName)
 
-    producerRegistry.getProducer.withArgs(cursorName).returns({
-      start: () => jest.fn() as any,
-      notificationType: jest.fn(),
-      setLastSuccessfulRun: jest.fn()
-    })
+    producerRegistry.getProducer.withArgs(cursorName).returns(producerMock)
 
+    const newDate = new Date()
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer some-api-key`
       },
-      body: JSON.stringify({ since: new Date().toISOString() })
+      body: JSON.stringify({ since: newDate.toISOString() })
     })
 
     expect(response.status).toEqual(204)
+    expect(producerMock.setLastSuccessfulRun).toHaveBeenCalledWith(newDate)
   })
 
   it('should be protected by api key', async () => {
-    const { pg, db, localFetch } = components
+    const { localFetch } = components
 
     const cursorName = `cursor-${makeid(10)}`
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
@@ -81,7 +67,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
   })
 
   it('should fail if invalid cursor requested', async () => {
-    const { pg, db, localFetch } = components
+    const { localFetch } = components
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
@@ -103,17 +89,13 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
   })
 
   it('should fail if no since', async () => {
-    const { pg, db, localFetch } = components
+    const { localFetch } = components
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
     await createCursor(cursorName)
 
-    producerRegistry.getProducer.withArgs(cursorName).returns({
-      start: () => jest.fn() as any,
-      notificationType: jest.fn(),
-      setLastSuccessfulRun: jest.fn()
-    })
+    producerRegistry.getProducer.withArgs(cursorName).returns(producerMock)
 
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
@@ -131,17 +113,13 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
   })
 
   it('should fail if since of wrong type', async () => {
-    const { pg, db, localFetch } = components
+    const { localFetch } = components
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
     await createCursor(cursorName)
 
-    producerRegistry.getProducer.withArgs(cursorName).returns({
-      start: () => jest.fn() as any,
-      notificationType: jest.fn(),
-      setLastSuccessfulRun: jest.fn()
-    })
+    producerRegistry.getProducer.withArgs(cursorName).returns(producerMock)
 
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
@@ -159,17 +137,13 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
   })
 
   it('should fail if since of invalid date', async () => {
-    const { pg, db, localFetch } = components
+    const { localFetch } = components
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
     await createCursor(cursorName)
 
-    producerRegistry.getProducer.withArgs(cursorName).returns({
-      start: () => jest.fn() as any,
-      notificationType: jest.fn(),
-      setLastSuccessfulRun: jest.fn()
-    })
+    producerRegistry.getProducer.withArgs(cursorName).returns(producerMock)
 
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
