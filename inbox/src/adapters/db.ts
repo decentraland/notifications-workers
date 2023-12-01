@@ -47,12 +47,12 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
 
   async function markNotificationsAsRead(userId: string, notificationIds: string[]) {
     const query = SQL`
-        UPDATE users_notifications
-        SET read       = ${new Date()},
+        UPDATE notifications
+        SET read_at       = ${new Date()},
             updated_at = NOW()
-        WHERE read = false
+        WHERE read_at IS NULL
           AND address = ${userId.toLowerCase()}
-          AND notification_id = ANY (${notificationIds})
+          AND id = ANY (${notificationIds})
     `
     return (await pg.query<NotificationEvent>(query)).rowCount
   }
