@@ -13,11 +13,10 @@ export async function notificationsHandler(
   const userId = context.verification!.auth.toLowerCase()
 
   const notifications = await db.findNotifications([userId], onlyUnread, limit, from)
-  console.log('notifications', notifications)
   return {
     headers: {
       'Access-Control-Allow-Origin': '*'
     },
-    body: notifications
+    body: { notifications }
   }
 }
