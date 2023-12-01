@@ -37,9 +37,6 @@ export async function setCursorHandler(
 
   return {
     status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
     body: {}
   }
 }

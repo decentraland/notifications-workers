@@ -19,7 +19,8 @@ export async function initComponents(): Promise<AppComponents> {
     { config, logs },
     {
       cors: {
-        maxAge: 36000
+        methods: ['GET', 'HEAD', 'OPTIONS', 'DELETE', 'POST', 'PUT'],
+        maxAge: 86400
       }
     }
   )

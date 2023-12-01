@@ -17,9 +17,6 @@ export async function sendNotificationsToSqsHandler(
 
   return {
     status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
     body: {}
   }
 }

@@ -24,7 +24,6 @@ export async function eventsHandler(
 
   return {
     headers: {
-      'Access-Control-Allow-Origin': '*',
       'Cache-Control': 'no-cache',
       'Content-Type': 'text/event-stream',
       Connection: 'keep-alive'

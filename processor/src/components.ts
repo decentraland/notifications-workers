@@ -21,8 +21,17 @@ export async function initComponents(): Promise<AppComponents> {
   const config = await createDotEnvConfigComponent({ path: ['.env.default', '.env'] })
   const logs = await createLogComponent({})
   const metrics = await createMetricsComponent(metricDeclarations, { config })
-  const server = await createServerComponent<GlobalContext>({ config, logs }, {})
+  const server = await createServerComponent<GlobalContext>(
+    { config, logs },
+    {
+      cors: {
+        methods: ['GET', 'HEAD', 'OPTIONS', 'DELETE', 'POST', 'PUT'],
+        maxAge: 86400
+      }
+    }
+  )
   await instrumentHttpServerWithMetrics({ server, metrics, config })
+
   const statusChecks = await createStatusCheckComponent({ server, config })
 
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')

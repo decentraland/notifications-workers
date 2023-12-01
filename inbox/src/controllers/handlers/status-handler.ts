@@ -11,9 +11,6 @@ export async function statusHandler(context: Pick<HandlerContextWithPath<'config
   ])
 
   return {
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
     body: {
       version: version ?? '',
       currentTime: Date.now(),

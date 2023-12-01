@@ -18,9 +18,6 @@ export async function readNotificationsHandler(
   try {
     const rowCount = await db.markNotificationsAsRead(userId, notificationIds)
     return {
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
       body: {
         updated: rowCount
       }

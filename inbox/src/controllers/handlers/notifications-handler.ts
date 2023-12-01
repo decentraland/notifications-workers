@@ -14,9 +14,6 @@ export async function notificationsHandler(
 
   const notifications = await db.findNotifications([userId], onlyUnread, limit, from)
   return {
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
     body: { notifications }
   }
 }
