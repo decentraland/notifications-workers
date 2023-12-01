@@ -1,12 +1,15 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 import { formatMana } from '../../logic/utils'
 
+export const PAGE_SIZE = 1000
+
 const BIDS_QUERY = `
     query Bids($since: BigInt!, $paginationId: ID) {
       bids(
         where: {createdAt_gte: $since, id_gt: $paginationId}
         orderBy: id
         orderDirection: asc
+        first: ${PAGE_SIZE}
       ) {
         id
         bidder
@@ -39,8 +42,6 @@ const BIDS_QUERY = `
       }
     }
 `
-
-export const PAGE_SIZE = 100
 
 type BidsResponse = {
   bids: {

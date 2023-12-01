@@ -1,11 +1,14 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 
+export const PAGE_SIZE = 1000
+
 const SOLD_ITEMS_QUERY = `
     query Sales($since: BigInt!, $paginationId: ID) {
       sales(
         where: {timestamp_gte: $since, id_gt: $paginationId}
         orderBy: id
         orderDirection: asc
+        first: ${PAGE_SIZE}
       ) {
         id
         type
@@ -41,8 +44,6 @@ const SOLD_ITEMS_QUERY = `
       }
     }
   `
-
-export const PAGE_SIZE = 100
 
 type SalesResponse = {
   sales: {

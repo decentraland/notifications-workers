@@ -1,12 +1,15 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 import { formatMana } from '../../logic/utils'
 
+export const PAGE_SIZE = 1000
+
 const ROYALTIES_EARNED_QUERY = `
     query Sales($since: BigInt!, $paginationId: ID) {
       sales(
         where: {timestamp_gte: $since, royaltiesCut_not: "0", id_gt: $paginationId}
         orderBy: id
         orderDirection: asc
+        first: ${PAGE_SIZE}
       ) {
         id
         type
@@ -44,8 +47,6 @@ const ROYALTIES_EARNED_QUERY = `
       }
     }
   `
-
-export const PAGE_SIZE = 100
 
 type SalesResponse = {
   sales: {
