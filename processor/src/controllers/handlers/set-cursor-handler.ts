@@ -1,14 +1,5 @@
 import { HandlerContextWithPath } from '../../types'
-import { IHttpServerComponent } from '@well-known-components/interfaces'
-import { InvalidRequestError, NotAuthorizedError, NotFoundError } from '@notifications/commons'
-
-export async function parseJson(request: IHttpServerComponent.IRequest) {
-  try {
-    return await request.json()
-  } catch (error: any) {
-    throw new InvalidRequestError('Invalid body')
-  }
-}
+import { InvalidRequestError, NotAuthorizedError, NotFoundError, parseJson } from '@notifications/commons'
 
 export async function setCursorHandler(
   context: Pick<
@@ -28,7 +19,7 @@ export async function setCursorHandler(
     throw new NotFoundError(`Invalid producer: ${context.params.producer}`)
   }
 
-  const body = await parseJson(context.request)
+  const body = await parseJson<any>(context.request)
   if (!body.since) {
     throw new InvalidRequestError("Invalid request: missing 'since'.")
   }

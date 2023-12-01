@@ -1,14 +1,5 @@
 import { HandlerContextWithPath, NotificationRecord } from '../../types'
-import { IHttpServerComponent } from '@well-known-components/interfaces'
-import { InvalidRequestError, NotAuthorizedError } from '@notifications/commons'
-
-export async function parseJson(request: IHttpServerComponent.IRequest) {
-  try {
-    return await request.json()
-  } catch (error: any) {
-    throw new InvalidRequestError('Invalid body')
-  }
-}
+import { NotAuthorizedError, parseJson } from '@notifications/commons'
 
 export async function sendNotificationsToSqsHandler(
   context: Pick<HandlerContextWithPath<'config' | 'db', '/notifications'>, 'request' | 'components'>

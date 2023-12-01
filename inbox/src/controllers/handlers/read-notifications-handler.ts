@@ -1,14 +1,5 @@
-import { IHttpServerComponent } from '@well-known-components/interfaces'
 import { HandlerContextWithPath } from '../../types'
-import { InvalidRequestError } from '@notifications/commons'
-
-export async function parseJson(request: IHttpServerComponent.IRequest) {
-  try {
-    return await request.json()
-  } catch (error: any) {
-    throw new InvalidRequestError('Invalid body, must be JSON with notificationIds array field')
-  }
-}
+import { InvalidRequestError, parseJson } from '@notifications/commons'
 
 export async function readNotificationsHandler(
   context: Pick<HandlerContextWithPath<'db' | 'logs', '/notifications/read'>, 'request' | 'components' | 'verification'>
@@ -17,7 +8,7 @@ export async function readNotificationsHandler(
   const logger = logs.getLogger('read-notifications-handler')
 
   const userId: string = context.verification!.auth
-  const body = await parseJson(context.request)
+  const body = await parseJson<any>(context.request)
   const notificationIds = body.notificationIds
 
   if (!Array.isArray(notificationIds) || notificationIds.length === 0) {
