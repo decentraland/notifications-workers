@@ -15,13 +15,13 @@ export async function createProducer(
       lastSuccessfulRun = new Date(await db.fetchLastUpdateForNotificationType(producer.notificationType))
     }
 
-    logger.info('Checking for updates since ' + lastSuccessfulRun.toISOString())
+    logger.info(`Checking for updates since ${lastSuccessfulRun.toISOString()}.`)
 
     const produced = await producer.run(lastSuccessfulRun)
     await db.insertNotifications(produced.records)
     await db.updateLastUpdateForNotificationType(produced.notificationType, produced.lastRun)
     lastSuccessfulRun = produced.lastRun
-    logger.info(`Created ${produced.records.length} new notifications`)
+    logger.info(`Created ${produced.records.length} new notifications.`)
   }
 
   async function start(): Promise<void> {
@@ -33,7 +33,7 @@ export async function createProducer(
         try {
           await runProducer()
         } catch (e: any) {
-          logger.error(`Couldn't run producer: ${e.message}`)
+          logger.error(`Couldn't run producer: ${e.message}.`)
         }
       },
       null,

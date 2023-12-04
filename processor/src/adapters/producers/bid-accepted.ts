@@ -117,8 +117,7 @@ export async function bidAcceptedProducer(
             nftName: bid.nft.metadata[bid.nft.category]?.name,
             price: bid.price,
             title: 'Bid Accepted',
-            description: `
-            Your bid for ${formatMana(bid.price)} MANA for this ${
+            description: `Your bid for ${formatMana(bid.price)} MANA for this ${
               bid.nft.metadata[bid.nft.category]?.name
             } was accepted.`,
             network: 'polygon'

@@ -119,7 +119,7 @@ export async function bidReceivedProducer(
             title: 'Bid Received',
             description: `You received a bid of ${formatMana(bid.price)} MANA for this ${
               bid.nft.metadata[bid.nft.category]?.name
-            }`,
+            }.`,
             network: 'polygon'
           },
           timestamp: bid.createdAt
