@@ -115,6 +115,7 @@ export async function bidReceivedProducer(
             rarity: bid.nft.metadata[bid.nft.category]?.rarity,
             link: `${marketplaceBaseUrl}/account?assetType=nft&section=bids`,
             nftName: bid.nft.metadata[bid.nft.category]?.name,
+            price: bid.price,
             title: 'Bid Received',
             description: `You received a bid of ${formatMana(bid.price)} MANA for this ${
               bid.nft.metadata[bid.nft.category]?.name

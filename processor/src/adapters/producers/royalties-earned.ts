@@ -124,7 +124,7 @@ export async function royaltiesEarnedProducer(
             description: `You earned ${formatMana(sale.royaltiesCut)} MANA for this ${
               sale.nft.metadata[sale.nft.category]?.name
             }`,
-            royaltiesCut: formatMana(sale.royaltiesCut),
+            royaltiesCut: sale.royaltiesCut,
             royaltiesCollector: sale.royaltiesCollector,
             network: 'polygon'
           },
