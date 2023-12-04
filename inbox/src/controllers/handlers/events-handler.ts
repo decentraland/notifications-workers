@@ -3,9 +3,13 @@ import { Readable } from 'node:stream'
 import { HandlerContextWithPath } from '../../types'
 
 export async function eventsHandler(
-  context: Pick<HandlerContextWithPath<'eventsDispatcher', '/notifications/events'>, 'components' | 'verification'>
+  context: Pick<
+    HandlerContextWithPath<'eventsDispatcher' | 'logs', '/notifications/events'>,
+    'components' | 'verification'
+  >
 ) {
-  const { eventsDispatcher } = context.components
+  const { logs, eventsDispatcher } = context.components
+  const logger = logs.getLogger('events-handler')
 
   const userId = context.verification!.auth
 
@@ -18,6 +22,7 @@ export async function eventsHandler(
     }
   })
   const session = eventsDispatcher.addClient({ userId, stream })
+  logger.info(`New event stream for user ${userId} (session: ${session})`)
 
   stream // Tell the client to retry every 10 seconds if connectivity is lost
     .push('retry: 10000\n\n')

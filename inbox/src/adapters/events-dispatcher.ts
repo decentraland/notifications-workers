@@ -16,7 +16,12 @@ export type EventsDispatcherComponent = {
   sessionsCount(): number
 }
 
-export function createEventsDispatcherComponent({ db }: Pick<AppComponents, 'db' | 'logs'>): EventsDispatcherComponent {
+export function createEventsDispatcherComponent({
+  db,
+  logs
+}: Pick<AppComponents, 'db' | 'logs'>): EventsDispatcherComponent {
+  const logger = logs.getLogger('events-dispatcher')
+
   const sessions = new Map<string, Client>()
 
   function addClient(c: Client): string {
@@ -34,11 +39,12 @@ export function createEventsDispatcherComponent({ db }: Pick<AppComponents, 'db'
       return
     }
 
+    logger.info(`Polling for new notifications since ${from} for ${sessions.size} active sessions.`)
+
     const users = new Set(Array.from(sessions.values()).map((s) => s.userId))
-    const notifications = await db.findNotifications(Array.from(users), true, 100, from)
+    const notifications = await db.findNotifications(Array.from(users), true, 10000, from)
 
     const notificationsByUser = new Map<string, NotificationEvent[]>()
-
     for (const notification of notifications) {
       const userNotifications: NotificationEvent[] = notificationsByUser.get(notification.address) ?? []
       userNotifications.push(notification)

@@ -28,7 +28,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     const lowercaseUsers = users.map((u) => u.toLowerCase())
     const whereClause: SQLStatement[] = [SQL`address = ANY (${lowercaseUsers})`]
     if (from > 0) {
-      whereClause.push(SQL`timestamp >= to_timestamp(${from})`)
+      whereClause.push(SQL`timestamp >= ${from}`)
     }
     if (onlyUnread) {
       whereClause.push(SQL`read_at IS NULL`)

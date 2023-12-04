@@ -15,6 +15,8 @@ export async function readNotificationsHandler(
     throw new InvalidRequestError('Missing notificationIds')
   }
 
+  logger.info(`Marking notifications for user ${userId} as read: ${notificationIds}`)
+
   try {
     const rowCount = await db.markNotificationsAsRead(userId, notificationIds)
     return {
