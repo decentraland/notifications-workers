@@ -1,6 +1,6 @@
 import { HandlerContextWithPath } from '../../types'
 
-export async function statusHandler(context: Pick<HandlerContextWithPath<'config', '/status'>, 'url' | 'components'>) {
+export async function statusHandler(context: Pick<HandlerContextWithPath<'config', '/status'>, 'components'>) {
   const {
     components: { config }
   } = context
