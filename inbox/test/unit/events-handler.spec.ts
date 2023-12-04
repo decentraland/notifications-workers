@@ -1,14 +1,22 @@
 import { Readable } from 'stream'
 import { EventsDispatcherComponent } from '../../src/adapters/events-dispatcher'
 import { eventsHandler } from '../../src/controllers/handlers/events-handler'
+import { createLogComponent } from '@well-known-components/logger'
+import { ILoggerComponent } from '@well-known-components/interfaces'
 
 describe('events handler unit test', () => {
+  let logs: ILoggerComponent
+
+  beforeEach(async () => {
+    logs = await createLogComponent({})
+  })
+
   function executeHandler(eventsDispatcher: EventsDispatcherComponent) {
     const verification = {
       auth: 'user1',
       authMetadata: {}
     }
-    return eventsHandler({ components: { eventsDispatcher }, verification })
+    return eventsHandler({ components: { logs, eventsDispatcher }, verification })
   }
 
   it('should register and unregister the client', async () => {
