@@ -18,6 +18,7 @@ export async function eventsHandler(
       // this fn is called every time the readable "needs" a message
     },
     destroy() {
+      logger.info(`Closing event stream for user ${userId} (session: ${session})`)
       eventsDispatcher.removeClient(session)
     }
   })

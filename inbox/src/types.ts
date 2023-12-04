@@ -10,7 +10,7 @@ import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { DbComponent } from './adapters/db'
-import { EventsDispatcherComponent } from './adapters/events-dispatcher'
+import { Readable } from 'node:stream'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -50,6 +50,20 @@ export type HandlerContextWithPath<
   Path
 > &
   DecentralandSignatureContext<any>
+
+export type Client = {
+  userId: string
+  stream: Pick<Readable, 'push'>
+}
+
+export type EventsDispatcherComponent = {
+  start(): void
+  stop(): void
+  poll(from: number): Promise<void>
+  addClient(s: Client): string
+  removeClient(uuid: string): void
+  sessionsCount(): number
+}
 
 export type NotificationEvent = {
   id: string

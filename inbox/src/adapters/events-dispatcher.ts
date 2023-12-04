@@ -1,20 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { AppComponents, NotificationEvent } from '../types'
-import { Readable } from 'node:stream'
-
-export type Client = {
-  userId: string
-  stream: Pick<Readable, 'push'>
-}
-
-export type EventsDispatcherComponent = {
-  start(): void
-  stop(): void
-  poll(from: number): Promise<void>
-  addClient(s: Client): string
-  removeClient(uuid: string): void
-  sessionsCount(): number
-}
+import { AppComponents, Client, EventsDispatcherComponent, NotificationEvent } from '../types'
 
 export function createEventsDispatcherComponent({
   db,
@@ -35,11 +20,11 @@ export function createEventsDispatcherComponent({
   }
 
   async function poll(from: number) {
+    logger.info(`Polling for new notifications since ${from} for ${sessions.size} active sessions.`)
+
     if (sessions.size === 0) {
       return
     }
-
-    logger.info(`Polling for new notifications since ${from} for ${sessions.size} active sessions.`)
 
     const users = new Set(Array.from(sessions.values()).map((s) => s.userId))
     const notifications = await db.findNotifications(Array.from(users), true, 10000, from)
@@ -70,7 +55,7 @@ export function createEventsDispatcherComponent({
     interval = setInterval(async () => {
       await poll(lastCheck)
       lastCheck = Date.now()
-    }, 1000)
+    }, 10_000)
   }
 
   function stop() {
