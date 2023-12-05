@@ -20,14 +20,16 @@ export function createEventsDispatcherComponent({
   }
 
   async function poll(from: number) {
-    logger.info(`Polling for new notifications since ${from} for ${sessions.size} active sessions.`)
+    const since = Math.floor(from / 1000)
+    logger.info(`Polling for new notifications since ${since} for ${sessions.size} active sessions.`)
 
     if (sessions.size === 0) {
       return
     }
 
     const users = new Set(Array.from(sessions.values()).map((s) => s.userId))
-    const notifications = await db.findNotifications(Array.from(users), true, 10000, from)
+    const notifications = await db.findNotifications(Array.from(users), true, 10_000, since)
+    logger.info(`Found ${notifications.length} new notifications.`)
 
     const notificationsByUser = new Map<string, NotificationEvent[]>()
     for (const notification of notifications) {
@@ -42,6 +44,7 @@ export function createEventsDispatcherComponent({
           // Events are ordered and retrieved by the local timestamp of the database/server, not from the notification origin
 
           for (const notification of notifications) {
+            logger.info(`Sending new notification to user ${userId}: ${notification.id}`)
             stream.push(`data: ${JSON.stringify(notification)}\n\n`)
           }
         }
