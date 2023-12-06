@@ -1,7 +1,7 @@
 import { Router } from '@well-known-components/http-server'
 import { publishNotificationHandler } from './handlers/publish-notification-handler'
 import { GlobalContext } from '../types'
-import { errorHandler } from '@notifications/commons'
+import { errorHandler } from '@dcl/platform-server-commons'
 import { statusHandler } from './handlers/status-handler'
 import { setCursorHandler } from './handlers/set-cursor-handler'
 

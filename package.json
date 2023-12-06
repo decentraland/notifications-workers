@@ -1,7 +1,7 @@
 {
   "name": "notifications-workers",
   "private": true,
-  "workspaces": ["commons", "inbox", "processor"],
+  "workspaces": ["inbox", "processor"],
   "scripts": {
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test --passWithNoTests",

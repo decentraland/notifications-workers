@@ -2,7 +2,7 @@ import { createLogComponent } from '@well-known-components/logger'
 import { DbComponent } from '../../../../src/adapters/db'
 import { Request } from 'node-fetch'
 import { readNotificationsHandler } from '../../../../src/controllers/handlers/read-notifications-handler'
-import { InvalidRequestError } from '@notifications/commons'
+import { InvalidRequestError } from '@dcl/platform-server-commons'
 
 describe('read notifications handler unit test', () => {
   async function executeHandler(db: DbComponent, body: any) {

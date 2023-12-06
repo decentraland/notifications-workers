@@ -1,5 +1,5 @@
 import { HandlerContextWithPath } from '../../types'
-import { InvalidRequestError, NotAuthorizedError, NotFoundError, parseJson } from '@notifications/commons'
+import { InvalidRequestError, NotAuthorizedError, NotFoundError, parseJson } from '@dcl/platform-server-commons'
 
 export async function setCursorHandler(
   context: Pick<
