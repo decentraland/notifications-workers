@@ -12,7 +12,7 @@ export async function notificationsHandler(
 
   const userId = context.verification!.auth.toLowerCase()
 
-  const notifications = await db.findNotifications([userId], onlyUnread, limit, from)
+  const notifications = await db.findNotifications([userId], onlyUnread, from, limit)
   return {
     body: { notifications }
   }

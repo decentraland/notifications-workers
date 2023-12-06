@@ -28,7 +28,7 @@ export function createEventsDispatcherComponent({
     }
 
     const users = new Set(Array.from(sessions.values()).map((s) => s.userId))
-    const notifications = await db.findNotifications(Array.from(users), true, 10_000, since)
+    const notifications = await db.findNotifications(Array.from(users), true, since, 10_000)
     logger.info(`Found ${notifications.length} new notifications.`)
 
     const notificationsByUser = new Map<string, NotificationEvent[]>()

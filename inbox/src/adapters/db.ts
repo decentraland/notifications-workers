@@ -2,7 +2,7 @@ import SQL, { SQLStatement } from 'sql-template-strings'
 import { AppComponents, NotificationEvent } from '../types'
 
 export type DbComponent = {
-  findNotifications(users: string[], onlyUnread: boolean, limit: number, from: number): Promise<NotificationEvent[]>
+  findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<NotificationEvent[]>
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
 }
 
@@ -48,7 +48,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
   async function markNotificationsAsRead(userId: string, notificationIds: string[]) {
     const query = SQL`
         UPDATE notifications
-        SET read_at       = ${new Date()},
+        SET read_at    = ${new Date()},
             updated_at = NOW()
         WHERE read_at IS NULL
           AND address = ${userId.toLowerCase()}
