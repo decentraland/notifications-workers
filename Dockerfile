@@ -11,7 +11,6 @@ RUN apk update && apk add wget
 COPY . /app
 RUN yarn install --frozen-lockfile
 RUN yarn build
-#RUN yarn test
 
 # remove devDependencies, keep only used dependencies
 RUN yarn install --prod --frozen-lockfile

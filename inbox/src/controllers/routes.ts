@@ -6,7 +6,6 @@ import { errorHandler } from '@notifications/commons'
 import { wellKnownComponents as authorizationMiddleware } from '@dcl/platform-crypto-middleware'
 import { GlobalContext } from '../types'
 import { readNotificationsHandler } from './handlers/read-notifications-handler'
-import { tempEventsHandler } from './handlers/temp-events-handler'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 
@@ -20,7 +19,6 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   router.get('/status', statusHandler)
 
-  router.get('/notifications/events/:address', tempEventsHandler)
   router.get(
     '/notifications/events',
     authorizationMiddleware({

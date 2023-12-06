@@ -33,7 +33,7 @@ export async function setCursorHandler(
   }
 
   const producer = context.components.producerRegistry.getProducer(context.params.producer)
-  producer.setLastSuccessfulRun(sinceDate)
+  await producer.runProducerSinceDate(sinceDate)
 
   return {
     status: 204,

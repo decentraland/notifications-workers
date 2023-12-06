@@ -51,7 +51,7 @@ export type TestComponents = AppComponents & {
 export type INotificationProducer = {
   start: () => Promise<void>
   notificationType: () => string
-  setLastSuccessfulRun(date: Date): void
+  runProducerSinceDate(date: Date): Promise<void>
 }
 
 export type INotificationGenerator = {

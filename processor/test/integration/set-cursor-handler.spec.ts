@@ -12,7 +12,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     producerMock = {
       start: () => jest.fn() as any,
       notificationType: jest.fn(),
-      setLastSuccessfulRun: jest.fn()
+      runProducerSinceDate: jest.fn()
     }
   })
 
@@ -51,7 +51,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     })
 
     expect(response.status).toEqual(204)
-    expect(producerMock.setLastSuccessfulRun).toHaveBeenCalledWith(newDate)
+    expect(producerMock.runProducerSinceDate).toHaveBeenCalledWith(newDate)
   })
 
   it('should be protected by api key', async () => {

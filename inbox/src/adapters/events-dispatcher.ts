@@ -23,7 +23,6 @@ export function createEventsDispatcherComponent({
     const since = Math.floor(from / 1000)
 
     if (sessions.size === 0) {
-      logger.info(`No need to poll since ${since} as there are currently no active sessions.`)
       return
     }
 
