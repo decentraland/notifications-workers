@@ -27,48 +27,48 @@ describe('notifications handler unit test', () => {
     const components = await mockComponents()
     await executeHandler(components, {})
 
-    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 20, 0)
+    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 0, 20)
   })
 
   it('limit is invalid: should use the default', async () => {
     const components = await mockComponents()
     await executeHandler(components, { limit: 'a' })
 
-    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 20, 0)
+    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 0, 20)
   })
 
   it('limit is out of range: should use the default', async () => {
     const components = await mockComponents()
     await executeHandler(components, { limit: '3000' })
 
-    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 20, 0)
+    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 0, 20)
   })
 
   it('limit is ok: should use the provided value', async () => {
     const components = await mockComponents()
     await executeHandler(components, { limit: '30' })
 
-    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 30, 0)
+    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 0, 30)
   })
 
   it('only unread', async () => {
     const components = await mockComponents()
     await executeHandler(components, { onlyUnread: true })
 
-    expect(components.db.findNotifications).toBeCalledWith(['user1'], true, 20, 0)
+    expect(components.db.findNotifications).toBeCalledWith(['user1'], true, 0, 20)
   })
 
   it('from is invalid: should use 0', async () => {
     const components = await mockComponents()
     await executeHandler(components, { from: 'a' })
 
-    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 20, 0)
+    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 0, 20)
   })
 
   it('from is ok: should use the provided value', async () => {
     const components = await mockComponents()
     await executeHandler(components, { from: 100 })
 
-    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 20, 100)
+    expect(components.db.findNotifications).toBeCalledWith(['user1'], false, 100, 20)
   })
 })

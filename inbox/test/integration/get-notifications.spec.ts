@@ -5,13 +5,8 @@ import SQL from 'sql-template-strings'
 
 test('GET /notifications', function ({ components }) {
   let identity: Identity
-  beforeAll(async () => {
-    identity = await getIdentity()
-  })
-
   beforeEach(async () => {
-    const { pg } = components
-    // await pg.query('TRUNCATE notifications, users_notifications')
+    identity = await getIdentity()
   })
 
   it('should work', async () => {
@@ -37,8 +32,8 @@ test('GET /notifications', function ({ components }) {
       notifications: [
         {
           address: identity.realAccount.address.toLowerCase(),
-          type: 'test',
-          metadata: {}
+          type: notificationEvent.type,
+          metadata: notificationEvent.metadata
         }
       ]
     })

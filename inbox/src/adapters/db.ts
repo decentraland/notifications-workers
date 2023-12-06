@@ -17,7 +17,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
         SELECT id,
                type,
                address,
-               metadata, 
+               metadata,
                timestamp,
                CASE WHEN read_at IS NOT NULL THEN true ELSE false END AS read,
                created_at,
@@ -39,7 +39,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     }
 
     query.append(where)
-    query.append(SQL` ORDER BY created_at DESC`)
+    query.append(SQL` ORDER BY timestamp DESC`)
     query.append(SQL` LIMIT ${limit}`)
 
     return (await pg.query<NotificationEvent>(query)).rows

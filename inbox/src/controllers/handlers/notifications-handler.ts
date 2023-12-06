@@ -6,7 +6,7 @@ export async function notificationsHandler(
   const { db } = context.components
   const searchParams = context.url.searchParams
   const from = parseInt(searchParams.get('from') || '0', 10) || 0
-  const onlyUnread = !!searchParams.get('onlyUnread')
+  const onlyUnread = searchParams.has('onlyUnread')
   const limitParam = parseInt(searchParams.get('limit') || '20', 10)
   const limit = !!limitParam && limitParam > 0 && limitParam <= 50 ? limitParam : 20
 

@@ -39,11 +39,9 @@ export function createEventsDispatcherComponent({
       userNotifications.push(notification)
       notificationsByUser.set(notification.address, userNotifications)
     }
-    console.log('notificationsByUser', notificationsByUser)
 
     for (const [address, notifications] of notificationsByUser) {
       for (const { userId, stream } of sessions.values()) {
-        console.log('userId', userId, 'address', address)
         if (userId === address) {
           // Events are ordered and retrieved by the local timestamp of the database/server, not from the notification origin
 
