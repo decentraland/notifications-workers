@@ -21,11 +21,13 @@ export function createEventsDispatcherComponent({
 
   async function poll(from: number) {
     const since = Math.floor(from / 1000)
-    logger.info(`Polling for new notifications since ${since} for ${sessions.size} active sessions.`)
 
     if (sessions.size === 0) {
+      logger.info(`No need to poll since ${since} as there are currently no active sessions.`)
       return
     }
+
+    logger.info(`Polling for new notifications since ${since} for ${sessions.size} active sessions.`)
 
     const users = new Set(Array.from(sessions.values()).map((s) => s.userId))
     const notifications = await db.findNotifications(Array.from(users), true, since, 10_000)
@@ -37,9 +39,11 @@ export function createEventsDispatcherComponent({
       userNotifications.push(notification)
       notificationsByUser.set(notification.address, userNotifications)
     }
+    console.log('notificationsByUser', notificationsByUser)
 
     for (const [address, notifications] of notificationsByUser) {
       for (const { userId, stream } of sessions.values()) {
+        console.log('userId', userId, 'address', address)
         if (userId === address) {
           // Events are ordered and retrieved by the local timestamp of the database/server, not from the notification origin
 
@@ -54,7 +58,7 @@ export function createEventsDispatcherComponent({
 
   let interval: any
   function start() {
-    let lastCheck = 0
+    let lastCheck = Date.now()
     interval = setInterval(async () => {
       await poll(lastCheck)
       lastCheck = Date.now()

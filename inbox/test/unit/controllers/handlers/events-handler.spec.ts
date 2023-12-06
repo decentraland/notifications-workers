@@ -1,8 +1,8 @@
 import { Readable } from 'stream'
-import { eventsHandler } from '../../src/controllers/handlers/events-handler'
+import { eventsHandler } from '../../../../src/controllers/handlers/events-handler'
 import { createLogComponent } from '@well-known-components/logger'
 import { ILoggerComponent } from '@well-known-components/interfaces'
-import { EventsDispatcherComponent } from '../../src/types'
+import { EventsDispatcherComponent } from '../../../../src/types'
 
 describe('events handler unit test', () => {
   let logs: ILoggerComponent

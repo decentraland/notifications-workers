@@ -1,5 +1,5 @@
 import { createLogComponent } from '@well-known-components/logger'
-import { createEventsDispatcherComponent } from '../../src/adapters/events-dispatcher'
+import { createEventsDispatcherComponent } from '../../../src/adapters/events-dispatcher'
 
 describe('events dispatcher adapter unit test', () => {
   it('should dispatch to each client', async () => {

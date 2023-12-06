@@ -11,7 +11,7 @@ export async function eventsHandler(
   const { logs, eventsDispatcher } = context.components
   const logger = logs.getLogger('events-handler')
 
-  const userId = context.verification!.auth
+  const userId = context.verification!.auth.toLowerCase()
 
   const stream = new Readable({
     read() {

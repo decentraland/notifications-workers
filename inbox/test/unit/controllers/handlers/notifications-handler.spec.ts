@@ -1,6 +1,6 @@
 import { createLogComponent } from '@well-known-components/logger'
-import { notificationsHandler } from '../../src/controllers/handlers/notifications-handler'
-import { AppComponents } from '../../src/types'
+import { notificationsHandler } from '../../../../src/controllers/handlers/notifications-handler'
+import { AppComponents } from '../../../../src/types'
 import querystring from 'node:querystring'
 
 describe('notifications handler unit test', () => {
