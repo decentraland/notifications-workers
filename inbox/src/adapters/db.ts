@@ -10,8 +10,8 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
   async function findNotifications(
     users: string[],
     onlyUnread: boolean,
-    limit: number,
-    from: number
+    from: number,
+    limit: number
   ): Promise<NotificationEvent[]> {
     const query: SQLStatement = SQL`
         SELECT id,

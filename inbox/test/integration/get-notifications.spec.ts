@@ -12,8 +12,6 @@ test('GET /notifications', function ({ components }) {
   it('should work', async () => {
     const { pg, db } = components
 
-    console.log(identity.realAccount.address)
-
     const notificationEvent = randomNotification(identity.realAccount.address.toLowerCase())
     await pg.query(SQL`
         INSERT INTO notifications (event_key, type, address, metadata, timestamp, created_at, updated_at)
