@@ -49,7 +49,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     const query = SQL`
         UPDATE notifications
         SET read_at    = ${new Date()},
-            updated_at = NOW()
+            updated_at = ${new Date()}
         WHERE read_at IS NULL
           AND address = ${userId.toLowerCase()}
           AND id = ANY (${notificationIds})
