@@ -1,6 +1,5 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomNotification } from '../utils'
-import { createFetchComponent } from '@well-known-components/fetch-component'
 import SQL from 'sql-template-strings'
 
 test('GET /notifications', function ({ components }) {

@@ -8,13 +8,13 @@ import { AppComponents, GlobalContext } from './types'
 import path from 'path'
 import { createSubgraphComponent } from '@well-known-components/thegraph-component'
 import { createProducerRegistry } from './adapters/producer-registry'
-import { createFetchComponent } from './adapters/fetch'
 import { createDbComponent } from './adapters/db'
 import { itemSoldProducer } from './adapters/producers/item-sold'
 import { royaltiesEarnedProducer } from './adapters/producers/royalties-earned'
 import { createProducer } from './adapters/create-producer'
 import { bidReceivedProducer } from './adapters/producers/bid-received'
 import { bidAcceptedProducer } from './adapters/producers/bid-accepted'
+import { createFetchComponent } from '@dcl/platform-server-commons'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
