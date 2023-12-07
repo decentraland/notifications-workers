@@ -1,6 +1,5 @@
 import { Router } from '@well-known-components/http-server'
 import { statusHandler } from './handlers/status-handler'
-import { eventsHandler } from './handlers/events-handler'
 import { notificationsHandler } from './handlers/notifications-handler'
 import { errorHandler } from '@dcl/platform-server-commons'
 import { wellKnownComponents as authorizationMiddleware } from '@dcl/platform-crypto-middleware'
@@ -20,15 +19,6 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
   router.get('/status', statusHandler)
 
   router.get(
-    '/notifications/events',
-    authorizationMiddleware({
-      optional: false,
-      expiration: FIVE_MINUTES,
-      fetcher
-    }),
-    eventsHandler
-  )
-  router.get(
     '/notifications',
     authorizationMiddleware({
       optional: false,
@@ -37,6 +27,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
     }),
     notificationsHandler
   )
+
   router.put(
     '/notifications/read',
     authorizationMiddleware({

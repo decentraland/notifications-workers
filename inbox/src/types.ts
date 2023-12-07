@@ -24,7 +24,6 @@ export type BaseComponents = {
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
   db: DbComponent
-  eventsDispatcher: EventsDispatcherComponent
   fetcher: IFetchComponent
 }
 
@@ -54,15 +53,6 @@ export type HandlerContextWithPath<
 export type Client = {
   userId: string
   stream: Pick<Readable, 'push'>
-}
-
-export type EventsDispatcherComponent = {
-  start(): void
-  stop(): void
-  poll(from: number): Promise<void>
-  addClient(s: Client): string
-  removeClient(uuid: string): void
-  sessionsCount(): number
 }
 
 export type NotificationEvent = {
