@@ -19,8 +19,8 @@ test('GET /notifications', function ({ components }) {
                 ${identity.realAccount.address.toLowerCase()},
                 ${notificationEvent.metadata}::jsonb,
                 ${notificationEvent.timestamp},
-                ${new Date()},
-                ${new Date()});
+                ${notificationEvent.created_at},
+                ${notificationEvent.updated_at});
     `)
 
     const r = await makeRequest(components.localFetch, `/notifications`, identity)

@@ -46,7 +46,7 @@ describe('royalties earned producer', () => {
     })
 
     const producer = await royaltiesEarnedProducer({ config, l2CollectionsSubGraph })
-    let result = await producer.run(new Date())
+    let result = await producer.run(Date.now())
     expect(result).toMatchObject({
       notificationType: 'royalties_earned',
       records: [
@@ -65,7 +65,7 @@ describe('royalties earned producer', () => {
             rarity: 'epic',
             title: 'Royalties Earned'
           },
-          timestamp: '1653065866'
+          timestamp: 1653065866000
         }
       ],
       lastRun: expect.anything()
@@ -84,7 +84,7 @@ describe('royalties earned producer', () => {
     })
 
     const producer = await royaltiesEarnedProducer({ config, l2CollectionsSubGraph })
-    let result = await producer.run(new Date())
+    let result = await producer.run(Date.now())
     expect(result).toMatchObject({
       notificationType: 'royalties_earned',
       records: [],

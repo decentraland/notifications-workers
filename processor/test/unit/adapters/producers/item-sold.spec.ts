@@ -44,7 +44,7 @@ describe('item sold producer', () => {
     })
 
     const producer = await itemSoldProducer({ config, l2CollectionsSubGraph })
-    let result = await producer.run(new Date())
+    let result = await producer.run(Date.now())
     expect(result).toMatchObject({
       notificationType: 'item_sold',
       records: [
@@ -64,7 +64,7 @@ describe('item sold producer', () => {
             seller: '0xb2a01607d2c1a36027cf7f37cb765ea010ff6300',
             title: 'Item Sold'
           },
-          timestamp: '1701717552'
+          timestamp: 1701717552000
         }
       ],
       lastRun: expect.anything()
@@ -83,7 +83,7 @@ describe('item sold producer', () => {
     })
 
     const producer = await itemSoldProducer({ config, l2CollectionsSubGraph })
-    let result = await producer.run(new Date())
+    let result = await producer.run(Date.now())
     expect(result).toMatchObject({
       notificationType: 'item_sold',
       records: [],

@@ -8,10 +8,10 @@ export async function createProducer(
   const { logs, db } = components
   const logger = logs.getLogger(`producer-${producer.notificationType}`)
 
-  let lastSuccessfulRun: Date | undefined
+  let lastSuccessfulRun: number | undefined
 
-  async function runProducer(lastSuccessfulRun: Date) {
-    logger.info(`Checking for updates since ${lastSuccessfulRun.toISOString()}.`)
+  async function runProducer(lastSuccessfulRun: number) {
+    logger.info(`Checking for updates since ${lastSuccessfulRun}.`)
 
     const produced = await producer.run(lastSuccessfulRun)
     await db.insertNotifications(produced.records)
@@ -23,14 +23,13 @@ export async function createProducer(
   async function start(): Promise<void> {
     logger.info(`Scheduling producer for ${producer.notificationType}.`)
 
-    if (!lastSuccessfulRun) {
-      lastSuccessfulRun = new Date(await db.fetchLastUpdateForNotificationType(producer.notificationType))
-    }
-
     const job = new CronJob(
       '0 * * * * *',
       async function () {
         try {
+          if (!lastSuccessfulRun) {
+            lastSuccessfulRun = await db.fetchLastUpdateForNotificationType(producer.notificationType)
+          }
           lastSuccessfulRun = await runProducer(lastSuccessfulRun!)
         } catch (e: any) {
           logger.error(`Couldn't run producer: ${e.message}.`)
@@ -46,7 +45,7 @@ export async function createProducer(
   return {
     start,
     notificationType: () => producer.notificationType,
-    runProducerSinceDate: async (date: Date) => {
+    runProducerSinceDate: async (date: number) => {
       await runProducer(date)
     }
   }

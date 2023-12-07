@@ -87,16 +87,15 @@ export async function itemSoldProducer(
 
   const marketplaceBaseUrl = await config.requireString('MARKETPLACE_BASE_URL')
 
-  async function run(since: Date) {
-    const now = new Date()
+  async function run(since: number) {
+    const now = Date.now()
     const produced: NotificationRecord[] = []
-    const sinceDate: number = Math.floor(since.getTime() / 1000)
 
     let result: SalesResponse
     let paginationId = ''
     do {
       result = await l2CollectionsSubGraph.query<SalesResponse>(SOLD_ITEMS_QUERY, {
-        since: sinceDate,
+        since: Math.floor(since / 1000),
         paginationId
       })
 
@@ -120,7 +119,7 @@ export async function itemSoldProducer(
             description: `You just sold this ${sale.nft.metadata[sale.nft.category]?.name}.`,
             network: 'polygon'
           },
-          timestamp: sale.timestamp
+          timestamp: sale.timestamp * 1000
         }
         produced.push(notificationRecord)
 

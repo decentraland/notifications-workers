@@ -82,7 +82,7 @@ export function randomNotification(address: string): NotificationEvent {
     },
     timestamp: Date.now(),
     read_at: null,
-    created_at: new Date(),
-    updated_at: new Date()
+    created_at: Date.now(),
+    updated_at: Date.now()
   }
 }

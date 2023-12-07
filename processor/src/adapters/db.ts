@@ -3,7 +3,7 @@ import { AppComponents, NotificationRecord } from '../types'
 
 export type DbComponent = {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
-  updateLastUpdateForNotificationType(notificationType: string, timestamp: Date): Promise<void>
+  updateLastUpdateForNotificationType(notificationType: string, timestamp: number): Promise<void>
   insertNotifications(notificationRecord: NotificationRecord[]): Promise<void>
 }
 
@@ -15,19 +15,19 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
         WHERE id = ${notificationType};
     `)
     if (result.rowCount === 0) {
-      return new Date().getTime()
+      return Date.now()
     }
 
     return result.rows[0].last_successful_run_at
   }
 
-  async function updateLastUpdateForNotificationType(notificationType: string, timestamp: Date): Promise<void> {
+  async function updateLastUpdateForNotificationType(notificationType: string, timestamp: number): Promise<void> {
     const query = SQL`
         INSERT INTO cursors (id, last_successful_run_at, created_at, updated_at)
-        VALUES (${notificationType}, ${timestamp}, ${new Date()}, ${new Date()})
+        VALUES (${notificationType}, ${timestamp}, ${Date.now()}, ${Date.now()})
         ON CONFLICT (id) DO UPDATE
         SET last_successful_run_at = ${timestamp},
-            updated_at             = ${new Date()};
+            updated_at             = ${Date.now()};
     `
 
     await pg.query<any>(query)
@@ -47,12 +47,12 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
                   ${notificationRecord.metadata}::jsonb,
                   ${notificationRecord.timestamp},
                   NULL,
-                  ${new Date()},
-                  ${new Date()})
+                  ${Date.now()},
+                  ${Date.now()})
           ON CONFLICT (event_key, type, address) DO UPDATE
               SET metadata   = ${notificationRecord.metadata}::jsonb,
                   timestamp  = ${notificationRecord.timestamp},
-                  updated_at = ${new Date()};
+                  updated_at = ${Date.now()};
       `
       await pg.query(buildQuery)
     }

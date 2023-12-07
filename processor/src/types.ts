@@ -51,11 +51,11 @@ export type TestComponents = AppComponents & {
 export type INotificationProducer = {
   start: () => Promise<void>
   notificationType: () => string
-  runProducerSinceDate(date: Date): Promise<void>
+  runProducerSinceDate(date: number): Promise<void>
 }
 
 export type INotificationGenerator = {
-  run(since: Date): Promise<INotificationProducerResult>
+  run(since: number): Promise<INotificationProducerResult>
   notificationType: string
 }
 
@@ -75,5 +75,5 @@ export type NotificationRecord = {
 export type INotificationProducerResult = {
   notificationType: string
   records: NotificationRecord[]
-  lastRun: Date
+  lastRun: number
 }

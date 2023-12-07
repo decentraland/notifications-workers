@@ -8,9 +8,9 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     address: { type: PgType.VARCHAR, notNull: true },
     metadata: { type: PgType.JSONB, notNull: true },
     timestamp: { type: PgType.BIGINT, notNull: true },
-    read_at: { type: PgType.TIMESTAMP, notNull: false },
-    created_at: { type: PgType.TIMESTAMP, notNull: true },
-    updated_at: { type: PgType.TIMESTAMP, notNull: true }
+    read_at: { type: PgType.BIGINT, notNull: false },
+    created_at: { type: PgType.BIGINT, notNull: true },
+    updated_at: { type: PgType.BIGINT, notNull: true }
   })
 
   pgm.sql(`CREATE INDEX address_ops_idx ON notifications (address varchar_pattern_ops);`)

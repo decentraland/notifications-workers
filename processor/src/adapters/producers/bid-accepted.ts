@@ -86,16 +86,15 @@ export async function bidAcceptedProducer(
 
   const marketplaceBaseUrl = await config.requireString('MARKETPLACE_BASE_URL')
 
-  async function run(since: Date) {
-    const now = new Date()
+  async function run(since: number) {
+    const now = Date.now()
     const produced: NotificationRecord[] = []
-    const sinceDate: number = Math.floor(since.getTime() / 1000)
 
     let result: BidsResponse
     let paginationId = ''
     do {
       result = await l2CollectionsSubGraph.query<BidsResponse>(BIDS_QUERY, {
-        since: sinceDate,
+        since: Math.floor(since / 1000),
         paginationId
       })
 
@@ -122,7 +121,7 @@ export async function bidAcceptedProducer(
             } was accepted.`,
             network: 'polygon'
           },
-          timestamp: bid.updatedAt
+          timestamp: bid.updatedAt * 1000
         }
         produced.push(notificationRecord)
 

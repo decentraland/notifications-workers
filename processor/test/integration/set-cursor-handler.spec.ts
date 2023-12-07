@@ -28,7 +28,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
   async function createCursor(cursorName: string) {
     await components.pg.query(
       SQL`INSERT INTO cursors (id, last_successful_run_at, created_at, updated_at)
-            VALUES (${cursorName}, ${new Date()}, ${new Date()}, ${new Date()})`
+            VALUES (${cursorName}, ${Date.now()}, ${Date.now()}, ${Date.now()})`
     )
   }
 
@@ -51,7 +51,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     })
 
     expect(response.status).toEqual(204)
-    expect(producerMock.runProducerSinceDate).toHaveBeenCalledWith(newDate)
+    expect(producerMock.runProducerSinceDate).toHaveBeenCalledWith(newDate.getTime())
   })
 
   it('should be protected by api key', async () => {

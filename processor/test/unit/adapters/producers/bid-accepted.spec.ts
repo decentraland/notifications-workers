@@ -43,7 +43,7 @@ describe('bid accepted producer', () => {
     })
 
     const producer = await bidAcceptedProducer({ config, l2CollectionsSubGraph })
-    let result = await producer.run(new Date())
+    let result = await producer.run(Date.now())
     expect(result).toMatchObject({
       notificationType: 'bid_accepted',
       records: [
@@ -64,7 +64,7 @@ describe('bid accepted producer', () => {
             seller: '0xb2a01607d2c1a36027cf7f37cb765ea010ff6300',
             title: 'Bid Accepted'
           },
-          timestamp: '1701379983'
+          timestamp: 1701379983000
         }
       ],
       lastRun: expect.anything()
@@ -83,7 +83,7 @@ describe('bid accepted producer', () => {
     })
 
     const producer = await bidAcceptedProducer({ config, l2CollectionsSubGraph })
-    let result = await producer.run(new Date())
+    let result = await producer.run(Date.now())
     expect(result).toMatchObject({
       notificationType: 'bid_accepted',
       records: [],
