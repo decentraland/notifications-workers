@@ -6,12 +6,6 @@ on:
       - "main"
 
 jobs:
-  cd:
-    uses: decentraland/platform-actions/.github/workflows/apps-docker-next.yml@main
-    with:
-      service-name: notifications-workers
-    secrets: inherit
-
   notifications-processor-deployment:
     uses: decentraland/platform-actions/.github/workflows/apps-docker-next.yml@main
     with:
