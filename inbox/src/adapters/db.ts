@@ -1,8 +1,8 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { AppComponents, NotificationEvent } from '../types'
+import { AppComponents, DbNotification, NotificationEvent } from '../types'
 
 export type DbComponent = {
-  findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<NotificationEvent[]>
+  findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<DbNotification[]>
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
 }
 
@@ -12,14 +12,15 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     onlyUnread: boolean,
     from: number,
     limit: number
-  ): Promise<NotificationEvent[]> {
+  ): Promise<DbNotification[]> {
     const query: SQLStatement = SQL`
         SELECT id,
+               event_key,
                type,
                address,
                metadata,
                timestamp,
-               CASE WHEN read_at IS NOT NULL THEN true ELSE false END AS read,
+               read_at,
                created_at,
                updated_at
         FROM notifications
@@ -42,7 +43,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     query.append(SQL` ORDER BY timestamp DESC`)
     query.append(SQL` LIMIT ${limit}`)
 
-    return (await pg.query<NotificationEvent>(query)).rows
+    return (await pg.query<DbNotification>(query)).rows
   }
 
   async function markNotificationsAsRead(userId: string, notificationIds: string[]) {

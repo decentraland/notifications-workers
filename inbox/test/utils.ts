@@ -3,7 +3,7 @@ import { Authenticator, AuthIdentity, IdentityType } from '@dcl/crypto'
 import { AuthChain } from '@dcl/schemas'
 import { AUTH_CHAIN_HEADER_PREFIX, AUTH_METADATA_HEADER, AUTH_TIMESTAMP_HEADER } from '@dcl/platform-crypto-middleware'
 import { IPgComponent } from '@well-known-components/pg-component'
-import { NotificationEvent } from '../src/types'
+import { DbNotification, NotificationEvent } from '../src/types'
 import { IFetchComponent } from '@well-known-components/interfaces'
 
 export async function cleanup(pg: IPgComponent): Promise<void> {
@@ -71,7 +71,7 @@ export function makeRequest(localFetch: IFetchComponent, path: string, identity:
   })
 }
 
-export function randomNotification(address: string): NotificationEvent {
+export function randomNotification(address: string): DbNotification {
   return {
     id: '',
     event_key: 'some-event-key',

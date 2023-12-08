@@ -55,7 +55,7 @@ export type Client = {
   stream: Pick<Readable, 'push'>
 }
 
-export type NotificationEvent = {
+export type DbNotification = {
   id: string
   event_key: string
   type: string
@@ -65,4 +65,13 @@ export type NotificationEvent = {
   read_at?: number
   created_at: number
   updated_at: number
+}
+
+export type NotificationEvent = {
+  id: string
+  type: string
+  address: string
+  metadata: any
+  timestamp: number
+  read: boolean
 }

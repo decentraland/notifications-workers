@@ -1,4 +1,4 @@
-import { HandlerContextWithPath } from '../../types'
+import { DbNotification, HandlerContextWithPath } from '../../types'
 
 export async function notificationsHandler(
   context: Pick<HandlerContextWithPath<'db' | 'logs', '/notifications'>, 'url' | 'components' | 'verification'>
@@ -13,7 +13,16 @@ export async function notificationsHandler(
   const userId = context.verification!.auth.toLowerCase()
 
   const notifications = await db.findNotifications([userId], onlyUnread, from, limit)
+  const slimNotifications = notifications.map((notification: DbNotification) => ({
+    id: notification.id,
+    type: notification.type,
+    address: notification.address,
+    metadata: notification.metadata,
+    timestamp: notification.timestamp,
+    read: !!notification.read_at
+  }))
+
   return {
-    body: { notifications }
+    body: { notifications: slimNotifications }
   }
 }
