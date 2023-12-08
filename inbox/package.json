@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc -p tsconfig.json --watch",
     "start": "node --trace-warnings --abort-on-uncaught-exception --unhandled-rejections=strict dist/index.js",
     "test": "jest --forceExit --detectOpenHandles --coverage --verbose",
     "lint:check": "npx eslint . --ext .ts",
@@ -24,7 +25,7 @@
   },
   "dependencies": {
     "@dcl/platform-crypto-middleware": "^1.0.2",
-    "@notifications/commons": "0.0.0",
+    "@dcl/platform-server-commons": "^0.0.3",
     "@well-known-components/env-config-provider": "^1.2.0",
     "@well-known-components/fetch-component": "^2.0.2",
     "@well-known-components/http-server": "^2.0.0",

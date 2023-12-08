@@ -9,13 +9,8 @@ import {
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
-import { PushNotification } from '@notifications/commons'
-import { SQSComponent } from './adapters/sqs'
-import { ProcessorComponent } from './adapters/processor'
-
-export type NotificationToSqs = {
-  Message: PushNotification // Do not change this name is from SQS
-}
+import { ISubgraphComponent } from '@well-known-components/thegraph-component'
+import { DbComponent } from './adapters/db'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -23,9 +18,12 @@ export type AppComponents = {
   server: IHttpServerComponent<GlobalContext>
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
+  db: DbComponent
   statusChecks: IBaseComponent
-  sqs: SQSComponent
-  processor: ProcessorComponent
+  producerRegistry: IProducerRegistry
+  l2CollectionsSubGraph: ISubgraphComponent
+  marketplaceSubGraph: ISubgraphComponent
+  rentalsSubGraph: ISubgraphComponent
 }
 
 // this type simplifies the typings of http handlers
@@ -50,28 +48,32 @@ export type TestComponents = AppComponents & {
   localFetch: IFetchComponent
 }
 
-export type NotificationError = {
-  error: string
-  message: string
+export type INotificationProducer = {
+  start: () => Promise<void>
+  notificationType: () => string
+  runProducerSinceDate(date: number): Promise<void>
 }
 
-export class InvalidRequestError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
+export type INotificationGenerator = {
+  run(since: number): Promise<INotificationProducerResult>
+  notificationType: string
 }
 
-export class NotFoundError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
+export type IProducerRegistry = IBaseComponent & {
+  addProducer: (producer: INotificationProducer) => void
+  getProducer: (notificationType: string) => INotificationProducer
 }
 
-export class NotAuthorizedError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
+export type NotificationRecord = {
+  eventKey: string
+  type: string
+  address: string
+  metadata: any
+  timestamp: number
+}
+
+export type INotificationProducerResult = {
+  notificationType: string
+  records: NotificationRecord[]
+  lastRun: number
 }

@@ -1,12 +1,19 @@
 import { Router } from '@well-known-components/http-server'
-import { sendNotificationsToSqsHandler } from './handlers/publish-handler'
+import { publishNotificationHandler } from './handlers/publish-notification-handler'
 import { GlobalContext } from '../types'
+import { errorHandler } from '@dcl/platform-server-commons'
+import { statusHandler } from './handlers/status-handler'
+import { setCursorHandler } from './handlers/set-cursor-handler'
 
 // We return the entire router because it will be easier to test than a whole server
 export async function setupRouter(_: GlobalContext): Promise<Router<GlobalContext>> {
   const router = new Router<GlobalContext>()
+  router.use(errorHandler)
 
-  router.post('/notifications', sendNotificationsToSqsHandler)
+  router.get('/status', statusHandler)
+
+  router.post('/notifications', publishNotificationHandler)
+  router.post('/producers/:producer/set-since', setCursorHandler)
 
   return router
 }

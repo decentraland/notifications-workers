@@ -10,7 +10,7 @@ import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { DbComponent } from './adapters/db'
-import { EventsDispatcherComponent } from './adapters/events-dispatcher'
+import { Readable } from 'node:stream'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -24,7 +24,6 @@ export type BaseComponents = {
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
   db: DbComponent
-  eventsDispatcher: EventsDispatcherComponent
   fetcher: IFetchComponent
 }
 
@@ -51,23 +50,28 @@ export type HandlerContextWithPath<
 > &
   DecentralandSignatureContext<any>
 
-export class InvalidRequestError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
+export type Client = {
+  userId: string
+  stream: Pick<Readable, 'push'>
 }
 
-export class NotFoundError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
+export type DbNotification = {
+  id: string
+  event_key: string
+  type: string
+  address: string
+  metadata: any
+  timestamp: number
+  read_at?: number
+  created_at: number
+  updated_at: number
 }
 
-export class NotAuthorizedError extends Error {
-  constructor(message: string) {
-    super(message)
-    Error.captureStackTrace(this, this.constructor)
-  }
+export type NotificationEvent = {
+  id: string
+  type: string
+  address: string
+  metadata: any
+  timestamp: number
+  read: boolean
 }
