@@ -3,7 +3,7 @@ import { Authenticator, AuthIdentity, IdentityType } from '@dcl/crypto'
 import { AuthChain } from '@dcl/schemas'
 import { AUTH_CHAIN_HEADER_PREFIX, AUTH_METADATA_HEADER, AUTH_TIMESTAMP_HEADER } from '@dcl/platform-crypto-middleware'
 import { IPgComponent } from '@well-known-components/pg-component'
-import { DbNotification, NotificationEvent } from '../src/types'
+import { DbNotification } from '../src/types'
 import { IFetchComponent } from '@well-known-components/interfaces'
 
 export async function cleanup(pg: IPgComponent): Promise<void> {

@@ -9,7 +9,7 @@ test('GET /notifications', function ({ components }) {
   })
 
   it('should work', async () => {
-    const { pg, db } = components
+    const { pg } = components
 
     const notificationEvent = randomNotification(identity.realAccount.address.toLowerCase())
     await pg.query(SQL`
