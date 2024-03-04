@@ -23,7 +23,7 @@ describe('read notifications handler unit test', () => {
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn()
     }
-    expect(executeHandler(db, {})).rejects.toThrowError(InvalidRequestError)
+    await expect(executeHandler(db, {})).rejects.toThrowError(InvalidRequestError)
   })
 
   it('should throw InvalidRequestError if no notificationIds are provided (empty list)', async () => {
@@ -31,7 +31,7 @@ describe('read notifications handler unit test', () => {
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn()
     }
-    expect(executeHandler(db, { notificationIds: [] })).rejects.toThrowError(InvalidRequestError)
+    await expect(executeHandler(db, { notificationIds: [] })).rejects.toThrowError(InvalidRequestError)
   })
 
   it('should execute markNotificationsAsRead', async () => {
