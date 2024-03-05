@@ -1,18 +1,12 @@
 import { HandlerContextWithPath } from '../../types'
-import { InvalidRequestError, NotAuthorizedError, NotFoundError, parseJson } from '@dcl/platform-server-commons'
+import { InvalidRequestError, NotFoundError, parseJson } from '@dcl/platform-server-commons'
 
 export async function setCursorHandler(
   context: Pick<
-    HandlerContextWithPath<'config' | 'producerRegistry', '/producers/:producer/set-since'>,
+    HandlerContextWithPath<'producerRegistry', '/producers/:producer/set-since'>,
     'params' | 'request' | 'components'
   >
 ) {
-  const apiKey = await context.components.config.requireString('INTERNAL_API_KEY')
-  const authorization = context.request.headers.get('Authorization')
-  if (authorization !== `Bearer ${apiKey}`) {
-    throw new NotAuthorizedError('Invalid API Key')
-  }
-
   try {
     context.components.producerRegistry.getProducer(context.params.producer)
   } catch (error: any) {

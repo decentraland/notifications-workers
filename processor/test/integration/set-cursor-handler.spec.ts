@@ -7,8 +7,6 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
   let producerMock: INotificationProducer
 
   beforeEach(async () => {
-    const { config } = stubComponents
-    config.requireString.withArgs('INTERNAL_API_KEY').resolves('some-api-key')
     producerMock = {
       start: () => jest.fn() as any,
       notificationType: jest.fn(),
