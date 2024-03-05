@@ -8,6 +8,7 @@ import { TestComponents } from '../src/types'
 import { initComponents as originalInitComponents } from '../src/components'
 import { createTestMetricsComponent } from '@well-known-components/metrics'
 import { metricDeclarations } from '../src/metrics'
+import { createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
 
 /**
  * Behaves like Jest "describe" function, used to describe a test for a
@@ -24,10 +25,16 @@ export const test = createRunner<TestComponents>({
 async function initComponents(): Promise<TestComponents> {
   const components = await originalInitComponents()
 
-  const { config } = components
+  const config = await createDotEnvConfigComponent(
+    { path: ['.env.default', '.env'] },
+    {
+      INTERNAL_API_KEY: 'some-api-key'
+    }
+  )
 
   return {
     ...components,
+    config,
     metrics: createTestMetricsComponent(metricDeclarations),
     localFetch: await createLocalFetchCompoment(config)
   }

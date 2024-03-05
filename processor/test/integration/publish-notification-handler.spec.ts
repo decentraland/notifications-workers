@@ -1,12 +1,10 @@
 import { test } from '../components'
 import { getIdentity, Identity } from '../utils'
 
-test('POST /notifications', function ({ components, stubComponents }) {
+test('POST /notifications', function ({ components }) {
   let identity: Identity
   beforeEach(async () => {
     identity = await getIdentity()
-    const { config } = stubComponents
-    config.requireString.withArgs('INTERNAL_API_KEY').resolves('some-api-key')
   })
 
   async function findNotification(someEventKey: string, type: string, address: string) {
