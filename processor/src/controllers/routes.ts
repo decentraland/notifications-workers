@@ -12,7 +12,7 @@ export async function setupRouter(globalContext: GlobalContext): Promise<Router<
 
   router.get('/status', statusHandler)
 
-  const secret = await globalContext.components.config.requireString('INTERNAL_API_KEY')
+  const secret = await globalContext.components.config.getString('INTERNAL_API_KEY')
   if (secret) {
     router.post('/notifications', bearerTokenMiddleware(secret), publishNotificationHandler)
     router.post('/producers/:producer/set-since', bearerTokenMiddleware(secret), setCursorHandler)
