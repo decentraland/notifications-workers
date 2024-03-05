@@ -38,7 +38,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
       headers: {
         Authorization: `Bearer some-api-key`
       },
-      body: JSON.stringify(notification)
+      body: JSON.stringify([notification])
     })
 
     expect(response.status).toEqual(204)
@@ -68,11 +68,11 @@ test('POST /notifications', function ({ components, stubComponents }) {
       headers: {
         Authorization: `Bearer some-api-key`
       },
-      body: JSON.stringify(notification)
+      body: JSON.stringify([notification])
     })
 
     expect(response.status).toEqual(400)
-    expect(await response.json()).toMatchObject({ error: 'Bad request', message: '"metadata" is required' })
+    expect(await response.json()).toMatchObject({ error: 'Bad request', message: '"[0].metadata" is required' })
     expect(await findNotification(notification.eventKey, notification.type, notification.address)).toBeUndefined()
   })
 

@@ -2,15 +2,17 @@ import { HandlerContextWithPath, NotificationRecord } from '../../types'
 import { InvalidRequestError, NotAuthorizedError, parseJson } from '@dcl/platform-server-commons'
 import Joi from 'joi'
 
-const schema = Joi.object().keys({
-  type: Joi.string().required(),
-  address: Joi.string()
-    .required()
-    .regex(/^0x[a-fA-F0-9]{40}$/),
-  eventKey: Joi.string().required(),
-  metadata: Joi.object().required(),
-  timestamp: Joi.number().integer().required()
-})
+const schema = Joi.array().items(
+  Joi.object().keys({
+    type: Joi.string().required(),
+    address: Joi.string()
+      .required()
+      .regex(/^0x[a-fA-F0-9]{40}$/),
+    eventKey: Joi.string().required(),
+    metadata: Joi.object().required(),
+    timestamp: Joi.number().integer().required()
+  })
+)
 
 export async function publishNotificationHandler(
   context: Pick<HandlerContextWithPath<'config' | 'db' | 'logs', '/notifications'>, 'request' | 'components'>
@@ -30,7 +32,7 @@ export async function publishNotificationHandler(
     throw new InvalidRequestError(validate.error.message)
   }
 
-  await context.components.db.insertNotifications([body as NotificationRecord])
+  await context.components.db.insertNotifications(body as NotificationRecord[])
 
   return {
     status: 204,

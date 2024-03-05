@@ -125,7 +125,7 @@ Mark notifications as read, this action is irreversible. The request body must c
 
 ## Store notification by external producer
 
-- `POST /notifications {type, address, eventKey, metadata, timestamp}`
+- `POST /notifications {type, address, eventKey, metadata, timestamp}[]`
 - Authentication: API KEY
 
 Creates a new notification and stores it in the DB. A full example of the payload can look like this:
@@ -135,22 +135,24 @@ POST /notifications HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer <API_KEY>
 
-{
-  "type": "item_sold",
-  "address": "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314",
-  "eventKey": "0xf17828d89d6056215d65451fc61a802f5054fa01aa0acc39b644dc191086dd8b",
-  "metadata": {
-    "link": "https://market.decentraland.zone/contracts/0x040d868f15e4a943a04b7119a9bb3b546714e7cf/tokens/105312291668557186697918027683670432318895095400549111254310977544",
-    "image": "https://peer.decentraland.zone/lambdas/collections/contents/urn:decentraland:mumbai:collections-v2:0x040d868f15e4a943a04b7119a9bb3b546714e7cf:1/thumbnail",
-    "title": "Item Sold",
-    "rarity": "legendary",
-    "seller": "0x099224485b542351e3071ae2a4855bea98dd8285",
-    "nftName": "Toga Female combined",
-    "category": "wearable",
-    "description": "You just sold this Toga Female combined"
-  },
-  "timestamp": 1680108689
-}
+[
+  {
+    "type": "item_sold",
+    "address": "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314",
+    "eventKey": "0xf17828d89d6056215d65451fc61a802f5054fa01aa0acc39b644dc191086dd8b",
+    "metadata": {
+      "link": "https://market.decentraland.zone/contracts/0x040d868f15e4a943a04b7119a9bb3b546714e7cf/tokens/105312291668557186697918027683670432318895095400549111254310977544",
+      "image": "https://peer.decentraland.zone/lambdas/collections/contents/urn:decentraland:mumbai:collections-v2:0x040d868f15e4a943a04b7119a9bb3b546714e7cf:1/thumbnail",
+      "title": "Item Sold",
+      "rarity": "legendary",
+      "seller": "0x099224485b542351e3071ae2a4855bea98dd8285",
+      "nftName": "Toga Female combined",
+      "category": "wearable",
+      "description": "You just sold this Toga Female combined"
+    },
+    "timestamp": 1680108689
+  }
+]
 ```
 
 # Run locally
