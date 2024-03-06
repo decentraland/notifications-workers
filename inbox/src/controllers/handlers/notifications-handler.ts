@@ -19,7 +19,7 @@ export async function notificationsHandler(
     address: notification.address,
     metadata: notification.metadata,
     timestamp: notification.timestamp,
-    read: !!notification.read_at
+    read: !!notification.read_at || !!notification.broadcast_read_at
   }))
 
   return {

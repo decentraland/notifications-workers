@@ -43,7 +43,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
           INSERT INTO notifications (event_key, type, address, metadata, timestamp, read_at, created_at, updated_at)
           VALUES (${notificationRecord.eventKey},
                   ${notificationRecord.type},
-                  ${notificationRecord.address.toLowerCase()},
+                  ${notificationRecord.address?.toLowerCase() || null},
                   ${notificationRecord.metadata}::jsonb,
                   ${notificationRecord.timestamp},
                   NULL,
