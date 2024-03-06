@@ -73,7 +73,7 @@ export function getAuthHeaders(
 }
 
 export function makeRequest(localFetch: IFetchComponent, path: string, identity: Identity, options: any = {}) {
-  let url = new URL(path, 'http://localhost')
+  const url = new URL(path, 'http://localhost')
 
   return localFetch.fetch(path, {
     method: 'GET',
