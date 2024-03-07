@@ -1,7 +1,7 @@
 import { test } from '../components'
-import SQL from 'sql-template-strings'
 import { makeid } from '../utils'
 import { INotificationProducer } from '../../src/types'
+import { createCursor } from '@notifications/inbox/test/db'
 
 test('POST /producers/:producer/set-since', function ({ components, stubComponents }) {
   let producerMock: INotificationProducer
@@ -14,28 +14,12 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     }
   })
 
-  async function findCursor(cursorName: string) {
-    const result = await components.pg.query(
-      `SELECT *
-         FROM cursors
-         WHERE id = '${cursorName}'`
-    )
-    return result.rows[0]
-  }
-
-  async function createCursor(cursorName: string) {
-    await components.pg.query(
-      SQL`INSERT INTO cursors (id, last_successful_run_at, created_at, updated_at)
-            VALUES (${cursorName}, ${Date.now()}, ${Date.now()}, ${Date.now()})`
-    )
-  }
-
   it('should should work', async () => {
     const { localFetch } = components
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
-    await createCursor(cursorName)
+    await createCursor(components, cursorName)
 
     producerRegistry.getProducer.withArgs(cursorName).returns(producerMock)
 
@@ -91,7 +75,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
-    await createCursor(cursorName)
+    await createCursor(components, cursorName)
 
     producerRegistry.getProducer.withArgs(cursorName).returns(producerMock)
 
@@ -115,7 +99,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
-    await createCursor(cursorName)
+    await createCursor(components, cursorName)
 
     producerRegistry.getProducer.withArgs(cursorName).returns(producerMock)
 
@@ -139,7 +123,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     const { producerRegistry } = stubComponents
 
     const cursorName = `cursor-${makeid(10)}`
-    await createCursor(cursorName)
+    await createCursor(components, cursorName)
 
     producerRegistry.getProducer.withArgs(cursorName).returns(producerMock)
 

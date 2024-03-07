@@ -43,3 +43,19 @@ export async function findNotifications(
 
   return queryResult.rows
 }
+
+export async function findCursor({ pg }: Pick<AppComponents, 'pg'>, cursorName: string) {
+  const result = await pg.query(
+    `SELECT *
+         FROM cursors
+         WHERE id = '${cursorName}'`
+  )
+  return result.rows[0]
+}
+
+export async function createCursor({ pg }: Pick<AppComponents, 'pg'>, cursorName: string) {
+  await pg.query(
+    SQL`INSERT INTO cursors (id, last_successful_run_at, created_at, updated_at)
+            VALUES (${cursorName}, ${Date.now()}, ${Date.now()}, ${Date.now()})`
+  )
+}

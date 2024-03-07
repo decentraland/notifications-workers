@@ -8,10 +8,6 @@ import { IFetchComponent } from '@well-known-components/interfaces'
 import { getPublicKey } from '@noble/secp256k1'
 import { hexToBytes } from 'eth-connect'
 
-export async function cleanup(pg: IPgComponent): Promise<void> {
-  await pg.query(`TRUNCATE notifications, cursors`)
-}
-
 export type Identity = { authChain: AuthIdentity; realAccount: IdentityType; ephemeralIdentity: IdentityType }
 
 export async function getIdentity(): Promise<Identity> {
@@ -96,7 +92,7 @@ export function makeRequest(localFetch: IFetchComponent, path: string, identity:
 export function randomNotification(address: string | undefined): DbNotification {
   return {
     id: '',
-    event_key: 'some-event-key',
+    event_key: 'some-event-key-' + Math.random(),
     type: 'test',
     address: address?.toLowerCase(),
     metadata: {
