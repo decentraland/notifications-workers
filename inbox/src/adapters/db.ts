@@ -62,36 +62,19 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
         RETURNING id
     `)
     let notificationCount = updateResult.rowCount
-    const addressedNotificationsIds = new Set(updateResult.rows.map((n) => n.id))
 
+    const addressedNotificationsIds = new Set(updateResult.rows.map((n) => n.id))
     const potentialBroadcastIds = notificationIds.filter((id) => !addressedNotificationsIds.has(id))
     if (potentialBroadcastIds.length > 0) {
-      const broadcastNotificationsIds = (
-        await pg.query<DbNotification>(SQL`
-        SELECT id
-        FROM notifications
-        WHERE address IS NULL
-          AND id = ANY (${potentialBroadcastIds})
-    `)
-      ).rows
-
-      if (broadcastNotificationsIds.length > 0) {
-        const lowerUserId = userId.toLowerCase()
-        const query = SQL`
+      const lowerUserId = userId.toLowerCase()
+      const query = SQL`
         INSERT INTO broadcast_read (notification_id, address, read_at)
-        VALUES `
+SELECT id, ${lowerUserId}, ${readAt}
+FROM notifications
+WHERE id = ANY (${potentialBroadcastIds}) AND address IS NULL
+       ON CONFLICT (notification_id, address) DO NOTHING`
 
-        const data = broadcastNotificationsIds.map((n) => SQL`(${n.id}, ${lowerUserId}, ${readAt})`)
-        for (let i = 0; i < data.length; i++) {
-          query.append(data[i])
-          if (i < data.length - 1) {
-            query.append(SQL`, `)
-          }
-        }
-        query.append(SQL` ON CONFLICT (notification_id, address) DO NOTHING`)
-
-        notificationCount += (await pg.query<NotificationEvent>(query)).rowCount
-      }
+      notificationCount += (await pg.query<NotificationEvent>(query)).rowCount
     }
 
     return notificationCount
