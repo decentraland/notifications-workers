@@ -65,7 +65,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     const addressedNotificationsIds = new Set(updateResult.rows.map((n) => n.id))
 
     const potentialBroadcastIds = notificationIds.filter((id) => !addressedNotificationsIds.has(id))
-    if (potentialBroadcastIds) {
+    if (potentialBroadcastIds.length > 0) {
       const broadcastNotificationsIds = (
         await pg.query<DbNotification>(SQL`
         SELECT id
