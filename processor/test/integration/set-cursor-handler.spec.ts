@@ -5,6 +5,7 @@ import { createCursor } from '@notifications/inbox/test/db'
 
 test('POST /producers/:producer/set-since', function ({ components, stubComponents }) {
   let producerMock: INotificationProducer
+  let apiKey: string
 
   beforeEach(async () => {
     producerMock = {
@@ -12,6 +13,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
       notificationType: jest.fn(),
       runProducerSinceDate: jest.fn()
     }
+    apiKey = await components.config.getString('INTERNAL_API_KEY')
   })
 
   it('should should work', async () => {
@@ -27,7 +29,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer some-api-key`
+        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({ since: newDate.toISOString() })
     })
@@ -58,7 +60,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer some-api-key`
+        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({})
     })
@@ -82,7 +84,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer some-api-key`
+        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({})
     })
@@ -106,7 +108,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer some-api-key`
+        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({ since: 34 })
     })
@@ -130,7 +132,7 @@ test('POST /producers/:producer/set-since', function ({ components, stubComponen
     const response = await localFetch.fetch(`/producers/${cursorName}/set-since`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer some-api-key`
+        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({ since: 'invalid-date' })
     })

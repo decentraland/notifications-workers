@@ -3,8 +3,11 @@ import { getIdentity, Identity } from '../utils'
 
 test('POST /notifications', function ({ components }) {
   let identity: Identity
+  let apiKey: string
+
   beforeEach(async () => {
     identity = await getIdentity()
+    apiKey = await components.config.getString('INTERNAL_API_KEY')
   })
 
   async function findNotification(someEventKey: string, type: string, address: string) {
@@ -34,7 +37,7 @@ test('POST /notifications', function ({ components }) {
     const response = await localFetch.fetch('/notifications', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer some-api-key`
+        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify([notification])
     })
@@ -64,7 +67,7 @@ test('POST /notifications', function ({ components }) {
     const response = await localFetch.fetch('/notifications', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer some-api-key`
+        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify([notification])
     })
