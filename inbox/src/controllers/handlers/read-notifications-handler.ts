@@ -8,7 +8,7 @@ export async function readNotificationsHandler(
   const logger = logs.getLogger('read-notifications-handler')
 
   const userId: string = context.verification!.auth
-  const body = await parseJson<any>(context.request)
+  const body = await parseJson<{ notificationIds: string[] }>(context.request)
   const notificationIds = body.notificationIds
 
   if (!Array.isArray(notificationIds) || notificationIds.length === 0) {
@@ -25,7 +25,7 @@ export async function readNotificationsHandler(
       }
     }
   } catch (error: any) {
-    logger.error(`Error updating notifications: ${error.message}`)
-    throw new InvalidRequestError('Invalid origin_id and type, as they already exist')
+    logger.error(`Error marking notifications as read: ${error.message}`)
+    throw new Error('Error marking notifications as read')
   }
 }

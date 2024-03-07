@@ -59,7 +59,7 @@ export type DbNotification = {
   id: string
   event_key: string
   type: string
-  address: string
+  address?: string
   metadata: any
   timestamp: number
   read_at?: number

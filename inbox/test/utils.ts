@@ -93,12 +93,12 @@ export function makeRequest(localFetch: IFetchComponent, path: string, identity:
   })
 }
 
-export function randomNotification(address: string): DbNotification {
+export function randomNotification(address: string | undefined): DbNotification {
   return {
     id: '',
     event_key: 'some-event-key',
     type: 'test',
-    address,
+    address: address?.toLowerCase(),
     metadata: {
       test: `This is a test at ${new Date().toISOString()}`
     },

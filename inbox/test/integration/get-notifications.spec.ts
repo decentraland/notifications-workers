@@ -1,6 +1,8 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomNotification } from '../utils'
-import SQL from 'sql-template-strings'
+import { createNotification } from '../db'
+import { DbNotification } from '../../src/types'
+import * as fetch from 'node-fetch'
 
 test('GET /notifications', function ({ components }) {
   let identity: Identity
@@ -9,32 +11,56 @@ test('GET /notifications', function ({ components }) {
   })
 
   it('should work', async () => {
-    const { pg } = components
+    const { pg, db } = components
 
     const notificationEvent = randomNotification(identity.realAccount.address.toLowerCase())
-    const queryResult = await pg.query(SQL`
-        INSERT INTO notifications (event_key, type, address, metadata, timestamp, created_at, updated_at)
-        VALUES (${notificationEvent.event_key},
-                ${notificationEvent.type},
-                ${identity.realAccount.address.toLowerCase()},
-                ${notificationEvent.metadata}::jsonb,
-                ${notificationEvent.timestamp},
-                ${notificationEvent.created_at},
-                ${notificationEvent.updated_at})
-        RETURNING id;
-    `)
-    const notificationId = queryResult.rows[0].id
+    const notificationId = await createNotification({ pg }, notificationEvent)
 
-    const r = await makeRequest(components.localFetch, `/notifications`, identity)
-    expect(r.status).toBe(200)
-    const response = await r.json()
-    const found = response.notifications.find((notification: any) => notification.id === notificationId)
-    expect(found).toBeTruthy()
-    expect(found).toMatchObject({
-      id: notificationId,
-      address: identity.realAccount.address.toLowerCase(),
-      type: notificationEvent.type,
-      metadata: notificationEvent.metadata
-    })
+    const broadcastNotificationEvent = randomNotification(undefined)
+    const broadcastNotificationId = await createNotification({ pg }, broadcastNotificationEvent)
+
+    async function checkResponseForNotifications(
+      response: fetch.Response,
+      notificationEvent: DbNotification,
+      broadcastNotificationEvent: DbNotification,
+      read: boolean
+    ) {
+      expect(response.status).toBe(200)
+      const body = await response.json()
+      const foundNotification = body.notifications.find((notification: any) => notification.id === notificationId)
+      expect(foundNotification).toBeTruthy()
+      expect(foundNotification).toMatchObject({
+        id: notificationEvent.id,
+        address: identity.realAccount.address.toLowerCase(),
+        type: notificationEvent.type,
+        metadata: notificationEvent.metadata,
+        read
+      })
+
+      const foundBroadcastNotification = body.notifications.find(
+        (notification: any) => notification.id === broadcastNotificationId
+      )
+      expect(foundBroadcastNotification).toBeTruthy()
+      expect(foundBroadcastNotification).toMatchObject({
+        id: broadcastNotificationEvent.id,
+        address: null,
+        type: broadcastNotificationEvent.type,
+        metadata: broadcastNotificationEvent.metadata,
+        read
+      })
+    }
+
+    const r1 = await makeRequest(components.localFetch, `/notifications`, identity)
+    await checkResponseForNotifications(r1, notificationEvent, broadcastNotificationEvent, false)
+
+    expect(
+      await db.markNotificationsAsRead(identity.realAccount.address.toLowerCase(), [
+        notificationId,
+        broadcastNotificationId
+      ])
+    ).toBe(2)
+
+    const r2 = await makeRequest(components.localFetch, `/notifications`, identity)
+    await checkResponseForNotifications(r2, notificationEvent, broadcastNotificationEvent, true)
   })
 })

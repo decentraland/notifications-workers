@@ -50,43 +50,48 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
   }
 
   async function markNotificationsAsRead(userId: string, notificationIds: string[]) {
-    let notificationCount = (
-      await pg.query<NotificationEvent>(SQL`
+    const readAt = Date.now()
+
+    const updateResult = await pg.query<NotificationEvent>(SQL`
         UPDATE notifications
-        SET read_at    = ${Date.now()},
-            updated_at = ${Date.now()}
+        SET read_at    = ${readAt},
+            updated_at = ${readAt}
         WHERE read_at IS NULL
           AND address = ${userId.toLowerCase()}
           AND id = ANY (${notificationIds})
+        RETURNING id
     `)
-    ).rowCount
+    let notificationCount = updateResult.rowCount
+    const addressedNotificationsIds = new Set(updateResult.rows.map((n) => n.id))
 
-    const broadcastNotificationsIds = (
-      await pg.query<DbNotification>(SQL`
+    const potentialBroadcastIds = notificationIds.filter((id) => !addressedNotificationsIds.has(id))
+    if (potentialBroadcastIds) {
+      const broadcastNotificationsIds = (
+        await pg.query<DbNotification>(SQL`
         SELECT id
         FROM notifications
         WHERE address IS NULL
-          AND id = ANY (${notificationIds})
+          AND id = ANY (${potentialBroadcastIds})
     `)
-    ).rows
+      ).rows
 
-    if (broadcastNotificationsIds.length > 0) {
-      const lowerUserId = userId.toLowerCase()
-      const readAt = Date.now()
-      const data = broadcastNotificationsIds.map((n) => SQL`(${n.id}, ${lowerUserId}, ${readAt})`)
-      const query = SQL`
+      if (broadcastNotificationsIds.length > 0) {
+        const lowerUserId = userId.toLowerCase()
+        const query = SQL`
         INSERT INTO broadcast_read (notification_id, address, read_at)
         VALUES `
-      for (let i = 0; i < data.length; i++) {
-        query.append(data[i])
-        if (i < data.length - 1) {
-          query.append(SQL`, `)
-        }
-      }
-      query.append(SQL`ON CONFLICT (event_key, type, address) DO NOTHING`)
-      console.log('insert query', query)
 
-      notificationCount += (await pg.query<NotificationEvent>(query)).rowCount
+        const data = broadcastNotificationsIds.map((n) => SQL`(${n.id}, ${lowerUserId}, ${readAt})`)
+        for (let i = 0; i < data.length; i++) {
+          query.append(data[i])
+          if (i < data.length - 1) {
+            query.append(SQL`, `)
+          }
+        }
+        query.append(SQL` ON CONFLICT (notification_id, address) DO NOTHING`)
+
+        notificationCount += (await pg.query<NotificationEvent>(query)).rowCount
+      }
     }
 
     return notificationCount
