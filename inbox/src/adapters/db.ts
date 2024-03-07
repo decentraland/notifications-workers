@@ -54,11 +54,11 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
 
     const updateResult = await pg.query<NotificationEvent>(SQL`
         UPDATE notifications
-        SET read_at    = ${readAt},
-            updated_at = ${readAt}
-        WHERE read_at IS NULL
-          AND address = ${userId.toLowerCase()}
-          AND id = ANY (${notificationIds})
+        SET    read_at    = ${readAt},
+               updated_at = ${readAt}
+        WHERE  read_at IS NULL
+          AND  address = ${userId.toLowerCase()}
+          AND  id = ANY (${notificationIds})
         RETURNING id
     `)
     let notificationCount = updateResult.rowCount
@@ -69,10 +69,11 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
       const lowerUserId = userId.toLowerCase()
       const query = SQL`
         INSERT INTO broadcast_read (notification_id, address, read_at)
-SELECT id, ${lowerUserId}, ${readAt}
-FROM notifications
-WHERE id = ANY (${potentialBroadcastIds}) AND address IS NULL
-       ON CONFLICT (notification_id, address) DO NOTHING`
+          SELECT id, ${lowerUserId}, ${readAt}
+          FROM   notifications
+          WHERE  id = ANY (${potentialBroadcastIds})
+            AND  address IS NULL
+        ON CONFLICT (notification_id, address) DO NOTHING`
 
       notificationCount += (await pg.query<NotificationEvent>(query)).rowCount
     }
