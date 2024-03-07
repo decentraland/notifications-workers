@@ -5,12 +5,10 @@ import Joi from 'joi'
 const schema = Joi.array().items(
   Joi.object().keys({
     type: Joi.string().required(),
-    address: Joi.string()
-      .required()
-      .regex(/^0x[a-fA-F0-9]{40}$/),
+    address: Joi.string().regex(/^0x[a-fA-F0-9]{40}$/),
     eventKey: Joi.string().required(),
     metadata: Joi.object().required(),
-    timestamp: Joi.number().integer().required()
+    timestamp: Joi.number().integer().required().greater(1672531200000) // 2023-01-01T00:00:00Z
   })
 )
 
