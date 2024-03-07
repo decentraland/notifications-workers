@@ -95,7 +95,7 @@ test('GET /notifications', function ({ components }) {
   })
 
   it('should work with from filter', async () => {
-    const { pg, db } = components
+    const { pg } = components
 
     const n1 = randomNotification(identity.realAccount.address.toLowerCase())
     n1.timestamp = n1.timestamp - 10 * 60 * 60 * 1000
