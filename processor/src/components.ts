@@ -16,6 +16,7 @@ import { bidReceivedProducer } from './adapters/producers/bid-received'
 import { bidAcceptedProducer } from './adapters/producers/bid-accepted'
 import { createFetchComponent } from '@dcl/platform-server-commons'
 import { rentalStartedProducer } from './adapters/producers/rental-started'
+import { rentalEndedProducer } from './adapters/producers/rental-ended'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -93,6 +94,9 @@ export async function initComponents(): Promise<AppComponents> {
   )
   producerRegistry.addProducer(
     await createProducer({ db, logs }, await rentalStartedProducer({ config, landManagerSubGraph, rentalsSubGraph }))
+  )
+  producerRegistry.addProducer(
+    await createProducer({ db, logs }, await rentalEndedProducer({ config, landManagerSubGraph, rentalsSubGraph }))
   )
 
   return {

@@ -4,10 +4,10 @@ import { findCoordinatesForLandTokenId } from '../../logic/land-utils'
 
 export const PAGE_SIZE = 1000
 
-const RENTALS_STARTED_QUERY = `
-    query StartedRentals($since: BigInt!, $upTo: BigInt!, $paginationId: ID) {
+const RENTALS_ENDED_QUERY = `
+    query EndedRentals($since: BigInt!, $upTo: BigInt!, $paginationId: ID) {
       rentals(
-        where: {id_gt: $paginationId, startedAt_gte: $since, startedAt_lt: $upTo}
+        where: {id_gt: $paginationId, endsAt_gte: $since, endsAt_lt: $upTo}
         orderBy: id
         orderDirection: desc
         first: ${PAGE_SIZE}
@@ -37,9 +37,9 @@ type RentalsResponse = {
   }[]
 }
 
-const notificationType = 'rental_started'
+const notificationType = 'rental_ended'
 
-export async function rentalStartedProducer(
+export async function rentalEndedProducer(
   components: Pick<AppComponents, 'config' | 'landManagerSubGraph' | 'rentalsSubGraph'>
 ): Promise<INotificationGenerator> {
   const { config, landManagerSubGraph, rentalsSubGraph } = components
@@ -53,7 +53,7 @@ export async function rentalStartedProducer(
     let result: RentalsResponse
     let paginationId = ''
     do {
-      result = await rentalsSubGraph.query<RentalsResponse>(RENTALS_STARTED_QUERY, {
+      result = await rentalsSubGraph.query<RentalsResponse>(RENTALS_ENDED_QUERY, {
         since: Math.floor(since / 1000),
         upTo: Math.floor(now / 1000),
         paginationId
@@ -78,8 +78,8 @@ export async function rentalStartedProducer(
             tokenId: rental.tokenId,
             link: `${marketplaceBaseUrl}/contracts/${rental.contractAddress}/tokens/${rental.tokenId}/manage`,
             land: rental.tokenId,
-            title: 'LAND Rented',
-            description: `Your @LAND was rented by @account.`
+            title: 'Rent Period Ending',
+            description: `The rent for your @LAND has ended.`
           },
           timestamp: parseInt(rental.startedAt) * 1000
         }
@@ -93,7 +93,7 @@ export async function rentalStartedProducer(
       const landsByTokenId = await findCoordinatesForLandTokenId(landManagerSubGraph, chunk)
       for (const record of chunk) {
         record.metadata.land = landsByTokenId[record.metadata.tokenId]
-        record.metadata.description = `Your land ${landsByTokenId[record.metadata.tokenId]} was rented by ${record.metadata.tenant}.`
+        record.metadata.description = `The rent for your land ${landsByTokenId[record.metadata.tokenId]} has ended.`
       }
     }
 
