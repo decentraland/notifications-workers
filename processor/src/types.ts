@@ -24,6 +24,7 @@ export type AppComponents = {
   l2CollectionsSubGraph: ISubgraphComponent
   marketplaceSubGraph: ISubgraphComponent
   rentalsSubGraph: ISubgraphComponent
+  landManagerSubGraph: ISubgraphComponent
 }
 
 // this type simplifies the typings of http handlers

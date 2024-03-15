@@ -1,4 +1,4 @@
-import { formatMana } from '../../src/logic/utils'
+import { chunks, formatMana } from '../../src/logic/utils'
 
 describe('utils unit tests', () => {
   test('formatMana should work', async () => {
@@ -20,5 +20,40 @@ describe('utils unit tests', () => {
     // Edge cases
     expect(formatMana('')).toBe('0.00')
     expect(formatMana(undefined, 3)).toBe('0.000')
+  })
+
+  describe('chunks', function () {
+    const names: string[] = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+
+    it('returns an empty array for an empty request', async () => {
+      expect(chunks([], 1)).toEqual([])
+      expect(chunks([], 10)).toEqual([])
+    })
+
+    it('returns elements in chunks of the requested size', async () => {
+      expect(chunks(names, 1)).toEqual([['a'], ['b'], ['c'], ['d'], ['e'], ['f'], ['g'], ['h'], ['i']])
+      expect(chunks(names, 2)).toEqual([['a', 'b'], ['c', 'd'], ['e', 'f'], ['g', 'h'], ['i']])
+      expect(chunks(names, 3)).toEqual([
+        ['a', 'b', 'c'],
+        ['d', 'e', 'f'],
+        ['g', 'h', 'i']
+      ])
+      expect(chunks(names, 4)).toEqual([['a', 'b', 'c', 'd'], ['e', 'f', 'g', 'h'], ['i']])
+      expect(chunks(names, 5)).toEqual([
+        ['a', 'b', 'c', 'd', 'e'],
+        ['f', 'g', 'h', 'i']
+      ])
+      expect(chunks(names, 6)).toEqual([
+        ['a', 'b', 'c', 'd', 'e', 'f'],
+        ['g', 'h', 'i']
+      ])
+      expect(chunks(names, 7)).toEqual([
+        ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+        ['h', 'i']
+      ])
+      expect(chunks(names, 8)).toEqual([['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], ['i']])
+      expect(chunks(names, 9)).toEqual([['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']])
+      expect(chunks(names, 10)).toEqual([['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']])
+    })
   })
 })

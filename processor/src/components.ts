@@ -15,6 +15,8 @@ import { createProducer } from './adapters/create-producer'
 import { bidReceivedProducer } from './adapters/producers/bid-received'
 import { bidAcceptedProducer } from './adapters/producers/bid-accepted'
 import { createFetchComponent } from '@dcl/platform-server-commons'
+import { rentalStartedProducer } from './adapters/producers/rental-started'
+import { rentalEndedProducer } from './adapters/producers/rental-ended'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -73,6 +75,9 @@ export async function initComponents(): Promise<AppComponents> {
   const rentalsSubGraphUrl = await config.requireString('RENTALS_SUBGRAPH_URL')
   const rentalsSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, rentalsSubGraphUrl)
 
+  const landManagerSubGraphUrl = await config.requireString('LAND_MANAGER_SUBGRAPH_URL')
+  const landManagerSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, landManagerSubGraphUrl)
+
   // Create the producer registry and add all the producers
   const producerRegistry = await createProducerRegistry({ logs })
   producerRegistry.addProducer(
@@ -87,6 +92,12 @@ export async function initComponents(): Promise<AppComponents> {
   producerRegistry.addProducer(
     await createProducer({ db, logs }, await bidAcceptedProducer({ config, l2CollectionsSubGraph }))
   )
+  producerRegistry.addProducer(
+    await createProducer({ db, logs }, await rentalStartedProducer({ config, landManagerSubGraph, rentalsSubGraph }))
+  )
+  producerRegistry.addProducer(
+    await createProducer({ db, logs }, await rentalEndedProducer({ config, landManagerSubGraph, rentalsSubGraph }))
+  )
 
   return {
     config,
@@ -99,6 +110,7 @@ export async function initComponents(): Promise<AppComponents> {
     producerRegistry,
     marketplaceSubGraph,
     l2CollectionsSubGraph,
-    rentalsSubGraph
+    rentalsSubGraph,
+    landManagerSubGraph
   }
 }
