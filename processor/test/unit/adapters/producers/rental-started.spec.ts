@@ -48,7 +48,7 @@ describe('rental started producer', () => {
           address: '0x24e5f44999c151f08609f8e27b2238c773c4d020',
           eventKey: '0x42f4ba48791e2de32f5fbf553441c2672864bb33:random-token-id:1',
           metadata: {
-            description: 'Your land 5,48 was rented by 0xd5359E309c47c8920C277d078d5F3c3DBeA1ef84.',
+            description: 'Your LAND at 5,48 was rented by 0xd5359E309c47c8920C277d078d5F3c3DBeA1ef84.',
             link: 'https://marketplace-url/contracts/0x42f4ba48791e2de32f5fbf553441c2672864bb33/tokens/random-token-id/manage',
             title: 'LAND Rented',
             contract: '0x42f4ba48791e2de32f5fbf553441c2672864bb33',

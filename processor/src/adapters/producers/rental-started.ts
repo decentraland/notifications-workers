@@ -79,7 +79,7 @@ export async function rentalStartedProducer(
             link: `${marketplaceBaseUrl}/contracts/${rental.contractAddress}/tokens/${rental.tokenId}/manage`,
             land: rental.tokenId,
             title: 'LAND Rented',
-            description: `Your @LAND was rented by @account.`
+            description: `Your LAND at @LAND was rented by @account.`
           },
           timestamp: parseInt(rental.startedAt) * 1000
         }
@@ -93,7 +93,7 @@ export async function rentalStartedProducer(
       const landsByTokenId = await findCoordinatesForLandTokenId(landManagerSubGraph, chunk)
       for (const record of chunk) {
         record.metadata.land = landsByTokenId[record.metadata.tokenId]
-        record.metadata.description = `Your land ${landsByTokenId[record.metadata.tokenId]} was rented by ${record.metadata.tenant}.`
+        record.metadata.description = `Your LAND at ${landsByTokenId[record.metadata.tokenId]} was rented by ${record.metadata.tenant}.`
       }
     }
 

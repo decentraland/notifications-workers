@@ -48,7 +48,7 @@ describe('rental ended producer', () => {
           address: '0x24e5f44999c151f08609f8e27b2238c773c4d020',
           eventKey: '0x42f4ba48791e2de32f5fbf553441c2672864bb33:random-token-id:1',
           metadata: {
-            description: 'The rent for your land 5,48 has ended.',
+            description: 'The rent of your LAND at 5,48 has ended.',
             link: 'https://marketplace-url/contracts/0x42f4ba48791e2de32f5fbf553441c2672864bb33/tokens/random-token-id/manage',
             title: 'Rent Period Ending',
             contract: '0x42f4ba48791e2de32f5fbf553441c2672864bb33',
