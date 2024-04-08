@@ -24,7 +24,7 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "@dcl/schemas": "^10.3.0",
+    "@dcl/schemas": "^11.4.0",
     "@dcl/platform-crypto-middleware": "^1.0.2",
     "@dcl/platform-server-commons": "^0.0.4",
     "@well-known-components/env-config-provider": "^1.2.0",
