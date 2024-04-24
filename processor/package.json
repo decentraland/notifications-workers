@@ -27,10 +27,10 @@
     "@dcl/platform-crypto-middleware": "^1.0.2",
     "@dcl/platform-server-commons": "^0.0.4",
     "@well-known-components/env-config-provider": "^1.2.0",
-    "@well-known-components/http-server": "^2.0.0",
-    "@well-known-components/interfaces": "^1.4.2",
+    "@well-known-components/http-server": "^2.1.0",
+    "@well-known-components/interfaces": "^1.4.3",
     "@well-known-components/logger": "^3.1.3",
-    "@well-known-components/metrics": "^2.0.1",
+    "@well-known-components/metrics": "^2.1.0",
     "@well-known-components/thegraph-component": "^1.6.0",
     "cron": "^3.1.6",
     "joi": "^17.12.2"

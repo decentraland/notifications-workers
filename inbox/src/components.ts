@@ -1,8 +1,12 @@
 import { createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
 import { createLogComponent } from '@well-known-components/logger'
-import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-known-components/metrics'
+import { createMetricsComponent } from '@well-known-components/metrics'
 import { metricDeclarations } from './metrics'
-import { createServerComponent, createStatusCheckComponent } from '@well-known-components/http-server'
+import {
+  createServerComponent,
+  createStatusCheckComponent,
+  instrumentHttpServerWithPromClientRegistry
+} from '@well-known-components/http-server'
 import { createPgComponent } from '@well-known-components/pg-component'
 
 import { AppComponents, GlobalContext } from './types'
@@ -23,7 +27,7 @@ export async function initComponents(): Promise<AppComponents> {
       }
     }
   )
-  await instrumentHttpServerWithMetrics({ server, metrics, config })
+  await instrumentHttpServerWithPromClientRegistry({ server, metrics, config, registry: metrics.registry! })
   const statusChecks = await createStatusCheckComponent({ server, config })
 
   // This worker writes to the database, so it runs the migrations
