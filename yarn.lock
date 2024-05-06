@@ -355,6 +355,16 @@
     ajv-keywords "^5.1.0"
     mitt "^3.0.1"
 
+"@dcl/schemas@^11.8.0":
+  version "11.8.0"
+  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-11.8.0.tgz#a4ac2a65eaabb235e0ffacff803c60b8c652d451"
+  integrity sha512-gdXM+DBVSAGlbQhuc+EKabItt0BLJ6JZgtmNPjhb2YCdy0z3H/E40R+azT+BDBLY7k6MIr0bra6dG8DBFCt82g==
+  dependencies:
+    ajv "^8.11.0"
+    ajv-errors "^3.0.0"
+    ajv-keywords "^5.1.0"
+    mitt "^3.0.1"
+
 "@dcl/schemas@^9.2.0":
   version "9.15.0"
   resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-9.15.0.tgz#81337faa396d21a2d1e704e5ec3cfd7b7b14343e"
