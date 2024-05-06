@@ -1,10 +1,13 @@
 import { HandlerContextWithPath, NotificationRecord } from '../../types'
 import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
 import Joi from 'joi'
+import { NotificationType } from '@dcl/schemas'
 
 const schema = Joi.array().items(
   Joi.object().keys({
-    type: Joi.string().required(),
+    type: Joi.string()
+      .required()
+      .valid(...Object.values(NotificationType)),
     address: Joi.string().regex(/^0x[a-fA-F0-9]{40}$/),
     eventKey: Joi.string().required(),
     metadata: Joi.object().required(),
