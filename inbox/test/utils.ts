@@ -1,6 +1,6 @@
 import { computeAddress, createUnsafeIdentity } from '@dcl/crypto/dist/crypto'
 import { Authenticator, AuthIdentity, IdentityType } from '@dcl/crypto'
-import { AuthChain } from '@dcl/schemas'
+import { AuthChain, NotificationType, SubscriptionDetails } from '@dcl/schemas'
 import { AUTH_CHAIN_HEADER_PREFIX, AUTH_METADATA_HEADER, AUTH_TIMESTAMP_HEADER } from '@dcl/platform-crypto-middleware'
 import { DbNotification } from '../src/types'
 import { IFetchComponent } from '@well-known-components/interfaces'
@@ -101,4 +101,20 @@ export function randomNotification(address: string | undefined): DbNotification 
     created_at: Date.now(),
     updated_at: Date.now()
   }
+}
+
+export function randomSubscription(): SubscriptionDetails {
+  const details = {
+    ignore_all_email: Math.random() > 0.5,
+    ignore_all_in_app: Math.random() > 0.5,
+    message_type: {}
+  }
+  for (const type of Object.values(NotificationType)) {
+    details.message_type[type] = {
+      email: Math.random() > 0.5,
+      in_app: Math.random() > 0.5
+    }
+  }
+
+  return details as SubscriptionDetails
 }

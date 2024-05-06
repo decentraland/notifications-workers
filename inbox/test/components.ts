@@ -12,6 +12,7 @@ import { createConfigComponent } from '@well-known-components/env-config-provide
 import { createLogComponent } from '@well-known-components/logger'
 import { createPgComponent } from '@well-known-components/pg-component'
 import path from 'path'
+import { createDbComponent } from '../src/adapters/db'
 
 /**
  * Behaves like Jest "describe" function, used to describe a test for a
@@ -51,10 +52,12 @@ async function initComponents(): Promise<TestComponents> {
       direction: 'up'
     }
   })
+  const db = createDbComponent({ logs: components.logs, pg })
 
   return {
     ...components,
     pg,
+    db,
     logs: await createLogComponent({ config }),
     config,
     localFetch: await createLocalFetchCompoment(config),
