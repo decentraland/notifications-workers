@@ -347,7 +347,7 @@
     "@well-known-components/interfaces" "^1.4.2"
     node-fetch "^2.7.0"
 
-"@dcl/schemas@^11.9.0", "@dcl/schemas@^11.9.1":
+"@dcl/schemas@^11.9.1":
   version "11.9.1"
   resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-11.9.1.tgz#df9de598bad11b606bfe632e7735d07d4215e542"
   integrity sha512-qmr0yHTLPNA06WG1XCGP3Vb9rBrOe3b7piDGpOzDNCzw7CSrMkFMAILc0KP9z+2YU/3Dep0r8a/S6RRZm16MIQ==

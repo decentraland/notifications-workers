@@ -55,9 +55,14 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
           ON CONFLICT (event_key, type, address) DO UPDATE
               SET metadata   = ${notificationRecord.metadata}::jsonb,
                   timestamp  = ${notificationRecord.timestamp},
-                  updated_at = ${Date.now()};
+                  updated_at = ${Date.now()}
+          RETURNING xmax;
       `
-      await pg.query(buildQuery)
+
+      const result = await pg.query(buildQuery)
+      // TODO If it was inserted, we need to see check the subscription and see if we need to send an email
+      // result.rows[0].xmax === '0' ? 'INSERTED' : 'UPDATED'
+      console.log(result.rowCount, result.rows)
     }
   }
 

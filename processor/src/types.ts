@@ -11,6 +11,8 @@ import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { DbComponent } from './adapters/db'
+import { EthAddress, NotificationType } from '@dcl/schemas'
+import { Email, ISendGridClient, SubscriptionDB } from '@notifications/common'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -25,6 +27,10 @@ export type AppComponents = {
   marketplaceSubGraph: ISubgraphComponent
   rentalsSubGraph: ISubgraphComponent
   landManagerSubGraph: ISubgraphComponent
+  fetcher: IFetchComponent
+  subscriptionService: ISubscriptionService
+  emailRenderer: IEmailRenderer
+  sendGridClient: ISendGridClient
 }
 
 // this type simplifies the typings of http handlers
@@ -57,7 +63,7 @@ export type INotificationProducer = {
 
 export type INotificationGenerator = {
   run(since: number): Promise<INotificationProducerResult>
-  notificationType: string
+  notificationType: NotificationType
 }
 
 export type IProducerRegistry = IBaseComponent & {
@@ -67,7 +73,7 @@ export type IProducerRegistry = IBaseComponent & {
 
 export type NotificationRecord = {
   eventKey: string
-  type: string
+  type: NotificationType
   address: string
   metadata: any
   timestamp: number
@@ -77,4 +83,12 @@ export type INotificationProducerResult = {
   notificationType: string
   records: NotificationRecord[]
   lastRun: number
+}
+
+export type ISubscriptionService = {
+  findSubscriptionForAddress(address: EthAddress): Promise<SubscriptionDB>
+}
+
+export type IEmailRenderer = {
+  renderEmail(notification: NotificationRecord): Promise<Email>
 }

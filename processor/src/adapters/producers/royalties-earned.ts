@@ -1,5 +1,6 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 import { formatMana } from '../../logic/utils'
+import { NotificationType } from '@dcl/schemas'
 
 export const PAGE_SIZE = 1000
 
@@ -83,7 +84,7 @@ type SalesResponse = {
   }[]
 }
 
-const notificationType = 'royalties_earned'
+const notificationType = NotificationType.ROYALTIES_EARNED
 
 export async function royaltiesEarnedProducer(
   components: Pick<AppComponents, 'config' | 'l2CollectionsSubGraph'>

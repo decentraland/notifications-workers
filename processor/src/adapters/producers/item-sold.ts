@@ -1,4 +1,5 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
+import { NotificationType } from '@dcl/schemas'
 
 export const PAGE_SIZE = 1000
 
@@ -78,7 +79,7 @@ type SalesResponse = {
   }[]
 }
 
-const notificationType = 'item_sold'
+const notificationType = NotificationType.ITEM_SOLD
 
 export async function itemSoldProducer(
   components: Pick<AppComponents, 'config' | 'l2CollectionsSubGraph'>

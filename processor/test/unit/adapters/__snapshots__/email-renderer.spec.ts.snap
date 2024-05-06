@@ -1,0 +1,214 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`email rendering tests rendering bid_accepted 1`] = `
+{
+  "content": "Your offer of 1.50 MANA was accepted for Netgate male.
+",
+  "subject": "Bid Accepted",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering bid_received 1`] = `
+{
+  "content": "You received an offer of 1.50 MANA for Space Jams.
+",
+  "subject": "Bid Received",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering events_started 1`] = `
+{
+  "content": "The event <a href="https://play.decentraland.org/?position=14%2C100&realm=main">Live DJ Music and Dancing in the Unity Café</a> has begun!
+",
+  "subject": "Event Live DJ Music and Dancing in the Unity Café started",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering events_starts_soon 1`] = `
+{
+  "content": "The event <a href="https://play.decentraland.org/?position=-99%2C35&realm=main">UNMONDAY YOURSELF</a> starts in an hour.
+",
+  "subject": "Event UNMONDAY YOURSELF starts in an hour",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_announcement 1`] = `
+{
+  "content": "<p style="font-weight: 600; font-size: 14px; margin-bottom: 0;">Some title</p>
+<a href="https://governance.decentraland.org/some-link">
+    <p style="display: inline; color: #a09ba8; margin: 4px 0; gap: 5px; flex-wrap: wrap; align-items: center;">
+        Some content
+    </p>
+</a>
+",
+  "subject": "Announcement: Some title",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_authored_proposal_finished 1`] = `
+{
+  "content": "The votes are in! Find out the outcome of the voting on <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">your proposal</a>.
+",
+  "subject": "Voting ended on your proposal Limit Grants Re-Submissions",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_coauthor_requested 1`] = `
+{
+  "content": "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=cacb1ce3-b5e9-4133-901a-cb787f43871f">here</a>.
+",
+  "subject": "Co-author request received",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_new_comment_on_project_update 1`] = `
+{
+  "content": "Engage in a productive conversation by replying to <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/update/?id=a38ec7d7-7eb2-4f9a-b9c8-363785fdcbd6&proposalId=1b8eef75-add3-49d6-9181-3061daaf22ec">this comment</a>.
+",
+  "subject": "New comment on your update for your project",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_new_comment_on_proposal 1`] = `
+{
+  "content": "Engage in a productive conversation by replying to <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd">this comment</a>.
+",
+  "subject": "New comment posted on proposal",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_pitch_passed 1`] = `
+{
+  "content": "Help advance this idea by proposing potential solutions <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">here</a>.
+",
+  "subject": "The pitch can now receive tenders",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_proposal_enacted 1`] = `
+{
+  "content": "Congratulations! <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd">Your Project</a> has been successfully enacted and a funding Vesting Contract was created.
+",
+  "subject": "Your project has been funded",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_tender_passed 1`] = `
+{
+  "content": "If you think you can tackle this solution, propose a Project and get funding from the DAO <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">here</a>.
+",
+  "subject": "The tender can now receive bid projects",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering governance_voting_ended_voter 1`] = `
+{
+  "content": "<a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">Discover the results</a> of the proposal you participated in as a voter. Your input matters!
+",
+  "subject": "Voting ended on a proposal you voted",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering item_sold 1`] = `
+{
+  "content": "Someone just bought your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0xca520eea5aadff51b48d9e9b3038001a751139ca/tokens/180">HeartPrint Shoes</a>.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering rental_ended 1`] = `
+{
+  "content": "The rental of your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/1249/manage">ESTATE</a> has ended.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering rental_started 1`] = `
+{
+  "content": "Your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/5051/manage">ESTATE</a> was rented by 0x951a6698f644a9b1c634abc416b9d9902aaf3db9.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering reward_assignment 1`] = `
+{
+  "content": "This MESHfair 2024 Halo is already in your backpack.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering royalties_earned 1`] = `
+{
+  "content": "You've earned 0.90 MANA in royalties for <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x08cbc78c1b2e2eea7627c39c8adf660d52e3d82c/tokens/945">Blue santa hat</a>.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering worlds_access_restored 1`] = `
+{
+  "content": "Access to your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">Worlds</a> has been restored.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering worlds_access_restricted 1`] = `
+{
+  "content": "Access to your Worlds has been restricted due to <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">insufficient resources</a>.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering worlds_missing_resources 1`] = `
+{
+  "content": "Access to your Worlds at risk in 48h. <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">Rectify now</a> to prevent disruption.
+)
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering worlds_permission_granted 1`] = `
+{
+  "content": "You have been granted access permission for world el.dcl.eth.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;
+
+exports[`email rendering tests rendering worlds_permission_revoked 1`] = `
+{
+  "content": "Your streaming permission for world el.dcl.eth has been revoked.
+",
+  "subject": "",
+  "to": "email@example.com",
+}
+`;

@@ -21,6 +21,9 @@ import { bidAcceptedProducer } from './adapters/producers/bid-accepted'
 import { createFetchComponent } from '@dcl/platform-server-commons'
 import { rentalStartedProducer } from './adapters/producers/rental-started'
 import { rentalEndedProducer } from './adapters/producers/rental-ended'
+import { createRenderer } from './adapters/email-renderer'
+import { createSubscriptionsService } from './adapters/subscriptions-service'
+import { createSendGrid } from '@notifications/common'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -103,6 +106,12 @@ export async function initComponents(): Promise<AppComponents> {
     await createProducer({ db, logs }, await rentalEndedProducer({ config, landManagerSubGraph, rentalsSubGraph }))
   )
 
+  const fetcher = await createFetchComponent()
+  const subscriptionService = await createSubscriptionsService({ db, logs })
+
+  const emailRenderer = await createRenderer({ subscriptionService })
+  const sendGridClient = await createSendGrid({ config, fetcher, logs })
+
   return {
     config,
     logs,
@@ -115,6 +124,10 @@ export async function initComponents(): Promise<AppComponents> {
     marketplaceSubGraph,
     l2CollectionsSubGraph,
     rentalsSubGraph,
-    landManagerSubGraph
+    landManagerSubGraph,
+    fetcher,
+    subscriptionService,
+    emailRenderer,
+    sendGridClient
   }
 }

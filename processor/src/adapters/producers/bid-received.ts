@@ -1,5 +1,6 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 import { formatMana } from '../../logic/utils'
+import { NotificationType } from '@dcl/schemas'
 
 export const PAGE_SIZE = 1000
 
@@ -77,7 +78,7 @@ type BidsResponse = {
   }[]
 }
 
-const notificationType = 'bid_received'
+const notificationType = NotificationType.BID_RECEIVED
 
 export async function bidReceivedProducer(
   components: Pick<AppComponents, 'config' | 'l2CollectionsSubGraph'>
