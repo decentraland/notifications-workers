@@ -345,20 +345,10 @@
     "@well-known-components/interfaces" "^1.4.2"
     node-fetch "^2.7.0"
 
-"@dcl/schemas@^11.7.0":
-  version "11.7.0"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-11.7.0.tgz#e145b334c101683aab2297f7903f113615f74a0d"
-  integrity sha512-Gsv4FFnr6vL56k5ozzxH1CcOCzOUHMj602IL5y69q/Iy0rtn+7OF2TckgTDHGeifzakhaVwDOiGFYeJcaMaEXg==
-  dependencies:
-    ajv "^8.11.0"
-    ajv-errors "^3.0.0"
-    ajv-keywords "^5.1.0"
-    mitt "^3.0.1"
-
-"@dcl/schemas@^11.8.0":
-  version "11.8.0"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-11.8.0.tgz#a4ac2a65eaabb235e0ffacff803c60b8c652d451"
-  integrity sha512-gdXM+DBVSAGlbQhuc+EKabItt0BLJ6JZgtmNPjhb2YCdy0z3H/E40R+azT+BDBLY7k6MIr0bra6dG8DBFCt82g==
+"@dcl/schemas@^11.9.0":
+  version "11.9.0"
+  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-11.9.0.tgz#3d5685467df575087109601227e877780d227979"
+  integrity sha512-IIKsy45VhiB9rD6v1d3UedyApBE8EmtAiIWevXIvam1w9Nsh+w8lWAWtD/HX3fXivBwLDZGrn1IRUK4dI4WlHA==
   dependencies:
     ajv "^8.11.0"
     ajv-errors "^3.0.0"
