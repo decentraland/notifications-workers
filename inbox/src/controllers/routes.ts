@@ -5,6 +5,8 @@ import { errorHandler } from '@dcl/platform-server-commons'
 import { wellKnownComponents as authorizationMiddleware } from '@dcl/platform-crypto-middleware'
 import { GlobalContext } from '../types'
 import { readNotificationsHandler } from './handlers/read-notifications-handler'
+import { getSubscriptionHandler } from './handlers/get-subscription-handler'
+import { putSubscriptionHandler } from './handlers/put-subscription-handler'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 
@@ -36,6 +38,26 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
       fetcher
     }),
     readNotificationsHandler
+  )
+
+  router.get(
+    '/subscription',
+    authorizationMiddleware({
+      optional: false,
+      expiration: FIVE_MINUTES,
+      fetcher
+    }),
+    getSubscriptionHandler
+  )
+
+  router.put(
+    '/subscription',
+    authorizationMiddleware({
+      optional: false,
+      expiration: FIVE_MINUTES,
+      fetcher
+    }),
+    putSubscriptionHandler
   )
 
   return router

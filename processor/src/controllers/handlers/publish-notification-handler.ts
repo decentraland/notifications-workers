@@ -7,7 +7,10 @@ const schema = Joi.array().items(
   Joi.object().keys({
     type: Joi.string()
       .required()
-      .valid(...Object.values(NotificationType)),
+      .valid(...Object.values(NotificationType))
+      .messages({
+        'any.only': 'Invalid notification type: {#value}'
+      }),
     address: Joi.string().regex(/^0x[a-fA-F0-9]{40}$/),
     eventKey: Joi.string().required(),
     metadata: Joi.object().required(),

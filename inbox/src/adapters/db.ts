@@ -1,9 +1,13 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { AppComponents, DbNotification, NotificationEvent } from '../types'
+import { AppComponents, DbNotification, NotificationEvent, SubscriptionDB } from '../types'
+import { defaultSubscription } from '../logic/subscriptions'
+import { SubscriptionDetails } from '@dcl/schemas'
 
 export type DbComponent = {
   findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<DbNotification[]>
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
+  findSubscription(address: string): Promise<SubscriptionDB>
+  saveSubscription(address: string, subscriptionDetails: SubscriptionDetails): Promise<void>
 }
 
 export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
@@ -81,8 +85,50 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     return notificationCount
   }
 
+  async function saveSubscription(address: string, subscriptionDetails: SubscriptionDetails): Promise<void> {
+    const query: SQLStatement = SQL`
+        INSERT INTO subscriptions (address, details, created_at, updated_at)
+        VALUES (${address.toLowerCase()},
+                ${subscriptionDetails}::jsonb,
+                ${Date.now()},
+                ${Date.now()}
+        )
+        ON CONFLICT (address) DO UPDATE
+              SET details = ${subscriptionDetails}::jsonb,
+              updated_at = ${Date.now()}
+    `
+
+    await pg.query(query)
+  }
+
+  async function findSubscription(address: string): Promise<SubscriptionDB> {
+    const query: SQLStatement = SQL`
+        SELECT address,
+               email,
+               details,
+               created_at,
+               updated_at
+        FROM subscriptions n
+        WHERE address = ${address.toLowerCase()}
+    `
+
+    const result = await pg.query<SubscriptionDB>(query)
+    if (result.rowCount === 0) {
+      return {
+        address,
+        email: undefined,
+        details: defaultSubscription(),
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
+    }
+    return result.rows[0]
+  }
+
   return {
     findNotifications,
-    markNotificationsAsRead
+    markNotificationsAsRead,
+    findSubscription,
+    saveSubscription
   }
 }

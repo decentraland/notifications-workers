@@ -11,6 +11,7 @@ import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { DbComponent } from './adapters/db'
 import { Readable } from 'node:stream'
+import { Subscription } from '@dcl/schemas'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -76,4 +77,9 @@ export type NotificationEvent = {
   metadata: any
   timestamp: number
   read: boolean
+}
+
+export type SubscriptionDB = Subscription & {
+  created_at: number
+  updated_at: number
 }

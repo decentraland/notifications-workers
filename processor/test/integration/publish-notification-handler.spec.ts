@@ -102,7 +102,7 @@ test('POST /notifications', function ({ components }) {
     expect(response.status).toEqual(400)
     expect(await response.json()).toMatchObject({
       error: 'Bad request',
-      message: `"[0].type" must be one of [${Object.values(NotificationType).join(', ')}]`
+      message: 'Invalid notification type: test'
     })
     expect(await findNotification(notification.eventKey, notification.type, notification.address)).toBeUndefined()
   })
