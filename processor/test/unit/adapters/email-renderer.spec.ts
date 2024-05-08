@@ -124,11 +124,72 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
-    [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL]: undefined,
-    [NotificationType.GOVERNANCE_PITCH_PASSED]: undefined,
-    [NotificationType.GOVERNANCE_PROPOSAL_ENACTED]: undefined,
-    [NotificationType.GOVERNANCE_TENDER_PASSED]: undefined,
-    [NotificationType.GOVERNANCE_VOTING_ENDED_VOTER]: undefined,
+    [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL]: {
+      type: NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd',
+        title: 'New comment posted on proposal Decentraland No-Code UI Design Studio',
+        proposalId: '578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd',
+        description: 'Engage in a productive conversation by replying to this comment.',
+        proposalTitle: 'Decentraland No-Code UI Design Studio'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.GOVERNANCE_PITCH_PASSED]: {
+      type: NotificationType.GOVERNANCE_PITCH_PASSED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        proposalId: 'c9564934-1f5e-44a3-836e-c0e94c1f593f',
+        proposalTitle: 'Limit Grants Re-Submissions',
+        title: 'The Pitch "Limit Grants Re-Submissions" can now receive Tenders',
+        description: 'Help to advance this idea by proposing potential solutions',
+        link: 'https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.GOVERNANCE_PROPOSAL_ENACTED]: {
+      type: NotificationType.GOVERNANCE_PROPOSAL_ENACTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd',
+        title: 'Your Project has been funded',
+        proposalId: '578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd',
+        description:
+          'Congratulations! Your Project has been successfully enacted and a funding Vesting Contract was created',
+        proposalTitle: 'Decentraland No-Code UI Design Studio'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.GOVERNANCE_TENDER_PASSED]: {
+      type: NotificationType.GOVERNANCE_TENDER_PASSED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        proposalId: 'c9564934-1f5e-44a3-836e-c0e94c1f593f',
+        proposalTitle: 'Limit Grants Re-Submissions',
+        title: 'The Tender "Limit Grants Re-Submissions" can now receive Bid Projects',
+        description: 'If think you can tackle this solution, propose a Project and get funding from the DAO',
+        link: 'https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.GOVERNANCE_VOTING_ENDED_VOTER]: {
+      type: NotificationType.GOVERNANCE_VOTING_ENDED_VOTER,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f',
+        title: 'Voting ended on a proposal you voted on Limit Grants Re-Submissions',
+        proposalId: 'c9564934-1f5e-44a3-836e-c0e94c1f593f',
+        description: 'Discover the results of the proposal you participated in as a voter. Your input matters!',
+        proposalTitle: 'Limit Grants Re-Submissions'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.ITEM_SOLD]: undefined,
     [NotificationType.LAND_RENTAL_ENDED]: undefined,
     [NotificationType.LAND_RENTED]: undefined,
