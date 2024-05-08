@@ -22,7 +22,7 @@ exports[`email rendering tests rendering events_starts_soon 1`] = `
 
 exports[`email rendering tests rendering governance_announcement 1`] = `
 "<p style="font-weight: 600; font-size: 14px; margin-bottom: 0;">Some title</p>
-<a href=https://governance.decentraland.org/some-link>
+<a href="https://governance.decentraland.org/some-link">
     <p style="display: inline; color: #a09ba8; margin: 4px 0; gap: 5px; flex-wrap: wrap; align-items: center;">
         Some content
     </p>
@@ -31,6 +31,16 @@ exports[`email rendering tests rendering governance_announcement 1`] = `
 `;
 
 exports[`email rendering tests rendering governance_authored_proposal_finished 1`] = `
-"The votes are in! Find out the outcome of the voting on <a style="color: #ff2d55; text-decoration: underline;" href=https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f>your proposal</a>.
+"The votes are in! Find out the outcome of the voting on <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">your proposal</a>.
+"
+`;
+
+exports[`email rendering tests rendering governance_coauthor_requested 1`] = `
+"You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=cacb1ce3-b5e9-4133-901a-cb787f43871f">here</a>.
+"
+`;
+
+exports[`email rendering tests rendering governance_new_comment_on_project_update 1`] = `
+"Engage in a productive conversation by replying to <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/update/?id=a38ec7d7-7eb2-4f9a-b9c8-363785fdcbd6&proposalId=1b8eef75-add3-49d6-9181-3061daaf22ec">this comment</a>.
 "
 `;

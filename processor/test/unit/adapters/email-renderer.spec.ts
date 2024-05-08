@@ -96,8 +96,34 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
-    [NotificationType.GOVERNANCE_COAUTHOR_REQUESTED]: undefined,
-    [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROJECT_UPDATE]: undefined,
+    [NotificationType.GOVERNANCE_COAUTHOR_REQUESTED]: {
+      type: NotificationType.GOVERNANCE_COAUTHOR_REQUESTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://governance.decentraland.org/proposal/?id=cacb1ce3-b5e9-4133-901a-cb787f43871f',
+        title: 'Co-author request received',
+        proposalId: 'cacb1ce3-b5e9-4133-901a-cb787f43871f',
+        description:
+          "You've been invited to collaborate as a co-author on a published proposal. Accept it or reject it here",
+        proposalTitle: 'DCL Community Video Library'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROJECT_UPDATE]: {
+      type: NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROJECT_UPDATE,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://governance.decentraland.org/update/?id=a38ec7d7-7eb2-4f9a-b9c8-363785fdcbd6&proposalId=1b8eef75-add3-49d6-9181-3061daaf22ec',
+        title:
+          'New comment on your update for your project Duel Arena P2E Continuum, Refinement & Game Expansion [ Resubmission ]',
+        proposalId: '1b8eef75-add3-49d6-9181-3061daaf22ec',
+        description: 'Engage in a productive conversation by replying to this comment.',
+        proposalTitle: 'Duel Arena P2E Continuum, Refinement & Game Expansion [ Resubmission ]'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL]: undefined,
     [NotificationType.GOVERNANCE_PITCH_PASSED]: undefined,
     [NotificationType.GOVERNANCE_PROPOSAL_ENACTED]: undefined,
