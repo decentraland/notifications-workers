@@ -1,19 +1,20 @@
-import { AppComponents, ISendGridClient } from '../types'
+import { AppComponents, ISendGridClient, NotificationRecord } from '../types'
 import { NotificationType } from '@dcl/schemas'
 
 export async function createSendGrid(
-  components: Pick<AppComponents, 'fetcher' | 'logs' | 'config'>
+  components: Pick<AppComponents, 'config' | 'emailRenderer' | 'fetcher' | 'logs'>
 ): Promise<ISendGridClient> {
-  const { fetcher, logs, config } = components
+  const { emailRenderer, fetcher, logs, config } = components
   const logger = logs.getLogger('sendgrid')
-  const [apiBaseUrl, apiKey, emailFrom] = await Promise.all([
+  const [apiBaseUrl, apiKey, emailFrom, emailTemplateId] = await Promise.all([
     config.requireString('SENDGRID_API_URL'),
     config.requireString('SENDGRID_API_KEY'),
-    config.requireString('SENDGRID_EMAIL_FROM')
+    config.requireString('SENDGRID_EMAIL_FROM'),
+    config.requireString('SENDGRID_EMAIL_TEMPLATE_ID')
   ])
 
-  async function sendEmail(email: string, type: NotificationType, metadata: any): Promise<void> {
-    logger.info(`Sending email to ${email} with type ${type} and metadata ${JSON.stringify(metadata)}`)
+  async function sendEmail(email: string, type: NotificationType, notification: NotificationRecord): Promise<void> {
+    logger.info(`Sending email to ${email} with type ${type} and metadata ${JSON.stringify(notification.metadata)}`)
     await fetcher.fetch(`${apiBaseUrl}/v3/mail/send`, {
       method: 'POST',
       headers: {
@@ -23,10 +24,15 @@ export async function createSendGrid(
       body: JSON.stringify({
         personalizations: [{ to: [{ email }] }],
         from: { email: emailFrom },
-        subject: 'Hello, World!', // TODO Base this on notification type
-        content: [{ type: 'text/plain', value: 'Heya!' }],
-        template_id: 'd-3e040098c660453f8ac9c00a0b73925c', // TODO see if we're going to use a single template or one for each type
-        dynamic_template_data: { metadata },
+        subject: notification.metadata.title,
+        content: [{ type: 'text/html' }],
+        template_id: emailTemplateId,
+        dynamic_template_data: {
+          address: notification.address,
+          content: emailRenderer.renderEmail(notification),
+          actionButtonLink: 'https://decentraland.org',
+          actionButtonText: 'Enter'
+        },
         mail_settings: {
           sandbox_mode: {
             enable: true // TODO base on env

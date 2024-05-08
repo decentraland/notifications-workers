@@ -27,6 +27,7 @@ export type AppComponents = {
   rentalsSubGraph: ISubgraphComponent
   landManagerSubGraph: ISubgraphComponent
   fetcher: IFetchComponent
+  emailRenderer: IEmailRenderer
   sendGridClient: ISendGridClient
 }
 
@@ -64,7 +65,7 @@ export type ISendGridClient = {
 
 export type INotificationGenerator = {
   run(since: number): Promise<INotificationProducerResult>
-  notificationType: string
+  notificationType: NotificationType
 }
 
 export type IProducerRegistry = IBaseComponent & {
@@ -74,7 +75,7 @@ export type IProducerRegistry = IBaseComponent & {
 
 export type NotificationRecord = {
   eventKey: string
-  type: string
+  type: NotificationType
   address: string
   metadata: any
   timestamp: number
@@ -84,4 +85,8 @@ export type INotificationProducerResult = {
   notificationType: string
   records: NotificationRecord[]
   lastRun: number
+}
+
+export type IEmailRenderer = {
+  renderEmail(notification: NotificationRecord): string
 }

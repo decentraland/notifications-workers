@@ -1,6 +1,7 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 import { chunks } from '../../logic/utils'
 import { findCoordinatesForLandTokenId } from '../../logic/land-utils'
+import { NotificationType } from '@dcl/schemas'
 import { L1Network } from '@dcl/catalyst-contracts'
 
 export const PAGE_SIZE = 1000
@@ -38,7 +39,7 @@ type RentalsResponse = {
   }[]
 }
 
-const notificationType = 'rental_started'
+const notificationType = NotificationType.LAND_RENTED
 
 export async function rentalStartedProducer(
   components: Pick<AppComponents, 'config' | 'landManagerSubGraph' | 'rentalsSubGraph'>
