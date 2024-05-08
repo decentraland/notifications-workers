@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`email rendering tests rendering events_started 1`] = `
+"The event <a href="https://events.decentraland.org/music">Music Festival</a> has begun!
+"
+`;
+
+exports[`email rendering tests rendering events_starts_soon 1`] = `
+"The event <a href="https://events.decentraland.org/music">Music Festival</a> starts in an hour.
+"
+`;

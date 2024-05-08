@@ -22,7 +22,7 @@ import { createFetchComponent } from '@dcl/platform-server-commons'
 import { rentalStartedProducer } from './adapters/producers/rental-started'
 import { rentalEndedProducer } from './adapters/producers/rental-ended'
 import { createSendGrid } from './adapters/sendgrid-client'
-import { createRenderer } from './adapters/renderer'
+import { createRenderer } from './adapters/email-renderer'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -106,7 +106,7 @@ export async function initComponents(): Promise<AppComponents> {
   )
 
   const fetcher = await createFetchComponent()
-  const emailRenderer = createRenderer({ pg, logs })
+  const emailRenderer = createRenderer()
   const sendGridClient = await createSendGrid({ config, emailRenderer, fetcher, logs })
 
   return {

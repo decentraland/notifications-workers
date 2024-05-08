@@ -1,11 +1,12 @@
 import { NotificationType } from '@dcl/schemas'
-import { AppComponents, IEmailRenderer, NotificationRecord } from '../types'
+import { IEmailRenderer, NotificationRecord } from '../types'
 import * as fs from 'node:fs'
 import * as path from 'path'
+import mustache from 'mustache'
 
-export function createRenderer({ pg: _pg }: Pick<AppComponents, 'pg' | 'logs'>): IEmailRenderer {
+export function createRenderer(): IEmailRenderer {
   const templates = Object.values(NotificationType)
-    .map((type) => fs.readFileSync(path.join(__dirname, `email-templates/${type}.html`), 'utf8'))
+    .map((type) => fs.readFileSync(path.join(__dirname, `email-templates/${type}.mustache`), 'utf8'))
     .reduce(
       (acc, template, index) => {
         acc[Object.values(NotificationType)[index]] = template
@@ -15,7 +16,7 @@ export function createRenderer({ pg: _pg }: Pick<AppComponents, 'pg' | 'logs'>):
     )
 
   function renderEmail(notification: NotificationRecord): string {
-    return templates[notification.type]
+    return mustache.render(templates[notification.type], notification)
   }
 
   return {

@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@dcl/eslint-config": "^2.0.0",
+    "@types/mustache": "^4.2.5",
     "@types/node": "^20.11.24",
     "@well-known-components/test-helpers": "^1.5.6",
     "copyfiles": "^2.4.1",
@@ -38,6 +39,7 @@
     "@well-known-components/metrics": "^2.1.0",
     "@well-known-components/thegraph-component": "^1.6.0",
     "cron": "^3.1.6",
-    "joi": "^17.12.2"
+    "joi": "^17.12.2",
+    "mustache": "^4.2.0"
   }
 }
