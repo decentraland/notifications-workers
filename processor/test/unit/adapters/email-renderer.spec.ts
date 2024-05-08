@@ -48,14 +48,54 @@ describe('email rendering tests', () => {
       type: NotificationType.EVENTS_STARTS_SOON,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
-        link: 'https://events.decentraland.org/music',
-        name: 'Music Festival'
+        link: 'https://play.decentraland.org/?position=-99%2C35&realm=main',
+        name: 'UNMONDAY YOURSELF',
+        image: 'https://events-assets-099ac00.decentraland.org/poster/215052d46626a2a8.png',
+        title: 'Event starts in an hour',
+        endsAt: '2024-05-20T21:00:00.000Z',
+        startsAt: '2024-03-18T19:00:00.000Z',
+        description: 'The event UNMONDAY  YOURSELF starts in an hour.'
       },
       timestamp: Date.now(),
       eventKey: '123'
     },
-    [NotificationType.GOVERNANCE_ANNOUNCEMENT]: undefined,
-    [NotificationType.GOVERNANCE_AUTHORED_PROPOSAL_FINISHED]: undefined,
+    [NotificationType.EVENTS_STARTED]: {
+      type: NotificationType.EVENTS_STARTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://play.decentraland.org/?position=14%2C100&realm=main',
+        name: 'Live DJ Music and Dancing in the Unity Café',
+        image: 'https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png',
+        title: 'Event started',
+        description: 'The event Live DJ Music and Dancing in the Unity Café has begun!'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.GOVERNANCE_ANNOUNCEMENT]: {
+      type: NotificationType.GOVERNANCE_ANNOUNCEMENT,
+      address: null,
+      metadata: {
+        title: 'Some title',
+        description: 'Some content',
+        link: 'https://governance.decentraland.org/some-link'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.GOVERNANCE_AUTHORED_PROPOSAL_FINISHED]: {
+      type: NotificationType.GOVERNANCE_AUTHORED_PROPOSAL_FINISHED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f',
+        title: 'Voting ended on your proposal Limit Grants Re-Submissions',
+        proposalId: 'c9564934-1f5e-44a3-836e-c0e94c1f593f',
+        description: 'The votes are in! Find out the outcome of the voting on your proposal now',
+        proposalTitle: 'Limit Grants Re-Submissions'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.GOVERNANCE_COAUTHOR_REQUESTED]: undefined,
     [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROJECT_UPDATE]: undefined,
     [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL]: undefined,
@@ -72,17 +112,7 @@ describe('email rendering tests', () => {
     [NotificationType.WORLDS_ACCESS_RESTRICTED]: undefined,
     [NotificationType.WORLDS_MISSING_RESOURCES]: undefined,
     [NotificationType.WORLDS_PERMISSION_GRANTED]: undefined,
-    [NotificationType.WORLDS_PERMISSION_REVOKED]: undefined,
-    [NotificationType.EVENTS_STARTED]: {
-      type: NotificationType.EVENTS_STARTED,
-      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
-      metadata: {
-        link: 'https://events.decentraland.org/music',
-        name: 'Music Festival'
-      },
-      timestamp: Date.now(),
-      eventKey: '123'
-    }
+    [NotificationType.WORLDS_PERMISSION_REVOKED]: undefined
   }
 
   beforeAll(() => {
@@ -93,7 +123,6 @@ describe('email rendering tests', () => {
 
   test('Examples match the type of their keys', () => {
     Object.keys(notifications).forEach((type) => {
-      console.log(type)
       expect(notifications[type].type).toBe(type)
     })
   })

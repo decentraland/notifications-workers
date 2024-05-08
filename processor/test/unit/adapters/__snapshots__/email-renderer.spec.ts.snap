@@ -11,11 +11,26 @@ exports[`email rendering tests rendering bid_received 1`] = `
 `;
 
 exports[`email rendering tests rendering events_started 1`] = `
-"The event <a href="https://events.decentraland.org/music">Music Festival</a> has begun!
+"The event <a href="https://play.decentraland.org/?position=14%2C100&realm=main">Live DJ Music and Dancing in the Unity Café</a> has begun!
 "
 `;
 
 exports[`email rendering tests rendering events_starts_soon 1`] = `
-"The event <a href="https://events.decentraland.org/music">Music Festival</a> starts in an hour.
+"The event <a href="https://play.decentraland.org/?position=-99%2C35&realm=main">UNMONDAY YOURSELF</a> starts in an hour.
+"
+`;
+
+exports[`email rendering tests rendering governance_announcement 1`] = `
+"<p style="font-weight: 600; font-size: 14px; margin-bottom: 0;">Some title</p>
+<a href=https://governance.decentraland.org/some-link>
+    <p style="display: inline; color: #a09ba8; margin: 4px 0; gap: 5px; flex-wrap: wrap; align-items: center;">
+        Some content
+    </p>
+</a>
+"
+`;
+
+exports[`email rendering tests rendering governance_authored_proposal_finished 1`] = `
+"The votes are in! Find out the outcome of the voting on <a style="color: #ff2d55; text-decoration: underline;" href=https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f>your proposal</a>.
 "
 `;
