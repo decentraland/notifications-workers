@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`email rendering tests rendering bid_accepted 1`] = `
+"Your offer of 1.50 MANA was accepted for Netgate male.
+"
+`;
+
+exports[`email rendering tests rendering bid_received 1`] = `
+"You received an offer of 1.50 MANA for Space Jams.
+"
+`;
+
 exports[`email rendering tests rendering events_started 1`] = `
 "The event <a href="https://events.decentraland.org/music">Music Festival</a> has begun!
 "

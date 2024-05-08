@@ -3,6 +3,22 @@ import { IEmailRenderer, NotificationRecord } from '../types'
 import * as fs from 'node:fs'
 import * as path from 'path'
 import mustache from 'mustache'
+import { formatMana } from '../logic/utils'
+
+const nonTransformer = (notification: NotificationRecord): NotificationRecord => notification
+
+const formatPriceAsMana = (notification: NotificationRecord) => ({
+  ...notification,
+  metadata: {
+    ...notification.metadata,
+    price: formatMana(notification.metadata.price)
+  }
+})
+
+const transformers: Partial<Record<NotificationType, (notification: NotificationRecord) => NotificationRecord>> = {
+  [NotificationType.BID_ACCEPTED]: formatPriceAsMana,
+  [NotificationType.BID_RECEIVED]: formatPriceAsMana
+}
 
 export function createRenderer(): IEmailRenderer {
   const templates = Object.values(NotificationType)
@@ -16,7 +32,8 @@ export function createRenderer(): IEmailRenderer {
     )
 
   function renderEmail(notification: NotificationRecord): string {
-    return mustache.render(templates[notification.type], notification)
+    const transformer = transformers[notification.type] || nonTransformer
+    return mustache.render(templates[notification.type], transformer(notification))
   }
 
   return {
