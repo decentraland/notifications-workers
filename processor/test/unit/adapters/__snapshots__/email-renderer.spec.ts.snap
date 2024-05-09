@@ -94,3 +94,29 @@ exports[`email rendering tests rendering royalties_earned 1`] = `
 "You've earned 0.90 MANA in royalties for <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x08cbc78c1b2e2eea7627c39c8adf660d52e3d82c/tokens/945">Blue santa hat</a>.
 "
 `;
+
+exports[`email rendering tests rendering worlds_access_restored 1`] = `
+"Access to your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">Worlds</a> has been restored.
+"
+`;
+
+exports[`email rendering tests rendering worlds_access_restricted 1`] = `
+"Access to your Worlds has been restricted due to <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">insufficient resources</a>.
+"
+`;
+
+exports[`email rendering tests rendering worlds_missing_resources 1`] = `
+"Access to your Worlds at risk in 48h. <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">Rectify now</a> to prevent disruption.
+)
+"
+`;
+
+exports[`email rendering tests rendering worlds_permission_granted 1`] = `
+"You have been granted access permission for world el.dcl.eth.
+"
+`;
+
+exports[`email rendering tests rendering worlds_permission_revoked 1`] = `
+"Your streaming permission for world el.dcl.eth has been revoked.
+"
+`;

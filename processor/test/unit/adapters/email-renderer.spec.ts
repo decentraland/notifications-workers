@@ -279,11 +279,65 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
-    [NotificationType.WORLDS_ACCESS_RESTORED]: undefined,
-    [NotificationType.WORLDS_ACCESS_RESTRICTED]: undefined,
-    [NotificationType.WORLDS_MISSING_RESOURCES]: undefined,
-    [NotificationType.WORLDS_PERMISSION_GRANTED]: undefined,
-    [NotificationType.WORLDS_PERMISSION_REVOKED]: undefined
+    [NotificationType.WORLDS_ACCESS_RESTORED]: {
+      type: NotificationType.WORLDS_ACCESS_RESTORED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        url: 'https://decentraland.org/builder/worlds?tab=dcl',
+        title: 'Worlds available',
+        description: 'Access to your Worlds has been restored.'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.WORLDS_ACCESS_RESTRICTED]: {
+      type: NotificationType.WORLDS_ACCESS_RESTRICTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Worlds restricted',
+        description: 'Access to your Worlds has been restricted due to insufficient resources.',
+        url: `https://decentraland.org/builder/worlds?tab=dcl`,
+        when: Date.now()
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.WORLDS_MISSING_RESOURCES]: {
+      type: NotificationType.WORLDS_MISSING_RESOURCES,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        url: 'https://decentraland.org/builder/worlds?tab=dcl',
+        when: 1711929897037,
+        title: 'Missing Resources',
+        description: 'World access at risk in 48hs. Rectify now to prevent disruption.'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.WORLDS_PERMISSION_GRANTED]: {
+      type: NotificationType.WORLDS_PERMISSION_GRANTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Worlds permission granted',
+        description: 'You have been granted access permission for world el.dcl.eth',
+        world: 'el.dcl.eth',
+        permissions: ['access']
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.WORLDS_PERMISSION_REVOKED]: {
+      type: NotificationType.WORLDS_PERMISSION_REVOKED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'World permission revoked',
+        description: 'Your streaming permission for world el.dcl.eth has been revoked',
+        world: 'el.dcl.eth',
+        permissions: ['streaming']
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    }
   }
 
   beforeAll(() => {
