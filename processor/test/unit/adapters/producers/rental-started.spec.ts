@@ -4,7 +4,8 @@ import { rentalStartedProducer } from '../../../../src/adapters/producers/rental
 describe('rental started producer', () => {
   test('should work when some new rental start found', async () => {
     const config = createConfigComponent({
-      MARKETPLACE_BASE_URL: 'https://marketplace-url'
+      MARKETPLACE_BASE_URL: 'https://marketplace-url',
+      NETWORK: 'sepolia'
     })
     const rentalsSubGraph = {
       query: jest.fn()
@@ -35,7 +36,8 @@ describe('rental started producer', () => {
           y: '48',
           tokenId: 'random-token-id'
         }
-      ]
+      ],
+      estates: []
     })
 
     const producer = await rentalStartedProducer({ config, landManagerSubGraph, rentalsSubGraph })
@@ -69,7 +71,8 @@ describe('rental started producer', () => {
 
   test('should work when no new bids', async () => {
     const config = createConfigComponent({
-      MARKETPLACE_BASE_URL: 'https://marketplace-url'
+      MARKETPLACE_BASE_URL: 'https://marketplace-url',
+      NETWORK: 'sepolia'
     })
     const rentalsSubGraph = {
       query: jest.fn()

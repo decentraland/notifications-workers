@@ -1,37 +1,63 @@
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { NotificationRecord } from '../types'
+import { l1Contracts, L1Network } from '@dcl/catalyst-contracts'
 
-const LAND_QUERY = `
-    query Lands($tokenIds: [String!]) {
-      parcels(where: {tokenId_in: $tokenIds}) {
+const LAND_AND_ESTATE_QUERY = `
+    query LandsAndEstates($landTokenIds: [BigInt!], $estateTokenIds: [ID!]) {
+      parcels(where: {tokenId_in: $landTokenIds}) {
         x
         y
         tokenId
       }
+      estates(where: {id_in: $estateTokenIds}) {
+        id
+        parcels {
+          x
+          y
+        }
+      }
     }
 `
 
-type LandResponse = {
+type LandAndEstateResponse = {
   parcels: {
     x: number
     y: number
     tokenId: string
   }[]
+  estates: {
+    id: string
+    parcels: { x: number; y: number }[]
+  }[]
 }
 
 export async function findCoordinatesForLandTokenId(
+  network: L1Network,
   landManagerSubGraph: ISubgraphComponent,
-  chunk: NotificationRecord[]
-) {
-  const landResult = await landManagerSubGraph.query<LandResponse>(LAND_QUERY, {
-    tokenIds: chunk.map((r) => r.metadata.tokenId)
+  batch: NotificationRecord[]
+): Promise<Record<string, string[]>> {
+  const landResult = await landManagerSubGraph.query<LandAndEstateResponse>(LAND_AND_ESTATE_QUERY, {
+    landTokenIds: batch.filter((r) => r.metadata.contract === l1Contracts[network].land).map((r) => r.metadata.tokenId),
+    estateTokenIds: batch
+      .filter((r) => r.metadata.contract === l1Contracts[network].state)
+      .map((r) => r.metadata.tokenId)
   })
 
-  return landResult.parcels.reduce(
+  const landResults = landResult.parcels.reduce(
     (acc, land) => {
-      acc[land.tokenId] = `${land.x},${land.y}`
+      acc[land.tokenId] = [`${land.x},${land.y}`]
       return acc
     },
-    {} as Record<string, string>
+    {} as Record<string, string[]>
   )
+
+  const estateResults = landResult.estates.reduce(
+    (acc, estate) => {
+      acc[estate.id] = estate.parcels.map((parcel) => `${parcel.x},${parcel.y}`)
+      return acc
+    },
+    {} as Record<string, string[]>
+  )
+
+  return { ...landResults, ...estateResults }
 }

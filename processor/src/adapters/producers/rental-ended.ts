@@ -1,6 +1,7 @@
 import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
 import { chunks } from '../../logic/utils'
 import { findCoordinatesForLandTokenId } from '../../logic/land-utils'
+import { L1Network } from '@dcl/catalyst-contracts'
 
 export const PAGE_SIZE = 1000
 
@@ -44,7 +45,10 @@ export async function rentalEndedProducer(
 ): Promise<INotificationGenerator> {
   const { config, landManagerSubGraph, rentalsSubGraph } = components
 
-  const marketplaceBaseUrl = await config.requireString('MARKETPLACE_BASE_URL')
+  const [marketplaceBaseUrl, network] = await Promise.all([
+    config.requireString('MARKETPLACE_BASE_URL'),
+    config.requireString('NETWORK')
+  ])
 
   async function run(since: number) {
     const now = Date.now()
@@ -77,9 +81,7 @@ export async function rentalEndedProducer(
             endedAt: rental.endsAt,
             tokenId: rental.tokenId,
             link: `${marketplaceBaseUrl}/contracts/${rental.contractAddress}/tokens/${rental.tokenId}/manage`,
-            land: rental.tokenId,
-            title: 'Rent Period Ending',
-            description: `The rent of your LAND at @LAND has ended.`
+            title: 'Rent Period Ending'
           },
           timestamp: parseInt(rental.startedAt) * 1000
         }
@@ -90,10 +92,10 @@ export async function rentalEndedProducer(
     } while (result.rentals.length === PAGE_SIZE)
 
     for (const chunk of chunks(produced, 1000)) {
-      const landsByTokenId = await findCoordinatesForLandTokenId(landManagerSubGraph, chunk)
+      const landsByTokenId = await findCoordinatesForLandTokenId(network as L1Network, landManagerSubGraph, chunk)
       for (const record of chunk) {
-        record.metadata.land = landsByTokenId[record.metadata.tokenId]
-        record.metadata.description = `The rent of your LAND at ${landsByTokenId[record.metadata.tokenId]} has ended.`
+        record.metadata.land = landsByTokenId[record.metadata.tokenId][0] // For estates, we just take one of the lands
+        record.metadata.description = `The rent of your ${landsByTokenId[record.metadata.tokenId].length > 1 ? 'ESTATE' : 'LAND'} at ${landsByTokenId[record.metadata.tokenId][0]} has ended.`
       }
     }
 
