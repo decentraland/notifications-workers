@@ -246,7 +246,20 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
-    [NotificationType.REWARD_ASSIGNED]: undefined,
+    [NotificationType.REWARD_ASSIGNED]: {
+      type: NotificationType.REWARD_ASSIGNED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'New item received',
+        tokenName: 'MESHfair 2024 Halo',
+        tokenImage:
+          'https://peer.decentraland.org/lambdas/collections/contents/urn:decentraland:matic:collections-v2:0x2cbd78a88c8556ac22186b365c4260e8c7855df0:0/thumbnail',
+        description: 'This MESHfair 2024 Halo is already in your backpack',
+        tokenRarity: 'epic'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.ROYALTIES_EARNED]: {
       type: NotificationType.ROYALTIES_EARNED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',

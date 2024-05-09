@@ -2,9 +2,9 @@
   "name": "@notifications/processor",
   "version": "0.0.0",
   "scripts": {
-    "prebuild": "copyfiles -u 1 src/**/*.html dist",
+    "prebuild": "copyfiles -u 1 src/**/*.mustache dist",
     "build": "yarn prebuild && tsc -p tsconfig.json",
-    "build:watch": "tsc -p tsconfig.json --watch",
+    "build:watch": "yarn prebuild && tsc -p tsconfig.json --watch",
     "start": "node --trace-warnings --abort-on-uncaught-exception --unhandled-rejections=strict dist/index.js",
     "test": "jest --forceExit --detectOpenHandles --coverage --verbose",
     "lint:check": "eslint '**/*.{js,ts}'",
