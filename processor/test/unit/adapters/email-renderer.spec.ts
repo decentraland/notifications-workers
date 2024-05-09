@@ -190,11 +190,46 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
-    [NotificationType.ITEM_SOLD]: undefined,
+    [NotificationType.ITEM_SOLD]: {
+      type: NotificationType.ITEM_SOLD,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://decentraland.org/marketplace/contracts/0xca520eea5aadff51b48d9e9b3038001a751139ca/tokens/180',
+        image:
+          'https://peer.decentraland.org/lambdas/collections/contents/urn:decentraland:matic:collections-v2:0xca520eea5aadff51b48d9e9b3038001a751139ca:0/thumbnail',
+        title: 'Item Sold',
+        rarity: 'epic',
+        seller: '0x8967ad851ccbd4c1a2d57a128d3c606fcab29bad',
+        network: 'polygon',
+        nftName: 'HeartPrint Shoes',
+        category: 'wearable',
+        description: 'You just sold this HeartPrint Shoes.'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.LAND_RENTAL_ENDED]: undefined,
     [NotificationType.LAND_RENTED]: undefined,
     [NotificationType.REWARD_ASSIGNED]: undefined,
-    [NotificationType.ROYALTIES_EARNED]: undefined,
+    [NotificationType.ROYALTIES_EARNED]: {
+      type: NotificationType.ROYALTIES_EARNED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://decentraland.org/marketplace/contracts/0x08cbc78c1b2e2eea7627c39c8adf660d52e3d82c/tokens/945',
+        image:
+          'https://peer.decentraland.org/lambdas/collections/contents/urn:decentraland:matic:collections-v2:0x08cbc78c1b2e2eea7627c39c8adf660d52e3d82c:0/thumbnail',
+        title: 'Royalties Earned',
+        rarity: 'uncommon',
+        network: 'polygon',
+        nftName: 'Blue santa hat',
+        category: 'wearable',
+        description: 'You earned 0.90 MANA for this Blue santa hat.',
+        royaltiesCut: '900000000000000000',
+        royaltiesCollector: '0x99352b315b769efbacaa4107e68203bd47a8bdda'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.WORLDS_ACCESS_RESTORED]: undefined,
     [NotificationType.WORLDS_ACCESS_RESTRICTED]: undefined,
     [NotificationType.WORLDS_MISSING_RESOURCES]: undefined,

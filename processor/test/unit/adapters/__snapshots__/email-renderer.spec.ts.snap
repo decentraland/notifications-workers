@@ -69,3 +69,13 @@ exports[`email rendering tests rendering governance_voting_ended_voter 1`] = `
 "<a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">Discover the results</a> of the proposal you participated in as a voter. Your input matters!
 "
 `;
+
+exports[`email rendering tests rendering item_sold 1`] = `
+"Someone just bought your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0xca520eea5aadff51b48d9e9b3038001a751139ca/tokens/180">HeartPrint Shoes</a>.
+"
+`;
+
+exports[`email rendering tests rendering royalties_earned 1`] = `
+"You've earned 0.90 MANA in royalties for <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x08cbc78c1b2e2eea7627c39c8adf660d52e3d82c/tokens/945">Blue santa hat</a>.
+"
+`;

@@ -15,9 +15,18 @@ const formatPriceAsMana = (notification: NotificationRecord) => ({
   }
 })
 
+const formatRoyaltiesCutAsMana = (notification: NotificationRecord) => ({
+  ...notification,
+  metadata: {
+    ...notification.metadata,
+    royaltiesCut: formatMana(notification.metadata.royaltiesCut)
+  }
+})
+
 const transformers: Partial<Record<NotificationType, (notification: NotificationRecord) => NotificationRecord>> = {
   [NotificationType.BID_ACCEPTED]: formatPriceAsMana,
-  [NotificationType.BID_RECEIVED]: formatPriceAsMana
+  [NotificationType.BID_RECEIVED]: formatPriceAsMana,
+  [NotificationType.ROYALTIES_EARNED]: formatRoyaltiesCutAsMana
 }
 
 export function createRenderer(): IEmailRenderer {
