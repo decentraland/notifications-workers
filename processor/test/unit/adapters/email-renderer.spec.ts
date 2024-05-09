@@ -208,8 +208,44 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
-    [NotificationType.LAND_RENTAL_ENDED]: undefined,
-    [NotificationType.LAND_RENTED]: undefined,
+    [NotificationType.LAND_RENTAL_ENDED]: {
+      type: NotificationType.LAND_RENTAL_ENDED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/1249/manage',
+        title: 'Rent Period Ending',
+        lessor: '0x95606705b7452e96a9e88901ee418ef4e3d19847',
+        tenant: '0x135b17eaa25e3e0f3ce8f0a575bcc8867031f77c',
+        endedAt: '1710627683',
+        tokenId: '1249',
+        contract: '0x959e104e1a4db6317fa58f8295f586e1a978c297',
+        operator: '0x135b17eaa25e3e0f3ce8f0a575bcc8867031f77c',
+        startedAt: '1679091683',
+        land: '3,2',
+        description: 'The rent of your LAND at 3,2 has ended.'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.LAND_RENTED]: {
+      type: NotificationType.LAND_RENTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/5051/manage',
+        title: 'LAND Rented',
+        lessor: '0xea09431b6ddc2a52a997d690573934a72c8eb95b',
+        tenant: '0x951a6698f644a9b1c634abc416b9d9902aaf3db9',
+        endedAt: '1742748707',
+        tokenId: '5051',
+        contract: '0x959e104e1a4db6317fa58f8295f586e1a978c297',
+        operator: '0x55651e399ca32d7e2f44034fb62996937af0bc49',
+        startedAt: '1711212707',
+        land: '1,2',
+        description: 'Your LAND at 1,2 was rented by 0x951a6698f644a9b1c634abc416b9d9902aaf3db9.'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.REWARD_ASSIGNED]: undefined,
     [NotificationType.ROYALTIES_EARNED]: {
       type: NotificationType.ROYALTIES_EARNED,
