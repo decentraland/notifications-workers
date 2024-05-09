@@ -1,8 +1,8 @@
-import { NotificationType } from '@dcl/schemas'
-import { IEmailRenderer, NotificationRecord } from '../types'
 import * as fs from 'node:fs'
 import * as path from 'path'
 import mustache from 'mustache'
+import { NotificationType } from '@dcl/schemas'
+import { IEmailRenderer, NotificationRecord } from '../types'
 import { formatMana } from '../logic/utils'
 
 const nonTransformer = (notification: NotificationRecord): NotificationRecord => notification

@@ -51,7 +51,7 @@ exports[`email rendering tests rendering governance_new_comment_on_proposal 1`] 
 `;
 
 exports[`email rendering tests rendering governance_pitch_passed 1`] = `
-"Help to advance this idea by proposing potential solutions <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">here</a>.
+"Help advance this idea by proposing potential solutions <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">here</a>.
 "
 `;
 
@@ -61,7 +61,7 @@ exports[`email rendering tests rendering governance_proposal_enacted 1`] = `
 `;
 
 exports[`email rendering tests rendering governance_tender_passed 1`] = `
-"If think you can tackle this solution, propose a Project and get funding from the DAO <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">here</a>.
+"If you think you can tackle this solution, propose a Project and get funding from the DAO <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">here</a>.
 "
 `;
 
@@ -76,7 +76,7 @@ exports[`email rendering tests rendering item_sold 1`] = `
 `;
 
 exports[`email rendering tests rendering rental_ended 1`] = `
-"The rent of your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/1249/manage">ESTATE</a> has ended.
+"The rental of your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/1249/manage">ESTATE</a> has ended.
 "
 `;
 
