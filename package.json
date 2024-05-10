@@ -1,7 +1,10 @@
 {
   "name": "notifications-workers",
   "private": true,
-  "workspaces": ["inbox", "processor"],
+  "workspaces": [
+    "inbox",
+    "processor"
+  ],
   "scripts": {
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test --passWithNoTests",
@@ -10,5 +13,6 @@
     "lint:check": "yarn workspaces run lint:check",
     "lint:fix": "yarn workspaces run lint:fix"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "packageManager": "yarn@4.2.2"
 }
