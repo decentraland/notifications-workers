@@ -59,8 +59,15 @@ export type INotificationProducer = {
   runProducerSinceDate(date: number): Promise<void>
 }
 
+export type Email = {
+  from: string
+  to: string
+  subject: string
+  content: string
+}
+
 export type ISendGridClient = {
-  sendEmail: (email: string, type: NotificationType, metadata: any) => Promise<void>
+  sendEmail: (email: Email) => Promise<void>
 }
 
 export type INotificationGenerator = {
@@ -88,5 +95,5 @@ export type INotificationProducerResult = {
 }
 
 export type IEmailRenderer = {
-  renderEmail(notification: NotificationRecord): string
+  renderEmail(notification: NotificationRecord): Email
 }

@@ -106,7 +106,7 @@ export async function initComponents(): Promise<AppComponents> {
   )
 
   const fetcher = await createFetchComponent()
-  const emailRenderer = createRenderer()
+  const emailRenderer = await createRenderer({ config })
   const sendGridClient = await createSendGrid({ config, emailRenderer, fetcher, logs })
 
   return {

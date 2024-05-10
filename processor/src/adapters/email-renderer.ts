@@ -2,7 +2,7 @@ import * as fs from 'node:fs'
 import * as path from 'path'
 import mustache from 'mustache'
 import { NotificationType } from '@dcl/schemas'
-import { IEmailRenderer, NotificationRecord } from '../types'
+import { AppComponents, Email, IEmailRenderer, NotificationRecord } from '../types'
 import { formatMana } from '../logic/utils'
 
 const nonTransformer = (notification: NotificationRecord): NotificationRecord => notification
@@ -29,7 +29,15 @@ const transformers: Partial<Record<NotificationType, (notification: Notification
   [NotificationType.ROYALTIES_EARNED]: formatRoyaltiesCutAsMana
 }
 
-export function createRenderer(): IEmailRenderer {
+export async function createRenderer(components: Pick<AppComponents, 'config'>): Promise<IEmailRenderer> {
+  const { config } = components
+
+  const from = await config.requireString('SENDGRID_EMAIL_FROM')
+
+  function findEmailForAddress(address: string): string {
+    return 'mariano.goldman@decentraland.org'
+  }
+
   const templates = Object.values(NotificationType)
     .map((type) => fs.readFileSync(path.join(__dirname, `email-templates/${type}.mustache`), 'utf8'))
     .reduce(
@@ -40,9 +48,14 @@ export function createRenderer(): IEmailRenderer {
       {} as Record<NotificationType, string>
     )
 
-  function renderEmail(notification: NotificationRecord): string {
+  function renderEmail(notification: NotificationRecord): Email {
     const transformer = transformers[notification.type] || nonTransformer
-    return mustache.render(templates[notification.type], transformer(notification))
+    return {
+      from,
+      to: findEmailForAddress(notification.address),
+      subject: notification.metadata.title || 'Notification from Decentraland',
+      content: mustache.render(templates[notification.type], transformer(notification))
+    }
   }
 
   return {

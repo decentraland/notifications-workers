@@ -1,8 +1,11 @@
 import { createRenderer } from '../../../src/adapters/email-renderer'
 import { IEmailRenderer, NotificationRecord } from '../../../src/types'
 import { NotificationType } from '@dcl/schemas'
+import { IConfigComponent } from '@well-known-components/interfaces'
+import { createConfigComponent } from '@well-known-components/env-config-provider'
 
 describe('email rendering tests', () => {
+  let config: IConfigComponent
   let renderer: IEmailRenderer
 
   const notifications: Record<NotificationType, NotificationRecord> = {
@@ -340,8 +343,11 @@ describe('email rendering tests', () => {
     }
   }
 
-  beforeAll(() => {
-    renderer = createRenderer()
+  beforeAll(async () => {
+    config = createConfigComponent({
+      SENDGRID_EMAIL_FROM: 'some@email.com'
+    })
+    renderer = await createRenderer({ config })
   })
 
   const cases = Object.keys(notifications).map((type) => [type, notifications[type]])
