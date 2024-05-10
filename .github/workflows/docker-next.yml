@@ -7,7 +7,7 @@ on:
 
 jobs:
   notifications-processor-deployment:
-    uses: decentraland/platform-actions/.github/workflows/apps-docker-next.yml@main
+    uses: decentraland/platform-actions/.github/workflows/apps-docker-next.yml@updates
     with:
       service-name: notifications-processor
       image-name: notifications-workers
@@ -15,7 +15,7 @@ jobs:
     secrets: inherit
 
   notifications-inbox-deployment:
-    uses: decentraland/platform-actions/.github/workflows/apps-docker-next.yml@main
+    uses: decentraland/platform-actions/.github/workflows/apps-docker-next.yml@updates
     with:
       service-name: notifications-inbox
       image-name: notifications-workers

@@ -5,7 +5,7 @@ on:
 
 jobs:
   pr:
-    uses: decentraland/platform-actions/.github/workflows/apps-pr.yml@main
+    uses: decentraland/platform-actions/.github/workflows/apps-pr.yml@updates
     with:
       service-name: notifications-workers
     secrets: inherit
