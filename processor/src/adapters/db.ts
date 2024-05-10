@@ -1,13 +1,16 @@
 import SQL from 'sql-template-strings'
+import { createDbComponent as createCommonDbComponent, DbComponent as CommonDbComponent } from '@notifications/common'
 import { AppComponents, NotificationRecord } from '../types'
 
-export type DbComponent = {
+export type DbComponent = CommonDbComponent & {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
   updateLastUpdateForNotificationType(notificationType: string, timestamp: number): Promise<void>
   insertNotifications(notificationRecord: NotificationRecord[]): Promise<void>
 }
 
 export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
+  const baseDbComponent: CommonDbComponent = createCommonDbComponent({ pg })
+
   async function fetchLastUpdateForNotificationType(notificationType: string): Promise<number> {
     const result = await pg.query<{ last_successful_run_at: number }>(SQL`
         SELECT *
@@ -59,6 +62,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
   }
 
   return {
+    ...baseDbComponent,
     fetchLastUpdateForNotificationType,
     updateLastUpdateForNotificationType,
     insertNotifications

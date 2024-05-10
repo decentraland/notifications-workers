@@ -9,9 +9,9 @@ import type {
 import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
-import { DbComponent } from './adapters/db'
 import { Readable } from 'node:stream'
 import { Subscription } from '@dcl/schemas'
+import { DbComponent } from './adapters/db'
 
 export type GlobalContext = {
   components: BaseComponents

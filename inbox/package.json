@@ -24,9 +24,10 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "@dcl/schemas": "^11.9.0",
+    "@notifications/common": "0.0.0",
     "@dcl/platform-crypto-middleware": "^1.0.2",
     "@dcl/platform-server-commons": "^0.0.4",
+    "@dcl/schemas": "^11.9.0",
     "@well-known-components/env-config-provider": "^1.2.0",
     "@well-known-components/fetch-component": "^2.0.2",
     "@well-known-components/http-server": "^2.1.0",

@@ -1,6 +1,6 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomSubscription } from '../utils'
-import { defaultSubscription } from '../../src/logic/subscriptions'
+import { defaultSubscription } from '@notifications/common'
 
 test('GET /subscription', function ({ components }) {
   let identity: Identity

@@ -1,0 +1,31 @@
+{
+  "name": "@notifications/common",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc -p tsconfig.json --watch",
+    "test": "jest --forceExit --detectOpenHandles --coverage --verbose",
+    "lint:check": "npx eslint . --ext .ts",
+    "lint:fix": "npx eslint . --ext .ts --fix"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@dcl/eslint-config": "^2.0.0",
+    "@types/node": "^20.11.24",
+    "typescript": "^5.3.3"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "tabWidth": 2
+  },
+  "dependencies": {
+    "@dcl/schemas": "^11.9.1",
+    "@well-known-components/pg-component": "^0.2.2"
+  }
+}
