@@ -70,6 +70,14 @@ export type DbNotification = {
   broadcast_read_at?: number
 }
 
+export type UnconfirmedEmailDb = {
+  address: string
+  email: string
+  code: string
+  created_at: number
+  updated_at: number
+}
+
 export type NotificationEvent = {
   id: string
   type: string
@@ -77,9 +85,4 @@ export type NotificationEvent = {
   metadata: any
   timestamp: number
   read: boolean
-}
-
-export type SubscriptionDB = Subscription & {
-  created_at: number
-  updated_at: number
 }

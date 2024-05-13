@@ -10,7 +10,10 @@ describe('notifications handler unit test', () => {
         findNotifications: jest.fn().mockResolvedValue([]),
         markNotificationsAsRead: jest.fn(),
         findSubscription: jest.fn(),
-        saveSubscription: jest.fn()
+        saveSubscription: jest.fn(),
+        findUnconfirmedEmail: jest.fn(),
+        saveUnconfirmedEmail: jest.fn(),
+        deleteUnconfirmedEmail: jest.fn()
       },
       logs: await createLogComponent({})
     }

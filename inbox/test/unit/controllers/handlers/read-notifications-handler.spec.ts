@@ -23,7 +23,10 @@ describe('read notifications handler unit test', () => {
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn(),
       findSubscription: jest.fn(),
-      saveSubscription: jest.fn()
+      saveSubscription: jest.fn(),
+      findUnconfirmedEmail: jest.fn(),
+      saveUnconfirmedEmail: jest.fn(),
+      deleteUnconfirmedEmail: jest.fn()
     }
     await expect(executeHandler(db, {})).rejects.toThrowError(InvalidRequestError)
   })
@@ -33,7 +36,10 @@ describe('read notifications handler unit test', () => {
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn(),
       findSubscription: jest.fn(),
-      saveSubscription: jest.fn()
+      saveSubscription: jest.fn(),
+      findUnconfirmedEmail: jest.fn(),
+      saveUnconfirmedEmail: jest.fn(),
+      deleteUnconfirmedEmail: jest.fn()
     }
     await expect(executeHandler(db, { notificationIds: [] })).rejects.toThrowError(InvalidRequestError)
   })
@@ -43,7 +49,10 @@ describe('read notifications handler unit test', () => {
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn().mockReturnValueOnce(10),
       findSubscription: jest.fn(),
-      saveSubscription: jest.fn()
+      saveSubscription: jest.fn(),
+      findUnconfirmedEmail: jest.fn(),
+      saveUnconfirmedEmail: jest.fn(),
+      deleteUnconfirmedEmail: jest.fn()
     }
 
     const notificationIds = ['n1', 'n2']
