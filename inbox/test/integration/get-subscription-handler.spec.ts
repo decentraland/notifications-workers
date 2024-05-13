@@ -19,6 +19,20 @@ test('GET /subscription', function ({ components }) {
     })
   })
 
+  it('should return the subscription data stored in the db merged with unconfirmed email data', async () => {
+    await components.db.saveUnconfirmedEmail(identity.realAccount.address, 'some@email.net', 'some-token')
+
+    const subscriptionDetails = randomSubscription()
+    await components.db.saveSubscription(identity.realAccount.address, subscriptionDetails)
+
+    const response = await makeRequest(components.localFetch, '/subscription', identity)
+    expect(response.status).toBe(200)
+    expect(await response.json()).toMatchObject({
+      details: subscriptionDetails,
+      unconfirmedEmail: 'some@email.net'
+    })
+  })
+
   it('should return a default subscription when no subscription stored', async () => {
     const response = await makeRequest(components.localFetch, `/subscription`, identity)
     expect(response.status).toBe(200)
