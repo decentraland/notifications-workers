@@ -1,17 +1,17 @@
 import { createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
 import { createLogComponent } from '@well-known-components/logger'
 import { createMetricsComponent } from '@well-known-components/metrics'
-import { metricDeclarations } from './metrics'
+import { createPgComponent } from '@well-known-components/pg-component'
+import { createFetchComponent } from '@well-known-components/fetch-component'
 import {
   createServerComponent,
   createStatusCheckComponent,
   instrumentHttpServerWithPromClientRegistry
 } from '@well-known-components/http-server'
-import { createPgComponent } from '@well-known-components/pg-component'
 
 import { AppComponents, GlobalContext } from './types'
+import { metricDeclarations } from './metrics'
 import { createDbComponent } from './adapters/db'
-import { createFetchComponent } from '@well-known-components/fetch-component'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -33,7 +33,7 @@ export async function initComponents(): Promise<AppComponents> {
   // This worker writes to the database, so it runs the migrations
   const pg = await createPgComponent({ logs, config, metrics })
 
-  const db = createDbComponent({ logs, pg })
+  const db = createDbComponent({ pg })
 
   const fetcher = createFetchComponent()
 

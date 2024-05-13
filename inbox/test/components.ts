@@ -52,7 +52,7 @@ async function initComponents(): Promise<TestComponents> {
       direction: 'up'
     }
   })
-  const db = createDbComponent({ logs: components.logs, pg })
+  const db = createDbComponent({ pg })
 
   return {
     ...components,

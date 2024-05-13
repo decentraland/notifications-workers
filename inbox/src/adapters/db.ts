@@ -1,16 +1,17 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { AppComponents, DbNotification, NotificationEvent, SubscriptionDB } from '../types'
-import { defaultSubscription } from '../logic/subscriptions'
 import { SubscriptionDetails } from '@dcl/schemas'
+import { createDbComponent as createCommonDbComponent, DbComponent as CommonDbComponent } from '@notifications/common'
+import { AppComponents, DbNotification, NotificationEvent } from '../types'
 
-export type DbComponent = {
+export type DbComponent = CommonDbComponent & {
   findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<DbNotification[]>
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
-  findSubscription(address: string): Promise<SubscriptionDB>
   saveSubscription(address: string, subscriptionDetails: SubscriptionDetails): Promise<void>
 }
 
-export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
+export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponent {
+  const baseDbComponent: CommonDbComponent = createCommonDbComponent({ pg })
+
   async function findNotifications(
     users: string[],
     onlyUnread: boolean,
@@ -101,34 +102,10 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     await pg.query(query)
   }
 
-  async function findSubscription(address: string): Promise<SubscriptionDB> {
-    const query: SQLStatement = SQL`
-        SELECT address,
-               email,
-               details,
-               created_at,
-               updated_at
-        FROM subscriptions n
-        WHERE address = ${address.toLowerCase()}
-    `
-
-    const result = await pg.query<SubscriptionDB>(query)
-    if (result.rowCount === 0) {
-      return {
-        address,
-        email: undefined,
-        details: defaultSubscription(),
-        created_at: Date.now(),
-        updated_at: Date.now()
-      }
-    }
-    return result.rows[0]
-  }
-
   return {
+    ...baseDbComponent,
     findNotifications,
     markNotificationsAsRead,
-    findSubscription,
     saveSubscription
   }
 }
