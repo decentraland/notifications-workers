@@ -24,6 +24,7 @@ describe('read notifications handler unit test', () => {
       markNotificationsAsRead: jest.fn(),
       findSubscription: jest.fn(),
       saveSubscription: jest.fn(),
+      saveSubscriptionEmail: jest.fn(),
       findUnconfirmedEmail: jest.fn(),
       saveUnconfirmedEmail: jest.fn(),
       deleteUnconfirmedEmail: jest.fn()
@@ -37,6 +38,7 @@ describe('read notifications handler unit test', () => {
       markNotificationsAsRead: jest.fn(),
       findSubscription: jest.fn(),
       saveSubscription: jest.fn(),
+      saveSubscriptionEmail: jest.fn(),
       findUnconfirmedEmail: jest.fn(),
       saveUnconfirmedEmail: jest.fn(),
       deleteUnconfirmedEmail: jest.fn()
@@ -50,6 +52,7 @@ describe('read notifications handler unit test', () => {
       markNotificationsAsRead: jest.fn().mockReturnValueOnce(10),
       findSubscription: jest.fn(),
       saveSubscription: jest.fn(),
+      saveSubscriptionEmail: jest.fn(),
       findUnconfirmedEmail: jest.fn(),
       saveUnconfirmedEmail: jest.fn(),
       deleteUnconfirmedEmail: jest.fn()

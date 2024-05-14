@@ -11,6 +11,7 @@ describe('notifications handler unit test', () => {
         markNotificationsAsRead: jest.fn(),
         findSubscription: jest.fn(),
         saveSubscription: jest.fn(),
+        saveSubscriptionEmail: jest.fn(),
         findUnconfirmedEmail: jest.fn(),
         saveUnconfirmedEmail: jest.fn(),
         deleteUnconfirmedEmail: jest.fn()
