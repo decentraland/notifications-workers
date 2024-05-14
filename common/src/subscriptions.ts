@@ -9,7 +9,7 @@ const allMessageTypes = Object.values(NotificationType).reduce(
 )
 
 const _defaultSubscription: SubscriptionDetails = {
-  ignore_all_email: false,
+  ignore_all_email: true,
   ignore_all_in_app: false,
   message_type: allMessageTypes
 }

@@ -7,6 +7,7 @@ import { GlobalContext } from '../types'
 import { readNotificationsHandler } from './handlers/read-notifications-handler'
 import { getSubscriptionHandler } from './handlers/get-subscription-handler'
 import { putSubscriptionHandler } from './handlers/put-subscription-handler'
+import { confirmEmailHandler, storeUnconfirmedEmailHandler } from './handlers/unconfirmed-email-handlers'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 
@@ -16,49 +17,25 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   const { fetcher } = components
 
+  const signedFetchMiddleware = authorizationMiddleware({
+    fetcher,
+    optional: false,
+    expiration: FIVE_MINUTES,
+    onError: (err) => ({ error: err.message, message: 'This endpoint requires a signed fetch request. See ADR-44.' })
+  })
+
   router.use(errorHandler)
 
   router.get('/status', statusHandler)
 
-  router.get(
-    '/notifications',
-    authorizationMiddleware({
-      optional: false,
-      expiration: FIVE_MINUTES,
-      fetcher
-    }),
-    notificationsHandler
-  )
+  router.get('/notifications', signedFetchMiddleware, notificationsHandler)
+  router.put('/notifications/read', signedFetchMiddleware, readNotificationsHandler)
 
-  router.put(
-    '/notifications/read',
-    authorizationMiddleware({
-      optional: false,
-      expiration: FIVE_MINUTES,
-      fetcher
-    }),
-    readNotificationsHandler
-  )
+  router.get('/subscription', signedFetchMiddleware, getSubscriptionHandler)
+  router.put('/subscription', signedFetchMiddleware, putSubscriptionHandler)
 
-  router.get(
-    '/subscription',
-    authorizationMiddleware({
-      optional: false,
-      expiration: FIVE_MINUTES,
-      fetcher
-    }),
-    getSubscriptionHandler
-  )
-
-  router.put(
-    '/subscription',
-    authorizationMiddleware({
-      optional: false,
-      expiration: FIVE_MINUTES,
-      fetcher
-    }),
-    putSubscriptionHandler
-  )
+  router.put('/set-email', signedFetchMiddleware, storeUnconfirmedEmailHandler)
+  router.put('/confirm-email', confirmEmailHandler)
 
   return router
 }

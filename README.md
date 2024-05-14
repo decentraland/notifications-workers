@@ -155,6 +155,55 @@ Authorization: Bearer <API_KEY>
 ]
 ```
 
+# Email subscriptions
+
+### Checking email subscription
+Check if a user is subscribed to email notifications is done via the regular `/GET subscriptions` endpoint.
+
+If the user is currently in the process of validating their email, the field `unconfirmedEmail` will contain the email that is still pending confirmation.
+
+```mermaid
+sequenceDiagram
+  actor User
+  participant Inbox as Notifications Inbox
+  User->>Inbox: GET /subscription
+  activate Inbox
+  Inbox->>Db: Fetch subscription from DB
+  Inbox->>User: Ok (HTTP 200) with the subscription <br>including the confirmed email
+  deactivate Inbox
+```
+
+### Setting up email subscription
+This email allows the client to set an email for the user to receive notifications.
+The email will be set into a pending state until the user confirms ownership of the email by clicking a link sent to the email.
+There are two endpoints involved:
+* `PUT /set-email` to start the process of setting an email
+* `PUT /confirm-email` (including the code and address) to confirm the email
+
+```mermaid
+sequenceDiagram
+  actor User
+  participant Inbox as Notifications Inbox
+  User->>Inbox: PUT /set-email { email: "some@email.com" }
+  activate Inbox
+  Inbox->>Db: Save unconfirmed email with random code
+  Inbox->>Sendgrid: Send email to user with link
+  Inbox->>User: Ok (HTTP 204)
+  deactivate Inbox
+  User->>User: Gets email with link and clicks it
+  User->>Inbox: PUT /confirm-email { address: "0x123" code: "123456" }
+  activate Inbox
+  Inbox->>Db: Validate code in DB
+  Inbox->>Db: Store email in subscription table
+  Inbox->>Db: Delete unconfirmed email
+  Inbox->>User: Ok (HTTP 204)
+  deactivate Inbox
+```
+
+> If the email sent in the `PUT /set-email` request is an empty string, the email will be removed from the subscription and email notifications will be 
+> deactivated for the user.
+
+
 # Run locally
 
 ### Prerequisites
