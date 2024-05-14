@@ -155,6 +155,62 @@ Authorization: Bearer <API_KEY>
 ]
 ```
 
+# Email subscriptions
+
+### Checking email subscription
+Check if a user is subscribed to email notifications is done via the regular `/GET subscriptions` endpoint.
+```mermaid
+sequenceDiagram
+  actor User
+  participant Inbox as Notifications Inbox
+  User->>Inbox: GET /subscription
+  activate Inbox
+  Inbox->>Db: Fetch subscription from DB
+  Inbox->>User: Ok (HTTP 200) with the subscription <br>including the confirmed email
+  deactivate Inbox
+```
+
+### Checking unconfirmed email
+Check if a user has started the process of validating an email, but it is still incomplete. Endpoint is `GET /unconfirmed-email`.
+```mermaid
+sequenceDiagram
+  actor User
+  participant Inbox as Notifications Inbox
+  User->>Inbox: GET /unconfirmed-email
+  activate Inbox
+  Inbox->>Db: Fetch unconfirmed <br> emails from DB
+  Inbox->>User: Ok (HTTP 200) with the email that <br> is still pending confirmation
+  deactivate Inbox
+```
+
+### Setting up email subscription
+This email allows the client to set an email for the user to receive notifications.
+The email will be set into a pending state until the user confirms ownership of the email by clicking a link sent to the email.
+There are two endpoints involved:
+* `PUT /set-email` to start the process of setting an email
+* `GET /confirm-email` (including the code as a query param) to confirm the email
+
+```mermaid
+sequenceDiagram
+  actor User
+  participant Inbox as Notifications Inbox
+  User->>Inbox: PUT /set-email { email: "some@email.com" }
+  activate Inbox
+  Inbox->>Db: Save unconfirmed email with random code
+  Inbox->>Sendgrid: Send email to user with link
+  Inbox->>User: Ok (HTTP 204)
+  deactivate Inbox
+  User->>User: Gets email with link and clicks it
+  User->>Inbox: GET /confirm-email?code=123456
+  activate Inbox
+  Inbox->>Db: Validate code in DB
+  Inbox->>Db: Store email in subscription table
+  Inbox->>Db: Delete unconfirmed email
+  Inbox->>User: Ok (HTTP 204)
+  deactivate Inbox
+```
+
+
 # Run locally
 
 ### Prerequisites
