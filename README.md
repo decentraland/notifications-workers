@@ -178,7 +178,7 @@ This email allows the client to set an email for the user to receive notificatio
 The email will be set into a pending state until the user confirms ownership of the email by clicking a link sent to the email.
 There are two endpoints involved:
 * `PUT /set-email` to start the process of setting an email
-* `GET /confirm-email` (including the code as a query param) to confirm the email
+* `PUT /confirm-email` (including the code and address) to confirm the email
 
 ```mermaid
 sequenceDiagram
@@ -191,7 +191,7 @@ sequenceDiagram
   Inbox->>User: Ok (HTTP 204)
   deactivate Inbox
   User->>User: Gets email with link and clicks it
-  User->>Inbox: GET /confirm-email?code=123456
+  User->>Inbox: PUT /confirm-email { address: "0x123" code: "123456" }
   activate Inbox
   Inbox->>Db: Validate code in DB
   Inbox->>Db: Store email in subscription table
