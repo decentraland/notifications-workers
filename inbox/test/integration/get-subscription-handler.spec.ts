@@ -10,7 +10,7 @@ test('GET /subscription', function ({ components }) {
 
   it('should return the subscription data stored in the db', async () => {
     const subscriptionDetails = randomSubscription()
-    await components.db.saveSubscription(identity.realAccount.address, subscriptionDetails)
+    await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
 
     const response = await makeRequest(components.localFetch, `/subscription`, identity)
     expect(response.status).toBe(200)
@@ -23,7 +23,7 @@ test('GET /subscription', function ({ components }) {
     await components.db.saveUnconfirmedEmail(identity.realAccount.address, 'some@email.net', 'some-token')
 
     const subscriptionDetails = randomSubscription()
-    await components.db.saveSubscription(identity.realAccount.address, subscriptionDetails)
+    await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
 
     const response = await makeRequest(components.localFetch, '/subscription', identity)
     expect(response.status).toBe(200)

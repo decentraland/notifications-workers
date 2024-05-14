@@ -35,7 +35,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
   router.put('/subscription', signedFetchMiddleware, putSubscriptionHandler)
 
   router.put('/set-email', signedFetchMiddleware, storeUnconfirmedEmailHandler)
-  router.get('/confirm-email', confirmEmailHandler)
+  router.put('/confirm-email', confirmEmailHandler)
 
   return router
 }

@@ -40,7 +40,7 @@ test('PUT /set-email', function ({ components }) {
   it('should remove the email from the subscription and any unconfirmed emails in the db if email is blank', async () => {
     const subscriptionDetails = randomSubscription()
     subscriptionDetails.ignore_all_email = false
-    await components.db.saveSubscription(identity.realAccount.address, subscriptionDetails)
+    await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
     await components.db.saveSubscriptionEmail(identity.realAccount.address, randomEmail())
 
     const response = await makeRequest(components.localFetch, '/set-email', identity, {
@@ -95,7 +95,7 @@ test('PUT /set-email', function ({ components }) {
   })
 })
 
-test('GET /confirm-email', function ({ components, stubComponents }) {
+test('GET /confirm-email', function ({ components }) {
   let identity: Identity
 
   beforeEach(async () => {
@@ -103,28 +103,32 @@ test('GET /confirm-email', function ({ components, stubComponents }) {
   })
 
   it('should confirm email in the DB if the code exists', async () => {
-    stubComponents.config.requireString.withArgs('ACCOUNT_BASE_URL').resolves('https://account.com')
-
     const email = randomEmail()
     const code = makeid(32)
     await components.db.saveUnconfirmedEmail(identity.realAccount.address, email, code)
 
-    const response = await components.localFetch.fetch(
-      `/confirm-email?address=${identity.realAccount.address}&code=${code}`,
-      {
-        redirect: 'manual'
-      }
-    )
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address,
+        code
+      })
+    })
 
-    console.log(response.status, await response.text(), response.headers)
-    expect(response.status).toBe(301)
+    expect(response.status).toBe(204)
 
-    const redirectUrl = response.headers.get('Location')
-    expect(redirectUrl).toBe('https://account.com/')
+    const subscription = await components.db.findSubscription(identity.realAccount.address)
+    expect(subscription.email).toBe(email)
+
+    const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
+    expect(unconfirmedEmail).toBeUndefined()
   })
 
   it('should fail if no address is provided in the link', async () => {
-    const response = await components.localFetch.fetch('/confirm-email')
+    const response = await components.localFetch.fetch('/confirm-email', {
+      method: 'PUT',
+      body: JSON.stringify({})
+    })
 
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({
@@ -134,7 +138,12 @@ test('GET /confirm-email', function ({ components, stubComponents }) {
   })
 
   it('should fail if no code is provided in the link', async () => {
-    const response = await components.localFetch.fetch(`/confirm-email?address=${identity.realAccount.address}`)
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address
+      })
+    })
 
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({
@@ -145,9 +154,13 @@ test('GET /confirm-email', function ({ components, stubComponents }) {
 
   it('should fail if code is incorrect length', async () => {
     const code = makeid(10)
-    const response = await components.localFetch.fetch(
-      `/confirm-email?address=${identity.realAccount.address}&code=${code}`
-    )
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address,
+        code
+      })
+    })
 
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({
@@ -158,10 +171,13 @@ test('GET /confirm-email', function ({ components, stubComponents }) {
 
   it('should fail if the code does not exist in the DB', async () => {
     const code = makeid(32)
-    const response = await components.localFetch.fetch(
-      `/confirm-email?address=${identity.realAccount.address}&code=${code}`
-    )
-
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address,
+        code
+      })
+    })
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({
       error: 'Bad request',
@@ -174,9 +190,13 @@ test('GET /confirm-email', function ({ components, stubComponents }) {
     await components.db.saveUnconfirmedEmail(identity.realAccount.address, email, makeid(32))
 
     const code = makeid(32)
-    const response = await components.localFetch.fetch(
-      `/confirm-email?address=${identity.realAccount.address}&code=${code}`
-    )
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address,
+        code
+      })
+    })
 
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({

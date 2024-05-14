@@ -10,7 +10,7 @@ import { AppComponents, DbNotification, NotificationEvent, UnconfirmedEmailDb } 
 export type DbComponent = CommonDbComponent & {
   findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<DbNotification[]>
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
-  saveSubscription(address: string, subscriptionDetails: SubscriptionDetails): Promise<void>
+  saveSubscriptionDetails(address: string, subscriptionDetails: SubscriptionDetails): Promise<void>
   saveSubscriptionEmail(address: string, email: Email | undefined): Promise<void>
   findUnconfirmedEmail(address: string): Promise<UnconfirmedEmailDb | undefined>
   saveUnconfirmedEmail(address: string, email: string, code: string): Promise<void>
@@ -172,7 +172,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     ...baseDbComponent,
     findNotifications,
     markNotificationsAsRead,
-    saveSubscription,
+    saveSubscriptionDetails: saveSubscription,
     saveSubscriptionEmail,
     findUnconfirmedEmail,
     saveUnconfirmedEmail,

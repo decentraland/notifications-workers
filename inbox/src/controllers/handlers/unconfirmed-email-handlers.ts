@@ -21,7 +21,7 @@ export async function storeUnconfirmedEmailHandler(
     subscription.email = undefined
     subscription.details.ignore_all_email = true
     await context.components.db.saveSubscriptionEmail(address, '')
-    await context.components.db.saveSubscription(address, subscription.details)
+    await context.components.db.saveSubscriptionDetails(address, subscription.details)
     await context.components.db.deleteUnconfirmedEmail(address)
   } else {
     const code = makeId(CODE_LENGTH)
@@ -35,19 +35,16 @@ export async function storeUnconfirmedEmailHandler(
 }
 
 export async function confirmEmailHandler(
-  context: Pick<
-    HandlerContextWithPath<'config' | 'db' | 'logs', '/confirm-email'>,
-    'components' | 'url' | 'verification'
-  >
+  context: Pick<HandlerContextWithPath<'db' | 'logs', '/confirm-email'>, 'components' | 'request' | 'verification'>
 ): Promise<IHttpServerComponent.IResponse> {
-  const urlSearchParams = new URL(context.url).searchParams
+  const body = await parseJson<{ address: string; code: string }>(context.request)
 
-  const address = urlSearchParams.get('address')
+  const address = body.address
   if (!address || !EthAddress.validate(address)) {
     throw new InvalidRequestError('Missing address')
   }
 
-  const code = urlSearchParams.get('code')
+  const code = body.code
   if (!code || code.length !== CODE_LENGTH) {
     throw new InvalidRequestError('Missing code')
   }
@@ -64,15 +61,11 @@ export async function confirmEmailHandler(
   const subscription = await context.components.db.findSubscription(address)
   subscription.email = unconfirmedEmail.email
 
-  await context.components.db.saveSubscription(address, subscription.details)
+  await context.components.db.saveSubscriptionEmail(address, unconfirmedEmail.email)
   await context.components.db.deleteUnconfirmedEmail(address)
 
-  const accountUrl = await context.components.config.requireString('ACCOUNT_BASE_URL')
-
   return {
-    status: 301,
-    headers: {
-      Location: accountUrl
-    }
+    status: 204,
+    body: ''
   }
 }

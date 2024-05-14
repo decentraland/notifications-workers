@@ -19,7 +19,7 @@ export async function putSubscriptionHandler(
     throw new InvalidRequestError(`Invalid subscription`)
   }
 
-  await context.components.db.saveSubscription(address, body)
+  await context.components.db.saveSubscriptionDetails(address, body)
 
   return {
     status: 204,
