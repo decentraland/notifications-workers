@@ -34,21 +34,6 @@ export async function storeUnconfirmedEmailHandler(
   }
 }
 
-export async function getUnconfirmedEmailHandler(
-  context: Pick<HandlerContextWithPath<'db' | 'logs', '/unconfirmed-email'>, 'components' | 'verification'>
-): Promise<IHttpServerComponent.IResponse> {
-  const address = context.verification!.auth
-
-  const unconfirmedEmail = await context.components.db.findUnconfirmedEmail(address)
-
-  return {
-    status: 200,
-    body: {
-      email: unconfirmedEmail?.email
-    }
-  }
-}
-
 export async function confirmEmailHandler(
   context: Pick<
     HandlerContextWithPath<'config' | 'db' | 'logs', '/confirm-email'>,

@@ -95,32 +95,6 @@ test('PUT /set-email', function ({ components }) {
   })
 })
 
-test('GET /unconfirmed-email', function ({ components }) {
-  let identity: Identity
-
-  beforeEach(async () => {
-    identity = await getIdentity()
-  })
-
-  it('should retrieve no email if none is set in the db', async () => {
-    const response = await makeRequest(components.localFetch, '/unconfirmed-email', identity, {})
-
-    expect(response.status).toBe(200)
-    const actual = await response.json()
-    expect(actual.email).toBeUndefined()
-  })
-
-  it('should retrieve an email if the unconfirmed email exists in the db', async () => {
-    const email = randomEmail()
-    await components.db.saveUnconfirmedEmail(identity.realAccount.address, email, 'code')
-
-    const response = await makeRequest(components.localFetch, '/unconfirmed-email', identity, {})
-
-    expect(response.status).toBe(200)
-    expect(await response.json()).toMatchObject({ email })
-  })
-})
-
 test('GET /confirm-email', function ({ components, stubComponents }) {
   let identity: Identity
 

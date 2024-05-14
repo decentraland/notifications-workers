@@ -159,6 +159,9 @@ Authorization: Bearer <API_KEY>
 
 ### Checking email subscription
 Check if a user is subscribed to email notifications is done via the regular `/GET subscriptions` endpoint.
+
+If the user is currently in the process of validating their email, the field `unconfirmedEmail` will contain the email that is still pending confirmation.
+
 ```mermaid
 sequenceDiagram
   actor User
@@ -167,19 +170,6 @@ sequenceDiagram
   activate Inbox
   Inbox->>Db: Fetch subscription from DB
   Inbox->>User: Ok (HTTP 200) with the subscription <br>including the confirmed email
-  deactivate Inbox
-```
-
-### Checking unconfirmed email
-Check if a user has started the process of validating an email, but it is still incomplete. Endpoint is `GET /unconfirmed-email`.
-```mermaid
-sequenceDiagram
-  actor User
-  participant Inbox as Notifications Inbox
-  User->>Inbox: GET /unconfirmed-email
-  activate Inbox
-  Inbox->>Db: Fetch unconfirmed <br> emails from DB
-  Inbox->>User: Ok (HTTP 200) with the email that <br> is still pending confirmation
   deactivate Inbox
 ```
 
