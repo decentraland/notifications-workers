@@ -73,6 +73,7 @@ export function makeRequest(localFetch: IFetchComponent, path: string, identity:
 
   return localFetch.fetch(path, {
     method: 'GET',
+    redirect: 'manual',
     ...options,
     headers: {
       ...getAuthHeaders(options.method || 'GET', url.pathname, {}, (payload) =>

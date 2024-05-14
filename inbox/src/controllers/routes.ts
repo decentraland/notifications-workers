@@ -7,7 +7,11 @@ import { GlobalContext } from '../types'
 import { readNotificationsHandler } from './handlers/read-notifications-handler'
 import { getSubscriptionHandler } from './handlers/get-subscription-handler'
 import { putSubscriptionHandler } from './handlers/put-subscription-handler'
-import { getUnconfirmedEmailHandler, storeUnconfirmedEmailHandler } from './handlers/unconfirmed-email-handlers'
+import {
+  confirmEmailHandler,
+  getUnconfirmedEmailHandler,
+  storeUnconfirmedEmailHandler
+} from './handlers/unconfirmed-email-handlers'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 
@@ -36,6 +40,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   router.get('/unconfirmed-email', signedFetchMiddleware, getUnconfirmedEmailHandler)
   router.put('/set-email', signedFetchMiddleware, storeUnconfirmedEmailHandler)
+  router.get('/confirm-email', confirmEmailHandler)
 
   return router
 }
