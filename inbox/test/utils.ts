@@ -6,6 +6,7 @@ import { DbNotification } from '../src/types'
 import { IFetchComponent } from '@well-known-components/interfaces'
 import { getPublicKey } from '@noble/secp256k1'
 import { hexToBytes } from 'eth-connect'
+import { makeId } from '../src/logic/utils'
 
 export type Identity = { authChain: AuthIdentity; realAccount: IdentityType; ephemeralIdentity: IdentityType }
 
@@ -117,4 +118,8 @@ export function randomSubscription(): SubscriptionDetails {
   }
 
   return details as SubscriptionDetails
+}
+
+export function randomEmail(): string {
+  return `${makeId(8)}@${makeId(8)}.com`
 }

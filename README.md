@@ -210,6 +210,9 @@ sequenceDiagram
   deactivate Inbox
 ```
 
+> If the email sent in the `PUT /set-email` request is an empty string, the email will be removed from the subscription and email notifications will be 
+> deactivated for the user.
+
 
 # Run locally
 

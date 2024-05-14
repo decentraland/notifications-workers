@@ -1,12 +1,17 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { SubscriptionDetails } from '@dcl/schemas'
-import { createDbComponent as createCommonDbComponent, DbComponent as CommonDbComponent } from '@notifications/common'
+import { Email, SubscriptionDetails } from '@dcl/schemas'
+import {
+  createDbComponent as createCommonDbComponent,
+  DbComponent as CommonDbComponent,
+  defaultSubscription
+} from '@notifications/common'
 import { AppComponents, DbNotification, NotificationEvent, UnconfirmedEmailDb } from '../types'
 
 export type DbComponent = CommonDbComponent & {
   findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<DbNotification[]>
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
   saveSubscription(address: string, subscriptionDetails: SubscriptionDetails): Promise<void>
+  saveSubscriptionEmail(address: string, email: Email | undefined): Promise<void>
   findUnconfirmedEmail(address: string): Promise<UnconfirmedEmailDb | undefined>
   saveUnconfirmedEmail(address: string, email: string, code: string): Promise<void>
   deleteUnconfirmedEmail(address: string): Promise<void>
@@ -105,6 +110,23 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     await pg.query(query)
   }
 
+  async function saveSubscriptionEmail(address: string, email: Email | undefined): Promise<void> {
+    const query: SQLStatement = SQL`
+        INSERT INTO subscriptions (address, email, details, created_at, updated_at)
+        VALUES (${address.toLowerCase()},
+                ${email},
+                ${defaultSubscription()}::jsonb,
+                ${Date.now()},
+                ${Date.now()}
+        )
+        ON CONFLICT (address) DO UPDATE
+              SET email = ${email},
+              updated_at = ${Date.now()}
+    `
+
+    await pg.query(query)
+  }
+
   async function findUnconfirmedEmail(address: string): Promise<UnconfirmedEmailDb | undefined> {
     const result = await pg.query<UnconfirmedEmailDb>(SQL`
         SELECT address, email, code, created_at, updated_at
@@ -151,6 +173,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     findNotifications,
     markNotificationsAsRead,
     saveSubscription,
+    saveSubscriptionEmail,
     findUnconfirmedEmail,
     saveUnconfirmedEmail,
     deleteUnconfirmedEmail
