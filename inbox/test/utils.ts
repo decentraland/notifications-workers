@@ -105,7 +105,7 @@ export function randomNotification(address: string | undefined): DbNotification 
   }
 }
 
-export function randomSubscription(): SubscriptionDetails {
+export function randomSubscriptionDetails(): SubscriptionDetails {
   const details = {
     ignore_all_email: Math.random() > 0.5,
     ignore_all_in_app: Math.random() > 0.5,

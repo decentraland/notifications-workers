@@ -10,8 +10,9 @@ import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { Readable } from 'node:stream'
-import { Subscription } from '@dcl/schemas'
 import { DbComponent } from './adapters/db'
+import { ISendGridClient } from '@notifications/common'
+import { IEmailRenderer } from './adapters/email-renderer'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -26,6 +27,8 @@ export type BaseComponents = {
   pg: IPgComponent
   db: DbComponent
   fetcher: IFetchComponent
+  emailRenderer: IEmailRenderer
+  sendGridClient: ISendGridClient
 }
 
 // components used in runtime
