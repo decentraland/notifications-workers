@@ -1,5 +1,5 @@
 import { test } from '../components'
-import { getIdentity, Identity, makeRequest, randomEmail, randomSubscription } from '../utils'
+import { getIdentity, Identity, makeRequest, randomEmail, randomSubscriptionDetails } from '../utils'
 import { defaultSubscription } from '@notifications/common'
 import { makeid } from '@notifications/processor/test/utils'
 
@@ -40,8 +40,39 @@ test('PUT /set-email', function ({ components, stubComponents }) {
     })
   })
 
+  it('should not do anything if the unconfirmed email is already the same as in the subscription', async () => {
+    const email = randomEmail()
+
+    const subscriptionDetails = randomSubscriptionDetails()
+    subscriptionDetails.ignore_all_email = false
+    await components.db.saveSubscriptionEmail(identity.realAccount.address, email)
+    await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
+
+    stubComponents.sendGridClient.sendEmail.withArgs(expect.objectContaining({ to: email })).rejects()
+
+    const response = await makeRequest(components.localFetch, '/set-email', identity, {
+      method: 'PUT',
+      body: JSON.stringify({
+        email
+      })
+    })
+
+    expect(response.status).toBe(204)
+    expect(stubComponents.sendGridClient.sendEmail.notCalled).toBeTruthy()
+
+    const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
+    expect(unconfirmedEmail).toBeUndefined()
+
+    const subscription = await components.db.findSubscription(identity.realAccount.address)
+    expect(subscription.email).toBe(email)
+    expect(subscription).toMatchObject({
+      address: identity.realAccount.address.toLowerCase(),
+      details: subscriptionDetails
+    })
+  })
+
   it('should remove the email from the subscription and any unconfirmed emails in the db if email is blank', async () => {
-    const subscriptionDetails = randomSubscription()
+    const subscriptionDetails = randomSubscriptionDetails()
     subscriptionDetails.ignore_all_email = false
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
     await components.db.saveSubscriptionEmail(identity.realAccount.address, randomEmail())

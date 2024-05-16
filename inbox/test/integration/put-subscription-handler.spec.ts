@@ -1,5 +1,5 @@
 import { test } from '../components'
-import { getIdentity, Identity, makeRequest, randomSubscription } from '../utils'
+import { getIdentity, Identity, makeRequest, randomSubscriptionDetails } from '../utils'
 
 test('PUT /subscription', function ({ components }) {
   let identity: Identity
@@ -8,7 +8,7 @@ test('PUT /subscription', function ({ components }) {
   })
 
   it('should store the received subscription in the db', async () => {
-    const subscriptionDetails = randomSubscription()
+    const subscriptionDetails = randomSubscriptionDetails()
 
     const response = await makeRequest(components.localFetch, `/subscription`, identity, {
       method: 'PUT',
