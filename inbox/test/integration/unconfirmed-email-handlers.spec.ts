@@ -3,7 +3,7 @@ import { getIdentity, Identity, makeRequest, randomEmail, randomSubscription } f
 import { defaultSubscription } from '@notifications/common'
 import { makeid } from '@notifications/processor/test/utils'
 
-test('PUT /set-email', function ({ components }) {
+test('PUT /set-email', function ({ components, stubComponents }) {
   let identity: Identity
 
   beforeEach(async () => {
@@ -13,6 +13,8 @@ test('PUT /set-email', function ({ components }) {
   it('should store the email as an unconfirmed email in the db', async () => {
     const email = randomEmail()
 
+    stubComponents.sendGridClient.sendEmail.withArgs(expect.objectContaining({ to: email })).resolves()
+
     const response = await makeRequest(components.localFetch, '/set-email', identity, {
       method: 'PUT',
       body: JSON.stringify({
@@ -21,6 +23,7 @@ test('PUT /set-email', function ({ components }) {
     })
 
     expect(response.status).toBe(204)
+    expect(stubComponents.sendGridClient.sendEmail.calledOnce).toBeTruthy()
 
     const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
     expect(unconfirmedEmail).toMatchObject({

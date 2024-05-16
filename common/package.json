@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@dcl/schemas": "^11.9.1",
-    "@well-known-components/pg-component": "^0.2.2"
+    "@well-known-components/pg-component": "^0.2.2",
+    "@well-known-components/interfaces": "^1.4.3"
   }
 }

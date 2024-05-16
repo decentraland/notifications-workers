@@ -12,6 +12,8 @@ import {
 import { AppComponents, GlobalContext } from './types'
 import { metricDeclarations } from './metrics'
 import { createDbComponent } from './adapters/db'
+import { createSendGrid } from '@notifications/common'
+import { createEmailRenderer } from './adapters/email-renderer'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -37,6 +39,10 @@ export async function initComponents(): Promise<AppComponents> {
 
   const fetcher = createFetchComponent()
 
+  const emailRenderer = await createEmailRenderer()
+
+  const sendGridClient = await createSendGrid({ config, fetcher, logs })
+
   return {
     config,
     logs,
@@ -45,6 +51,8 @@ export async function initComponents(): Promise<AppComponents> {
     metrics,
     pg,
     db,
-    fetcher
+    fetcher,
+    emailRenderer,
+    sendGridClient
   }
 }
