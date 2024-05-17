@@ -101,9 +101,10 @@ exports[`email rendering tests rendering governance_new_comment_on_proposal 1`] 
 
 exports[`email rendering tests rendering governance_pitch_passed 1`] = `
 {
-  "content": "Help advance this idea by proposing potential solutions <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">here</a>.
-",
-  "subject": "The pitch can now receive tenders",
+  "actionButtonText": "See the Pitch",
+  "actionButtonUrl": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
+  "content": "<p>The pitch Limit Grants Re-Submissions has passed and can now receive tenders. Help advance this idea by proposing potential solutions.</p>",
+  "subject": "A Pitch You Voted on Has Passed",
   "to": "email@example.com",
 }
 `;
