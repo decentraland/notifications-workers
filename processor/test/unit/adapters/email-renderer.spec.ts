@@ -10,7 +10,7 @@ describe('email rendering tests', () => {
       type: NotificationType.BID_ACCEPTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
-        link: 'https://decentraland.org/marketplace/contracts/"0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09"/tokens/21',
+        link: 'https://decentraland.org/marketplace/contracts/0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09/tokens/21',
         image:
           'https://peer.decentraland.org/lambdas/collections/contents/urn:decentraland:matic:collections-v2:0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09:0/thumbnail',
         price: '1500000000000000000',

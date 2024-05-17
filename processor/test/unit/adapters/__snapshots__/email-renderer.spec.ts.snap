@@ -3,7 +3,7 @@
 exports[`email rendering tests rendering bid_accepted 1`] = `
 {
   "actionButtonText": "Check it Out",
-  "actionButtonUrl": "https://decentraland.org/marketplace/contracts/"0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09"/tokens/21",
+  "actionButtonUrl": "https://decentraland.org/marketplace/contracts/0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09/tokens/21",
   "content": "<p>Your offer of 1.50 MANA was accepted for Netgate male.</p>
 ",
   "subject": "Your offer was accepted",
@@ -24,18 +24,22 @@ exports[`email rendering tests rendering bid_received 1`] = `
 
 exports[`email rendering tests rendering events_started 1`] = `
 {
+  "actionButtonText": "Jump In",
+  "actionButtonUrl": "https://play.decentraland.org/?position=14%2C100&realm=main",
   "content": "The event <a href="https://play.decentraland.org/?position=14%2C100&realm=main">Live DJ Music and Dancing in the Unity Café</a> has begun!
 ",
-  "subject": "Event Live DJ Music and Dancing in the Unity Café started",
+  "subject": "Jump In - Your Event Has Started!",
   "to": "email@example.com",
 }
 `;
 
 exports[`email rendering tests rendering events_starts_soon 1`] = `
 {
+  "actionButtonText": "Go to Event Page",
+  "actionButtonUrl": "https://play.decentraland.org/?position=-99%2C35&realm=main",
   "content": "The event <a href="https://play.decentraland.org/?position=-99%2C35&realm=main">UNMONDAY YOURSELF</a> starts in an hour.
 ",
-  "subject": "Event UNMONDAY YOURSELF starts in an hour",
+  "subject": "An Event You've RSVP'd to Starts Soon",
   "to": "email@example.com",
 }
 `;
@@ -43,20 +47,20 @@ exports[`email rendering tests rendering events_starts_soon 1`] = `
 exports[`email rendering tests rendering governance_announcement 1`] = `
 {
   "content": "<p style="font-weight: 600; font-size: 14px; margin-bottom: 0;">Some title</p>
-<a href="https://governance.decentraland.org/some-link">
-    <p style="display: inline; color: #a09ba8; margin: 4px 0; gap: 5px; flex-wrap: wrap; align-items: center;">
+<p style="display: inline; color: #a09ba8; margin: 4px 0; gap: 5px; flex-wrap: wrap; align-items: center;">
+    <a href="https://governance.decentraland.org/some-link">
         Some content
-    </p>
-</a>
+    </a>
+</p>
 ",
-  "subject": "Announcement: Some title",
+  "subject": "A DAO Announcement Has Been Released",
   "to": "email@example.com",
 }
 `;
 
 exports[`email rendering tests rendering governance_authored_proposal_finished 1`] = `
 {
-  "content": "The votes are in! Find out the outcome of the voting on <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">your proposal</a>.
+  "content": "<p>The votes are in! Find out the outcome of the voting on <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">your proposal</a>.</p>
 ",
   "subject": "Voting ended on your proposal Limit Grants Re-Submissions",
   "to": "email@example.com",
@@ -119,9 +123,12 @@ exports[`email rendering tests rendering governance_tender_passed 1`] = `
 
 exports[`email rendering tests rendering governance_voting_ended_voter 1`] = `
 {
-  "content": "<a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">Discover the results</a> of the proposal you participated in as a voter. Your input matters!
+  "content": "<p>
+    <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">Discover the results</a> of the
+    proposal you participated in as a voter. Your input matters!
+</p>
 ",
-  "subject": "Voting ended on a proposal you voted",
+  "subject": "Voting Has Ended on Your Proposal",
   "to": "email@example.com",
 }
 `;

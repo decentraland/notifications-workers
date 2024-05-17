@@ -37,8 +37,7 @@ function loadTemplates() {
           fs.readFileSync(
             path.join(__dirname, `email-templates/${notificationType}.${TemplatePart.CONTENT}.handlebars`),
             'utf8'
-          ),
-          { noEscape: true }
+          )
         )
       }
       return acc
