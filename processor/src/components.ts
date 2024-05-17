@@ -24,6 +24,7 @@ import { rentalEndedProducer } from './adapters/producers/rental-ended'
 import { createRenderer } from './adapters/email-renderer'
 import { createSubscriptionsService } from './adapters/subscriptions-service'
 import { createSendGrid } from '@notifications/common'
+import { createNotificationsService } from './adapters/notifications-service'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -70,6 +71,17 @@ export async function initComponents(): Promise<AppComponents> {
 
   const fetch = await createFetchComponent()
 
+  const subscriptionService = await createSubscriptionsService({ db, logs })
+  const emailRenderer = await createRenderer({ subscriptionService })
+  const sendGridClient = await createSendGrid({ config, fetch, logs })
+
+  const notificationsService = await createNotificationsService({
+    db,
+    emailRenderer,
+    logs,
+    subscriptionService,
+    sendGridClient
+  })
   const marketplaceSubGraphUrl = await config.requireString('MARKETPLACE_SUBGRAPH_URL')
   const marketplaceSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, marketplaceSubGraphUrl)
 
@@ -88,29 +100,38 @@ export async function initComponents(): Promise<AppComponents> {
   // Create the producer registry and add all the producers
   const producerRegistry = await createProducerRegistry({ logs })
   producerRegistry.addProducer(
-    await createProducer({ db, logs }, await itemSoldProducer({ config, l2CollectionsSubGraph }))
+    await createProducer({ db, logs, notificationsService }, await itemSoldProducer({ config, l2CollectionsSubGraph }))
   )
   producerRegistry.addProducer(
-    await createProducer({ db, logs }, await royaltiesEarnedProducer({ config, l2CollectionsSubGraph }))
+    await createProducer(
+      { db, logs, notificationsService },
+      await royaltiesEarnedProducer({ config, l2CollectionsSubGraph })
+    )
   )
   producerRegistry.addProducer(
-    await createProducer({ db, logs }, await bidReceivedProducer({ config, l2CollectionsSubGraph }))
+    await createProducer(
+      { db, logs, notificationsService },
+      await bidReceivedProducer({ config, l2CollectionsSubGraph })
+    )
   )
   producerRegistry.addProducer(
-    await createProducer({ db, logs }, await bidAcceptedProducer({ config, l2CollectionsSubGraph }))
+    await createProducer(
+      { db, logs, notificationsService },
+      await bidAcceptedProducer({ config, l2CollectionsSubGraph })
+    )
   )
   producerRegistry.addProducer(
-    await createProducer({ db, logs }, await rentalStartedProducer({ config, landManagerSubGraph, rentalsSubGraph }))
+    await createProducer(
+      { db, logs, notificationsService },
+      await rentalStartedProducer({ config, landManagerSubGraph, rentalsSubGraph })
+    )
   )
   producerRegistry.addProducer(
-    await createProducer({ db, logs }, await rentalEndedProducer({ config, landManagerSubGraph, rentalsSubGraph }))
+    await createProducer(
+      { db, logs, notificationsService },
+      await rentalEndedProducer({ config, landManagerSubGraph, rentalsSubGraph })
+    )
   )
-
-  const fetcher = await createFetchComponent()
-  const subscriptionService = await createSubscriptionsService({ db, logs })
-
-  const emailRenderer = await createRenderer({ subscriptionService })
-  const sendGridClient = await createSendGrid({ config, fetcher, logs })
 
   return {
     config,
@@ -125,9 +146,10 @@ export async function initComponents(): Promise<AppComponents> {
     l2CollectionsSubGraph,
     rentalsSubGraph,
     landManagerSubGraph,
-    fetcher,
+    fetch,
     subscriptionService,
     emailRenderer,
-    sendGridClient
+    sendGridClient,
+    notificationsService
   }
 }

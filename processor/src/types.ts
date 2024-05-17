@@ -13,6 +13,7 @@ import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { DbComponent } from './adapters/db'
 import { EthAddress, NotificationType } from '@dcl/schemas'
 import { Email, ISendGridClient, SubscriptionDB } from '@notifications/common'
+import { INotificationsService } from './adapters/notifications-service'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -27,7 +28,8 @@ export type AppComponents = {
   marketplaceSubGraph: ISubgraphComponent
   rentalsSubGraph: ISubgraphComponent
   landManagerSubGraph: ISubgraphComponent
-  fetcher: IFetchComponent
+  fetch: IFetchComponent
+  notificationsService: INotificationsService
   subscriptionService: ISubscriptionService
   emailRenderer: IEmailRenderer
   sendGridClient: ISendGridClient

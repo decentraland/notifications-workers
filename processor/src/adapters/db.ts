@@ -2,10 +2,15 @@ import SQL from 'sql-template-strings'
 import { createDbComponent as createCommonDbComponent, DbComponent as CommonDbComponent } from '@notifications/common'
 import { AppComponents, NotificationRecord } from '../types'
 
+export type UpsertResult<T> = {
+  inserted: T[]
+  updated: T[]
+}
+
 export type DbComponent = CommonDbComponent & {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
   updateLastUpdateForNotificationType(notificationType: string, timestamp: number): Promise<void>
-  insertNotifications(notificationRecord: NotificationRecord[]): Promise<void>
+  insertNotifications(notificationRecord: NotificationRecord[]): Promise<UpsertResult<NotificationRecord>>
 }
 
 export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): DbComponent {
@@ -36,9 +41,12 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
     await pg.query<any>(query)
   }
 
-  async function insertNotifications(notificationRecords: NotificationRecord[]) {
-    if (notificationRecords.length === 0) {
-      return
+  async function insertNotifications(
+    notificationRecords: NotificationRecord[]
+  ): Promise<UpsertResult<NotificationRecord>> {
+    const upsertResult: UpsertResult<NotificationRecord> = {
+      inserted: [],
+      updated: []
     }
 
     for (const notificationRecord of notificationRecords) {
@@ -60,10 +68,14 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg' | 'logs'>): D
       `
 
       const result = await pg.query(buildQuery)
-      // TODO If it was inserted, we need to see check the subscription and see if we need to send an email
-      // result.rows[0].xmax === '0' ? 'INSERTED' : 'UPDATED'
-      console.log(result.rowCount, result.rows)
+      if (result.rows[0].xmax === '0') {
+        upsertResult.inserted.push(notificationRecord)
+      } else {
+        upsertResult.updated.push(notificationRecord)
+      }
     }
+
+    return upsertResult
   }
 
   return {
