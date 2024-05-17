@@ -18,7 +18,7 @@ enum TemplatePart {
 function loadTemplates() {
   handlebars.registerHelper('formatMana', (mana: string) => formatMana(mana))
   handlebars.registerHelper('escape', (variable: string) => {
-    const s = JSON.stringify(variable)
+    const s = JSON.stringify(variable || '""')
     // we remove the start and end quotes
     return s.substring(1, s.length - 1)
   })
@@ -26,10 +26,7 @@ function loadTemplates() {
     // TODO let's do something better here
     return variable
   })
-  handlebars.registerHelper('days', (from: string, to: string) => {
-    const diff = parseInt(to) - parseInt(from)
-    return diff / 86400
-  })
+  handlebars.registerHelper('days', (from: string, to: string) => (parseInt(to) - parseInt(from)) / 86400)
 
   return Object.values(NotificationType).reduce(
     (acc, notificationType) => {

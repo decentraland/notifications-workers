@@ -148,7 +148,7 @@ exports[`email rendering tests rendering item_sold 1`] = `
   "actionButtonUrl": "https://decentraland.org/marketplace/contracts/0xca520eea5aadff51b48d9e9b3038001a751139ca/tokens/180",
   "content": "<p>Someone just bought your item HeartPrint Shoes. Congratulations!</p>
 ",
-  "subject": "You’ve Sold an Item!",
+  "subject": "You've Sold an Item!",
   "to": "email@example.com",
 }
 `;
@@ -176,9 +176,10 @@ exports[`email rendering tests rendering rental_started 1`] = `
 
 exports[`email rendering tests rendering reward_assignment 1`] = `
 {
-  "content": "This MESHfair 2024 Halo is already in your backpack.
-",
-  "subject": "",
+  "actionButtonText": "Check it Out",
+  "actionButtonUrl": "",
+  "content": "<p>Congratulations! You’ve received MESHfair 2024 Halo for free!</p>",
+  "subject": "You've Received a Free Item!",
   "to": "email@example.com",
 }
 `;
