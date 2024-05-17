@@ -12,8 +12,9 @@ import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { DbComponent } from './adapters/db'
 import { EthAddress, NotificationType } from '@dcl/schemas'
-import { Email, ISendGridClient, SubscriptionDB } from '@notifications/common'
+import { ISendGridClient, SubscriptionDB } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
+import { IEmailRenderer } from './adapters/email-renderer'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -89,8 +90,4 @@ export type INotificationProducerResult = {
 
 export type ISubscriptionService = {
   findSubscriptionForAddress(address: EthAddress): Promise<SubscriptionDB>
-}
-
-export type IEmailRenderer = {
-  renderEmail(notification: NotificationRecord): Promise<Email>
 }

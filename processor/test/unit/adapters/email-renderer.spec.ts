@@ -1,9 +1,8 @@
-import { IEmailRenderer, ISubscriptionService, NotificationRecord } from '../../../src/types'
 import { NotificationType } from '@dcl/schemas'
-import { createRenderer } from '../../../src/adapters/email-renderer'
+import { NotificationRecord } from '../../../src/types'
+import { createEmailRenderer, IEmailRenderer } from '../../../src/adapters/email-renderer'
 
 describe('email rendering tests', () => {
-  let subscriptionService: ISubscriptionService
   let renderer: IEmailRenderer
 
   const notifications: Record<NotificationType, NotificationRecord> = {
@@ -11,7 +10,7 @@ describe('email rendering tests', () => {
       type: NotificationType.BID_ACCEPTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
-        link: 'https://decentraland.org/marketplace/contracts/0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09/tokens/21',
+        link: 'https://decentraland.org/marketplace/contracts/"0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09"/tokens/21',
         image:
           'https://peer.decentraland.org/lambdas/collections/contents/urn:decentraland:matic:collections-v2:0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09:0/thumbnail',
         price: '1500000000000000000',
@@ -342,12 +341,7 @@ describe('email rendering tests', () => {
   }
 
   beforeAll(async () => {
-    subscriptionService = {
-      findSubscriptionForAddress: jest.fn().mockResolvedValue({
-        email: 'email@example.com'
-      })
-    }
-    renderer = await createRenderer({ subscriptionService })
+    renderer = await createEmailRenderer()
   })
 
   const cases = Object.keys(notifications).map((type) => [type, notifications[type]])
@@ -358,7 +352,7 @@ describe('email rendering tests', () => {
     })
   })
 
-  test.each(cases)(`rendering %s`, async (type: NotificationType, notification: NotificationRecord) => {
-    expect(await renderer.renderEmail(notification)).toMatchSnapshot()
+  test.each(cases)(`rendering %s`, async (_type: NotificationType, notification: NotificationRecord) => {
+    expect(await renderer.renderEmail('email@example.com', notification)).toMatchSnapshot()
   })
 })

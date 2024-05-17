@@ -38,7 +38,7 @@ export async function createNotificationsService(
           if (subscription.details.message_type[notification.type]?.email) {
             try {
               // TODO Also here, we may send emails in batches
-              const email = await emailRenderer.renderEmail(notification)
+              const email = await emailRenderer.renderEmail(subscription.email, notification)
               await sendGridClient.sendEmail(email)
             } catch (error: any) {
               logger.warn(

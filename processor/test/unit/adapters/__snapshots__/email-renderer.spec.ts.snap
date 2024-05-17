@@ -2,18 +2,22 @@
 
 exports[`email rendering tests rendering bid_accepted 1`] = `
 {
+  "actionButtonText": "Check it Out",
+  "actionButtonUrl": "https://decentraland.org/marketplace/contracts/"0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09"/tokens/21",
   "content": "<p>Your offer of 1.50 MANA was accepted for Netgate male.</p>
 ",
-  "subject": "Bid Accepted",
+  "subject": "Your offer was accepted",
   "to": "email@example.com",
 }
 `;
 
 exports[`email rendering tests rendering bid_received 1`] = `
 {
-  "content": "You received an offer of 1.50 MANA for Space Jams.
+  "actionButtonText": "Manage Your Bids",
+  "actionButtonUrl": "https://decentraland.org/marketplace/account?assetType=nft&section=bids",
+  "content": "You’ve received an offer of 1.50 MANA for Space Jams.
 ",
-  "subject": "Bid Received",
+  "subject": "You've Received a Bid",
   "to": "email@example.com",
 }
 `;

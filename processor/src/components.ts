@@ -21,7 +21,7 @@ import { bidAcceptedProducer } from './adapters/producers/bid-accepted'
 import { createFetchComponent } from '@dcl/platform-server-commons'
 import { rentalStartedProducer } from './adapters/producers/rental-started'
 import { rentalEndedProducer } from './adapters/producers/rental-ended'
-import { createRenderer } from './adapters/email-renderer'
+import { createEmailRenderer } from './adapters/email-renderer'
 import { createSubscriptionsService } from './adapters/subscriptions-service'
 import { createSendGrid } from '@notifications/common'
 import { createNotificationsService } from './adapters/notifications-service'
@@ -72,7 +72,7 @@ export async function initComponents(): Promise<AppComponents> {
   const fetch = await createFetchComponent()
 
   const subscriptionService = await createSubscriptionsService({ db, logs })
-  const emailRenderer = await createRenderer({ subscriptionService })
+  const emailRenderer = await createEmailRenderer()
   const sendGridClient = await createSendGrid({ config, fetch, logs })
 
   const notificationsService = await createNotificationsService({
