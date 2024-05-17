@@ -2,7 +2,7 @@
 
 exports[`email rendering tests rendering bid_accepted 1`] = `
 {
-  "content": "Your offer of 1.50 MANA was accepted for Netgate male.
+  "content": "<p>Your offer of 1.50 MANA was accepted for Netgate male.</p>
 ",
   "subject": "Bid Accepted",
   "to": "email@example.com",
