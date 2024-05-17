@@ -178,7 +178,7 @@ exports[`email rendering tests rendering reward_assignment 1`] = `
 {
   "actionButtonText": "Check it Out",
   "actionButtonUrl": "",
-  "content": "<p>Congratulations! You’ve received MESHfair 2024 Halo for free!</p>",
+  "content": "<p>Congratulations! You've received MESHfair 2024 Halo for free!</p>",
   "subject": "You've Received a Free Item!",
   "to": "email@example.com",
 }
@@ -186,9 +186,11 @@ exports[`email rendering tests rendering reward_assignment 1`] = `
 
 exports[`email rendering tests rendering royalties_earned 1`] = `
 {
-  "content": "You've earned 0.90 MANA in royalties for <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x08cbc78c1b2e2eea7627c39c8adf660d52e3d82c/tokens/945">Blue santa hat</a>.
+  "actionButtonText": "Go to Wallet",
+  "actionButtonUrl": "https://decentraland.org/marketplace/contracts/0x08cbc78c1b2e2eea7627c39c8adf660d52e3d82c/tokens/945",
+  "content": "<p>Congratulations! You've earned 0.90 MANA in royalties on a secondary sale of your item Blue santa hat.</p>
 ",
-  "subject": "",
+  "subject": "You've Earned Some Royalties!",
   "to": "email@example.com",
 }
 `;
