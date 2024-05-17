@@ -60,9 +60,11 @@ exports[`email rendering tests rendering governance_announcement 1`] = `
 
 exports[`email rendering tests rendering governance_authored_proposal_finished 1`] = `
 {
-  "content": "<p>The votes are in! Find out the outcome of the voting on <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">your proposal</a>.</p>
+  "actionButtonText": "See the Results",
+  "actionButtonUrl": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
+  "content": "<p>The votes are in! Find out the outcome of the voting on your proposal Limit Grants Re-Submissions.</p>
 ",
-  "subject": "Voting ended on your proposal Limit Grants Re-Submissions",
+  "subject": "Voting Has Ended on Your Proposal",
   "to": "email@example.com",
 }
 `;
@@ -111,18 +113,20 @@ exports[`email rendering tests rendering governance_pitch_passed 1`] = `
 
 exports[`email rendering tests rendering governance_proposal_enacted 1`] = `
 {
-  "content": "Congratulations! <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd">Your Project</a> has been successfully enacted and a funding Vesting Contract was created.
-",
-  "subject": "Your project has been funded",
+  "actionButtonText": "See Proposal",
+  "actionButtonUrl": "https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd",
+  "content": "<p>Congratulations! Your Proposal Decentraland No-Code UI Design Studio has been enacted!</p>",
+  "subject": "Your Proposal's Been Enacted!",
   "to": "email@example.com",
 }
 `;
 
 exports[`email rendering tests rendering governance_tender_passed 1`] = `
 {
-  "content": "If you think you can tackle this solution, propose a Project and get funding from the DAO <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">here</a>.
-",
-  "subject": "The tender can now receive bid projects",
+  "actionButtonText": "See the Tender",
+  "actionButtonUrl": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
+  "content": "The tender you voted on Limit Grants Re-Submissions has passed and can now receive bids. If you think you can tackle this solution, make a bid and propose a project!",
+  "subject": "A Tender You Voted on Has Passed",
   "to": "email@example.com",
 }
 `;
@@ -131,12 +135,9 @@ exports[`email rendering tests rendering governance_voting_ended_voter 1`] = `
 {
   "actionButtonText": "See the Results",
   "actionButtonUrl": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
-  "content": "<p>
-    <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f">Discover the results</a> of the
-    proposal you participated in as a voter. Your input matters!
-</p>
+  "content": "<p>Voting has ended on the proposal Limit Grants Re-Submissions, see the outcome of your vote!</p>
 ",
-  "subject": "Voting Has Ended on Your Proposal",
+  "subject": "Voting Has Ended on a Proposal You Voted On",
   "to": "email@example.com",
 }
 `;
