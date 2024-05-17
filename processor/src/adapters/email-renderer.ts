@@ -22,6 +22,14 @@ function loadTemplates() {
     // we remove the start and end quotes
     return s.substring(1, s.length - 1)
   })
+  handlebars.registerHelper('land', (variable: string) => {
+    // TODO let's do something better here
+    return variable
+  })
+  handlebars.registerHelper('days', (from: string, to: string) => {
+    const diff = parseInt(to) - parseInt(from)
+    return diff / 86400
+  })
 
   return Object.values(NotificationType).reduce(
     (acc, notificationType) => {

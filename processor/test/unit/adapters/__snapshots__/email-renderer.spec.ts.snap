@@ -155,18 +155,21 @@ exports[`email rendering tests rendering item_sold 1`] = `
 
 exports[`email rendering tests rendering rental_ended 1`] = `
 {
-  "content": "The rental of your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/1249/manage">ESTATE</a> has ended.
+  "actionButtonText": "See My Assets",
+  "actionButtonUrl": "https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/1249/manage",
+  "content": "<p>The rental period on your LAND 3,2 to 0x135b17eaa25e3e0f3ce8f0a575bcc8867031f77c has ended.</p>
 ",
-  "subject": "",
+  "subject": "Rental Period Ended",
   "to": "email@example.com",
 }
 `;
 
 exports[`email rendering tests rendering rental_started 1`] = `
 {
-  "content": "Your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/5051/manage">ESTATE</a> was rented by 0x951a6698f644a9b1c634abc416b9d9902aaf3db9.
-",
-  "subject": "",
+  "actionButtonText": "See My Assets",
+  "actionButtonUrl": "https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/5051/manage",
+  "content": "<p>Your LAND 1,2 has been rented to 0x951a6698f644a9b1c634abc416b9d9902aaf3db9 for 365 days.</p>",
+  "subject": "Your LAND Has Been Rented",
   "to": "email@example.com",
 }
 `;
