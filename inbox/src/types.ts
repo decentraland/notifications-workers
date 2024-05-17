@@ -26,7 +26,7 @@ export type BaseComponents = {
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pg: IPgComponent
   db: DbComponent
-  fetcher: IFetchComponent
+  fetch: IFetchComponent
   emailRenderer: IEmailRenderer
   sendGridClient: ISendGridClient
 }

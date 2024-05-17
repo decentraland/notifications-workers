@@ -1,28 +1,38 @@
-import { IFetchComponent } from '@well-known-components/interfaces'
+import { IConfigComponent, IFetchComponent, ILoggerComponent } from '@well-known-components/interfaces'
 import { createConfigComponent } from '@well-known-components/env-config-provider'
 import { createLogComponent } from '@well-known-components/logger'
-import { createSendGrid, Email } from '../../../src'
+import { createSendGrid, Email, ISendGridClient } from '../../../src'
 
 describe('sendgrid client tests', () => {
-  test('should create client', async () => {
-    const logs = await createLogComponent({})
-    const config = createConfigComponent({
+  let logs: ILoggerComponent
+  let config: IConfigComponent
+  let fetch: IFetchComponent
+  let sendGridClient: ISendGridClient
+
+  beforeEach(async () => {
+    logs = await createLogComponent({})
+    config = createConfigComponent({
       SENDGRID_API_URL: 'https://api.sendgrid.com',
       SENDGRID_API_KEY: 'my-key',
-      SENDGRID_EMAIL_FROM: 'from@decentrland.org',
+      SENDGRID_EMAIL_FROM: 'from@decentraland.org',
       SENDGRID_EMAIL_TEMPLATE_ID: 'my-template-id',
       SENDGRID_SANDBOX_MODE: 'true'
     })
-    const fetcher: IFetchComponent = {
+    fetch = {
       fetch: jest.fn()
     }
 
-    const sendGridClient = await createSendGrid({ config, fetcher, logs })
-    expect(sendGridClient).toBeDefined()
+    sendGridClient = await createSendGrid({ config, fetch, logs })
+  })
 
+  test('should create client', async () => {
+    expect(sendGridClient).toBeDefined()
+  })
+
+  test('should send email with all the features', async () => {
     const email: Email = {
       to: 'to@example.com',
-      from: 'from@decentrland.org',
+      from: 'from@decentraland.org',
       subject: 'This is a subject',
       content: 'This is the content',
       actionButtonLink: 'https://decentraland.org',
@@ -39,7 +49,7 @@ describe('sendgrid client tests', () => {
     }
     await sendGridClient.sendEmail(email)
 
-    expect(fetcher.fetch).toHaveBeenCalledWith('https://api.sendgrid.com/v3/mail/send', {
+    expect(fetch.fetch).toHaveBeenCalledWith('https://api.sendgrid.com/v3/mail/send', {
       body: JSON.stringify({
         personalizations: [
           {
@@ -56,10 +66,46 @@ describe('sendgrid client tests', () => {
             }
           }
         ],
-        from: { email: 'from@decentrland.org', name: 'Decentraland' },
+        from: { email: 'from@decentraland.org', name: 'Decentraland' },
         subject: 'This is a subject',
         template_id: 'my-template-id',
         attachments: email.attachments,
+        mail_settings: { sandbox_mode: { enable: true } }
+      }),
+      headers: {
+        Authorization: 'Bearer my-key',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST'
+    })
+  })
+
+  test('should send email with default from', async () => {
+    const email: Email = {
+      to: 'to@example.com',
+      subject: 'This is a subject',
+      content: 'This is the content'
+    }
+    await sendGridClient.sendEmail(email)
+
+    expect(fetch.fetch).toHaveBeenCalledWith('https://api.sendgrid.com/v3/mail/send', {
+      body: JSON.stringify({
+        personalizations: [
+          {
+            to: [
+              {
+                email: 'to@example.com'
+              }
+            ],
+            dynamic_template_data: {
+              address: 'to@example.com',
+              content: 'This is the content'
+            }
+          }
+        ],
+        from: { email: 'from@decentraland.org', name: 'Decentraland' },
+        subject: 'This is a subject',
+        template_id: 'my-template-id',
         mail_settings: { sandbox_mode: { enable: true } }
       }),
       headers: {

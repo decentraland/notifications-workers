@@ -15,10 +15,10 @@ const FIVE_MINUTES = 5 * 60 * 1000
 export async function setupRouter({ components }: GlobalContext): Promise<Router<GlobalContext>> {
   const router = new Router<GlobalContext>()
 
-  const { fetcher } = components
+  const { fetch } = components
 
   const signedFetchMiddleware = authorizationMiddleware({
-    fetcher,
+    fetcher: fetch,
     optional: false,
     expiration: FIVE_MINUTES,
     onError: (err) => ({ error: err.message, message: 'This endpoint requires a signed fetch request. See ADR-44.' })

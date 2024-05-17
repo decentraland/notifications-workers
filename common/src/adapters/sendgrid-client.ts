@@ -4,13 +4,13 @@ import { Email, ISendGridClient } from '../types'
 export type SendGridComponents = {
   config: IConfigComponent
   logs: ILoggerComponent
-  fetcher: IFetchComponent
+  fetch: IFetchComponent
 }
 
 export async function createSendGrid(
-  components: Pick<SendGridComponents, 'config' | 'fetcher' | 'logs'>
+  components: Pick<SendGridComponents, 'config' | 'fetch' | 'logs'>
 ): Promise<ISendGridClient> {
-  const { fetcher, logs, config } = components
+  const { fetch, logs, config } = components
   const logger = logs.getLogger('sendgrid-client')
 
   const [apiBaseUrl, apiKey, emailFrom, emailTemplateId, sandboxMode] = await Promise.all([
@@ -53,7 +53,7 @@ export async function createSendGrid(
       }
     }
 
-    await fetcher.fetch(`${apiBaseUrl}/v3/mail/send`, {
+    await fetch.fetch(`${apiBaseUrl}/v3/mail/send`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
