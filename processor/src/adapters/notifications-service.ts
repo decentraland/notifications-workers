@@ -40,8 +40,14 @@ export async function createNotificationsService(
               // TODO Also here, we may send emails in batches
               const email = await emailRenderer.renderEmail(notification)
               await sendGridClient.sendEmail(email)
-            } catch (error) {
-              logger.warn(`Failed to send email for notification: ${JSON.stringify(notification)}`)
+            } catch (error: any) {
+              logger.warn(
+                `Failed to send email for notification: ${JSON.stringify({
+                  type: notification.type,
+                  address: notification.address,
+                  eventKey: notification.eventKey
+                })}. Error: ${error.message}`
+              )
             }
           }
         }
