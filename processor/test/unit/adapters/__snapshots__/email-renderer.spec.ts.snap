@@ -15,7 +15,7 @@ exports[`email rendering tests rendering bid_received 1`] = `
 {
   "actionButtonText": "Manage Your Bids",
   "actionButtonUrl": "https://decentraland.org/marketplace/account?assetType=nft&section=bids",
-  "content": "You've received an offer of 1.50 MANA for Space Jams.
+  "content": "<p>You've received an offer of 1.50 MANA for Space Jams.</p>
 ",
   "subject": "You've Received a Bid",
   "to": "email@example.com",
@@ -26,7 +26,7 @@ exports[`email rendering tests rendering events_started 1`] = `
 {
   "actionButtonText": "Jump In",
   "actionButtonUrl": "https://play.decentraland.org/?position=14%2C100&realm=main",
-  "content": "The event <a href="https://play.decentraland.org/?position=14%2C100&realm=main">Live DJ Music and Dancing in the Unity Café</a> has begun!
+  "content": "<p>The event <a href="https://play.decentraland.org/?position=14%2C100&realm=main">Live DJ Music and Dancing in the Unity Café</a> has begun!</p>
 ",
   "subject": "Jump In - Your Event Has Started!",
   "to": "email@example.com",
@@ -37,7 +37,7 @@ exports[`email rendering tests rendering events_starts_soon 1`] = `
 {
   "actionButtonText": "Go to Event Page",
   "actionButtonUrl": "https://play.decentraland.org/?position=-99%2C35&realm=main",
-  "content": "The event <a href="https://play.decentraland.org/?position=-99%2C35&realm=main">UNMONDAY YOURSELF</a> starts in an hour.
+  "content": "<p>The event <a href="https://play.decentraland.org/?position=-99%2C35&realm=main">UNMONDAY YOURSELF</a> starts in an hour.</p>
 ",
   "subject": "An Event You've RSVP'd to Starts Soon",
   "to": "email@example.com",
@@ -71,7 +71,8 @@ exports[`email rendering tests rendering governance_coauthor_requested 1`] = `
 {
   "actionButtonText": "Respond to the Request",
   "actionButtonUrl": "https://governance.decentraland.org/proposal/?id=cacb1ce3-b5e9-4133-901a-cb787f43871f",
-  "content": "You've been invited to collaborate as a co-author on the proposal DCL Community Video Library.",
+  "content": "<p>You've been invited to collaborate as a co-author on the proposal DCL Community Video Library.</p>
+",
   "subject": "You've Received a Request to Co-Author a Proposal",
   "to": "email@example.com",
 }
@@ -79,6 +80,8 @@ exports[`email rendering tests rendering governance_coauthor_requested 1`] = `
 
 exports[`email rendering tests rendering governance_new_comment_on_project_update 1`] = `
 {
+  "actionButtonText": "Read the Comment",
+  "actionButtonUrl": "https://governance.decentraland.org/update/?id=a38ec7d7-7eb2-4f9a-b9c8-363785fdcbd6&proposalId=1b8eef75-add3-49d6-9181-3061daaf22ec",
   "content": "<p>Someone's commented on your project update for Duel Arena P2E Continuum, Refinement &amp; Game Expansion [ Resubmission ].</p>",
   "subject": "There's a New Comment on Your Project Update",
   "to": "email@example.com",
@@ -87,9 +90,11 @@ exports[`email rendering tests rendering governance_new_comment_on_project_updat
 
 exports[`email rendering tests rendering governance_new_comment_on_proposal 1`] = `
 {
-  "content": "Engage in a productive conversation by replying to <a style="color: #ff2d55; text-decoration: underline;" href="https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd">this comment</a>.
+  "actionButtonText": "Read the Comment",
+  "actionButtonUrl": "https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd",
+  "content": "<p>Someone's commented on your proposal Decentraland No-Code UI Design Studio.</p>
 ",
-  "subject": "New comment posted on proposal",
+  "subject": "There's a New Comment on Your Proposal",
   "to": "email@example.com",
 }
 `;
