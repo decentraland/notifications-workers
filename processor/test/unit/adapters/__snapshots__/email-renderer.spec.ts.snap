@@ -197,7 +197,7 @@ exports[`email rendering tests rendering royalties_earned 1`] = `
 
 exports[`email rendering tests rendering worlds_access_restored 1`] = `
 {
-  "actionButtonText": "See in Builder",
+  "actionButtonText": "Manage Worlds",
   "actionButtonUrl": "https://decentraland.org/builder/worlds?tab=dcl",
   "content": "<p>Access to your Worlds has been restored.</p>
 ",
@@ -208,9 +208,11 @@ exports[`email rendering tests rendering worlds_access_restored 1`] = `
 
 exports[`email rendering tests rendering worlds_access_restricted 1`] = `
 {
-  "content": "Access to your Worlds has been restricted due to <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">insufficient resources</a>.
-",
-  "subject": "",
+  "actionButtonText": "Manage Worlds",
+  "actionButtonUrl": "https://decentraland.org/builder/worlds?tab=dcl",
+  "content": "<p>Access to your Worlds has been restricted due to insufficient World Storage. To regain access, please decrease your
+    scene's size or get more storage. Learn more <a href="https://docs.decentraland.org/creator/worlds/about/#worlds-size-limit">here</a>.</p>",
+  "subject": "Access to Your Worlds Has Been Restricted",
   "to": "email@example.com",
 }
 `;
