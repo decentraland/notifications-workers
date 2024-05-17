@@ -219,10 +219,12 @@ exports[`email rendering tests rendering worlds_access_restricted 1`] = `
 
 exports[`email rendering tests rendering worlds_missing_resources 1`] = `
 {
-  "content": "Access to your Worlds at risk in 48h. <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">Rectify now</a> to prevent disruption.
-)
+  "actionButtonText": "Manage Worlds",
+  "actionButtonUrl": "https://decentraland.org/builder/worlds?tab=dcl",
+  "content": "<p>Your Worlds have scenes deployed that are larger than your available World Storage. Please rectify this within 48hrs to avoid being restricted access to your Worlds. You can either decrease your scene's size or get more storage.
+    Learn more <a href="https://docs.decentraland.org/creator/worlds/about/#worlds-size-limit">here</a>.</p>
 ",
-  "subject": "",
+  "subject": "[Action Needed] Insufficient World Storage",
   "to": "email@example.com",
 }
 `;
