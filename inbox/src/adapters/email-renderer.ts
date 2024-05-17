@@ -24,15 +24,13 @@ function loadTemplates() {
           fs.readFileSync(
             path.join(__dirname, `email-templates/${template}.${TemplatePart.SUBJECT}.handlebars`),
             'utf8'
-          ),
-          {}
+          )
         ),
         [TemplatePart.CONTENT]: handlebars.compile(
           fs.readFileSync(
             path.join(__dirname, `email-templates/${template}.${TemplatePart.CONTENT}.handlebars`),
             'utf8'
-          ),
-          {}
+          )
         )
       }
       return acc

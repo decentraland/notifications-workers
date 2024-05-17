@@ -37,11 +37,11 @@ export async function initComponents(): Promise<AppComponents> {
 
   const db = createDbComponent({ pg })
 
-  const fetcher = createFetchComponent()
+  const fetch = createFetchComponent()
 
   const emailRenderer = await createEmailRenderer()
 
-  const sendGridClient = await createSendGrid({ config, fetcher, logs })
+  const sendGridClient = await createSendGrid({ config, fetch, logs })
 
   return {
     config,
@@ -51,7 +51,7 @@ export async function initComponents(): Promise<AppComponents> {
     metrics,
     pg,
     db,
-    fetcher,
+    fetch,
     emailRenderer,
     sendGridClient
   }
