@@ -144,9 +144,11 @@ exports[`email rendering tests rendering governance_voting_ended_voter 1`] = `
 
 exports[`email rendering tests rendering item_sold 1`] = `
 {
-  "content": "Someone just bought your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/marketplace/contracts/0xca520eea5aadff51b48d9e9b3038001a751139ca/tokens/180">HeartPrint Shoes</a>.
+  "actionButtonText": "Go to Wallet",
+  "actionButtonUrl": "https://decentraland.org/marketplace/contracts/0xca520eea5aadff51b48d9e9b3038001a751139ca/tokens/180",
+  "content": "<p>Someone just bought your item HeartPrint Shoes. Congratulations!</p>
 ",
-  "subject": "",
+  "subject": "You’ve Sold an Item!",
   "to": "email@example.com",
 }
 `;
