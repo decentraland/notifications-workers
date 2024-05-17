@@ -197,9 +197,11 @@ exports[`email rendering tests rendering royalties_earned 1`] = `
 
 exports[`email rendering tests rendering worlds_access_restored 1`] = `
 {
-  "content": "Access to your <a style="color: #ff2d55; text-decoration: underline;" href="https://decentraland.org/builder/worlds?tab=dcl">Worlds</a> has been restored.
+  "actionButtonText": "See in Builder",
+  "actionButtonUrl": "https://decentraland.org/builder/worlds?tab=dcl",
+  "content": "<p>Access to your Worlds has been restored.</p>
 ",
-  "subject": "",
+  "subject": "Access to Your Worlds Has Been Restored",
   "to": "email@example.com",
 }
 `;
