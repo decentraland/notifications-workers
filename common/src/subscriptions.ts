@@ -14,6 +14,6 @@ const _defaultSubscription: SubscriptionDetails = {
   message_type: allMessageTypes
 }
 
-export function defaultSubscription() {
+export function defaultSubscription(): SubscriptionDetails {
   return JSON.parse(JSON.stringify(_defaultSubscription))
 }
