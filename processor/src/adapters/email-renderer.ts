@@ -55,12 +55,10 @@ export async function createEmailRenderer(): Promise<IEmailRenderer> {
   const templates = loadTemplates()
 
   async function renderEmail(emailAddress: string, notification: NotificationRecord): Promise<Email> {
-    const text = templates[notification.type][TemplatePart.SUBJECT](notification)
-    console.log('text', text)
     return {
       to: emailAddress,
       content: templates[notification.type][TemplatePart.CONTENT](notification),
-      ...JSON.parse(text)
+      ...JSON.parse(templates[notification.type][TemplatePart.SUBJECT](notification))
     }
   }
 

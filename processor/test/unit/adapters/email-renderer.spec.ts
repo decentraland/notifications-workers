@@ -321,7 +321,8 @@ describe('email rendering tests', () => {
         title: 'Worlds permission granted',
         description: 'You have been granted access permission for world el.dcl.eth',
         world: 'el.dcl.eth',
-        permissions: ['access']
+        permissions: ['access'],
+        url: 'https://decentraland.org/builder/worlds?tab=dcl'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -333,7 +334,8 @@ describe('email rendering tests', () => {
         title: 'World permission revoked',
         description: 'Your streaming permission for world el.dcl.eth has been revoked',
         world: 'el.dcl.eth',
-        permissions: ['streaming']
+        permissions: ['streaming'],
+        url: 'https://decentraland.org/builder/worlds?tab=dcl'
       },
       timestamp: Date.now(),
       eventKey: '123'
