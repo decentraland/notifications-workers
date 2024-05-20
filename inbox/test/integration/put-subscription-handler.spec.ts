@@ -1,6 +1,5 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomSubscriptionDetails } from '../utils'
-import { defaultSubscription } from '@notifications/common'
 
 test('PUT /subscription', function ({ components }) {
   let identity: Identity
@@ -57,8 +56,6 @@ test('PUT /subscription', function ({ components }) {
   })
 
   it('should fail if invalid values', async () => {
-    const subscriptionDetails = randomSubscriptionDetails()
-
     const response = await makeRequest(components.localFetch, `/subscription`, identity, {
       method: 'PUT',
       body: JSON.stringify({ ...randomSubscriptionDetails(), ignore_all_email: 'invalid' })
