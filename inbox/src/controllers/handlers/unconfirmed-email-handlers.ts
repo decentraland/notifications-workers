@@ -38,7 +38,7 @@ export async function storeUnconfirmedEmailHandler(
       await db.saveUnconfirmedEmail(address, body.email, code)
       const email: Sendable = {
         ...(await emailRenderer.renderEmail(InboxTemplates.VALIDATE_EMAIL, body.email, {})),
-        actionButtonLink: `${accountBaseUrl}/confirm-email?confirmEmail=true&address=${address}&code=${code}`,
+        actionButtonLink: `${accountBaseUrl}/confirm-email/${code}`,
         actionButtonText: 'Click Here to Confirm Your Email'
       }
       await sendGridClient.sendEmail(email)
