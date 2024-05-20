@@ -1,6 +1,7 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomSubscriptionDetails } from '../utils'
 import { defaultSubscription } from '@notifications/common'
+import { SubscriptionDetails } from '@dcl/schemas'
 
 test('GET /subscription', function ({ components }) {
   let identity: Identity
@@ -31,6 +32,21 @@ test('GET /subscription', function ({ components }) {
       details: subscriptionDetails,
       unconfirmedEmail: 'some@email.net'
     })
+  })
+
+  it('should return the sanitized subscription data', async () => {
+    const subscriptionDetails: SubscriptionDetails = {
+      ...defaultSubscription(),
+      message_type: {
+        bid_accepted: { email: true, in_app: true },
+        no_longer_valid_key: { email: true, in_app: true }
+      } as any
+    }
+    await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
+
+    const response = await makeRequest(components.localFetch, `/subscription`, identity)
+    expect(response.status).toBe(200)
+    expect(await response.json()).toMatchObject({ details: defaultSubscription() })
   })
 
   it('should return a default subscription when no subscription stored', async () => {

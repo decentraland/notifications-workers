@@ -2,6 +2,7 @@ import SQL, { SQLStatement } from 'sql-template-strings'
 import { SubscriptionDB } from '../types'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { defaultSubscription } from '../subscriptions'
+import { NotificationChannelType, NotificationType } from '@dcl/schemas'
 
 export type DbComponents = {
   pg: IPgComponent
@@ -26,17 +27,42 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     const result = await pg.query<SubscriptionDB>(query)
     if (result.rowCount === 0) {
       return {
-        address,
+        address: address.toLowerCase(),
         email: undefined,
         details: defaultSubscription(),
         created_at: Date.now(),
         updated_at: Date.now()
       }
     }
-    return result.rows[0]
+
+    return autoMigrate(result.rows[0])
   }
 
   return {
     findSubscription
+  }
+}
+
+function autoMigrate(row: SubscriptionDB): SubscriptionDB {
+  const defSubscription = defaultSubscription()
+  const validMessageTypes = Object.keys(row.details.message_type)
+    .filter((key) => key in defSubscription.message_type)
+    .reduce(
+      (obj, key) => {
+        obj[key as NotificationType] = row.details.message_type[key as NotificationType]
+        return obj
+      },
+      {} as Record<NotificationType, NotificationChannelType>
+    )
+  return {
+    ...row,
+    details: {
+      ...defSubscription,
+      ...row.details,
+      message_type: {
+        ...defSubscription.message_type,
+        ...validMessageTypes
+      }
+    }
   }
 }

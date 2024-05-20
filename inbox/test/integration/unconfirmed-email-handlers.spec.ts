@@ -35,7 +35,7 @@ test('PUT /set-email', function ({ components, stubComponents }) {
     const subscription = await components.db.findSubscription(identity.realAccount.address)
     expect(subscription.email).toBeUndefined()
     expect(subscription).toMatchObject({
-      address: identity.realAccount.address,
+      address: identity.realAccount.address.toLowerCase(),
       details: defaultSubscription()
     })
   })
