@@ -240,7 +240,8 @@ exports[`email rendering tests rendering worlds_permission_granted 1`] = `
 {
   "actionButtonText": "Manage Worlds",
   "actionButtonUrl": "https://decentraland.org/builder/worlds?tab=dcl",
-  "content": "<p>You've been granted the following World permission(s) to the World el.dcl.eth: access.</p>",
+  "content": "<p>You've been granted the following World permission(s) to the World el.dcl.eth: access.</p>
+",
   "subject": "You've Been Granted New World Permissions",
   "to": "email@example.com",
 }
