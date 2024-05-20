@@ -26,7 +26,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     const result = await pg.query<SubscriptionDB>(query)
     if (result.rowCount === 0) {
       return {
-        address,
+        address: address.toLowerCase(),
         email: undefined,
         details: defaultSubscription(),
         created_at: Date.now(),
