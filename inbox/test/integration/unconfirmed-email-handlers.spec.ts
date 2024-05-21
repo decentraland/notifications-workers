@@ -90,7 +90,7 @@ test('PUT /set-email', function ({ components, stubComponents }) {
     expect(unconfirmedEmail).toBeUndefined()
 
     const subscription = await components.db.findSubscription(identity.realAccount.address)
-    expect(subscription.email).toBe('')
+    expect(subscription.email).toBe(null)
     expect(subscription).toMatchObject({
       address: identity.realAccount.address.toLowerCase(),
       details: { ...subscriptionDetails, ignore_all_email: true }
