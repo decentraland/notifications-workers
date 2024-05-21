@@ -1,8 +1,8 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomNotification } from '../utils'
 import { createNotification } from '../db'
-import { DbNotification } from '../../src/types'
 import * as fetch from 'node-fetch'
+import { NotificationDb } from '@notifications/common'
 
 test('GET /notifications', function ({ components }) {
   let identity: Identity
@@ -21,8 +21,8 @@ test('GET /notifications', function ({ components }) {
 
     async function checkResponseForNotifications(
       response: fetch.Response,
-      notificationEvent: DbNotification,
-      broadcastNotificationEvent: DbNotification,
+      notificationEvent: NotificationDb,
+      broadcastNotificationEvent: NotificationDb,
       read: boolean
     ) {
       expect(response.status).toBe(200)

@@ -1,9 +1,10 @@
-import { AppComponents, DbNotification } from '../src/types'
+import { NotificationDb } from '@notifications/common'
 import SQL from 'sql-template-strings'
+import { AppComponents } from '../src/types'
 
 export async function createNotification(
   { pg }: Pick<AppComponents, 'pg'>,
-  notification: DbNotification
+  notification: NotificationDb
 ): Promise<string> {
   const queryResult = await pg.query(SQL`
       INSERT INTO notifications (event_key, type, address, metadata, timestamp, created_at, updated_at)
@@ -23,8 +24,8 @@ export async function createNotification(
 export async function findNotifications(
   { pg }: Pick<AppComponents, 'pg'>,
   notificationIds: string[]
-): Promise<DbNotification[]> {
-  const queryResult = await pg.query<DbNotification>(SQL`
+): Promise<NotificationDb[]> {
+  const queryResult = await pg.query<NotificationDb>(SQL`
       SELECT id,
              event_key,
              type,

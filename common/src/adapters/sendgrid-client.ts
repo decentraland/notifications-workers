@@ -22,7 +22,7 @@ export async function createSendGrid(
   ])
 
   async function sendEmail(email: Email): Promise<void> {
-    logger.info(`Sending email to ${email.to} with subject ${email.subject}`)
+    logger.info(`Sending email to ${email.to} with subject "${email.subject}"`)
     const data = {
       personalizations: [
         {

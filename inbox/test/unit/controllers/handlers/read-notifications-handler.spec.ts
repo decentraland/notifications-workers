@@ -3,6 +3,7 @@ import { DbComponent } from '../../../../src/adapters/db'
 import { Request } from 'node-fetch'
 import { readNotificationsHandler } from '../../../../src/controllers/handlers/read-notifications-handler'
 import { InvalidRequestError } from '@dcl/platform-server-commons'
+import { NotificationDb } from '@notifications/common/dist/types'
 
 describe('read notifications handler unit test', () => {
   async function executeHandler(db: DbComponent, body: any) {
@@ -19,10 +20,11 @@ describe('read notifications handler unit test', () => {
   }
 
   it('should throw InvalidRequestError if no notificationIds are provided', async () => {
-    const db = {
+    const db: DbComponent = {
+      findSubscription: jest.fn(),
+      findNotification: jest.fn(),
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn(),
-      findSubscription: jest.fn(),
       saveSubscriptionDetails: jest.fn(),
       saveSubscriptionEmail: jest.fn(),
       findUnconfirmedEmail: jest.fn(),
@@ -33,10 +35,11 @@ describe('read notifications handler unit test', () => {
   })
 
   it('should throw InvalidRequestError if no notificationIds are provided (empty list)', async () => {
-    const db = {
+    const db: DbComponent = {
+      findSubscription: jest.fn(),
+      findNotification: jest.fn(),
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn(),
-      findSubscription: jest.fn(),
       saveSubscriptionDetails: jest.fn(),
       saveSubscriptionEmail: jest.fn(),
       findUnconfirmedEmail: jest.fn(),
@@ -47,10 +50,11 @@ describe('read notifications handler unit test', () => {
   })
 
   it('should execute markNotificationsAsRead', async () => {
-    const db = {
+    const db: DbComponent = {
+      findSubscription: jest.fn(),
+      findNotification: jest.fn(),
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn().mockReturnValueOnce(10),
-      findSubscription: jest.fn(),
       saveSubscriptionDetails: jest.fn(),
       saveSubscriptionEmail: jest.fn(),
       findUnconfirmedEmail: jest.fn(),
