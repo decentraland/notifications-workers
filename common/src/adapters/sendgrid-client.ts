@@ -32,6 +32,7 @@ export async function createSendGrid(
             }
           ],
           dynamic_template_data: {
+            subject: email.subject,
             address: email.to,
             content: email.content,
             actionButtonLink: email.actionButtonLink,
@@ -43,7 +44,6 @@ export async function createSendGrid(
         email: email.from || emailFrom,
         name: 'Decentraland'
       },
-      subject: email.subject,
       template_id: emailTemplateId,
       attachments: email.attachments,
       mail_settings: {

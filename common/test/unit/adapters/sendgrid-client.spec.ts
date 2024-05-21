@@ -59,6 +59,7 @@ describe('sendgrid client tests', () => {
               }
             ],
             dynamic_template_data: {
+              subject: 'This is a subject',
               address: 'to@example.com',
               content: 'This is the content',
               actionButtonLink: 'https://decentraland.org',
@@ -67,7 +68,6 @@ describe('sendgrid client tests', () => {
           }
         ],
         from: { email: 'from@decentraland.org', name: 'Decentraland' },
-        subject: 'This is a subject',
         template_id: 'my-template-id',
         attachments: email.attachments,
         mail_settings: { sandbox_mode: { enable: true } }
@@ -98,13 +98,13 @@ describe('sendgrid client tests', () => {
               }
             ],
             dynamic_template_data: {
+              subject: 'This is a subject',
               address: 'to@example.com',
               content: 'This is the content'
             }
           }
         ],
         from: { email: 'from@decentraland.org', name: 'Decentraland' },
-        subject: 'This is a subject',
         template_id: 'my-template-id',
         mail_settings: { sandbox_mode: { enable: true } }
       }),
