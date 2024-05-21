@@ -1,22 +1,38 @@
 import { HandlerContextWithPath, NotificationRecord } from '../../types'
-import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
+import { InvalidRequestError } from '@dcl/platform-server-commons'
 import { NotificationDb } from '@notifications/common'
 import { NotificationType } from '@dcl/schemas'
-import handlebars from 'handlebars'
-import fs from 'node:fs'
-import path from 'path'
 
 export async function testRandomNotificationsHandler(
-  context: Pick<HandlerContextWithPath<'db' | 'logs' | 'emailRenderer', '/test-notifications'>, 'components'>
+  context: Pick<HandlerContextWithPath<'pg' | 'logs' | 'emailRenderer', '/test-notifications'>, 'components' | 'url'>
 ) {
-  const { db, logs, emailRenderer } = context.components
-  const logger = logs.getLogger('test-notifications-handler')
+  const {
+    url,
+    components: { pg, logs }
+  } = context
 
-  // await db.findNotifications(body)
+  const logger = logs.getLogger('test-random-notifications-handler')
+  logger.info('Rendering list of notifications available for preview')
 
+  const result = await pg.query<NotificationDb>(`
+      SELECT DISTINCT ON (type) *
+      FROM (
+               SELECT *
+               FROM notifications
+               ORDER BY type, created_at DESC
+           ) AS randomized_notifications;
+  `)
+
+  const body = result.rows.reduce(
+    (acc, notification) => {
+      acc[notification.type] = new URL(`${url.href}/${notification.id}`)
+      return acc
+    },
+    {} as Record<string, URL>
+  )
   return {
-    status: 204,
-    body: {}
+    status: 200,
+    body: body
   }
 }
 
@@ -26,12 +42,15 @@ export async function testNotificationPreviewHandler(
     'components' | 'params'
   >
 ) {
-  const { db, logs, emailRenderer } = context.components
+  const {
+    components: { db, logs, emailRenderer },
+    params
+  } = context
+
   const logger = logs.getLogger('test-notification-preview-handler')
+  logger.info(`Rendering notification preview for ${params.notificationId}`)
 
-  logger.info(`Rendering notification preview for ${context.params.notificationId}`)
-
-  const notificationId = context.params.notificationId
+  const notificationId = params.notificationId
   const notification = await db.findNotification(notificationId)
   if (!notification) {
     throw new InvalidRequestError(`Notification not found: ${notificationId}`)
@@ -39,7 +58,6 @@ export async function testNotificationPreviewHandler(
 
   const email = await emailRenderer.renderEmail('email@example.com', adapt(notification))
   const html = await emailRenderer.renderTemplate(email)
-  logger.info(`Rendered email: ${html}`)
 
   return {
     status: 200,
