@@ -4,12 +4,13 @@ import { AppComponents } from '../../../../src/types'
 import querystring from 'node:querystring'
 
 describe('notifications handler unit test', () => {
-  async function mockComponents() {
+  async function mockComponents(): Promise<Pick<AppComponents, 'db' | 'logs'>> {
     return {
       db: {
+        findSubscription: jest.fn(),
+        findNotification: jest.fn(),
         findNotifications: jest.fn().mockResolvedValue([]),
         markNotificationsAsRead: jest.fn(),
-        findSubscription: jest.fn(),
         saveSubscriptionDetails: jest.fn(),
         saveSubscriptionEmail: jest.fn(),
         findUnconfirmedEmail: jest.fn(),

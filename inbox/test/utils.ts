@@ -2,11 +2,11 @@ import { computeAddress, createUnsafeIdentity } from '@dcl/crypto/dist/crypto'
 import { Authenticator, AuthIdentity, IdentityType } from '@dcl/crypto'
 import { AuthChain, NotificationType, SubscriptionDetails } from '@dcl/schemas'
 import { AUTH_CHAIN_HEADER_PREFIX, AUTH_METADATA_HEADER, AUTH_TIMESTAMP_HEADER } from '@dcl/platform-crypto-middleware'
-import { DbNotification } from '../src/types'
 import { IFetchComponent } from '@well-known-components/interfaces'
 import { getPublicKey } from '@noble/secp256k1'
 import { hexToBytes } from 'eth-connect'
 import { makeId } from '../src/logic/utils'
+import { NotificationDb } from '@notifications/common'
 
 export type Identity = { authChain: AuthIdentity; realAccount: IdentityType; ephemeralIdentity: IdentityType }
 
@@ -90,7 +90,7 @@ export function makeRequest(localFetch: IFetchComponent, path: string, identity:
   })
 }
 
-export function randomNotification(address: string | undefined): DbNotification {
+export function randomNotification(address: string | undefined): NotificationDb {
   return {
     id: '',
     event_key: 'some-event-key-' + Math.random(),

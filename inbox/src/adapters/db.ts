@@ -3,12 +3,13 @@ import { Email, SubscriptionDetails } from '@dcl/schemas'
 import {
   createDbComponent as createCommonDbComponent,
   DbComponent as CommonDbComponent,
-  defaultSubscription
+  defaultSubscription,
+  NotificationDb
 } from '@notifications/common'
-import { AppComponents, DbNotification, NotificationEvent, UnconfirmedEmailDb } from '../types'
+import { AppComponents, NotificationEvent, UnconfirmedEmailDb } from '../types'
 
 export type DbComponent = CommonDbComponent & {
-  findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<DbNotification[]>
+  findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<NotificationDb[]>
   markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
   saveSubscriptionDetails(address: string, subscriptionDetails: SubscriptionDetails): Promise<void>
   saveSubscriptionEmail(address: string, email: Email | undefined): Promise<void>
@@ -25,7 +26,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     onlyUnread: boolean,
     from: number,
     limit: number
-  ): Promise<DbNotification[]> {
+  ): Promise<NotificationDb[]> {
     const query: SQLStatement = SQL`
         SELECT id,
                event_key,
@@ -59,7 +60,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     query.append(SQL` ORDER BY timestamp DESC`)
     query.append(SQL` LIMIT ${limit}`)
 
-    return (await pg.query<DbNotification>(query)).rows
+    return (await pg.query<NotificationDb>(query)).rows
   }
 
   async function markNotificationsAsRead(userId: string, notificationIds: string[]) {
@@ -110,10 +111,10 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     await pg.query(query)
   }
 
-  async function saveSubscriptionEmail(address: string, email: Email | undefined): Promise<void> {
+  async function saveSubscriptionEmail(address: string | undefined, email: Email | undefined): Promise<void> {
     const query: SQLStatement = SQL`
         INSERT INTO subscriptions (address, email, details, created_at, updated_at)
-        VALUES (${address.toLowerCase()},
+        VALUES (${address?.toLowerCase()},
                 ${email},
                 ${defaultSubscription()}::jsonb,
                 ${Date.now()},

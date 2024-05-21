@@ -11,7 +11,10 @@ describe('email rendering tests', () => {
   const testCases: Record<InboxTemplates, TestCaseData> = {
     [InboxTemplates.VALIDATE_EMAIL]: {
       to: 'email@example.com',
-      context: {}
+      context: {
+        validateButtonLink: 'https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG',
+        validateButtonText: 'Click Here to Confirm Your Email'
+      }
     }
   }
 
