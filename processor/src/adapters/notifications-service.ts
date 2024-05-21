@@ -1,5 +1,5 @@
 import { AppComponents, NotificationRecord } from '../types'
-import { SubscriptionDB } from '@notifications/common'
+import { SubscriptionDb } from '@notifications/common'
 
 export type INotificationsService = {
   saveNotifications(notification: NotificationRecord[]): Promise<void>
@@ -24,7 +24,7 @@ export async function createNotificationsService(
         const uniqueAddresses = [...new Set(addresses)]
 
         // TODO Optimize this by fetching all subscriptions in a single query
-        const addressesWithSubscriptions: Record<string, SubscriptionDB> = {}
+        const addressesWithSubscriptions: Record<string, SubscriptionDb> = {}
         for (const address of uniqueAddresses) {
           addressesWithSubscriptions[address] = await subscriptionService.findSubscriptionForAddress(address)
         }

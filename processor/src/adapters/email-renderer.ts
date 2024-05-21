@@ -7,6 +7,7 @@ import { NotificationRecord } from '../types'
 import { formatMana } from '../logic/utils'
 
 export type IEmailRenderer = {
+  renderTemplate(email: Email): Promise<string>
   renderEmail(emailAddress: string, notification: NotificationRecord): Promise<Email>
 }
 
@@ -27,6 +28,7 @@ function loadTemplates() {
     return variable
   })
   handlebars.registerHelper('days', (from: string, to: string) => (parseInt(to) - parseInt(from)) / 86400)
+  handlebars.registerHelper('insert', (text: string, defaultText: string) => (text ? text : defaultText))
 
   return Object.values(NotificationType).reduce(
     (acc, notificationType) => {
@@ -54,6 +56,14 @@ function loadTemplates() {
 export async function createEmailRenderer(): Promise<IEmailRenderer> {
   const templates = loadTemplates()
 
+  const emailTemplate = handlebars.compile(
+    fs.readFileSync(path.join(__dirname, 'email-templates/email-template.handlebars'), 'utf8')
+  )
+
+  async function renderTemplate(email: Email): Promise<string> {
+    return emailTemplate(email)
+  }
+
   async function renderEmail(emailAddress: string, notification: NotificationRecord): Promise<Email> {
     return {
       to: emailAddress,
@@ -63,6 +73,7 @@ export async function createEmailRenderer(): Promise<IEmailRenderer> {
   }
 
   return {
+    renderTemplate,
     renderEmail
   }
 }
