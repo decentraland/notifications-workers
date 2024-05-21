@@ -2,14 +2,13 @@
 
 exports[`email rendering tests rendering validate-email 1`] = `
 {
-  "content": "<h1>Decentraland</h1>
-<p>Hello!</p>
+  "content": "<p>Hello!</p>
 <p>You're receiving this email because you signed up for Decentraland email notifications.</p>
 <p>You'll be able to customize exactly what kind of notifications you'd like to receive (e.g., Marketplace, DAO, Events,
     etc.), but you must first confirm your email.</p>
 
 <p style="height: 41px; padding-top: 8px; padding-bottom: 8px;"><a
-        href="" target="_blank"
+        href="https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG" target="_blank"
         rel="noopener"
         style="
             background-color: #ff2d55;
@@ -21,10 +20,10 @@ exports[`email rendering tests rendering validate-email 1`] = `
             text-decoration: none;
             font-family: system-ui, BlinkMacSystemFont, 'Segoe UI',
               Roboto, 'Helvetica Neue', Arial, sans-serif;
-          "></a>
+          ">Click Here to Confirm Your Email</a>
 </p>
 
-<p>Or you can copy and paste this URL into the browser: <span style="font-size: 13px;"></span>.
+<p>Or you can copy and paste this URL into the browser: <a href="https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG" style="font-size: 13px;">https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG</a>.
 </p>
 ",
   "subject": "Confirm your email",
