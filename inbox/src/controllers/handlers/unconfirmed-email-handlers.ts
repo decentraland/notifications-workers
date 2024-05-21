@@ -27,7 +27,7 @@ export async function storeUnconfirmedEmailHandler(
     const subscription = await db.findSubscription(address)
     subscription.email = undefined
     subscription.details.ignore_all_email = true
-    await db.saveSubscriptionEmail(address, '')
+    await db.saveSubscriptionEmail(address, undefined)
     await db.saveSubscriptionDetails(address, subscription.details)
     await db.deleteUnconfirmedEmail(address)
   } else {

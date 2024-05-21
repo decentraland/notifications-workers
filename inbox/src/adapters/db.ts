@@ -111,10 +111,10 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     await pg.query(query)
   }
 
-  async function saveSubscriptionEmail(address: string, email: Email | undefined): Promise<void> {
+  async function saveSubscriptionEmail(address: string | undefined, email: Email | undefined): Promise<void> {
     const query: SQLStatement = SQL`
         INSERT INTO subscriptions (address, email, details, created_at, updated_at)
-        VALUES (${address.toLowerCase()},
+        VALUES (${address?.toLowerCase()},
                 ${email},
                 ${defaultSubscription()}::jsonb,
                 ${Date.now()},
