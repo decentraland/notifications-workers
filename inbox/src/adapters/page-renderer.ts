@@ -7,14 +7,14 @@ export type IPageRenderer = {
 }
 
 function loadTemplates() {
+  const templatesFolder = path.join(__dirname, 'page-templates')
   return fs
-    .readdirSync(path.join(__dirname, 'page-templates'), { withFileTypes: true })
-    .filter((file) => file.isFile() && file.name.endsWith('.handlebars'))
+    .readdirSync(templatesFolder, { encoding: 'utf8' })
+    .filter((file) => file.endsWith('.handlebars'))
     .reduce(
       (acc, file) => {
-        console.log('file', file, file.parentPath, file.name)
-        acc[file.name.replace('.handlebars', '')] = handlebars.compile(
-          fs.readFileSync(path.join(file.parentPath, file.name), 'utf8')
+        acc[file.replace('.handlebars', '')] = handlebars.compile(
+          fs.readFileSync(path.join(templatesFolder, file), 'utf8')
         )
         return acc
       },
@@ -24,7 +24,6 @@ function loadTemplates() {
 
 export async function createPageRenderer(): Promise<IPageRenderer> {
   const templates = loadTemplates()
-
   function renderPage(template: string, context: any): string {
     return templates[template](context)
   }
