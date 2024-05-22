@@ -59,7 +59,6 @@ export async function createEmailRenderer(components: Pick<AppComponents, 'confi
     components.config.requireString('SIGNING_KEY'),
     components.config.requireString('SERVICE_BASE_URL')
   ])
-  console.log('signingKey', signingKey, 'serviceBaseUrl', serviceBaseUrl)
 
   const templates = loadTemplates()
 

@@ -24,6 +24,9 @@ export async function unsubscribeAllHandler(
 
   return {
     status: 200,
+    headers: {
+      'Content-Type': 'text/html'
+    },
     body: pageRenderer.renderPage('unsubscription-all', { address, accountLink })
   }
 }
@@ -55,6 +58,9 @@ export async function unsubscribeOneHandler(
 
   return {
     status: 200,
+    headers: {
+      'Content-Type': 'text/html'
+    },
     body: pageRenderer.renderPage('unsubscription-one', { address, accountLink, notificationType })
   }
 }
