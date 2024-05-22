@@ -12,6 +12,7 @@ function loadTemplates() {
     .filter((file) => file.isFile() && file.name.endsWith('.handlebars'))
     .reduce(
       (acc, file) => {
+        console.log('file', file, file.parentPath, file.name)
         acc[file.name.replace('.handlebars', '')] = handlebars.compile(
           fs.readFileSync(path.join(file.parentPath, file.name), 'utf8')
         )
