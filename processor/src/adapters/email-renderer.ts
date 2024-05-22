@@ -3,8 +3,9 @@ import * as path from 'path'
 import handlebars from 'handlebars'
 import { NotificationType } from '@dcl/schemas'
 import { Email } from '@notifications/common'
-import { NotificationRecord } from '../types'
+import { AppComponents, NotificationRecord } from '../types'
 import { formatMana } from '../logic/utils'
+import { signUrl } from '@notifications/common/dist/signing'
 
 export type IEmailRenderer = {
   renderTemplate(email: Email): Promise<string>
@@ -53,7 +54,13 @@ function loadTemplates() {
   )
 }
 
-export async function createEmailRenderer(): Promise<IEmailRenderer> {
+export async function createEmailRenderer(components: Pick<AppComponents, 'config'>): Promise<IEmailRenderer> {
+  const [signingKey, serviceBaseUrl] = await Promise.all([
+    components.config.requireString('SIGNING_KEY'),
+    components.config.requireString('SERVICE_BASE_URL')
+  ])
+  console.log('signingKey', signingKey, 'serviceBaseUrl', serviceBaseUrl)
+
   const templates = loadTemplates()
 
   const emailTemplate = handlebars.compile(
@@ -65,10 +72,21 @@ export async function createEmailRenderer(): Promise<IEmailRenderer> {
   }
 
   async function renderEmail(emailAddress: string, notification: NotificationRecord): Promise<Email> {
+    const unsubscribeAllUrl = signUrl(
+      signingKey,
+      new URL(`/unsubscribe/${notification.address}`, serviceBaseUrl).toString()
+    )
+    const unsubscribeOneUrl = signUrl(
+      signingKey,
+      new URL(`/unsubscribe/${notification.address}/${notification.type}`, serviceBaseUrl).toString()
+    )
+
     return {
       to: emailAddress,
       content: templates[notification.type][TemplatePart.CONTENT](notification),
-      ...JSON.parse(templates[notification.type][TemplatePart.SUBJECT](notification))
+      ...JSON.parse(templates[notification.type][TemplatePart.SUBJECT](notification)),
+      unsubscribeAllUrl,
+      unsubscribeOneUrl
     }
   }
 

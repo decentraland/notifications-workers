@@ -13,6 +13,7 @@ import { Readable } from 'node:stream'
 import { DbComponent } from './adapters/db'
 import { ISendGridClient } from '@notifications/common'
 import { IEmailRenderer } from './adapters/email-renderer'
+import { IPageRenderer } from './adapters/page-renderer'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -28,6 +29,7 @@ export type BaseComponents = {
   db: DbComponent
   fetch: IFetchComponent
   emailRenderer: IEmailRenderer
+  pageRenderer: IPageRenderer
   sendGridClient: ISendGridClient
 }
 

@@ -72,7 +72,7 @@ export async function initComponents(): Promise<AppComponents> {
   const fetch = await createFetchComponent()
 
   const subscriptionService = await createSubscriptionsService({ db, logs })
-  const emailRenderer = await createEmailRenderer()
+  const emailRenderer = await createEmailRenderer({ config })
   const sendGridClient = await createSendGrid({ config, fetch, logs })
 
   const notificationsService = await createNotificationsService({

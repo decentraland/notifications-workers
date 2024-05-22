@@ -1,8 +1,13 @@
+import { createConfigComponent } from '@well-known-components/env-config-provider'
 import { NotificationType } from '@dcl/schemas'
 import { NotificationRecord } from '../../../src/types'
 import { createEmailRenderer, IEmailRenderer } from '../../../src/adapters/email-renderer'
 
 describe('email rendering tests', () => {
+  let config = createConfigComponent({
+    SIGNING_KEY: 'some-super-secret-key',
+    SERVICE_BASE_URL: 'https://notifications.decentraland.org'
+  })
   let renderer: IEmailRenderer
 
   const notifications: Record<NotificationType, NotificationRecord> = {
@@ -343,7 +348,7 @@ describe('email rendering tests', () => {
   }
 
   beforeAll(async () => {
-    renderer = await createEmailRenderer()
+    renderer = await createEmailRenderer({ config })
   })
 
   const cases = Object.keys(notifications).map((type) => [type, notifications[type]])
