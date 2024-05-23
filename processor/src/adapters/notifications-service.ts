@@ -34,6 +34,7 @@ export async function createNotificationsService(
 
         for (const notification of result.inserted) {
           const subscription = addressesWithSubscriptions[notification.address]
+          console.log(`subscription: ${subscription}`)
           if (!subscription?.email || subscription.details.ignore_all_email) {
             logger.info(`Skipping sending email for ${notification.address} as all email notifications are ignored`)
             continue
