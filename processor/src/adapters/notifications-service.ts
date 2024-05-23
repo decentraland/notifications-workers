@@ -11,19 +11,16 @@ export async function createNotificationsService(
   const { db, emailRenderer, logs, sendGridClient, subscriptionService } = components
   const logger = logs.getLogger('notifications-service')
 
-  async function saveNotifications(notification: NotificationRecord[]): Promise<void> {
-    const result = await db.insertNotifications(notification)
+  async function saveNotifications(notifications: NotificationRecord[]): Promise<void> {
+    const result = await db.insertNotifications(notifications)
     logger.info(
       `Inserted ${result.inserted.length} new notifications and updated ${result.updated.length} existing ones.`
     )
-    console.log('saveNotifications result', result)
     // Defer the email sending function
     setImmediate(async () => {
       try {
-        const addresses = result.inserted.map((notification) => notification.address)
-        console.log('saveNotifications addresses', addresses)
+        const addresses = result.inserted.map((notification) => notification.address.toLowerCase())
         const uniqueAddresses = [...new Set(addresses)]
-        console.log('saveNotifications uniqueAddresses', uniqueAddresses)
 
         const subscriptions = await subscriptionService.findSubscriptionsForAddresses(uniqueAddresses)
         const addressesWithSubscriptions = subscriptions.reduce(
@@ -33,11 +30,9 @@ export async function createNotificationsService(
           },
           {} as Record<string, SubscriptionDb>
         )
-        console.log('saveNotifications addressesWithSubscriptions', addressesWithSubscriptions)
 
         for (const notification of result.inserted) {
-          const subscription = addressesWithSubscriptions[notification.address]
-          console.log('saveNotifications address', notification.address, 'subscription', subscription)
+          const subscription = addressesWithSubscriptions[notification.address.toLowerCase()]
           if (!subscription?.email || subscription.details.ignore_all_email) {
             logger.info(`Skipping sending email for ${notification.address} as all email notifications are ignored`)
             continue
