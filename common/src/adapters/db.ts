@@ -2,19 +2,24 @@ import SQL, { SQLStatement } from 'sql-template-strings'
 import { NotificationDb, SubscriptionDb } from '../types'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { defaultSubscription } from '../subscriptions'
-import { NotificationChannelType, NotificationType } from '@dcl/schemas'
+import { EthAddress, NotificationChannelType, NotificationType } from '@dcl/schemas'
 
 export type DbComponents = {
   pg: IPgComponent
 }
 
 export type DbComponent = {
-  findSubscription(address: string): Promise<SubscriptionDb>
+  findSubscription(address: EthAddress): Promise<SubscriptionDb>
+  findSubscriptions(addresses: EthAddress[]): Promise<SubscriptionDb[]>
   findNotification(id: string): Promise<NotificationDb | undefined>
 }
 
 export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent {
-  async function findSubscription(address: string): Promise<SubscriptionDb> {
+  async function findSubscription(address: EthAddress): Promise<SubscriptionDb> {
+    return (await findSubscriptions([address]))[0]
+  }
+
+  async function findSubscriptions(addresses: EthAddress[]): Promise<SubscriptionDb[]> {
     const query: SQLStatement = SQL`
         SELECT address,
                email,
@@ -22,21 +27,28 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
                created_at,
                updated_at
         FROM subscriptions n
-        WHERE address = ${address.toLowerCase()}
+        WHERE address = ANY (${addresses.map((a) => a.toLowerCase())})
     `
 
     const result = await pg.query<SubscriptionDb>(query)
-    if (result.rowCount === 0) {
-      return {
-        address: address.toLowerCase(),
-        email: undefined,
-        details: defaultSubscription(),
-        created_at: Date.now(),
-        updated_at: Date.now()
-      }
-    }
+    const indexedByAddress = result.rows.reduce(
+      (acc, row) => {
+        acc[row.address] = autoMigrate(row)
+        return acc
+      },
+      {} as Record<EthAddress, SubscriptionDb>
+    )
 
-    return autoMigrate(result.rows[0])
+    return addresses.map(
+      (address) =>
+        indexedByAddress[address.toLowerCase()] || {
+          address: address.toLowerCase(),
+          email: undefined,
+          details: defaultSubscription(),
+          created_at: Date.now(),
+          updated_at: Date.now()
+        }
+    )
   }
 
   async function findNotification(id: string): Promise<NotificationDb | undefined> {
@@ -64,7 +76,8 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
 
   return {
     findNotification,
-    findSubscription
+    findSubscription,
+    findSubscriptions
   }
 }
 

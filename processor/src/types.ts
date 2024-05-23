@@ -11,10 +11,11 @@ import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { DbComponent } from './adapters/db'
-import { EthAddress, NotificationType } from '@dcl/schemas'
-import { ISendGridClient, SubscriptionDb } from '@notifications/common'
+import { NotificationType } from '@dcl/schemas'
+import { ISendGridClient } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
+import { ISubscriptionService } from './adapters/subscriptions-service'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -86,8 +87,4 @@ export type INotificationProducerResult = {
   notificationType: string
   records: NotificationRecord[]
   lastRun: number
-}
-
-export type ISubscriptionService = {
-  findSubscriptionForAddress(address: EthAddress): Promise<SubscriptionDb>
 }

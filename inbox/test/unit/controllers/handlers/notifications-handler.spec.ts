@@ -8,6 +8,7 @@ describe('notifications handler unit test', () => {
     return {
       db: {
         findSubscription: jest.fn(),
+        findSubscriptions: jest.fn().mockResolvedValue([]),
         findNotification: jest.fn(),
         findNotifications: jest.fn().mockResolvedValue([]),
         markNotificationsAsRead: jest.fn(),

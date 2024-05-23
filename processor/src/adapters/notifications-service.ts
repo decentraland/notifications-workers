@@ -23,32 +23,43 @@ export async function createNotificationsService(
         const addresses = result.inserted.map((notification) => notification.address)
         const uniqueAddresses = [...new Set(addresses)]
 
-        // TODO Optimize this by fetching all subscriptions in a single query
-        const addressesWithSubscriptions: Record<string, SubscriptionDb> = {}
-        for (const address of uniqueAddresses) {
-          addressesWithSubscriptions[address] = await subscriptionService.findSubscriptionForAddress(address)
-        }
+        const subscriptions = await subscriptionService.findSubscriptionsForAddresses(uniqueAddresses)
+        const addressesWithSubscriptions = subscriptions.reduce(
+          (acc, subscription) => {
+            acc[subscription.address] = subscription
+            return acc
+          },
+          {} as Record<string, SubscriptionDb>
+        )
 
         for (const notification of result.inserted) {
           const subscription = addressesWithSubscriptions[notification.address]
           if (!subscription?.email || subscription.details.ignore_all_email) {
+            logger.info(`Skipping sending email for ${notification.address} as all email notifications are ignored`)
             continue
           }
 
-          if (subscription.details.message_type[notification.type]?.email) {
-            try {
-              // TODO Also here, we may send emails in batches
-              const email = await emailRenderer.renderEmail(subscription.email, notification)
-              await sendGridClient.sendEmail(email)
-            } catch (error: any) {
-              logger.warn(
-                `Failed to send email for notification: ${JSON.stringify({
-                  type: notification.type,
-                  address: notification.address,
-                  eventKey: notification.eventKey
-                })}. Error: ${error.message}`
-              )
-            }
+          if (
+            !subscription.details.message_type[notification.type] ||
+            subscription.details.message_type[notification.type].email
+          ) {
+            logger.info(
+              `Skipping sending email for ${notification.address} as email notifications for ${notification.type} are ignored`
+            )
+            continue
+          }
+
+          try {
+            const email = await emailRenderer.renderEmail(subscription.email, notification)
+            await sendGridClient.sendEmail(email)
+          } catch (error: any) {
+            logger.warn(
+              `Failed to send email for notification: ${JSON.stringify({
+                type: notification.type,
+                address: notification.address,
+                eventKey: notification.eventKey
+              })}. Error: ${error.message}`
+            )
           }
         }
       } catch (error: any) {

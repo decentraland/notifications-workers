@@ -23,15 +23,14 @@ export async function storeUnconfirmedEmailHandler(
     throw new InvalidRequestError('Invalid email')
   }
 
+  const subscription = await db.findSubscription(address)
   if (body.email === '') {
-    const subscription = await db.findSubscription(address)
     subscription.email = undefined
     subscription.details.ignore_all_email = true
     await db.saveSubscriptionEmail(address, undefined)
     await db.saveSubscriptionDetails(address, subscription.details)
     await db.deleteUnconfirmedEmail(address)
   } else {
-    const subscription = await db.findSubscription(address)
     if (subscription.email !== body.email) {
       const accountBaseUrl = await config.requireString('ACCOUNT_BASE_URL')
       const code = makeId(CODE_LENGTH)
