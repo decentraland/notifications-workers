@@ -1,5 +1,5 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { Email, SubscriptionDetails } from '@dcl/schemas'
+import { Email, EthAddress, SubscriptionDetails } from '@dcl/schemas'
 import {
   createDbComponent as createCommonDbComponent,
   DbComponent as CommonDbComponent,
@@ -9,20 +9,20 @@ import {
 import { AppComponents, NotificationEvent, UnconfirmedEmailDb } from '../types'
 
 export type DbComponent = CommonDbComponent & {
-  findNotifications(users: string[], onlyUnread: boolean, from: number, limit: number): Promise<NotificationDb[]>
-  markNotificationsAsRead(userId: string, notificationIds: string[]): Promise<number>
-  saveSubscriptionDetails(address: string, subscriptionDetails: SubscriptionDetails): Promise<void>
-  saveSubscriptionEmail(address: string, email: Email | undefined): Promise<void>
-  findUnconfirmedEmail(address: string): Promise<UnconfirmedEmailDb | undefined>
-  saveUnconfirmedEmail(address: string, email: string, code: string): Promise<void>
-  deleteUnconfirmedEmail(address: string): Promise<void>
+  findNotifications(users: EthAddress[], onlyUnread: boolean, from: number, limit: number): Promise<NotificationDb[]>
+  markNotificationsAsRead(userId: EthAddress, notificationIds: string[]): Promise<number>
+  saveSubscriptionDetails(address: EthAddress, subscriptionDetails: SubscriptionDetails): Promise<void>
+  saveSubscriptionEmail(address: EthAddress, email: Email | undefined): Promise<void>
+  findUnconfirmedEmail(address: EthAddress): Promise<UnconfirmedEmailDb | undefined>
+  saveUnconfirmedEmail(address: EthAddress, email: string, code: string): Promise<void>
+  deleteUnconfirmedEmail(address: EthAddress): Promise<void>
 }
 
 export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponent {
   const baseDbComponent: CommonDbComponent = createCommonDbComponent({ pg })
 
   async function findNotifications(
-    users: string[],
+    users: EthAddress[],
     onlyUnread: boolean,
     from: number,
     limit: number
@@ -63,7 +63,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     return (await pg.query<NotificationDb>(query)).rows
   }
 
-  async function markNotificationsAsRead(userId: string, notificationIds: string[]) {
+  async function markNotificationsAsRead(userId: EthAddress, notificationIds: string[]) {
     const readAt = Date.now()
 
     const updateResult = await pg.query<NotificationEvent>(SQL`
@@ -95,7 +95,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     return notificationCount
   }
 
-  async function saveSubscription(address: string, subscriptionDetails: SubscriptionDetails): Promise<void> {
+  async function saveSubscriptionDetails(address: string, subscriptionDetails: SubscriptionDetails): Promise<void> {
     const query: SQLStatement = SQL`
         INSERT INTO subscriptions (address, details, created_at, updated_at)
         VALUES (${address.toLowerCase()},
@@ -173,7 +173,7 @@ export function createDbComponent({ pg }: Pick<AppComponents, 'pg'>): DbComponen
     ...baseDbComponent,
     findNotifications,
     markNotificationsAsRead,
-    saveSubscriptionDetails: saveSubscription,
+    saveSubscriptionDetails,
     saveSubscriptionEmail,
     findUnconfirmedEmail,
     saveUnconfirmedEmail,

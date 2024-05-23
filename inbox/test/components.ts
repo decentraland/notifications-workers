@@ -30,7 +30,8 @@ async function initComponents(): Promise<TestComponents> {
   const components = await originalInitComponents()
   const config = createConfigComponent({
     ...process.env,
-    LOG_LEVEL: 'INFO'
+    LOG_LEVEL: 'INFO',
+    SIGNING_KEY: 'random-key'
   })
 
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')

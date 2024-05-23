@@ -40,13 +40,14 @@ test('PUT /set-email', function ({ components, stubComponents }) {
     })
   })
 
-  it('should not do anything if the unconfirmed email is already the same as in the subscription', async () => {
+  it('should remove the unconfirmed email if it is already the same as in the subscription', async () => {
     const email = randomEmail()
 
     const subscriptionDetails = randomSubscriptionDetails()
     subscriptionDetails.ignore_all_email = false
     await components.db.saveSubscriptionEmail(identity.realAccount.address, email)
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
+    await components.db.saveUnconfirmedEmail(identity.realAccount.address, randomEmail(), makeid(32))
 
     stubComponents.sendGridClient.sendEmail.withArgs(expect.objectContaining({ to: email })).rejects()
 

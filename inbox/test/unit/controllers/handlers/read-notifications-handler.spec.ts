@@ -22,6 +22,7 @@ describe('read notifications handler unit test', () => {
   it('should throw InvalidRequestError if no notificationIds are provided', async () => {
     const db: DbComponent = {
       findSubscription: jest.fn(),
+      findSubscriptions: jest.fn().mockResolvedValue([]),
       findNotification: jest.fn(),
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn(),
@@ -37,6 +38,7 @@ describe('read notifications handler unit test', () => {
   it('should throw InvalidRequestError if no notificationIds are provided (empty list)', async () => {
     const db: DbComponent = {
       findSubscription: jest.fn(),
+      findSubscriptions: jest.fn().mockResolvedValue([]),
       findNotification: jest.fn(),
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn(),
@@ -52,6 +54,7 @@ describe('read notifications handler unit test', () => {
   it('should execute markNotificationsAsRead', async () => {
     const db: DbComponent = {
       findSubscription: jest.fn(),
+      findSubscriptions: jest.fn().mockResolvedValue([]),
       findNotification: jest.fn(),
       findNotifications: jest.fn(),
       markNotificationsAsRead: jest.fn().mockReturnValueOnce(10),

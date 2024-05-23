@@ -19,11 +19,12 @@ const schema = Joi.array().items(
 )
 
 export async function publishNotificationHandler(
-  context: Pick<HandlerContextWithPath<'db' | 'logs', '/notifications'>, 'request' | 'components'>
+  context: Pick<HandlerContextWithPath<'logs' | 'notificationsService', '/notifications'>, 'request' | 'components'>
 ) {
-  const logger = context.components.logs.getLogger('publish-notification-handler')
+  const { logs, notificationsService } = context.components
+  const logger = logs.getLogger('publish-notification-handler')
 
-  const body = await parseJson(context.request)
+  const body = await parseJson<NotificationRecord[]>(context.request)
 
   const validate = schema.validate(body)
   if (validate.error) {
@@ -31,7 +32,7 @@ export async function publishNotificationHandler(
     throw new InvalidRequestError(validate.error.message)
   }
 
-  await context.components.db.insertNotifications(body as NotificationRecord[])
+  await notificationsService.saveNotifications(body)
 
   return {
     status: 204,

@@ -1,8 +1,5 @@
 import { Subscription } from '@dcl/schemas'
 
-export type ISendGridClient = {
-  sendEmail: (email: Email) => Promise<void>
-}
 export type NotificationDb = {
   id: string
   event_key: string
@@ -38,6 +35,8 @@ export type Email = {
   content: string
   actionButtonLink?: string
   actionButtonText?: string
+  unsubscribeAllUrl?: string
+  unsubscribeOneUrl?: string
   attachments?: {
     content: string
     filename: string

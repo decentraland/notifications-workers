@@ -1,5 +1,9 @@
 import { IConfigComponent, IFetchComponent, ILoggerComponent } from '@well-known-components/interfaces'
-import { Email, ISendGridClient } from '../types'
+import { Email } from '../types'
+
+export type ISendGridClient = {
+  sendEmail: (email: Email) => Promise<void>
+}
 
 export type SendGridComponents = {
   config: IConfigComponent
@@ -36,7 +40,9 @@ export async function createSendGrid(
             address: email.to,
             content: email.content,
             actionButtonLink: email.actionButtonLink,
-            actionButtonText: email.actionButtonText
+            actionButtonText: email.actionButtonText,
+            unsubscribeAllUrl: email.unsubscribeAllUrl,
+            unsubscribeOneUrl: email.unsubscribeOneUrl
           }
         }
       ],
