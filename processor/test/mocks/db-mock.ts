@@ -1,6 +1,6 @@
 import { DbComponent } from '@notifications/common'
 
-export function createDbMock(): DbComponent {
+export function createDbMock(db: Partial<DbComponent> = {}): DbComponent {
   return {
     findSubscription: jest.fn(),
     findSubscriptions: jest.fn().mockResolvedValue([]),
@@ -14,6 +14,7 @@ export function createDbMock(): DbComponent {
     deleteUnconfirmedEmail: jest.fn(),
     fetchLastUpdateForNotificationType: jest.fn(),
     updateLastUpdateForNotificationType: jest.fn(),
-    insertNotifications: jest.fn()
+    insertNotifications: jest.fn(),
+    ...db
   }
 }

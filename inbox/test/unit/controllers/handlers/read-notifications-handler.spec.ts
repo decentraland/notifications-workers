@@ -30,7 +30,9 @@ describe('read notifications handler unit test', () => {
   })
 
   it('should execute markNotificationsAsRead', async () => {
-    const db = createDbMock()
+    const db = createDbMock({
+      markNotificationsAsRead: jest.fn().mockReturnValueOnce(10)
+    })
 
     const notificationIds = ['n1', 'n2']
     const {
