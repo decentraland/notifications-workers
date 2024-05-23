@@ -12,7 +12,7 @@ import { createConfigComponent } from '@well-known-components/env-config-provide
 import { createLogComponent } from '@well-known-components/logger'
 import { createPgComponent } from '@well-known-components/pg-component'
 import path from 'path'
-import { createDbComponent } from '../src/adapters/db'
+import { createDbComponent } from '@notifications/common'
 
 /**
  * Behaves like Jest "describe" function, used to describe a test for a

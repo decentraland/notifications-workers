@@ -1,7 +1,8 @@
-import { HandlerContextWithPath, NotificationRecord } from '../../types'
+import { HandlerContextWithPath } from '../../types'
 import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
 import Joi from 'joi'
 import { NotificationType } from '@dcl/schemas'
+import { NotificationRecord } from '@notifications/common'
 
 const schema = Joi.array().items(
   Joi.object().keys({

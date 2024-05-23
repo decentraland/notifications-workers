@@ -1,9 +1,9 @@
 import { createLogComponent } from '@well-known-components/logger'
-import { DbComponent } from '../../../../src/adapters/db'
 import { Request } from 'node-fetch'
 import { readNotificationsHandler } from '../../../../src/controllers/handlers/read-notifications-handler'
 import { InvalidRequestError } from '@dcl/platform-server-commons'
-import { NotificationDb } from '@notifications/common/dist/types'
+import { DbComponent } from '@notifications/common'
+import { createDbMock } from '@notifications/processor/test/mocks/db-mock'
 
 describe('read notifications handler unit test', () => {
   async function executeHandler(db: DbComponent, body: any) {
@@ -20,50 +20,19 @@ describe('read notifications handler unit test', () => {
   }
 
   it('should throw InvalidRequestError if no notificationIds are provided', async () => {
-    const db: DbComponent = {
-      findSubscription: jest.fn(),
-      findSubscriptions: jest.fn().mockResolvedValue([]),
-      findNotification: jest.fn(),
-      findNotifications: jest.fn(),
-      markNotificationsAsRead: jest.fn(),
-      saveSubscriptionDetails: jest.fn(),
-      saveSubscriptionEmail: jest.fn(),
-      findUnconfirmedEmail: jest.fn(),
-      saveUnconfirmedEmail: jest.fn(),
-      deleteUnconfirmedEmail: jest.fn()
-    }
+    const db = createDbMock()
     await expect(executeHandler(db, {})).rejects.toThrowError(InvalidRequestError)
   })
 
   it('should throw InvalidRequestError if no notificationIds are provided (empty list)', async () => {
-    const db: DbComponent = {
-      findSubscription: jest.fn(),
-      findSubscriptions: jest.fn().mockResolvedValue([]),
-      findNotification: jest.fn(),
-      findNotifications: jest.fn(),
-      markNotificationsAsRead: jest.fn(),
-      saveSubscriptionDetails: jest.fn(),
-      saveSubscriptionEmail: jest.fn(),
-      findUnconfirmedEmail: jest.fn(),
-      saveUnconfirmedEmail: jest.fn(),
-      deleteUnconfirmedEmail: jest.fn()
-    }
+    const db = createDbMock()
     await expect(executeHandler(db, { notificationIds: [] })).rejects.toThrowError(InvalidRequestError)
   })
 
   it('should execute markNotificationsAsRead', async () => {
-    const db: DbComponent = {
-      findSubscription: jest.fn(),
-      findSubscriptions: jest.fn().mockResolvedValue([]),
-      findNotification: jest.fn(),
-      findNotifications: jest.fn(),
-      markNotificationsAsRead: jest.fn().mockReturnValueOnce(10),
-      saveSubscriptionDetails: jest.fn(),
-      saveSubscriptionEmail: jest.fn(),
-      findUnconfirmedEmail: jest.fn(),
-      saveUnconfirmedEmail: jest.fn(),
-      deleteUnconfirmedEmail: jest.fn()
-    }
+    const db = createDbMock({
+      markNotificationsAsRead: jest.fn().mockReturnValueOnce(10)
+    })
 
     const notificationIds = ['n1', 'n2']
     const {

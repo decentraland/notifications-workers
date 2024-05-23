@@ -10,8 +10,7 @@ import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { Readable } from 'node:stream'
-import { DbComponent } from './adapters/db'
-import { ISendGridClient } from '@notifications/common'
+import { DbComponent, ISendGridClient } from '@notifications/common'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { IPageRenderer } from './adapters/page-renderer'
 
@@ -59,14 +58,6 @@ export type HandlerContextWithPath<
 export type Client = {
   userId: string
   stream: Pick<Readable, 'push'>
-}
-
-export type UnconfirmedEmailDb = {
-  address: string
-  email: string
-  code: string
-  created_at: number
-  updated_at: number
 }
 
 export type NotificationEvent = {

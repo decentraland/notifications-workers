@@ -11,8 +11,7 @@ import {
 
 import { AppComponents, GlobalContext } from './types'
 import { metricDeclarations } from './metrics'
-import { createDbComponent } from './adapters/db'
-import { createSendGrid } from '@notifications/common'
+import { createDbComponent, createSendGrid } from '@notifications/common'
 import { createEmailRenderer } from './adapters/email-renderer'
 import { createPageRenderer } from './adapters/page-renderer'
 
