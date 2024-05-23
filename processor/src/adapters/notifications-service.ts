@@ -43,13 +43,11 @@ export async function createNotificationsService(
               continue
             }
 
-            if (
-              !subscription.details.message_type[notification.type] ||
-              subscription.details.message_type[notification.type].email
-            ) {
+            if (!subscription.details.message_type[notification.type]?.email) {
               logger.info(
                 `Skipping sending email for ${notification.address} as email notifications for ${notification.type} are ignored`
               )
+
               continue
             }
 
