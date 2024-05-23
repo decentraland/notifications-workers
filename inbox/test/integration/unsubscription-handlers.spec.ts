@@ -3,7 +3,7 @@ import { getIdentity, Identity, randomSubscriptionDetails } from '../utils'
 import { defaultSubscription, signUrl } from '@notifications/common'
 import { NotificationType } from '@dcl/schemas'
 
-test('GET /unsubscribe/:address', function ({ components, stubComponents }) {
+test('GET /unsubscribe/:address', function ({ components }) {
   let identity: Identity
   let baseUrl: string
   let signingKey: string
@@ -49,7 +49,7 @@ test('GET /unsubscribe/:address', function ({ components, stubComponents }) {
   })
 })
 
-test('GET /unsubscribe/:address/:notificationType', function ({ components, stubComponents }) {
+test('GET /unsubscribe/:address/:notificationType', function ({ components }) {
   let identity: Identity
   let baseUrl: string
   let signingKey: string

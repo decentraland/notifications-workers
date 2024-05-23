@@ -196,7 +196,6 @@ describe('db client tests', () => {
     test('returns undefined when no unconfirmed email found in db', async () => {
       pg.query = jest.fn().mockResolvedValue({ rowCount: 0, rows: [] })
       const address = '0x123'
-      const email = randomEmail()
       expect(await db.findUnconfirmedEmail(address)).toBeUndefined()
       expect(pg.query).toHaveBeenCalledTimes(1)
     })
