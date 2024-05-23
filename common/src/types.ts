@@ -1,4 +1,4 @@
-import { Subscription } from '@dcl/schemas'
+import { NotificationType, Subscription } from '@dcl/schemas'
 
 export type NotificationDb = {
   id: string
@@ -14,6 +14,14 @@ export type NotificationDb = {
   broadcast_read_at?: number
 }
 
+export type UnconfirmedEmailDb = {
+  address: string
+  email: string
+  code: string
+  created_at: number
+  updated_at: number
+}
+
 export type NotificationEvent = {
   id: string
   type: string
@@ -26,6 +34,14 @@ export type NotificationEvent = {
 export type SubscriptionDb = Subscription & {
   created_at: number
   updated_at: number
+}
+
+export type NotificationRecord = {
+  eventKey: string
+  type: NotificationType
+  address: string
+  metadata: any
+  timestamp: number
 }
 
 export type Email = {

@@ -1,6 +1,6 @@
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
-import { NotificationRecord } from '../types'
 import { l1Contracts, L1Network } from '@dcl/catalyst-contracts'
+import { NotificationRecord } from '@notifications/common'
 
 const LAND_AND_ESTATE_QUERY = `
     query LandsAndEstates($landTokenIds: [BigInt!], $estateTokenIds: [ID!]) {

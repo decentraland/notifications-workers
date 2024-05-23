@@ -2,22 +2,12 @@ import { createLogComponent } from '@well-known-components/logger'
 import { notificationsHandler } from '../../../../src/controllers/handlers/notifications-handler'
 import { AppComponents } from '../../../../src/types'
 import querystring from 'node:querystring'
+import { createDbMock } from '@notifications/processor/test/mocks/db-mock'
 
 describe('notifications handler unit test', () => {
   async function mockComponents(): Promise<Pick<AppComponents, 'db' | 'logs'>> {
     return {
-      db: {
-        findSubscription: jest.fn(),
-        findSubscriptions: jest.fn().mockResolvedValue([]),
-        findNotification: jest.fn(),
-        findNotifications: jest.fn().mockResolvedValue([]),
-        markNotificationsAsRead: jest.fn(),
-        saveSubscriptionDetails: jest.fn(),
-        saveSubscriptionEmail: jest.fn(),
-        findUnconfirmedEmail: jest.fn(),
-        saveUnconfirmedEmail: jest.fn(),
-        deleteUnconfirmedEmail: jest.fn()
-      },
+      db: createDbMock(),
       logs: await createLogComponent({})
     }
   }

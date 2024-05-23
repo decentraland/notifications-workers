@@ -10,9 +10,8 @@ import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
-import { DbComponent } from './adapters/db'
 import { NotificationType } from '@dcl/schemas'
-import { ISendGridClient } from '@notifications/common'
+import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
@@ -73,14 +72,6 @@ export type INotificationGenerator = {
 export type IProducerRegistry = IBaseComponent & {
   addProducer: (producer: INotificationProducer) => void
   getProducer: (notificationType: string) => INotificationProducer
-}
-
-export type NotificationRecord = {
-  eventKey: string
-  type: NotificationType
-  address: string
-  metadata: any
-  timestamp: number
 }
 
 export type INotificationProducerResult = {

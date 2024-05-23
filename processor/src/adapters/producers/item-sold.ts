@@ -1,5 +1,6 @@
-import { AppComponents, INotificationGenerator, NotificationRecord } from '../../types'
+import { AppComponents, INotificationGenerator } from '../../types'
 import { NotificationType } from '@dcl/schemas'
+import { NotificationRecord } from '@notifications/common'
 
 export const PAGE_SIZE = 1000
 

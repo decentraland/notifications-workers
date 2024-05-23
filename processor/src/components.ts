@@ -12,7 +12,6 @@ import { AppComponents, GlobalContext } from './types'
 import path from 'path'
 import { createSubgraphComponent } from '@well-known-components/thegraph-component'
 import { createProducerRegistry } from './adapters/producer-registry'
-import { createDbComponent } from './adapters/db'
 import { itemSoldProducer } from './adapters/producers/item-sold'
 import { royaltiesEarnedProducer } from './adapters/producers/royalties-earned'
 import { createProducer } from './adapters/create-producer'
@@ -23,7 +22,7 @@ import { rentalStartedProducer } from './adapters/producers/rental-started'
 import { rentalEndedProducer } from './adapters/producers/rental-ended'
 import { createEmailRenderer } from './adapters/email-renderer'
 import { createSubscriptionsService } from './adapters/subscriptions-service'
-import { createSendGrid } from '@notifications/common'
+import { createDbComponent, createSendGrid } from '@notifications/common'
 import { createNotificationsService } from './adapters/notifications-service'
 
 // Initialize all the components of the app
@@ -67,7 +66,7 @@ export async function initComponents(): Promise<AppComponents> {
     }
   )
 
-  const db = createDbComponent({ pg, logs })
+  const db = createDbComponent({ pg })
 
   const fetch = await createFetchComponent()
 

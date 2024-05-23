@@ -1,7 +1,7 @@
 import { createConfigComponent } from '@well-known-components/env-config-provider'
 import { NotificationType } from '@dcl/schemas'
-import { NotificationRecord } from '../../../src/types'
 import { createEmailRenderer, IEmailRenderer } from '../../../src/adapters/email-renderer'
+import { NotificationRecord } from '@notifications/common'
 
 describe('email rendering tests', () => {
   let config = createConfigComponent({

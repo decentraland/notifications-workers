@@ -1,5 +1,5 @@
-import { AppComponents, NotificationRecord } from '../types'
-import { SubscriptionDb } from '@notifications/common'
+import { AppComponents } from '../types'
+import { NotificationRecord, SubscriptionDb } from '@notifications/common'
 
 export type INotificationsService = {
   saveNotifications(notification: NotificationRecord[]): Promise<void>

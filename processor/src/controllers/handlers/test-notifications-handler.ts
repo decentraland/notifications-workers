@@ -1,6 +1,6 @@
-import { HandlerContextWithPath, NotificationRecord } from '../../types'
+import { HandlerContextWithPath } from '../../types'
 import { InvalidRequestError } from '@dcl/platform-server-commons'
-import { NotificationDb } from '@notifications/common'
+import { NotificationDb, NotificationRecord } from '@notifications/common'
 import { NotificationType } from '@dcl/schemas'
 
 export async function testRandomNotificationsHandler(

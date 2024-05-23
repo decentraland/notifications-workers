@@ -1,8 +1,9 @@
 import { test } from '../components'
 import { getIdentity, Identity } from '../utils'
 import { NotificationType } from '@dcl/schemas'
+import { randomEmail, randomSubscriptionDetails } from '@notifications/inbox/test/utils'
 
-test('POST /notifications', function ({ components }) {
+test('POST /notifications', function ({ components, stubComponents }) {
   let identity: Identity
   let apiKey: string
 
@@ -26,14 +27,42 @@ test('POST /notifications', function ({ components }) {
     const { localFetch } = components
 
     const notification = {
-      eventKey: 'some-event-key',
-      type: NotificationType.BID_RECEIVED,
+      type: NotificationType.WORLDS_ACCESS_RESTORED,
       address: identity.realAccount.address,
       metadata: {
-        test: `This is a test at ${new Date().toISOString()}`
+        url: 'https://decentraland.org/builder/worlds?tab=dcl',
+        title: 'Worlds available',
+        description: 'Access to your Worlds has been restored.'
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      eventKey: '123'
     }
+
+    const random = randomSubscriptionDetails()
+    const customizedSubscriptionDetails = {
+      ...random,
+      ignore_all_email: false,
+      message_type: {
+        ...random.message_type,
+        [NotificationType.WORLDS_ACCESS_RESTORED]: {
+          email: true,
+          in_app: true
+        }
+      }
+    }
+    const email = randomEmail()
+    await components.db.saveSubscriptionDetails(identity.realAccount.address, customizedSubscriptionDetails)
+    await components.db.saveSubscriptionEmail(identity.realAccount.address, email)
+
+    const renderedEmail = {
+      to: email,
+      subject: 'Access to Your Worlds Has Been Restored',
+      content: '<p>Access to your Worlds has been restored.</p>\n',
+      actionButtonText: 'Manage Worlds',
+      actionButtonLink: 'https://decentraland.org/builder/worlds?tab=dcl'
+    }
+    stubComponents.emailRenderer.renderEmail.withArgs(email, notification).resolves(renderedEmail)
+    stubComponents.sendGridClient.sendEmail.withArgs(renderedEmail).resolves()
 
     const response = await localFetch.fetch('/notifications', {
       method: 'POST',
@@ -45,11 +74,16 @@ test('POST /notifications', function ({ components }) {
 
     expect(response.status).toEqual(204)
 
-    const found = await findNotification('some-event-key', NotificationType.BID_RECEIVED, identity.realAccount.address)
+    const found = (
+      await components.db.findNotifications([notification.address], true, notification.timestamp - 1000, 10)
+    )[0]
     expect(found).toBeDefined()
     expect(found.metadata).toEqual(notification.metadata)
     expect(found.read_at).toBeNull()
     expect(found.timestamp).toEqual(`${notification.timestamp}`)
+
+    expect(stubComponents.emailRenderer.renderEmail.calledWith(email, notification)).toBeTruthy()
+    expect(stubComponents.sendGridClient.sendEmail.calledWith(renderedEmail)).toBeTruthy()
   })
 
   it('should reject invalid notification body', async () => {
