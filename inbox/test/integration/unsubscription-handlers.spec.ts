@@ -6,10 +6,12 @@ import { NotificationType } from '@dcl/schemas'
 test('GET /unsubscribe/:address', function ({ components, stubComponents }) {
   let identity: Identity
   let baseUrl: string
+  let signingKey: string
 
   beforeEach(async () => {
     identity = await getIdentity()
     baseUrl = `http://${await components.config.requireString('HTTP_SERVER_HOST')}:${await components.config.requireString('HTTP_SERVER_PORT')}`
+    signingKey = await components.config.requireString('SIGNING_KEY')
   })
 
   it('should unsubscribe the user from all emails and render an html response', async () => {
@@ -18,7 +20,7 @@ test('GET /unsubscribe/:address', function ({ components, stubComponents }) {
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
 
     const response = await components.fetch.fetch(
-      signUrl('random-key', `${baseUrl}/unsubscribe/${identity.realAccount.address}`)
+      signUrl(signingKey, `${baseUrl}/unsubscribe/${identity.realAccount.address}`)
     )
 
     expect(response.status).toBe(200)
@@ -33,7 +35,7 @@ test('GET /unsubscribe/:address', function ({ components, stubComponents }) {
 
   it('should register unsubscription even if there is no DB subscription stored', async () => {
     const response = await components.fetch.fetch(
-      signUrl('random-key', `${baseUrl}/unsubscribe/${identity.realAccount.address}`)
+      signUrl(signingKey, `${baseUrl}/unsubscribe/${identity.realAccount.address}`)
     )
 
     expect(response.status).toBe(200)
@@ -50,10 +52,12 @@ test('GET /unsubscribe/:address', function ({ components, stubComponents }) {
 test('GET /unsubscribe/:address/:notificationType', function ({ components, stubComponents }) {
   let identity: Identity
   let baseUrl: string
+  let signingKey: string
 
   beforeEach(async () => {
     identity = await getIdentity()
     baseUrl = `http://${await components.config.requireString('HTTP_SERVER_HOST')}:${await components.config.requireString('HTTP_SERVER_PORT')}`
+    signingKey = await components.config.requireString('SIGNING_KEY')
   })
 
   it('should unsubscribe the user from all emails and render an html response', async () => {
@@ -63,7 +67,7 @@ test('GET /unsubscribe/:address/:notificationType', function ({ components, stub
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
 
     const response = await components.fetch.fetch(
-      signUrl('random-key', `${baseUrl}/unsubscribe/${identity.realAccount.address}/${NotificationType.BID_ACCEPTED}`)
+      signUrl(signingKey, `${baseUrl}/unsubscribe/${identity.realAccount.address}/${NotificationType.BID_ACCEPTED}`)
     )
 
     expect(response.status).toBe(200)
@@ -89,7 +93,7 @@ test('GET /unsubscribe/:address/:notificationType', function ({ components, stub
 
   it('should register unsubscription even if there is no DB subscription stored', async () => {
     const response = await components.fetch.fetch(
-      signUrl('random-key', `${baseUrl}/unsubscribe/${identity.realAccount.address}/${NotificationType.BID_ACCEPTED}`)
+      signUrl(signingKey, `${baseUrl}/unsubscribe/${identity.realAccount.address}/${NotificationType.BID_ACCEPTED}`)
     )
 
     expect(response.status).toBe(200)
@@ -117,7 +121,7 @@ test('GET /unsubscribe/:address/:notificationType', function ({ components, stub
   it('should fail for unknown notification type', async () => {
     await expect(() =>
       components.fetch.fetch(
-        signUrl('random-key', `${baseUrl}/unsubscribe/${identity.realAccount.address}/invalid-notification-type`)
+        signUrl(signingKey, `${baseUrl}/unsubscribe/${identity.realAccount.address}/invalid-notification-type`)
       )
     ).rejects.toThrow('Invalid notification type: invalid-notification-type')
   })
