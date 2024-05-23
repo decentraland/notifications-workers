@@ -93,7 +93,6 @@ describe('db client tests', () => {
   describe('findNotification', () => {
     test('returns undefined when nothing found in db', async () => {
       pg.query = jest.fn().mockResolvedValue({ rowCount: 0, rows: [] })
-      const address = '0x123'
       const res = await db.findNotification('notif-id')
       expect(res).toBeUndefined()
       expect(pg.query).toHaveBeenCalledTimes(1)

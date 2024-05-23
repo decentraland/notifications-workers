@@ -30,19 +30,19 @@ export async function storeUnconfirmedEmailHandler(
     await db.saveSubscriptionEmail(address, undefined)
     await db.saveSubscriptionDetails(address, subscription.details)
     await db.deleteUnconfirmedEmail(address)
+  } else if (subscription.email === body.email) {
+    await db.deleteUnconfirmedEmail(address)
   } else {
-    if (subscription.email !== body.email) {
-      const accountBaseUrl = await config.requireString('ACCOUNT_BASE_URL')
-      const code = makeId(CODE_LENGTH)
-      await db.saveUnconfirmedEmail(address, body.email, code)
-      const email: Sendable = {
-        ...(await emailRenderer.renderEmail(InboxTemplates.VALIDATE_EMAIL, body.email, {
-          validateButtonLink: `${accountBaseUrl}/confirm-email/${code}`,
-          validateButtonText: 'Click Here to Confirm Your Email'
-        }))
-      }
-      await sendGridClient.sendEmail(email)
+    const accountBaseUrl = await config.requireString('ACCOUNT_BASE_URL')
+    const code = makeId(CODE_LENGTH)
+    await db.saveUnconfirmedEmail(address, body.email, code)
+    const email: Sendable = {
+      ...(await emailRenderer.renderEmail(InboxTemplates.VALIDATE_EMAIL, body.email, {
+        validateButtonLink: `${accountBaseUrl}/confirm-email/${code}`,
+        validateButtonText: 'Click Here to Confirm Your Email'
+      }))
     }
+    await sendGridClient.sendEmail(email)
   }
 
   return {
