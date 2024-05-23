@@ -16,12 +16,14 @@ export async function createNotificationsService(
     logger.info(
       `Inserted ${result.inserted.length} new notifications and updated ${result.updated.length} existing ones.`
     )
-
+    console.log('saveNotifications result', result)
     // Defer the email sending function
     setImmediate(async () => {
       try {
         const addresses = result.inserted.map((notification) => notification.address)
+        console.log('saveNotifications addresses', addresses)
         const uniqueAddresses = [...new Set(addresses)]
+        console.log('saveNotifications uniqueAddresses', uniqueAddresses)
 
         const subscriptions = await subscriptionService.findSubscriptionsForAddresses(uniqueAddresses)
         const addressesWithSubscriptions = subscriptions.reduce(
@@ -31,10 +33,11 @@ export async function createNotificationsService(
           },
           {} as Record<string, SubscriptionDb>
         )
+        console.log('saveNotifications addressesWithSubscriptions', addressesWithSubscriptions)
 
         for (const notification of result.inserted) {
           const subscription = addressesWithSubscriptions[notification.address]
-          console.log(`subscription: ${subscription}`)
+          console.log('saveNotifications address', notification.address, 'subscription', subscription)
           if (!subscription?.email || subscription.details.ignore_all_email) {
             logger.info(`Skipping sending email for ${notification.address} as all email notifications are ignored`)
             continue
