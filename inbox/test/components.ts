@@ -43,7 +43,6 @@ async function initComponents(): Promise<TestComponents> {
     const dbPassword = await config.requireString('PG_COMPONENT_PSQL_PASSWORD')
     databaseUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbDatabaseName}`
   }
-  console.log('databaseUrl', databaseUrl)
   // This worker writes to the database, so it runs the migrations
   const pg = await createPgComponent(components, {
     migration: {
