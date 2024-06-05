@@ -47,6 +47,7 @@ export async function storeUnconfirmedEmailHandler(
       context: 'notification_server',
       event: 'email_validation_started',
       body: {
+        address,
         email_to_validate: body.email
       }
     })
@@ -95,6 +96,7 @@ export async function confirmEmailHandler(
     context: 'notification_server',
     event: 'email_validated',
     body: {
+      address,
       validated_email: unconfirmedEmail.email
     }
   })

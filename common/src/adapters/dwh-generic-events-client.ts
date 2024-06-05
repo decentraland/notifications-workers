@@ -21,14 +21,14 @@ export type IDwhGenericEventsClientComponents = {
 export async function createDataWarehouseClient(
   components: Pick<IDwhGenericEventsClientComponents, 'config' | 'fetch' | 'logs'>
 ): Promise<IDataWarehouseClient> {
-  const { fetch, logs, config } = components
-  const [apiBaseUrl, apiToken] = await Promise.all([config.getString('DWH_API_URL'), config.getString('DWH_TOKEN')])
+  const { config } = components
 
+  const [apiBaseUrl, apiToken] = await Promise.all([config.getString('DWH_API_URL'), config.getString('DWH_TOKEN')])
   if (!apiBaseUrl || !apiToken) {
-    return createDummyDwhGenericEventsClient({ logs })
+    return createDummyDataWarehouseClient(components)
   }
 
-  return createDwhGenericEventsClient({ config, fetch, logs })
+  return createDwhGenericEventsClient(components)
 }
 
 export async function createDwhGenericEventsClient(
@@ -47,7 +47,7 @@ export async function createDwhGenericEventsClient(
   async function sendEvent(event: Event): Promise<void> {
     logger.info(`Sending event to DataWarehouse ${event.event}"`)
 
-    const response = await fetch.fetch(apiBaseUrl, {
+    await fetch.fetch(apiBaseUrl, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiToken}`,
@@ -61,7 +61,6 @@ export async function createDwhGenericEventsClient(
         }
       })
     })
-    console.log('response', response)
   }
 
   return {
@@ -69,15 +68,15 @@ export async function createDwhGenericEventsClient(
   }
 }
 
-export async function createDummyDwhGenericEventsClient(
+export async function createDummyDataWarehouseClient(
   components: Pick<IDwhGenericEventsClientComponents, 'logs'>
 ): Promise<IDataWarehouseClient> {
   const { logs } = components
-  const logger = logs.getLogger('dummy-dwh-generic-events-client')
-  logger.info('Creating dummy DWH generic events client')
+  const logger = logs.getLogger('dummy-data-warehouse-client')
+  logger.info('Creating dummy DataWarehouse client')
 
   async function sendEvent(event: Event): Promise<void> {
-    logger.debug(`Not sending event to DataWarehouse ${event.event}"`)
+    logger.debug(`Not sending event ${event.event}" to DataWarehouse`)
   }
 
   return {

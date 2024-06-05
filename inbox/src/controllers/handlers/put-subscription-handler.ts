@@ -24,6 +24,7 @@ export async function putSubscriptionHandler(
     context: 'notification_server',
     event: 'subscription_changed',
     body: {
+      address,
       subscription_details: body
     }
   })
