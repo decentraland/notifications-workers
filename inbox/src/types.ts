@@ -10,7 +10,7 @@ import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { Readable } from 'node:stream'
-import { DbComponent, ISendGridClient } from '@notifications/common'
+import { DbComponent, IDataWarehouseClient, ISendGridClient } from '@notifications/common'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { IPageRenderer } from './adapters/page-renderer'
 
@@ -21,15 +21,16 @@ export type GlobalContext = {
 // components used in every environment
 export type BaseComponents = {
   config: IConfigComponent
-  logs: ILoggerComponent
-  server: IHttpServerComponent<GlobalContext>
-  metrics: IMetricsComponent<keyof typeof metricDeclarations>
-  pg: IPgComponent
   db: DbComponent
-  fetch: IFetchComponent
+  dataWarehouseClient: IDataWarehouseClient
   emailRenderer: IEmailRenderer
+  fetch: IFetchComponent
+  logs: ILoggerComponent
+  metrics: IMetricsComponent<keyof typeof metricDeclarations>
   pageRenderer: IPageRenderer
+  pg: IPgComponent
   sendGridClient: ISendGridClient
+  server: IHttpServerComponent<GlobalContext>
 }
 
 // components used in runtime

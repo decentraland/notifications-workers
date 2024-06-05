@@ -22,7 +22,7 @@ import { rentalStartedProducer } from './adapters/producers/rental-started'
 import { rentalEndedProducer } from './adapters/producers/rental-ended'
 import { createEmailRenderer } from './adapters/email-renderer'
 import { createSubscriptionsService } from './adapters/subscriptions-service'
-import { createDbComponent, createSendGrid } from '@notifications/common'
+import { createDataWarehouseClient, createDbComponent, createSendGrid } from '@notifications/common'
 import { createNotificationsService } from './adapters/notifications-service'
 
 // Initialize all the components of the app
@@ -72,7 +72,8 @@ export async function initComponents(): Promise<AppComponents> {
 
   const subscriptionService = await createSubscriptionsService({ db, logs })
   const emailRenderer = await createEmailRenderer({ config })
-  const sendGridClient = await createSendGrid({ config, fetch, logs })
+  const dataWarehouseClient = await createDataWarehouseClient({ config, fetch, logs })
+  const sendGridClient = await createSendGrid({ config, dataWarehouseClient, fetch, logs })
 
   const notificationsService = await createNotificationsService({
     db,
@@ -134,21 +135,22 @@ export async function initComponents(): Promise<AppComponents> {
 
   return {
     config,
-    logs,
-    server,
-    statusChecks,
-    metrics,
     db,
+    dataWarehouseClient,
+    emailRenderer,
+    fetch,
+    l2CollectionsSubGraph,
+    landManagerSubGraph,
+    logs,
+    marketplaceSubGraph,
+    metrics,
+    notificationsService,
     pg,
     producerRegistry,
-    marketplaceSubGraph,
-    l2CollectionsSubGraph,
     rentalsSubGraph,
-    landManagerSubGraph,
-    fetch,
-    subscriptionService,
-    emailRenderer,
     sendGridClient,
-    notificationsService
+    server,
+    statusChecks,
+    subscriptionService
   }
 }

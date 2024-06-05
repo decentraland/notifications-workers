@@ -11,29 +11,30 @@ import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { NotificationType } from '@dcl/schemas'
-import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
+import { DbComponent, IDataWarehouseClient, ISendGridClient, NotificationRecord } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
 
 export type AppComponents = {
   config: IConfigComponent
-  logs: ILoggerComponent
-  server: IHttpServerComponent<GlobalContext>
-  metrics: IMetricsComponent<keyof typeof metricDeclarations>
-  pg: IPgComponent
   db: DbComponent
-  statusChecks: IBaseComponent
-  producerRegistry: IProducerRegistry
-  l2CollectionsSubGraph: ISubgraphComponent
-  marketplaceSubGraph: ISubgraphComponent
-  rentalsSubGraph: ISubgraphComponent
-  landManagerSubGraph: ISubgraphComponent
-  fetch: IFetchComponent
-  notificationsService: INotificationsService
-  subscriptionService: ISubscriptionService
+  dataWarehouseClient: IDataWarehouseClient
   emailRenderer: IEmailRenderer
+  fetch: IFetchComponent
+  l2CollectionsSubGraph: ISubgraphComponent
+  landManagerSubGraph: ISubgraphComponent
+  logs: ILoggerComponent
+  marketplaceSubGraph: ISubgraphComponent
+  metrics: IMetricsComponent<keyof typeof metricDeclarations>
+  notificationsService: INotificationsService
+  pg: IPgComponent
+  producerRegistry: IProducerRegistry
+  rentalsSubGraph: ISubgraphComponent
   sendGridClient: ISendGridClient
+  server: IHttpServerComponent<GlobalContext>
+  statusChecks: IBaseComponent
+  subscriptionService: ISubscriptionService
 }
 
 // this type simplifies the typings of http handlers
