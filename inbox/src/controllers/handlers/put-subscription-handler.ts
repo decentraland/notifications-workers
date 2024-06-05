@@ -5,7 +5,7 @@ import { SubscriptionDetails } from '@dcl/schemas'
 
 export async function putSubscriptionHandler(
   context: Pick<
-    HandlerContextWithPath<'db' | 'logs', '/subscription'>,
+    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs', '/subscription'>,
     'url' | 'request' | 'components' | 'verification'
   >
 ): Promise<IHttpServerComponent.IResponse> {
@@ -20,6 +20,13 @@ export async function putSubscriptionHandler(
   }
 
   await context.components.db.saveSubscriptionDetails(address, body)
+  await context.components.dataWarehouseClient.sendEvent({
+    context: 'notification_server',
+    event: 'subscription_changed',
+    body: {
+      subscription_details: body
+    }
+  })
 
   return {
     status: 204,
