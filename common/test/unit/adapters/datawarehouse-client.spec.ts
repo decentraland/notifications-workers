@@ -48,7 +48,7 @@ describe('data-warehouse client tests', () => {
           body: { email: 'email@example.org', env: 'test' }
         }),
         headers: {
-          Authorization: 'Bearer my-key',
+          'x-token': 'my-key',
           'Content-Type': 'application/json'
         },
         method: 'POST'

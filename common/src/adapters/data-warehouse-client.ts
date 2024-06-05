@@ -50,7 +50,7 @@ export async function createDwhGenericEventsClient(
     await fetch.fetch(apiBaseUrl, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiToken}`,
+        'x-token': apiToken,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
