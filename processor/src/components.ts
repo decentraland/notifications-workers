@@ -22,7 +22,7 @@ import { rentalStartedProducer } from './adapters/producers/rental-started'
 import { rentalEndedProducer } from './adapters/producers/rental-ended'
 import { createEmailRenderer } from './adapters/email-renderer'
 import { createSubscriptionsService } from './adapters/subscriptions-service'
-import { createDataWarehouseClient, createDbComponent, createSendGrid } from '@notifications/common'
+import { createDbComponent, createSendGrid } from '@notifications/common'
 import { createNotificationsService } from './adapters/notifications-service'
 
 // Initialize all the components of the app
