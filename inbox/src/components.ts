@@ -43,7 +43,7 @@ export async function initComponents(): Promise<AppComponents> {
   const emailRenderer = await createEmailRenderer()
 
   const dataWarehouseClient = await createDwhGenericEventsClient({ config, fetch, logs })
-  const sendGridClient = await createSendGrid({ config, dataWarehouseClient, fetch, logs })
+  const sendGridClient = await createSendGrid({ config, fetch, logs })
 
   return {
     config,

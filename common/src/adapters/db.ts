@@ -284,10 +284,11 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
               SET metadata   = ${notificationRecord.metadata}::jsonb,
                   timestamp  = ${notificationRecord.timestamp},
                   updated_at = ${Date.now()}
-          RETURNING xmax;
+          RETURNING id, xmax;
       `
 
       const result = await pg.query(buildQuery)
+      notificationRecord.id = result.rows[0].id
       if (result.rows[0].xmax === '0') {
         upsertResult.inserted.push(notificationRecord)
       } else {

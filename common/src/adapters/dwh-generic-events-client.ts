@@ -2,12 +2,10 @@ import { IConfigComponent, IFetchComponent, ILoggerComponent } from '@well-known
 
 export type Event = {
   context: 'notification_server'
-  event: 'email_sent' | 'email_changed' | 'email_validated' | 'subscription_changed' | 'user_unsubscribed'
+  event: 'email_sent' | 'email_validation_started' | 'email_validated' | 'subscription_changed' | 'user_unsubscribed'
   body: {
-    env: 'prd'
-    notification_id: string
-    sendgrid_response: any
-  }
+    env: 'prd' | 'dev'
+  } & any
 }
 
 export type IDataWarehouseClient = {
@@ -40,7 +38,8 @@ export async function createDwhGenericEventsClient(
   const logger = logs.getLogger('dwh-generic-events-client')
   logger.info('Creating DWH generic events client')
 
-  const [apiBaseUrl, apiToken] = await Promise.all([
+  const [env, apiBaseUrl, apiToken] = await Promise.all([
+    config.requireString('ENV'),
     config.requireString('DWH_API_URL'),
     config.requireString('DWH_TOKEN')
   ])
@@ -54,7 +53,13 @@ export async function createDwhGenericEventsClient(
         Authorization: `Bearer ${apiToken}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(event)
+      body: JSON.stringify({
+        ...event,
+        body: {
+          ...event.body,
+          env
+        }
+      })
     })
     console.log('response', response)
   }

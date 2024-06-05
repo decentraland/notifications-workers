@@ -37,6 +37,7 @@ export type SubscriptionDb = Subscription & {
 }
 
 export type NotificationRecord = {
+  id?: string
   eventKey: string
   type: NotificationType
   address: string
@@ -59,4 +60,5 @@ export type Email = {
     type: string
     disposition: string
   }[]
+  tracking_id?: string
 }
