@@ -8,6 +8,7 @@ exports[`email rendering tests rendering bid_accepted 1`] = `
 ",
   "subject": "Your offer was accepted",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/bid_accepted?signature=9ec6a41cd5d70f14ea3ce7f7bfc7278daa1de5627201aa5adeb7b60275e7197d",
 }
@@ -21,6 +22,7 @@ exports[`email rendering tests rendering bid_received 1`] = `
 ",
   "subject": "You've Received a Bid",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/bid_received?signature=d5c3e6e4a1213edcbabd8293b60b109f4d583f896724af67f18d8e1ec0a39e2f",
 }
@@ -34,6 +36,7 @@ exports[`email rendering tests rendering events_started 1`] = `
 ",
   "subject": "Jump In - Your Event Has Started!",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/events_started?signature=cd81b69793b500eed74735a88f2be42fa2bf419853b014165860c4304998feba",
 }
@@ -47,6 +50,7 @@ exports[`email rendering tests rendering events_starts_soon 1`] = `
 ",
   "subject": "An Event You've RSVP'd to Starts Soon",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/events_starts_soon?signature=0477800e313b855d10038d850a7b7450cc86687adc863049450415611d1effe7",
 }
@@ -63,6 +67,7 @@ exports[`email rendering tests rendering governance_announcement 1`] = `
 ",
   "subject": "A DAO Announcement Has Been Released",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/null?signature=42ad30f79fb01e2c2ae57f84f34ab8b6bff2b70bc7a9e900e021f0b1fa22e7a8",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/null/governance_announcement?signature=033e9737a5b20c9af782facf62c1e65d637469f20331172456337a0a9bbe492d",
 }
@@ -76,6 +81,7 @@ exports[`email rendering tests rendering governance_authored_proposal_finished 1
 ",
   "subject": "Voting Has Ended on Your Proposal",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_authored_proposal_finished?signature=f1ca8c3fd6f39383aa205367335ba70df4f017d676302557ef76b3c37c0eb8f4",
 }
@@ -89,6 +95,7 @@ exports[`email rendering tests rendering governance_coauthor_requested 1`] = `
 ",
   "subject": "You've Received a Request to Co-Author a Proposal",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_coauthor_requested?signature=ede0f5a009044402cfb42487e7c300f122b5047cb869f4ca4fca6ab4e715413b",
 }
@@ -102,6 +109,7 @@ exports[`email rendering tests rendering governance_new_comment_on_project_updat
 ",
   "subject": "There's a New Comment on Your Project Update",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_new_comment_on_project_update?signature=e2199b81d0ba406972576521fca39817b82720c1221bbfd17427495e8b1b35e3",
 }
@@ -115,6 +123,7 @@ exports[`email rendering tests rendering governance_new_comment_on_proposal 1`] 
 ",
   "subject": "There's a New Comment on Your Proposal",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_new_comment_on_proposal?signature=8aac2dc2f0e423b34fa237c2f780678db04317f546f846612c81f8b785ad1be2",
 }
@@ -128,6 +137,7 @@ exports[`email rendering tests rendering governance_pitch_passed 1`] = `
 ",
   "subject": "A Pitch You Voted on Has Passed",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_pitch_passed?signature=f62cdb39ed30d32ffcf6304ca423bbef4a15f72d2e75066f8013ef9d639cfe39",
 }
@@ -141,6 +151,7 @@ exports[`email rendering tests rendering governance_proposal_enacted 1`] = `
 ",
   "subject": "Your Proposal's Been Enacted!",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_proposal_enacted?signature=f3dfdad5828adce10d2dbd465c15a6abe00cce0bd743cd5672a206fb331101a2",
 }
@@ -154,6 +165,7 @@ exports[`email rendering tests rendering governance_tender_passed 1`] = `
 ",
   "subject": "A Tender You Voted on Has Passed",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_tender_passed?signature=55f54b9574722ae7e44aa32dab3c1c941dd5ebe6684f0dae6f963419ac1afd58",
 }
@@ -167,6 +179,7 @@ exports[`email rendering tests rendering governance_voting_ended_voter 1`] = `
 ",
   "subject": "Voting Has Ended on a Proposal You Voted On",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_voting_ended_voter?signature=b990e4bad77532500c9cb86bdfd0ed47fc22e5f4dba9733be46ab2de4a896481",
 }
@@ -180,6 +193,7 @@ exports[`email rendering tests rendering item_sold 1`] = `
 ",
   "subject": "You've Sold an Item!",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/item_sold?signature=9d39adb74e120e5abcfd5803e621ae2e80fc716d10f171f73bf011a3f6da8a02",
 }
@@ -193,6 +207,7 @@ exports[`email rendering tests rendering rental_ended 1`] = `
 ",
   "subject": "Rental Period Ended",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/rental_ended?signature=21a703f932c6e5610468c1d2f2131fe14699976425529b407452769cab6b56ab",
 }
@@ -206,6 +221,7 @@ exports[`email rendering tests rendering rental_started 1`] = `
 ",
   "subject": "Your LAND Has Been Rented",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/rental_started?signature=32ef3d8ee29b758d9822c2efc5d62873c015d414ab6740e01a92329725dc6114",
 }
@@ -219,6 +235,7 @@ exports[`email rendering tests rendering reward_assignment 1`] = `
 ",
   "subject": "You've Received a Free Item!",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/reward_assignment?signature=f0e7a9b4fbf803375b4148cd23f4a07fd84d89b37c91bd1df6b53b1d3d90da32",
 }
@@ -232,6 +249,7 @@ exports[`email rendering tests rendering royalties_earned 1`] = `
 ",
   "subject": "You've Earned Some Royalties!",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/royalties_earned?signature=959d803e1bb8bc4e45820c6e2b82184654968fffb6bae1f6380fbef04a96e0fe",
 }
@@ -245,6 +263,7 @@ exports[`email rendering tests rendering worlds_access_restored 1`] = `
 ",
   "subject": "Access to Your Worlds Has Been Restored",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_access_restored?signature=aeb5c56796a62bda50e2156422fa41c2560afd22268b5a90b9c34609fc6bc3e5",
 }
@@ -259,6 +278,7 @@ exports[`email rendering tests rendering worlds_access_restricted 1`] = `
 ",
   "subject": "Access to Your Worlds Has Been Restricted",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_access_restricted?signature=5e65d8cf2afa3afbc02d9d175b8c5b139312dc80ec1d5e6a79c91662c9918cc8",
 }
@@ -273,6 +293,7 @@ exports[`email rendering tests rendering worlds_missing_resources 1`] = `
 ",
   "subject": "[Action Needed] Insufficient World Storage",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_missing_resources?signature=d65886c8b10069f5d1355a2b05199b2059b7e0a48049a1d6531fcbb9d3398eb6",
 }
@@ -286,6 +307,7 @@ exports[`email rendering tests rendering worlds_permission_granted 1`] = `
 ",
   "subject": "You've Been Granted New World Permissions",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_permission_granted?signature=807e16ba5e0d7d196158bcc4e02d49d8f26ee6cd4d6b321e0be3b6bfe096799d",
 }
@@ -299,6 +321,7 @@ exports[`email rendering tests rendering worlds_permission_revoked 1`] = `
 ",
   "subject": "You've Had World Permissions Revoked",
   "to": "email@example.com",
+  "tracking_id": "123456789",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_permission_revoked?signature=11ecba1cbdb390cf8ea1cd5e13d746d8c7a1f918a2c3e5d641a03b6269176ba6",
 }

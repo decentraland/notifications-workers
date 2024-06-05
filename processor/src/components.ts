@@ -134,21 +134,21 @@ export async function initComponents(): Promise<AppComponents> {
 
   return {
     config,
-    logs,
-    server,
-    statusChecks,
-    metrics,
     db,
+    emailRenderer,
+    fetch,
+    l2CollectionsSubGraph,
+    landManagerSubGraph,
+    logs,
+    marketplaceSubGraph,
+    metrics,
+    notificationsService,
     pg,
     producerRegistry,
-    marketplaceSubGraph,
-    l2CollectionsSubGraph,
     rentalsSubGraph,
-    landManagerSubGraph,
-    fetch,
-    subscriptionService,
-    emailRenderer,
     sendGridClient,
-    notificationsService
+    server,
+    statusChecks,
+    subscriptionService
   }
 }

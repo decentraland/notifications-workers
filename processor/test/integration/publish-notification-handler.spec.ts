@@ -1,3 +1,4 @@
+import sinon from 'sinon'
 import { test } from '../components'
 import { getIdentity, Identity } from '../utils'
 import { NotificationType } from '@dcl/schemas'
@@ -59,9 +60,10 @@ test('POST /notifications', function ({ components, stubComponents }) {
       subject: 'Access to Your Worlds Has Been Restored',
       content: '<p>Access to your Worlds has been restored.</p>\n',
       actionButtonText: 'Manage Worlds',
-      actionButtonLink: 'https://decentraland.org/builder/worlds?tab=dcl'
+      actionButtonLink: 'https://decentraland.org/builder/worlds?tab=dcl',
+      tracking_id: '123'
     }
-    stubComponents.emailRenderer.renderEmail.withArgs(email, notification).resolves(renderedEmail)
+    stubComponents.emailRenderer.renderEmail.withArgs(email, sinon.match(notification)).resolves(renderedEmail)
     stubComponents.sendGridClient.sendEmail.withArgs(renderedEmail).resolves()
 
     const response = await localFetch.fetch('/notifications', {
@@ -82,7 +84,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
     expect(found.read_at).toBeNull()
     expect(found.timestamp).toEqual(`${notification.timestamp}`)
 
-    expect(stubComponents.emailRenderer.renderEmail.calledWith(email, notification)).toBeTruthy()
+    expect(stubComponents.emailRenderer.renderEmail.calledWith(email, { ...notification, id: found.id })).toBeTruthy()
     expect(stubComponents.sendGridClient.sendEmail.calledWith(renderedEmail)).toBeTruthy()
   })
 

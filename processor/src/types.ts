@@ -18,22 +18,22 @@ import { ISubscriptionService } from './adapters/subscriptions-service'
 
 export type AppComponents = {
   config: IConfigComponent
-  logs: ILoggerComponent
-  server: IHttpServerComponent<GlobalContext>
-  metrics: IMetricsComponent<keyof typeof metricDeclarations>
-  pg: IPgComponent
   db: DbComponent
-  statusChecks: IBaseComponent
-  producerRegistry: IProducerRegistry
-  l2CollectionsSubGraph: ISubgraphComponent
-  marketplaceSubGraph: ISubgraphComponent
-  rentalsSubGraph: ISubgraphComponent
-  landManagerSubGraph: ISubgraphComponent
-  fetch: IFetchComponent
-  notificationsService: INotificationsService
-  subscriptionService: ISubscriptionService
   emailRenderer: IEmailRenderer
+  fetch: IFetchComponent
+  l2CollectionsSubGraph: ISubgraphComponent
+  landManagerSubGraph: ISubgraphComponent
+  logs: ILoggerComponent
+  marketplaceSubGraph: ISubgraphComponent
+  metrics: IMetricsComponent<keyof typeof metricDeclarations>
+  notificationsService: INotificationsService
+  pg: IPgComponent
+  producerRegistry: IProducerRegistry
+  rentalsSubGraph: ISubgraphComponent
   sendGridClient: ISendGridClient
+  server: IHttpServerComponent<GlobalContext>
+  statusChecks: IBaseComponent
+  subscriptionService: ISubscriptionService
 }
 
 // this type simplifies the typings of http handlers

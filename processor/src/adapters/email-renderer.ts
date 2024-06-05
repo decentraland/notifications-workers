@@ -85,7 +85,8 @@ export async function createEmailRenderer(components: Pick<AppComponents, 'confi
       content: templates[notification.type][TemplatePart.CONTENT](notification),
       ...JSON.parse(templates[notification.type][TemplatePart.SUBJECT](notification)),
       unsubscribeAllUrl,
-      unsubscribeOneUrl
+      unsubscribeOneUrl,
+      tracking_id: notification.id
     }
   }
 

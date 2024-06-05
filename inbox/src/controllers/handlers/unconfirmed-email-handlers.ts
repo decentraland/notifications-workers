@@ -10,11 +10,11 @@ const CODE_LENGTH = 32
 
 export async function storeUnconfirmedEmailHandler(
   context: Pick<
-    HandlerContextWithPath<'config' | 'db' | 'emailRenderer' | 'sendGridClient', '/set-email'>,
+    HandlerContextWithPath<'config' | 'dataWarehouseClient' | 'db' | 'emailRenderer' | 'sendGridClient', '/set-email'>,
     'url' | 'request' | 'components' | 'verification'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { config, db, emailRenderer, sendGridClient } = context.components
+  const { config, dataWarehouseClient, db, emailRenderer, sendGridClient } = context.components
 
   const address = context.verification!.auth
 
@@ -43,6 +43,14 @@ export async function storeUnconfirmedEmailHandler(
       }))
     }
     await sendGridClient.sendEmail(email)
+    await dataWarehouseClient.sendEvent({
+      context: 'notification_server',
+      event: 'email_validation_started',
+      body: {
+        address,
+        email_to_validate: body.email
+      }
+    })
   }
 
   return {
@@ -52,9 +60,12 @@ export async function storeUnconfirmedEmailHandler(
 }
 
 export async function confirmEmailHandler(
-  context: Pick<HandlerContextWithPath<'db' | 'logs', '/confirm-email'>, 'components' | 'request' | 'verification'>
+  context: Pick<
+    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs', '/confirm-email'>,
+    'components' | 'request' | 'verification'
+  >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { db } = context.components
+  const { dataWarehouseClient, db } = context.components
   const body = await parseJson<{ address: string; code: string }>(context.request)
 
   const address = body.address
@@ -81,6 +92,14 @@ export async function confirmEmailHandler(
 
   await db.saveSubscriptionEmail(address, unconfirmedEmail.email)
   await db.deleteUnconfirmedEmail(address)
+  await dataWarehouseClient.sendEvent({
+    context: 'notification_server',
+    event: 'email_validated',
+    body: {
+      address,
+      validated_email: unconfirmedEmail.email
+    }
+  })
 
   return {
     status: 204,

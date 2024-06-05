@@ -12,6 +12,7 @@ describe('sendgrid client tests', () => {
   beforeEach(async () => {
     logs = await createLogComponent({})
     config = createConfigComponent({
+      ENV: 'test',
       SENDGRID_API_URL: 'https://api.sendgrid.com',
       SENDGRID_API_KEY: 'my-key',
       SENDGRID_EMAIL_FROM: 'from@decentraland.org',
@@ -45,7 +46,8 @@ describe('sendgrid client tests', () => {
           type: 'text/html',
           disposition: 'inline'
         }
-      ]
+      ],
+      tracking_id: '1234'
     }
     await sendGridClient.sendEmail(email)
 
@@ -69,6 +71,10 @@ describe('sendgrid client tests', () => {
         ],
         from: { email: 'from@decentraland.org', name: 'Decentraland' },
         template_id: 'my-template-id',
+        custom_args: {
+          environment: 'test',
+          tracking_id: '1234'
+        },
         attachments: email.attachments,
         mail_settings: { sandbox_mode: { enable: true } }
       }),
@@ -106,6 +112,9 @@ describe('sendgrid client tests', () => {
         ],
         from: { email: 'from@decentraland.org', name: 'Decentraland' },
         template_id: 'my-template-id',
+        custom_args: {
+          environment: 'test'
+        },
         mail_settings: { sandbox_mode: { enable: true } }
       }),
       headers: {

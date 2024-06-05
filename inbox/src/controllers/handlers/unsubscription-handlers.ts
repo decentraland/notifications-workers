@@ -5,11 +5,11 @@ import { InvalidRequestError } from '@dcl/platform-server-commons'
 
 export async function unsubscribeAllHandler(
   context: Pick<
-    HandlerContextWithPath<'config' | 'db' | 'logs' | 'pageRenderer', '/unsubscribe/:address'>,
+    HandlerContextWithPath<'config' | 'dataWarehouseClient' | 'db' | 'logs' | 'pageRenderer', '/unsubscribe/:address'>,
     'url' | 'components' | 'params'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { config, db, logs, pageRenderer } = context.components
+  const { config, dataWarehouseClient, db, logs, pageRenderer } = context.components
 
   const accountLink = await config.requireString('ACCOUNT_BASE_URL')
 
@@ -22,6 +22,15 @@ export async function unsubscribeAllHandler(
   subscription.details.ignore_all_email = true
   await db.saveSubscriptionDetails(address, subscription.details)
 
+  await dataWarehouseClient.sendEvent({
+    context: 'notification_server',
+    event: 'user_unsubscribed',
+    body: {
+      address: address,
+      notification_type: 'all'
+    }
+  })
+
   return {
     status: 200,
     headers: {
@@ -33,11 +42,14 @@ export async function unsubscribeAllHandler(
 
 export async function unsubscribeOneHandler(
   context: Pick<
-    HandlerContextWithPath<'config' | 'db' | 'logs' | 'pageRenderer', '/unsubscribe/:address/:notificationType'>,
+    HandlerContextWithPath<
+      'config' | 'dataWarehouseClient' | 'db' | 'logs' | 'pageRenderer',
+      '/unsubscribe/:address/:notificationType'
+    >,
     'components' | 'params'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { config, db, logs, pageRenderer } = context.components
+  const { config, dataWarehouseClient, db, logs, pageRenderer } = context.components
 
   const accountLink = await config.requireString('ACCOUNT_BASE_URL')
 
@@ -55,6 +67,15 @@ export async function unsubscribeOneHandler(
 
   subscription.details.message_type[notificationType]['email'] = false
   await db.saveSubscriptionDetails(address, subscription.details)
+
+  await dataWarehouseClient.sendEvent({
+    context: 'notification_server',
+    event: 'user_unsubscribed',
+    body: {
+      address: address,
+      notification_type: notificationType
+    }
+  })
 
   return {
     status: 200,

@@ -14,10 +14,11 @@ export type SendGridComponents = {
 export async function createSendGrid(
   components: Pick<SendGridComponents, 'config' | 'fetch' | 'logs'>
 ): Promise<ISendGridClient> {
-  const { fetch, logs, config } = components
+  const { config, fetch, logs } = components
   const logger = logs.getLogger('sendgrid-client')
 
-  const [apiBaseUrl, apiKey, emailFrom, emailTemplateId, sandboxMode] = await Promise.all([
+  const [env, apiBaseUrl, apiKey, emailFrom, emailTemplateId, sandboxMode] = await Promise.all([
+    config.requireString('ENV'),
     config.requireString('SENDGRID_API_URL'),
     config.requireString('SENDGRID_API_KEY'),
     config.requireString('SENDGRID_EMAIL_FROM'),
@@ -51,6 +52,10 @@ export async function createSendGrid(
         name: 'Decentraland'
       },
       template_id: emailTemplateId,
+      custom_args: {
+        environment: env,
+        tracking_id: email.tracking_id
+      },
       attachments: email.attachments,
       mail_settings: {
         sandbox_mode: {

@@ -12,7 +12,7 @@ import { createConfigComponent } from '@well-known-components/env-config-provide
 import { createLogComponent } from '@well-known-components/logger'
 import { createPgComponent } from '@well-known-components/pg-component'
 import path from 'path'
-import { createDbComponent } from '@notifications/common'
+import { createDbComponent, createDummyDataWarehouseClient } from '@notifications/common'
 
 /**
  * Behaves like Jest "describe" function, used to describe a test for a
@@ -31,7 +31,8 @@ async function initComponents(): Promise<TestComponents> {
   const config = createConfigComponent({
     ...process.env,
     LOG_LEVEL: 'INFO',
-    SIGNING_KEY: 'random-key'
+    SIGNING_KEY: 'random-key',
+    ENV: 'dev'
   })
 
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
@@ -55,6 +56,10 @@ async function initComponents(): Promise<TestComponents> {
   })
   const db = createDbComponent({ pg })
 
+  const dataWarehouseClient = await createDummyDataWarehouseClient({
+    logs: components.logs
+  })
+
   return {
     ...components,
     pg,
@@ -62,6 +67,7 @@ async function initComponents(): Promise<TestComponents> {
     logs: await createLogComponent({ config }),
     config,
     localFetch: await createLocalFetchCompoment(config),
-    metrics: createTestMetricsComponent(metricDeclarations)
+    metrics: createTestMetricsComponent(metricDeclarations),
+    dataWarehouseClient
   }
 }
