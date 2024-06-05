@@ -6,12 +6,9 @@ export type INotificationsService = {
 }
 
 export async function createNotificationsService(
-  components: Pick<
-    AppComponents,
-    'dataWarehouseClient' | 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService'
-  >
+  components: Pick<AppComponents, 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService'>
 ): Promise<INotificationsService> {
-  const { dataWarehouseClient, db, emailRenderer, logs, sendGridClient, subscriptionService } = components
+  const { db, emailRenderer, logs, sendGridClient, subscriptionService } = components
   const logger = logs.getLogger('notifications-service')
 
   async function saveNotifications(notifications: NotificationRecord[]): Promise<void> {
@@ -57,13 +54,6 @@ export async function createNotificationsService(
             try {
               const email = await emailRenderer.renderEmail(subscription.email, notification)
               await sendGridClient.sendEmail(email)
-              await dataWarehouseClient.sendEvent({
-                context: 'notification_server',
-                event: 'email_sent',
-                body: {
-                  notification_id: notification.id
-                }
-              })
             } catch (error: any) {
               logger.warn(
                 `Failed to send email for notification: ${JSON.stringify({

@@ -19,7 +19,6 @@ import { ISubscriptionService } from './adapters/subscriptions-service'
 export type AppComponents = {
   config: IConfigComponent
   db: DbComponent
-  dataWarehouseClient: IDataWarehouseClient
   emailRenderer: IEmailRenderer
   fetch: IFetchComponent
   l2CollectionsSubGraph: ISubgraphComponent

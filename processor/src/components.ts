@@ -72,11 +72,9 @@ export async function initComponents(): Promise<AppComponents> {
 
   const subscriptionService = await createSubscriptionsService({ db, logs })
   const emailRenderer = await createEmailRenderer({ config })
-  const dataWarehouseClient = await createDataWarehouseClient({ config, fetch, logs })
   const sendGridClient = await createSendGrid({ config, fetch, logs })
 
   const notificationsService = await createNotificationsService({
-    dataWarehouseClient,
     db,
     emailRenderer,
     logs,
@@ -137,7 +135,6 @@ export async function initComponents(): Promise<AppComponents> {
   return {
     config,
     db,
-    dataWarehouseClient,
     emailRenderer,
     fetch,
     l2CollectionsSubGraph,

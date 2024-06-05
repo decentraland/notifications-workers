@@ -12,6 +12,7 @@ describe('email rendering tests', () => {
 
   const notifications: Record<NotificationType, NotificationRecord> = {
     [NotificationType.BID_ACCEPTED]: {
+      id: '123456789',
       type: NotificationType.BID_ACCEPTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -31,6 +32,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.BID_RECEIVED]: {
+      id: '123456789',
       type: NotificationType.BID_RECEIVED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -50,6 +52,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.EVENTS_STARTS_SOON]: {
+      id: '123456789',
       type: NotificationType.EVENTS_STARTS_SOON,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -65,6 +68,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.EVENTS_STARTED]: {
+      id: '123456789',
       type: NotificationType.EVENTS_STARTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -78,6 +82,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_ANNOUNCEMENT]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_ANNOUNCEMENT,
       address: null,
       metadata: {
@@ -89,6 +94,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_AUTHORED_PROPOSAL_FINISHED]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_AUTHORED_PROPOSAL_FINISHED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -102,6 +108,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_COAUTHOR_REQUESTED]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_COAUTHOR_REQUESTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -116,6 +123,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROJECT_UPDATE]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROJECT_UPDATE,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -130,6 +138,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -143,6 +152,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_PITCH_PASSED]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_PITCH_PASSED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -156,6 +166,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_PROPOSAL_ENACTED]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_PROPOSAL_ENACTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -170,6 +181,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_TENDER_PASSED]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_TENDER_PASSED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -183,6 +195,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.GOVERNANCE_VOTING_ENDED_VOTER]: {
+      id: '123456789',
       type: NotificationType.GOVERNANCE_VOTING_ENDED_VOTER,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -196,6 +209,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.ITEM_SOLD]: {
+      id: '123456789',
       type: NotificationType.ITEM_SOLD,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -214,6 +228,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.LAND_RENTAL_ENDED]: {
+      id: '123456789',
       type: NotificationType.LAND_RENTAL_ENDED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -233,6 +248,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.LAND_RENTED]: {
+      id: '123456789',
       type: NotificationType.LAND_RENTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -252,6 +268,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.REWARD_ASSIGNED]: {
+      id: '123456789',
       type: NotificationType.REWARD_ASSIGNED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -266,6 +283,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.ROYALTIES_EARNED]: {
+      id: '123456789',
       type: NotificationType.ROYALTIES_EARNED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -285,6 +303,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.WORLDS_ACCESS_RESTORED]: {
+      id: '123456789',
       type: NotificationType.WORLDS_ACCESS_RESTORED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -296,6 +315,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.WORLDS_ACCESS_RESTRICTED]: {
+      id: '123456789',
       type: NotificationType.WORLDS_ACCESS_RESTRICTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -308,6 +328,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.WORLDS_MISSING_RESOURCES]: {
+      id: '123456789',
       type: NotificationType.WORLDS_MISSING_RESOURCES,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -320,6 +341,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.WORLDS_PERMISSION_GRANTED]: {
+      id: '123456789',
       type: NotificationType.WORLDS_PERMISSION_GRANTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
@@ -333,6 +355,7 @@ describe('email rendering tests', () => {
       eventKey: '123'
     },
     [NotificationType.WORLDS_PERMISSION_REVOKED]: {
+      id: '123456789',
       type: NotificationType.WORLDS_PERMISSION_REVOKED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
