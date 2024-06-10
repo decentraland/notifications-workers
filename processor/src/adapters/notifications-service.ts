@@ -6,7 +6,7 @@ export type INotificationsService = {
 }
 
 export async function createNotificationsService(
-  components: Pick<AppComponents, 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService' | 'config'>
+  components: Pick<AppComponents, 'config' | 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService'>
 ): Promise<INotificationsService> {
   const { db, emailRenderer, logs, sendGridClient, subscriptionService, config } = components
   const logger = logs.getLogger('notifications-service')

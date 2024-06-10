@@ -75,6 +75,7 @@ export async function initComponents(): Promise<AppComponents> {
   const sendGridClient = await createSendGrid({ config, fetch, logs })
 
   const notificationsService = await createNotificationsService({
+    config,
     db,
     emailRenderer,
     logs,
