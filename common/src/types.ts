@@ -60,5 +60,4 @@ export type Email = {
     type: string
     disposition: string
   }[]
-  tracking_id?: string
 }
