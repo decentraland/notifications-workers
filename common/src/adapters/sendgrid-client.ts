@@ -2,7 +2,7 @@ import { IConfigComponent, IFetchComponent, ILoggerComponent } from '@well-known
 import { Email } from '../types'
 
 export type ISendGridClient = {
-  sendEmail: (email: Email) => Promise<void>
+  sendEmail: (email: Email, customArgs?: CustomArgs) => Promise<void>
 }
 
 export type SendGridComponents = {
@@ -11,14 +11,21 @@ export type SendGridComponents = {
   fetch: IFetchComponent
 }
 
+export type EmailType = 'notification' | 'validation_attempt'
+
+export type CustomArgs = {
+  environment: string
+  tracking_id?: string
+  email_type?: EmailType
+}
+
 export async function createSendGrid(
   components: Pick<SendGridComponents, 'config' | 'fetch' | 'logs'>
 ): Promise<ISendGridClient> {
   const { config, fetch, logs } = components
   const logger = logs.getLogger('sendgrid-client')
 
-  const [env, apiBaseUrl, apiKey, emailFrom, emailTemplateId, sandboxMode] = await Promise.all([
-    config.requireString('ENV'),
+  const [apiBaseUrl, apiKey, emailFrom, emailTemplateId, sandboxMode] = await Promise.all([
     config.requireString('SENDGRID_API_URL'),
     config.requireString('SENDGRID_API_KEY'),
     config.requireString('SENDGRID_EMAIL_FROM'),
@@ -26,7 +33,7 @@ export async function createSendGrid(
     config.getString('SENDGRID_SANDBOX_MODE')
   ])
 
-  async function sendEmail(email: Email): Promise<void> {
+  async function sendEmail(email: Email, customArgs?: CustomArgs): Promise<void> {
     logger.info(`Sending email to ${email.to} with subject "${email.subject}"`)
     const data = {
       personalizations: [
@@ -52,10 +59,7 @@ export async function createSendGrid(
         name: 'Decentraland'
       },
       template_id: emailTemplateId,
-      custom_args: {
-        environment: env,
-        tracking_id: email.tracking_id
-      },
+      custom_args: customArgs,
       attachments: email.attachments,
       mail_settings: {
         sandbox_mode: {

@@ -60,8 +60,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
       subject: 'Access to Your Worlds Has Been Restored',
       content: '<p>Access to your Worlds has been restored.</p>\n',
       actionButtonText: 'Manage Worlds',
-      actionButtonLink: 'https://decentraland.org/builder/worlds?tab=dcl',
-      tracking_id: '123'
+      actionButtonLink: 'https://decentraland.org/builder/worlds?tab=dcl'
     }
     stubComponents.emailRenderer.renderEmail.withArgs(email, sinon.match(notification)).resolves(renderedEmail)
     stubComponents.sendGridClient.sendEmail.withArgs(renderedEmail).resolves()

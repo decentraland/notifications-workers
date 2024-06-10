@@ -17,6 +17,7 @@ export async function storeUnconfirmedEmailHandler(
   const { config, dataWarehouseClient, db, emailRenderer, sendGridClient } = context.components
 
   const address = context.verification!.auth
+  const env = await config.requireString('ENV')
 
   const body = await parseJson<{ email: string }>(context.request)
   if (body.email !== '' && !Email.validate(body.email)) {
@@ -42,7 +43,10 @@ export async function storeUnconfirmedEmailHandler(
         validateButtonText: 'Click Here to Confirm Your Email'
       }))
     }
-    await sendGridClient.sendEmail(email)
+    await sendGridClient.sendEmail(email, {
+      environment: env,
+      email_type: 'validation_attempt'
+    })
     await dataWarehouseClient.sendEvent({
       context: 'notification_server',
       event: 'email_validation_started',
