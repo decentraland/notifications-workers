@@ -6,7 +6,8 @@ import { NotificationRecord } from '@notifications/common'
 describe('email rendering tests', () => {
   let config = createConfigComponent({
     SIGNING_KEY: 'some-super-secret-key',
-    SERVICE_BASE_URL: 'https://notifications.decentraland.org'
+    SERVICE_BASE_URL: 'https://notifications.decentraland.org',
+    ENV: 'test'
   })
   let renderer: IEmailRenderer
 
