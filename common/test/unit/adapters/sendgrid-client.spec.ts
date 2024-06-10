@@ -46,9 +46,9 @@ describe('sendgrid client tests', () => {
           type: 'text/html',
           disposition: 'inline'
         }
-      ],
-      tracking_id: '1234'
+      ]
     }
+
     await sendGridClient.sendEmail(email, {
       environment: 'test',
       tracking_id: '1234'
