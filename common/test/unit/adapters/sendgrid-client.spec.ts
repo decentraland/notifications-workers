@@ -49,7 +49,10 @@ describe('sendgrid client tests', () => {
       ],
       tracking_id: '1234'
     }
-    await sendGridClient.sendEmail(email)
+    await sendGridClient.sendEmail(email, {
+      environment: 'test',
+      tracking_id: '1234'
+    })
 
     expect(fetch.fetch).toHaveBeenCalledWith('https://api.sendgrid.com/v3/mail/send', {
       body: JSON.stringify({
@@ -92,7 +95,9 @@ describe('sendgrid client tests', () => {
       subject: 'This is a subject',
       content: 'This is the content'
     }
-    await sendGridClient.sendEmail(email)
+    await sendGridClient.sendEmail(email, {
+      environment: 'test'
+    })
 
     expect(fetch.fetch).toHaveBeenCalledWith('https://api.sendgrid.com/v3/mail/send', {
       body: JSON.stringify({
