@@ -68,7 +68,13 @@ export function getAuthHeaders(
   return headers
 }
 
-export function makeRequest(localFetch: IFetchComponent, path: string, identity: Identity, options: any = {}) {
+export function makeRequest(
+  localFetch: IFetchComponent,
+  path: string,
+  identity: Identity,
+  options: any = {},
+  metadata: Record<string, any> = {}
+) {
   const url = new URL(path, 'http://localhost')
 
   return localFetch.fetch(path, {
@@ -76,7 +82,7 @@ export function makeRequest(localFetch: IFetchComponent, path: string, identity:
     redirect: 'manual',
     ...options,
     headers: {
-      ...getAuthHeaders(options.method || 'GET', url.pathname, {}, (payload) =>
+      ...getAuthHeaders(options.method || 'GET', url.pathname, metadata, (payload) =>
         Authenticator.signPayload(
           {
             ephemeralIdentity: identity.ephemeralIdentity,

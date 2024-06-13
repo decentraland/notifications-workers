@@ -4,6 +4,11 @@ import { createNotification } from '../db'
 import * as fetch from 'node-fetch'
 import { NotificationDb } from '@notifications/common'
 
+const seeNotificationsMetadata = {
+  signer: 'dcl:navbar',
+  intent: 'dcl:navbar:read-notifications'
+}
+
 test('GET /notifications', function ({ components }) {
   let identity: Identity
   beforeEach(async () => {
@@ -50,7 +55,7 @@ test('GET /notifications', function ({ components }) {
       })
     }
 
-    const r1 = await makeRequest(components.localFetch, `/notifications`, identity)
+    const r1 = await makeRequest(components.localFetch, `/notifications`, identity, {}, seeNotificationsMetadata)
     await checkResponseForNotifications(r1, notificationEvent, broadcastNotificationEvent, false)
 
     expect(
@@ -60,7 +65,7 @@ test('GET /notifications', function ({ components }) {
       ])
     ).toBe(2)
 
-    const r2 = await makeRequest(components.localFetch, `/notifications`, identity)
+    const r2 = await makeRequest(components.localFetch, `/notifications`, identity, {}, seeNotificationsMetadata)
     await checkResponseForNotifications(r2, notificationEvent, broadcastNotificationEvent, true)
   })
 
@@ -75,7 +80,13 @@ test('GET /notifications', function ({ components }) {
 
     expect(await db.markNotificationsAsRead(identity.realAccount.address.toLowerCase(), [n1.id])).toBe(1)
 
-    const response = await makeRequest(components.localFetch, `/notifications?onlyUnread`, identity)
+    const response = await makeRequest(
+      components.localFetch,
+      `/notifications?onlyUnread`,
+      identity,
+      {},
+      seeNotificationsMetadata
+    )
     expect(response.status).toBe(200)
     const body = await response.json()
 
@@ -104,7 +115,13 @@ test('GET /notifications', function ({ components }) {
     const n2 = randomNotification(identity.realAccount.address.toLowerCase())
     await createNotification({ pg }, n2)
 
-    const response = await makeRequest(components.localFetch, `/notifications?from=${n1.timestamp + 1}`, identity)
+    const response = await makeRequest(
+      components.localFetch,
+      `/notifications?from=${n1.timestamp + 1}`,
+      identity,
+      {},
+      seeNotificationsMetadata
+    )
     expect(response.status).toBe(200)
     const body = await response.json()
 

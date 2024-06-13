@@ -8,7 +8,6 @@ import {
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
-import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { NotificationType } from '@dcl/schemas'
 import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
@@ -45,8 +44,7 @@ export type HandlerContextWithPath<
     components: Pick<AppComponents, ComponentNames>
   }>,
   Path
-> &
-  DecentralandSignatureContext<any>
+>
 
 export type GlobalContext = {
   components: AppComponents

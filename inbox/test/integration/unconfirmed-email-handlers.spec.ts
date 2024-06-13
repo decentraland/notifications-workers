@@ -3,6 +3,11 @@ import { getIdentity, Identity, makeRequest, randomEmail, randomSubscriptionDeta
 import { defaultSubscription } from '@notifications/common'
 import { makeid } from '@notifications/processor/test/utils'
 
+const manageSubscriptionMetadata = {
+  signer: 'dcl:account',
+  intent: 'dcl:account:manage-subscription'
+}
+
 test('PUT /set-email', function ({ components, stubComponents }) {
   let identity: Identity
 
@@ -15,12 +20,18 @@ test('PUT /set-email', function ({ components, stubComponents }) {
 
     stubComponents.sendGridClient.sendEmail.withArgs(expect.objectContaining({ to: email })).resolves()
 
-    const response = await makeRequest(components.localFetch, '/set-email', identity, {
-      method: 'PUT',
-      body: JSON.stringify({
-        email
-      })
-    })
+    const response = await makeRequest(
+      components.localFetch,
+      '/set-email',
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          email
+        })
+      },
+      manageSubscriptionMetadata
+    )
 
     expect(response.status).toBe(204)
     expect(stubComponents.sendGridClient.sendEmail.calledOnce).toBeTruthy()
@@ -51,12 +62,18 @@ test('PUT /set-email', function ({ components, stubComponents }) {
 
     stubComponents.sendGridClient.sendEmail.withArgs(expect.objectContaining({ to: email })).rejects()
 
-    const response = await makeRequest(components.localFetch, '/set-email', identity, {
-      method: 'PUT',
-      body: JSON.stringify({
-        email
-      })
-    })
+    const response = await makeRequest(
+      components.localFetch,
+      '/set-email',
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          email
+        })
+      },
+      manageSubscriptionMetadata
+    )
 
     expect(response.status).toBe(204)
     expect(stubComponents.sendGridClient.sendEmail.notCalled).toBeTruthy()
@@ -78,12 +95,18 @@ test('PUT /set-email', function ({ components, stubComponents }) {
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
     await components.db.saveSubscriptionEmail(identity.realAccount.address, randomEmail())
 
-    const response = await makeRequest(components.localFetch, '/set-email', identity, {
-      method: 'PUT',
-      body: JSON.stringify({
-        email: ''
-      })
-    })
+    const response = await makeRequest(
+      components.localFetch,
+      '/set-email',
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          email: ''
+        })
+      },
+      manageSubscriptionMetadata
+    )
 
     expect(response.status).toBe(204)
 
@@ -118,12 +141,18 @@ test('PUT /set-email', function ({ components, stubComponents }) {
   it('should fail if invalid email', async () => {
     const email = 'invalid-email'
 
-    const response = await makeRequest(components.localFetch, '/set-email', identity, {
-      method: 'PUT',
-      body: JSON.stringify({
-        email
-      })
-    })
+    const response = await makeRequest(
+      components.localFetch,
+      '/set-email',
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          email
+        })
+      },
+      manageSubscriptionMetadata
+    )
 
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({ error: 'Bad request', message: 'Invalid email' })

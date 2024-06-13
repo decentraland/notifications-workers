@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@dcl/catalyst-contracts": "^4.4.1",
-    "@dcl/platform-crypto-middleware": "^1.0.2",
     "@dcl/platform-server-commons": "^0.0.4",
     "@dcl/schemas": "^11.9.1",
     "@notifications/common": "0.0.0",
