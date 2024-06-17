@@ -3,6 +3,11 @@ import { getIdentity, Identity, makeRequest, randomSubscriptionDetails } from '.
 import { defaultSubscription } from '@notifications/common'
 import { SubscriptionDetails } from '@dcl/schemas'
 
+const manageSubscriptionMetadata = {
+  signer: 'dcl:account',
+  intent: 'dcl:account:manage-subscription'
+}
+
 test('GET /subscription', function ({ components }) {
   let identity: Identity
   beforeEach(async () => {
@@ -13,7 +18,7 @@ test('GET /subscription', function ({ components }) {
     const subscriptionDetails = randomSubscriptionDetails()
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
 
-    const response = await makeRequest(components.localFetch, `/subscription`, identity)
+    const response = await makeRequest(components.localFetch, `/subscription`, identity, {}, manageSubscriptionMetadata)
     expect(response.status).toBe(200)
     expect(await response.json()).toMatchObject({
       details: subscriptionDetails
@@ -26,7 +31,7 @@ test('GET /subscription', function ({ components }) {
     const subscriptionDetails = randomSubscriptionDetails()
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
 
-    const response = await makeRequest(components.localFetch, '/subscription', identity)
+    const response = await makeRequest(components.localFetch, '/subscription', identity, {}, manageSubscriptionMetadata)
     expect(response.status).toBe(200)
     expect(await response.json()).toMatchObject({
       details: subscriptionDetails,
@@ -44,13 +49,13 @@ test('GET /subscription', function ({ components }) {
     }
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
 
-    const response = await makeRequest(components.localFetch, `/subscription`, identity)
+    const response = await makeRequest(components.localFetch, `/subscription`, identity, {}, manageSubscriptionMetadata)
     expect(response.status).toBe(200)
     expect(await response.json()).toMatchObject({ details: defaultSubscription() })
   })
 
   it('should return a default subscription when no subscription stored', async () => {
-    const response = await makeRequest(components.localFetch, `/subscription`, identity)
+    const response = await makeRequest(components.localFetch, `/subscription`, identity, {}, manageSubscriptionMetadata)
     expect(response.status).toBe(200)
     expect(await response.json()).toMatchObject({
       details: defaultSubscription()

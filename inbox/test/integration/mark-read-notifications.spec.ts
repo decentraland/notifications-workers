@@ -2,6 +2,11 @@ import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomNotification } from '../utils'
 import { createNotification, findNotifications } from '../db'
 
+const seeNotificationsMetadata = {
+  signer: 'dcl:navbar',
+  intent: 'dcl:navbar:read-notifications'
+}
+
 test('PUT /notifications/read', function ({ components }) {
   let identity: Identity
   beforeEach(async () => {
@@ -20,12 +25,18 @@ test('PUT /notifications/read', function ({ components }) {
     const broadcastNotification2Event = randomNotification(undefined)
     await createNotification({ pg }, broadcastNotification2Event)
 
-    const r = await makeRequest(components.localFetch, `/notifications/read`, identity, {
-      method: 'PUT',
-      body: JSON.stringify({
-        notificationIds: [notificationEvent.id, broadcastNotificationEvent.id, broadcastNotification2Event.id]
-      })
-    })
+    const r = await makeRequest(
+      components.localFetch,
+      `/notifications/read`,
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          notificationIds: [notificationEvent.id, broadcastNotificationEvent.id, broadcastNotification2Event.id]
+        })
+      },
+      seeNotificationsMetadata
+    )
     expect(r.status).toBe(200)
     expect(await r.json()).toMatchObject({ updated: 3 })
 

@@ -1,6 +1,11 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomSubscriptionDetails } from '../utils'
 
+const manageSubscriptionMetadata = {
+  signer: 'dcl:account',
+  intent: 'dcl:account:manage-subscription'
+}
+
 test('PUT /subscription', function ({ components }) {
   let identity: Identity
   beforeEach(async () => {
@@ -10,10 +15,16 @@ test('PUT /subscription', function ({ components }) {
   it('should store the received subscription in the db', async () => {
     const subscriptionDetails = randomSubscriptionDetails()
 
-    const response = await makeRequest(components.localFetch, `/subscription`, identity, {
-      method: 'PUT',
-      body: JSON.stringify(subscriptionDetails)
-    })
+    const response = await makeRequest(
+      components.localFetch,
+      `/subscription`,
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify(subscriptionDetails)
+      },
+      manageSubscriptionMetadata
+    )
     expect(response.status).toBe(204)
 
     const storedSubscription = await components.db.findSubscription(identity.realAccount.address)
@@ -26,14 +37,20 @@ test('PUT /subscription', function ({ components }) {
   it('should fail if missing notification types', async () => {
     const subscriptionDetails = randomSubscriptionDetails()
 
-    const response = await makeRequest(components.localFetch, `/subscription`, identity, {
-      method: 'PUT',
-      body: JSON.stringify({
-        ignore_all_email: false,
-        ignore_all_in_app: false,
-        message_type: {}
-      })
-    })
+    const response = await makeRequest(
+      components.localFetch,
+      `/subscription`,
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          ignore_all_email: false,
+          ignore_all_in_app: false,
+          message_type: {}
+        })
+      },
+      manageSubscriptionMetadata
+    )
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({
       error: 'Bad request',
@@ -44,10 +61,16 @@ test('PUT /subscription', function ({ components }) {
   it('should fail if missing top-level properties', async () => {
     const subscriptionDetails = randomSubscriptionDetails()
 
-    const response = await makeRequest(components.localFetch, `/subscription`, identity, {
-      method: 'PUT',
-      body: JSON.stringify({})
-    })
+    const response = await makeRequest(
+      components.localFetch,
+      `/subscription`,
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({})
+      },
+      manageSubscriptionMetadata
+    )
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({
       error: 'Bad request',
@@ -56,10 +79,16 @@ test('PUT /subscription', function ({ components }) {
   })
 
   it('should fail if invalid values', async () => {
-    const response = await makeRequest(components.localFetch, `/subscription`, identity, {
-      method: 'PUT',
-      body: JSON.stringify({ ...randomSubscriptionDetails(), ignore_all_email: 'invalid' })
-    })
+    const response = await makeRequest(
+      components.localFetch,
+      `/subscription`,
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ ...randomSubscriptionDetails(), ignore_all_email: 'invalid' })
+      },
+      manageSubscriptionMetadata
+    )
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({
       error: 'Bad request',
