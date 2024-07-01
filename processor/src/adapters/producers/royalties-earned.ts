@@ -2,6 +2,7 @@ import { AppComponents, INotificationGenerator } from '../../types'
 import { formatMana } from '../../logic/utils'
 import { NotificationType } from '@dcl/schemas'
 import { NotificationRecord } from '@notifications/common'
+import { EventType, RoyaltiesEarnedEvent } from '../../event.types'
 
 export const PAGE_SIZE = 1000
 
@@ -144,8 +145,30 @@ export async function royaltiesEarnedProducer(
     }
   }
 
+  function convertToEvent(record: NotificationRecord): RoyaltiesEarnedEvent {
+    return {
+      type: EventType.RoyaltiesEarned,
+      key: record.eventKey,
+      timestamp: record.timestamp,
+      metadata: {
+        address: record.address,
+        image: record.metadata.image,
+        category: record.metadata.category,
+        rarity: record.metadata.rarity,
+        link: record.metadata.link,
+        nftName: record.metadata.nftName,
+        royaltiesCut: record.metadata.royaltiesCut,
+        royaltiesCollector: record.metadata.royaltiesCollector,
+        network: record.metadata.network,
+        title: record.metadata.title,
+        description: record.metadata.description
+      }
+    }
+  }
+
   return {
     notificationType,
-    run
+    run,
+    convertToEvent
   }
 }

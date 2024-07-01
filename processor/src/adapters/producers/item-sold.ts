@@ -1,6 +1,7 @@
 import { AppComponents, INotificationGenerator } from '../../types'
 import { NotificationType } from '@dcl/schemas'
 import { NotificationRecord } from '@notifications/common'
+import { EventType, ItemSoldEvent } from '../../event.types'
 
 export const PAGE_SIZE = 1000
 
@@ -136,8 +137,29 @@ export async function itemSoldProducer(
     }
   }
 
+  function convertToEvent(record: NotificationRecord): ItemSoldEvent {
+    return {
+      type: EventType.ItemSold,
+      key: record.eventKey,
+      timestamp: record.timestamp,
+      metadata: {
+        address: record.address,
+        image: record.metadata.image,
+        seller: record.metadata.seller,
+        category: record.metadata.category,
+        rarity: record.metadata.rarity,
+        link: record.metadata.link,
+        nftName: record.metadata.nftName,
+        network: record.metadata.network,
+        title: record.metadata.title,
+        description: record.metadata.description
+      }
+    }
+  }
+
   return {
     notificationType,
-    run
+    run,
+    convertToEvent
   }
 }

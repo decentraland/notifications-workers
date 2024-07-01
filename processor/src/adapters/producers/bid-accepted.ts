@@ -2,6 +2,7 @@ import { AppComponents, INotificationGenerator } from '../../types'
 import { formatMana } from '../../logic/utils'
 import { NotificationType } from '@dcl/schemas'
 import { NotificationRecord } from '@notifications/common'
+import { BidAcceptedEvent, EventType } from '../../event.types'
 
 export const PAGE_SIZE = 1000
 
@@ -138,8 +139,30 @@ export async function bidAcceptedProducer(
     }
   }
 
+  function convertToEvent(record: NotificationRecord): BidAcceptedEvent {
+    return {
+      type: EventType.BidAccepted,
+      key: record.eventKey,
+      timestamp: record.timestamp,
+      metadata: {
+        address: record.address,
+        image: record.metadata.image,
+        seller: record.metadata.seller,
+        category: record.metadata.category,
+        rarity: record.metadata.rarity,
+        link: record.metadata.link,
+        nftName: record.metadata.nftName,
+        price: record.metadata.price,
+        title: record.metadata.title,
+        description: record.metadata.description,
+        network: record.metadata.network
+      }
+    }
+  }
+
   return {
     notificationType,
-    run
+    run,
+    convertToEvent
   }
 }

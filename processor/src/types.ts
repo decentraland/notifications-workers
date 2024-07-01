@@ -10,10 +10,12 @@ import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { NotificationType } from '@dcl/schemas'
+import { Message } from '@aws-sdk/client-sqs'
 import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
+import { EventNotification } from './event.types'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -33,6 +35,8 @@ export type AppComponents = {
   server: IHttpServerComponent<GlobalContext>
   statusChecks: IBaseComponent
   subscriptionService: ISubscriptionService
+  eventPublisher: IEventPublisher
+  queueConsumer: IQueueConsumer
 }
 
 // this type simplifies the typings of http handlers
@@ -64,6 +68,7 @@ export type INotificationProducer = {
 
 export type INotificationGenerator = {
   run(since: number): Promise<INotificationProducerResult>
+  convertToEvent(record: NotificationRecord): EventNotification
   notificationType: NotificationType
 }
 
@@ -76,4 +81,16 @@ export type INotificationProducerResult = {
   notificationType: string
   records: NotificationRecord[]
   lastRun: number
+}
+
+export type IEventPublisher = {
+  publishMessage(event: EventNotification): Promise<string | undefined>
+}
+
+export type QueueMessage = any
+
+export type IQueueConsumer = {
+  send(message: QueueMessage): Promise<void>
+  receiveSingleMessage(): Promise<Message[]>
+  deleteMessage(receiptHandle: string): Promise<void>
 }
