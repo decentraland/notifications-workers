@@ -145,11 +145,12 @@ export async function royaltiesEarnedProducer(
     }
   }
 
-  function convertToEvent(record: NotificationRecord): RoyaltiesEarnedEvent {
+  function convertToEvent(record: NotificationRecord, lastRun: number): RoyaltiesEarnedEvent {
     return {
-      type: EventType.RoyaltiesEarned,
+      type: EventType.ROYALTIES_EARNED,
       key: record.eventKey,
       timestamp: record.timestamp,
+      lastProducerRun: lastRun,
       metadata: {
         address: record.address,
         image: record.metadata.image,

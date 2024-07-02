@@ -7,7 +7,6 @@ import {
 } from '@aws-sdk/client-sqs'
 
 import { QueueMessage, IQueueConsumer } from '../types'
-import { randomUUID } from 'crypto'
 
 export async function createQueueConsumer(endpoint: string): Promise<IQueueConsumer> {
   const client = new SQSClient({ endpoint })
@@ -20,10 +19,10 @@ export async function createQueueConsumer(endpoint: string): Promise<IQueueConsu
     await client.send(sendCommand)
   }
 
-  async function receiveSingleMessage(): Promise<Message[]> {
+  async function receiveMessages(maxMessages: number = 1): Promise<Message[]> {
     const receiveCommand = new ReceiveMessageCommand({
       QueueUrl: endpoint,
-      MaxNumberOfMessages: 1,
+      MaxNumberOfMessages: maxMessages,
       VisibilityTimeout: 60 // 1 minute
     })
     const { Messages = [] } = await client.send(receiveCommand)
@@ -41,7 +40,7 @@ export async function createQueueConsumer(endpoint: string): Promise<IQueueConsu
 
   return {
     send,
-    receiveSingleMessage,
+    receiveMessages,
     deleteMessage
   }
 }

@@ -1,16 +1,17 @@
 export enum EventType {
-  BidAccepted = 'bid-accepted',
-  BidReceived = 'bid-received',
-  ItemSold = 'item-sold',
-  RentalEnded = 'rental-ended',
-  RentalStarted = 'rental-started',
-  RoyaltiesEarned = 'royalties-earned'
+  BID_ACCEPTED = 'bid-accepted',
+  BID_RECEIVED = 'bid-received',
+  ITEM_SOLD = 'item-sold',
+  RENTAL_ENDED = 'land-rental-ended',
+  RENTAL_STARTED = 'land-rental-started',
+  ROYALTIES_EARNED = 'royalties-earned'
 }
 
 type BaseEvent = {
   type: string
   key: string
   timestamp: number
+  lastProducerRun: number // TODO: remove this field after switching to the new approach
 }
 
 type BidMetadata = {
@@ -28,17 +29,17 @@ type BidMetadata = {
 }
 
 export type BidAcceptedEvent = BaseEvent & {
-  type: EventType.BidAccepted
+  type: EventType.BID_ACCEPTED
   metadata: BidMetadata
 }
 
 export type BidReceivedEvent = BaseEvent & {
-  type: EventType.BidReceived
+  type: EventType.BID_RECEIVED
   metadata: BidMetadata
 }
 
 export type ItemSoldEvent = BaseEvent & {
-  type: EventType.ItemSold
+  type: EventType.ITEM_SOLD
   metadata: {
     address: string
     image: string
@@ -54,7 +55,7 @@ export type ItemSoldEvent = BaseEvent & {
 }
 
 export type RentalEndedEvent = BaseEvent & {
-  type: EventType.RentalEnded
+  type: EventType.RENTAL_ENDED
   metadata: {
     address: string
     land: string
@@ -72,7 +73,7 @@ export type RentalEndedEvent = BaseEvent & {
 }
 
 export type RentalStartedEvent = BaseEvent & {
-  type: EventType.RentalStarted
+  type: EventType.RENTAL_STARTED
   metadata: {
     address: string
     land: string
@@ -90,7 +91,7 @@ export type RentalStartedEvent = BaseEvent & {
 }
 
 export type RoyaltiesEarnedEvent = BaseEvent & {
-  type: EventType.RoyaltiesEarned
+  type: EventType.ROYALTIES_EARNED
   metadata: {
     address: string
     image: string

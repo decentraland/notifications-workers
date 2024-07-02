@@ -26,6 +26,9 @@ import { createDbComponent, createSendGrid } from '@notifications/common'
 import { createNotificationsService } from './adapters/notifications-service'
 import { createEventPublisher } from './adapters/eventPublisher'
 import { createQueueConsumer } from './adapters/queue-consumer'
+import { createEventParser } from './logic/event-parser'
+import { createWorkflowMigrationChecker } from './logic/workflow-migration-checker'
+import { createMessageProcessor } from './logic/message-processor'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -102,45 +105,56 @@ export async function initComponents(): Promise<AppComponents> {
   const sqsEndpoint = await config.requireString('AWS_SQS_ENDPOINT')
   const eventPublisher = await createEventPublisher({ config })
   const queueConsumer = await createQueueConsumer(sqsEndpoint)
+  const workflowMigrationChecker = createWorkflowMigrationChecker()
 
   // Create the producer registry and add all the producers
   const producerRegistry = await createProducerRegistry({ logs })
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, metrics, eventPublisher },
+      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
       await itemSoldProducer({ config, l2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, metrics, eventPublisher },
+      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
       await royaltiesEarnedProducer({ config, l2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, metrics, eventPublisher },
+      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
       await bidReceivedProducer({ config, l2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, metrics, eventPublisher },
+      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
       await bidAcceptedProducer({ config, l2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, metrics, eventPublisher },
+      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
       await rentalStartedProducer({ config, landManagerSubGraph, rentalsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, metrics, eventPublisher },
+      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
       await rentalEndedProducer({ config, landManagerSubGraph, rentalsSubGraph })
     )
   )
+
+  const eventParser = createEventParser()
+  const messageProcessor = createMessageProcessor({
+    logs,
+    queueConsumer,
+    db,
+    notificationsService,
+    eventParser,
+    workflowMigrationChecker
+  })
 
   return {
     config,
@@ -161,6 +175,9 @@ export async function initComponents(): Promise<AppComponents> {
     statusChecks,
     subscriptionService,
     eventPublisher,
-    queueConsumer
+    queueConsumer,
+    eventParser,
+    messageProcessor,
+    workflowMigrationChecker
   }
 }

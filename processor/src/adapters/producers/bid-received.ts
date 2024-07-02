@@ -139,11 +139,12 @@ export async function bidReceivedProducer(
     }
   }
 
-  function convertToEvent(record: NotificationRecord): BidReceivedEvent {
+  function convertToEvent(record: NotificationRecord, lastRun: number): BidReceivedEvent {
     return {
-      type: EventType.BidReceived,
+      type: EventType.BID_RECEIVED,
       key: record.eventKey,
       timestamp: record.timestamp,
+      lastProducerRun: lastRun,
       metadata: {
         address: record.address,
         image: record.metadata.image,

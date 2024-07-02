@@ -5,6 +5,7 @@ import { bearerTokenMiddleware, errorHandler } from '@dcl/platform-server-common
 import { statusHandler } from './handlers/status-handler'
 import { setCursorHandler } from './handlers/set-cursor-handler'
 import { testNotificationPreviewHandler, testRandomNotificationsHandler } from './handlers/test-notifications-handler'
+import { checkMigrationHandler } from './handlers/check-migration-handler'
 
 // We return the entire router because it will be easier to test than a whole server
 export async function setupRouter(globalContext: GlobalContext): Promise<Router<GlobalContext>> {
@@ -17,6 +18,8 @@ export async function setupRouter(globalContext: GlobalContext): Promise<Router<
   if (secret) {
     router.post('/notifications', bearerTokenMiddleware(secret), publishNotificationHandler)
     router.post('/producers/:producer/set-since', bearerTokenMiddleware(secret), setCursorHandler)
+
+    router.get('/check-migration', bearerTokenMiddleware(secret), checkMigrationHandler)
 
     router.get('/test-notifications', testRandomNotificationsHandler)
     router.get('/test-notifications/:notificationId', testNotificationPreviewHandler)

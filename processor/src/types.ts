@@ -37,6 +37,9 @@ export type AppComponents = {
   subscriptionService: ISubscriptionService
   eventPublisher: IEventPublisher
   queueConsumer: IQueueConsumer
+  eventParser: IEventParser
+  messageProcessor: IMessageProcessor
+  workflowMigrationChecker: IWorkflowMigrationChecker
 }
 
 // this type simplifies the typings of http handlers
@@ -68,7 +71,7 @@ export type INotificationProducer = {
 
 export type INotificationGenerator = {
   run(since: number): Promise<INotificationProducerResult>
-  convertToEvent(record: NotificationRecord): EventNotification
+  convertToEvent(record: NotificationRecord, lastRun: number): EventNotification
   notificationType: NotificationType
 }
 
@@ -91,6 +94,18 @@ export type QueueMessage = any
 
 export type IQueueConsumer = {
   send(message: QueueMessage): Promise<void>
-  receiveSingleMessage(): Promise<Message[]>
+  receiveMessages(): Promise<Message[]>
   deleteMessage(receiptHandle: string): Promise<void>
+}
+
+export type IMessageProcessor = IBaseComponent
+
+export type IEventParser = {
+  parseToNotification(event: EventNotification): NotificationRecord
+}
+
+export type IWorkflowMigrationChecker = {
+  addRegistry(notification: NotificationRecord): void
+  removeRegistry(notification: NotificationRecord): void
+  getRegistries(): Map<string, number>
 }

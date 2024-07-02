@@ -109,11 +109,12 @@ export async function rentalEndedProducer(
     }
   }
 
-  function convertToEvent(record: NotificationRecord): EventNotification {
+  function convertToEvent(record: NotificationRecord, lastRun: number): EventNotification {
     return {
-      type: EventType.RentalEnded,
+      type: EventType.RENTAL_ENDED,
       key: record.eventKey,
       timestamp: record.timestamp,
+      lastProducerRun: lastRun,
       metadata: {
         address: record.address,
         land: record.metadata.land,
