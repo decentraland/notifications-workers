@@ -71,7 +71,7 @@ export type INotificationProducer = {
 
 export type INotificationGenerator = {
   run(since: number): Promise<INotificationProducerResult>
-  convertToEvent(record: NotificationRecord, lastRun: number): EventNotification
+  convertToEvent(record: NotificationRecord): EventNotification
   notificationType: NotificationType
 }
 

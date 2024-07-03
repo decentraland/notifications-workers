@@ -11,7 +11,6 @@ type BaseEvent = {
   type: string
   key: string
   timestamp: number
-  lastProducerRun: number // TODO: remove this field after switching to the new approach
 }
 
 type BidMetadata = {

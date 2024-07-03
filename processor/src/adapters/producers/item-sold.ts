@@ -137,12 +137,11 @@ export async function itemSoldProducer(
     }
   }
 
-  function convertToEvent(record: NotificationRecord, lastRun: number): ItemSoldEvent {
+  function convertToEvent(record: NotificationRecord): ItemSoldEvent {
     return {
       type: EventType.ITEM_SOLD,
       key: record.eventKey,
       timestamp: record.timestamp,
-      lastProducerRun: lastRun,
       metadata: {
         address: record.address,
         image: record.metadata.image,

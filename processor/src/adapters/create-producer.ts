@@ -22,7 +22,7 @@ export async function createProducer(
     logger.info(`Created ${produced.records.length} new notifications.`)
 
     for (const record of produced.records) {
-      await eventPublisher.publishMessage(producer.convertToEvent(record, produced.lastRun))
+      await eventPublisher.publishMessage(producer.convertToEvent(record))
       workflowMigrationChecker.addRegistry(record)
     }
 

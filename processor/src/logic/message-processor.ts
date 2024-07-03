@@ -50,7 +50,8 @@ export function createMessageProcessor({
         try {
           const notification = eventParser.parseToNotification(parsedMessage)
           await notificationsService.saveNotifications([notification])
-          await db.updateLastUpdateForNotificationType(notification.type, parsedMessage.lastProducerRun)
+          // TODO: move this to processor project
+          // await db.updateLastUpdateForNotificationType(notification.type, parsedMessage.lastProducerRun)
           logger.info(`Created a new ${notification.type} notification.`)
           workflowMigrationChecker.removeRegistry(notification)
         } catch (error: any) {
