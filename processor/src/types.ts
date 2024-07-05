@@ -16,6 +16,7 @@ import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
 import { EventNotification } from './event.types'
+import { RegistryState } from './logic/workflow-migration-checker'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -104,7 +105,6 @@ export type IEventParser = {
 }
 
 export type IWorkflowMigrationChecker = {
-  addRegistry(notification: NotificationRecord): void
-  removeRegistry(notification: NotificationRecord): void
-  getRegistries(): Map<string, number>
+  addRegistry(notification: NotificationRecord, from: 'producer' | 'event'): void
+  getRegistries(): Map<string, { when: number; state: RegistryState }>
 }

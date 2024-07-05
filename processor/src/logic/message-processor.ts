@@ -50,7 +50,7 @@ export function createMessageProcessor({
           const notification = eventParser.parseToNotification(parsedMessage)
           await notificationsService.saveNotifications([notification])
           logger.info(`Created a new ${notification.type} notification.`)
-          workflowMigrationChecker.removeRegistry(notification)
+          workflowMigrationChecker.addRegistry(notification, 'event')
         } catch (error: any) {
           // TODO: handle retries and DLQ
           logger.error(`Failed while processing event notification: ${error?.message || 'Unexpected failure'}`)
