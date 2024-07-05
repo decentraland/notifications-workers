@@ -6,9 +6,10 @@ import {
   SendMessageCommand
 } from '@aws-sdk/client-sqs'
 
-import { QueueMessage, IQueueConsumer } from '../types'
+import { QueueMessage, IQueueConsumer, AppComponents } from '../types'
 
-export async function createQueueConsumer(endpoint: string): Promise<IQueueConsumer> {
+export async function createQueueConsumer({ config }: Pick<AppComponents, 'config'>): Promise<IQueueConsumer> {
+  const endpoint = await config.requireString('AWS_SQS_ENDPOINT')
   const client = new SQSClient({ endpoint })
 
   async function send(message: QueueMessage): Promise<void> {

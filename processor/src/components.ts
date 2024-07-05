@@ -101,8 +101,7 @@ export async function initComponents(): Promise<AppComponents> {
   const landManagerSubGraphUrl = await config.requireString('LAND_MANAGER_SUBGRAPH_URL')
   const landManagerSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, landManagerSubGraphUrl)
 
-  const sqsEndpoint = await config.requireString('AWS_SQS_ENDPOINT')
-  const queueConsumer = await createQueueConsumer(sqsEndpoint)
+  const queueConsumer = await createQueueConsumer({ config })
   const workflowMigrationChecker = createWorkflowMigrationChecker()
 
   // Create the producer registry and add all the producers

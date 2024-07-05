@@ -29,7 +29,7 @@ async function initComponents(): Promise<TestComponents> {
     { path: ['.env.default'] },
     {
       INTERNAL_API_KEY: 'some-api-key',
-      AWS_SQS_ENDPOINT: ''
+      AWS_SQS_ENDPOINT: 'any'
     }
   )
 
