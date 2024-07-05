@@ -5,13 +5,12 @@ import { sleep } from './utils'
 export function createMessageProcessor({
   logs,
   queueConsumer,
-  db,
   notificationsService,
   eventParser,
   workflowMigrationChecker
 }: Pick<
   AppComponents,
-  'logs' | 'queueConsumer' | 'db' | 'notificationsService' | 'eventParser' | 'workflowMigrationChecker'
+  'logs' | 'queueConsumer' | 'notificationsService' | 'eventParser' | 'workflowMigrationChecker'
 >): IMessageProcessor {
   const logger = logs.getLogger('messages-consumer')
   let isRunning = false
@@ -50,8 +49,6 @@ export function createMessageProcessor({
         try {
           const notification = eventParser.parseToNotification(parsedMessage)
           await notificationsService.saveNotifications([notification])
-          // TODO: move this to processor project
-          // await db.updateLastUpdateForNotificationType(notification.type, parsedMessage.lastProducerRun)
           logger.info(`Created a new ${notification.type} notification.`)
           workflowMigrationChecker.removeRegistry(notification)
         } catch (error: any) {

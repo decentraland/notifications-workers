@@ -24,7 +24,6 @@ import { createEmailRenderer } from './adapters/email-renderer'
 import { createSubscriptionsService } from './adapters/subscriptions-service'
 import { createDbComponent, createSendGrid } from '@notifications/common'
 import { createNotificationsService } from './adapters/notifications-service'
-import { createEventPublisher } from './adapters/eventPublisher'
 import { createQueueConsumer } from './adapters/queue-consumer'
 import { createEventParser } from './logic/event-parser'
 import { createWorkflowMigrationChecker } from './logic/workflow-migration-checker'
@@ -103,7 +102,6 @@ export async function initComponents(): Promise<AppComponents> {
   const landManagerSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, landManagerSubGraphUrl)
 
   const sqsEndpoint = await config.requireString('AWS_SQS_ENDPOINT')
-  const eventPublisher = await createEventPublisher({ config })
   const queueConsumer = await createQueueConsumer(sqsEndpoint)
   const workflowMigrationChecker = createWorkflowMigrationChecker()
 
@@ -111,37 +109,37 @@ export async function initComponents(): Promise<AppComponents> {
   const producerRegistry = await createProducerRegistry({ logs })
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
+      { db, logs, notificationsService, workflowMigrationChecker },
       await itemSoldProducer({ config, l2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
+      { db, logs, notificationsService, workflowMigrationChecker },
       await royaltiesEarnedProducer({ config, l2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
+      { db, logs, notificationsService, workflowMigrationChecker },
       await bidReceivedProducer({ config, l2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
+      { db, logs, notificationsService, workflowMigrationChecker },
       await bidAcceptedProducer({ config, l2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
+      { db, logs, notificationsService, workflowMigrationChecker },
       await rentalStartedProducer({ config, landManagerSubGraph, rentalsSubGraph })
     )
   )
   producerRegistry.addProducer(
     await createProducer(
-      { db, logs, notificationsService, eventPublisher, workflowMigrationChecker },
+      { db, logs, notificationsService, workflowMigrationChecker },
       await rentalEndedProducer({ config, landManagerSubGraph, rentalsSubGraph })
     )
   )
@@ -150,7 +148,6 @@ export async function initComponents(): Promise<AppComponents> {
   const messageProcessor = createMessageProcessor({
     logs,
     queueConsumer,
-    db,
     notificationsService,
     eventParser,
     workflowMigrationChecker
@@ -174,7 +171,6 @@ export async function initComponents(): Promise<AppComponents> {
     server,
     statusChecks,
     subscriptionService,
-    eventPublisher,
     queueConsumer,
     eventParser,
     messageProcessor,

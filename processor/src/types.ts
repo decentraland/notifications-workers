@@ -35,7 +35,6 @@ export type AppComponents = {
   server: IHttpServerComponent<GlobalContext>
   statusChecks: IBaseComponent
   subscriptionService: ISubscriptionService
-  eventPublisher: IEventPublisher
   queueConsumer: IQueueConsumer
   eventParser: IEventParser
   messageProcessor: IMessageProcessor
