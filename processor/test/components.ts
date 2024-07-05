@@ -4,7 +4,7 @@
 import { createRunner, createLocalFetchCompoment } from '@well-known-components/test-helpers'
 
 import { main } from '../src/service'
-import { TestComponents } from '../src/types'
+import { IQueueConsumer, TestComponents } from '../src/types'
 import { initComponents as originalInitComponents } from '../src/components'
 import { createTestMetricsComponent } from '@well-known-components/metrics'
 import { metricDeclarations } from '../src/metrics'
@@ -33,10 +33,21 @@ async function initComponents(): Promise<TestComponents> {
     }
   )
 
+  const queueConsumer: IQueueConsumer = {
+    send: jest.fn(),
+    receiveMessages: jest.fn(),
+    deleteMessage: jest.fn()
+  }
+
   return {
     ...components,
     config,
     metrics: createTestMetricsComponent(metricDeclarations),
-    localFetch: await createLocalFetchCompoment(config)
+    localFetch: await createLocalFetchCompoment(config),
+    queueConsumer,
+    messageProcessor: {
+      start: jest.fn(),
+      stop: jest.fn()
+    }
   }
 }
