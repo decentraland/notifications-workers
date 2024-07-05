@@ -28,8 +28,7 @@ async function initComponents(): Promise<TestComponents> {
   const config = await createDotEnvConfigComponent(
     { path: ['.env.default'] },
     {
-      INTERNAL_API_KEY: 'some-api-key',
-      AWS_SQS_ENDPOINT: 'any'
+      INTERNAL_API_KEY: 'some-api-key'
     }
   )
 
