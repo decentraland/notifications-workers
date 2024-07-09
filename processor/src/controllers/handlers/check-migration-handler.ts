@@ -10,7 +10,7 @@ export async function checkMigrationHandler(
   return {
     status: 200,
     body: {
-      registries
+      registries: Object.fromEntries(registries)
     }
   }
 }

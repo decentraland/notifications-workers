@@ -86,10 +86,6 @@ export type INotificationProducerResult = {
   lastRun: number
 }
 
-export type IEventPublisher = {
-  publishMessage(event: EventNotification): Promise<string | undefined>
-}
-
 export type QueueMessage = any
 
 export type IQueueConsumer = {
