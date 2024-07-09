@@ -4,7 +4,6 @@ import { findCoordinatesForLandTokenId } from '../../logic/land-utils'
 import { NotificationType } from '@dcl/schemas'
 import { L1Network } from '@dcl/catalyst-contracts'
 import { NotificationRecord } from '@notifications/common'
-import { EventNotification, EventType } from '../../event.types'
 
 export const PAGE_SIZE = 1000
 
@@ -109,31 +108,8 @@ export async function rentalEndedProducer(
     }
   }
 
-  function convertToEvent(record: NotificationRecord): EventNotification {
-    return {
-      type: EventType.RENTAL_ENDED,
-      key: record.eventKey,
-      timestamp: record.timestamp,
-      metadata: {
-        address: record.address,
-        land: record.metadata.land,
-        contract: record.metadata.contract,
-        lessor: record.metadata.lessor,
-        tenant: record.metadata.tenant,
-        operator: record.metadata.operator,
-        startedAt: record.metadata.startedAt,
-        endedAt: record.metadata.endedAt,
-        tokenId: record.metadata.tokenId,
-        link: record.metadata.link,
-        title: record.metadata.title,
-        description: record.metadata.description
-      }
-    }
-  }
-
   return {
     notificationType,
-    run,
-    convertToEvent
+    run
   }
 }

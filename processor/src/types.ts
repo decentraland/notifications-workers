@@ -9,13 +9,12 @@ import {
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
-import { NotificationType } from '@dcl/schemas'
+import { EventNotification, NotificationType } from '@dcl/schemas'
 import { Message } from '@aws-sdk/client-sqs'
 import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
-import { EventNotification } from './event.types'
 import { RegistryState } from './logic/workflow-migration-checker'
 
 export type AppComponents = {
@@ -71,7 +70,6 @@ export type INotificationProducer = {
 
 export type INotificationGenerator = {
   run(since: number): Promise<INotificationProducerResult>
-  convertToEvent(record: NotificationRecord): EventNotification
   notificationType: NotificationType
 }
 

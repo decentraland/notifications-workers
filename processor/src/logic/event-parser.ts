@@ -1,6 +1,5 @@
 import { NotificationRecord } from '@notifications/common'
-import { EventNotification, EventType } from '../event.types'
-import { NotificationType } from '@dcl/schemas'
+import { EventNotification, EventType, NotificationType } from '@dcl/schemas'
 import { IEventParser } from '../types'
 
 export function createEventParser(): IEventParser {
