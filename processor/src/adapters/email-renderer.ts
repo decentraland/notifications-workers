@@ -2,7 +2,7 @@ import * as fs from 'node:fs'
 import * as path from 'path'
 import handlebars from 'handlebars'
 import { NotificationType } from '@dcl/schemas'
-import { Email, NotificationRecord } from '@notifications/common'
+import { Email, EmailableNotificationTypeEnum, NotificationRecord } from '@notifications/common'
 import { AppComponents } from '../types'
 import { formatMana } from '../logic/utils'
 import { signUrl } from '@notifications/common/dist/signing'
@@ -31,7 +31,7 @@ function loadTemplates() {
   handlebars.registerHelper('days', (from: string, to: string) => (parseInt(to) - parseInt(from)) / 86400)
   handlebars.registerHelper('insert', (text: string, defaultText: string) => (text ? text : defaultText))
 
-  return Object.values(NotificationType).reduce(
+  return Object.values(EmailableNotificationTypeEnum).reduce(
     (acc, notificationType) => {
       acc[notificationType] = {
         [TemplatePart.SUBJECT]: handlebars.compile(
