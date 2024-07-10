@@ -27,7 +27,7 @@ import { createNotificationsService } from './adapters/notifications-service'
 import { createQueueConsumer } from './adapters/queue-consumer'
 import { createEventParser } from './logic/event-parser'
 import { createWorkflowMigrationChecker } from './logic/workflow-migration-checker'
-import { createMessageProcessor } from './logic/message-processor'
+import { createMessageProcessor } from './adapters/message-processor'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {

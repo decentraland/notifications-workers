@@ -1,6 +1,6 @@
 import { EventNotification } from '@dcl/schemas'
 import { AppComponents, IMessageProcessor } from '../types'
-import { sleep } from './utils'
+import { sleep } from '../logic/utils'
 
 export function createMessageProcessor({
   logs,
