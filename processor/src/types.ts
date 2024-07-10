@@ -9,11 +9,13 @@ import {
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
-import { NotificationType } from '@dcl/schemas'
+import { EventNotification, NotificationType } from '@dcl/schemas'
+import { Message } from '@aws-sdk/client-sqs'
 import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
+import { RegistryState } from './logic/workflow-migration-checker'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -33,6 +35,10 @@ export type AppComponents = {
   server: IHttpServerComponent<GlobalContext>
   statusChecks: IBaseComponent
   subscriptionService: ISubscriptionService
+  queueConsumer: IQueueConsumer
+  eventParser: IEventParser
+  messageProcessor: IMessageProcessor
+  workflowMigrationChecker: IWorkflowMigrationChecker
 }
 
 // this type simplifies the typings of http handlers
@@ -76,4 +82,23 @@ export type INotificationProducerResult = {
   notificationType: string
   records: NotificationRecord[]
   lastRun: number
+}
+
+export type QueueMessage = any
+
+export type IQueueConsumer = {
+  send(message: QueueMessage): Promise<void>
+  receiveMessages(): Promise<Message[]>
+  deleteMessage(receiptHandle: string): Promise<void>
+}
+
+export type IMessageProcessor = IBaseComponent
+
+export type IEventParser = {
+  parseToNotification(event: EventNotification): NotificationRecord
+}
+
+export type IWorkflowMigrationChecker = {
+  addRegistry(notification: NotificationRecord, from: 'producer' | 'event'): void
+  getRegistries(): Map<string, { when: number; state: RegistryState }>
 }

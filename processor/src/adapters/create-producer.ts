@@ -2,10 +2,10 @@ import { AppComponents, INotificationGenerator, INotificationProducer } from '..
 import { CronJob } from 'cron'
 
 export async function createProducer(
-  components: Pick<AppComponents, 'logs' | 'db' | 'notificationsService'>,
+  components: Pick<AppComponents, 'logs' | 'db' | 'notificationsService' | 'workflowMigrationChecker'>,
   producer: INotificationGenerator
 ): Promise<INotificationProducer> {
-  const { logs, db, notificationsService } = components
+  const { logs, db, notificationsService, workflowMigrationChecker } = components
   const logger = logs.getLogger(`producer-${producer.notificationType}`)
 
   let lastSuccessfulRun: number | undefined
@@ -17,6 +17,11 @@ export async function createProducer(
     await notificationsService.saveNotifications(produced.records)
     await db.updateLastUpdateForNotificationType(produced.notificationType, produced.lastRun)
     logger.info(`Created ${produced.records.length} new notifications.`)
+
+    for (const record of produced.records) {
+      workflowMigrationChecker.addRegistry(record, 'producer')
+    }
+
     return produced.lastRun
   }
 

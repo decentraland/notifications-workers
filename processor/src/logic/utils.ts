@@ -21,3 +21,7 @@ export function chunks<T>(items: T[], chunkSize: number): T[][] {
     [[]]
   )
 }
+
+export async function sleep(ms: number) {
+  return new Promise<void>((ok) => setTimeout(ok, ms))
+}

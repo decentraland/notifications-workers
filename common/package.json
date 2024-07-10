@@ -25,8 +25,8 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "@dcl/schemas": "^11.9.1",
-    "@well-known-components/pg-component": "^0.2.3",
-    "@well-known-components/interfaces": "^1.4.3"
+    "@dcl/schemas": "^11.11.0",
+    "@well-known-components/interfaces": "^1.4.3",
+    "@well-known-components/pg-component": "^0.2.3"
   }
 }

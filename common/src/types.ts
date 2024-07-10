@@ -61,3 +61,19 @@ export type Email = {
     disposition: string
   }[]
 }
+
+type NotificationTypeUnion = keyof typeof NotificationType
+type ExcludedNotificationType = 'BADGE_GRANTED'
+type EmailableNotificationTypes = Exclude<NotificationTypeUnion, ExcludedNotificationType>
+
+const emailableNotificationTypeEntries = Object.entries(NotificationType)
+  .filter(([key]) => key !== 'BADGE_GRANTED')
+  .map(([key, value]) => [key, value] as const)
+
+const EmailableNotificationType = Object.fromEntries(emailableNotificationTypeEntries) as {
+  [K in EmailableNotificationTypes]: (typeof NotificationType)[K]
+}
+
+export const EmailableNotificationTypeEnum = EmailableNotificationType as any as {
+  [key in EmailableNotificationTypes]: `${(typeof EmailableNotificationType)[key]}`
+}
