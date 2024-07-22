@@ -9,7 +9,7 @@ import {
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { ISubgraphComponent } from '@well-known-components/thegraph-component'
-import { EventNotification, NotificationType } from '@dcl/schemas'
+import { NotificationType, Event } from '@dcl/schemas'
 import { Message } from '@aws-sdk/client-sqs'
 import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
@@ -95,7 +95,7 @@ export type IQueueConsumer = {
 export type IMessageProcessor = IBaseComponent
 
 export type IEventParser = {
-  parseToNotification(event: EventNotification): NotificationRecord
+  parseToNotification(event: Event): NotificationRecord | undefined
 }
 
 export type IWorkflowMigrationChecker = {
