@@ -1,6 +1,7 @@
-import { EventNotification } from '@dcl/schemas'
+import { Event } from '@dcl/schemas'
 import { AppComponents, IMessageProcessor } from '../types'
 import { sleep } from '../logic/utils'
+import { NotificationRecord } from '@notifications/common'
 
 export function createMessageProcessor({
   logs,
@@ -15,10 +16,10 @@ export function createMessageProcessor({
   const logger = logs.getLogger('messages-consumer')
   let isRunning = false
 
-  function parseMessage(message: string): any {
+  function parseMessageToNotification(message: string): NotificationRecord | undefined {
     try {
       const parsedMessage = JSON.parse(JSON.parse(message).Message)
-      return parsedMessage
+      return eventParser.parseToNotification(parsedMessage)
     } catch (error: any) {
       logger.error(`Failed while parsing message from queue: ${error?.message || 'Unexpected failure'}`)
       return undefined
@@ -39,15 +40,14 @@ export function createMessageProcessor({
 
       for (const message of messages) {
         const { Body, ReceiptHandle } = message
-        const parsedMessage = parseMessage(Body!) as EventNotification
+        const notification: NotificationRecord | undefined = parseMessageToNotification(Body!)
 
-        if (!parsedMessage) {
+        if (!notification) {
           await queueConsumer.deleteMessage(ReceiptHandle!)
           continue
         }
 
         try {
-          const notification = eventParser.parseToNotification(parsedMessage)
           await notificationsService.saveNotifications([notification])
           logger.info(`Created a new ${notification.type} notification.`)
           workflowMigrationChecker.addRegistry(notification, 'event')
