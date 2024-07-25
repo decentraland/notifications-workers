@@ -1,5 +1,5 @@
 import { NotificationRecord } from '@notifications/common'
-import { EventNotification, EventType, NotificationType } from '@dcl/schemas'
+import { Event, EventType, NotificationType } from '@dcl/schemas'
 import { IEventParser } from '../types'
 
 export function createEventParser(): IEventParser {
@@ -7,7 +7,7 @@ export function createEventParser(): IEventParser {
     throw new Error(`Event not supported: ${x}`)
   }
 
-  function parseToNotification(event: EventNotification): NotificationRecord {
+  function parseToNotification(event: Event): NotificationRecord {
     switch (event.type) {
       case EventType.ROYALTIES_EARNED:
         return {

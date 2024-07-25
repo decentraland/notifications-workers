@@ -1,4 +1,4 @@
-import { EventNotification } from '@dcl/schemas'
+import { Event } from '@dcl/schemas'
 import { AppComponents, IMessageProcessor } from '../types'
 import { sleep } from '../logic/utils'
 
@@ -39,7 +39,7 @@ export function createMessageProcessor({
 
       for (const message of messages) {
         const { Body, ReceiptHandle } = message
-        const parsedMessage = parseMessage(Body!) as EventNotification
+        const parsedMessage = parseMessage(Body!) as Event
 
         if (!parsedMessage) {
           await queueConsumer.deleteMessage(ReceiptHandle!)
