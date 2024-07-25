@@ -1,15 +1,11 @@
 import { NotificationRecord } from '@notifications/common'
-import { Event, EventType, NotificationType } from '@dcl/schemas'
+import { Event, Events, NotificationType } from '@dcl/schemas'
 import { IEventParser } from '../types'
 
 export function createEventParser(): IEventParser {
-  function assertNever(x: never): never {
-    throw new Error(`Event not supported: ${x}`)
-  }
-
-  function parseToNotification(event: Event): NotificationRecord {
-    switch (event.type) {
-      case EventType.ROYALTIES_EARNED:
+  function parseToNotification(event: Event): NotificationRecord | undefined {
+    switch (event.subType) {
+      case Events.SubType.Blockchain.ROYALTIES_EARNED:
         return {
           type: NotificationType.ROYALTIES_EARNED,
           address: event.metadata.address,
@@ -28,7 +24,7 @@ export function createEventParser(): IEventParser {
             network: event.metadata.network
           }
         }
-      case EventType.ITEM_SOLD:
+      case Events.SubType.Blockchain.ITEM_SOLD:
         return {
           type: NotificationType.ITEM_SOLD,
           address: event.metadata.address,
@@ -46,7 +42,7 @@ export function createEventParser(): IEventParser {
             network: event.metadata.network
           }
         }
-      case EventType.BID_ACCEPTED:
+      case Events.SubType.Blockchain.BID_ACCEPTED:
         return {
           type: NotificationType.BID_ACCEPTED,
           address: event.metadata.address,
@@ -65,7 +61,7 @@ export function createEventParser(): IEventParser {
             network: event.metadata.network
           }
         }
-      case EventType.BID_RECEIVED:
+      case Events.SubType.Blockchain.BID_RECEIVED:
         return {
           type: NotificationType.BID_RECEIVED,
           address: event.metadata.address,
@@ -84,7 +80,7 @@ export function createEventParser(): IEventParser {
             network: event.metadata.network
           }
         }
-      case EventType.RENTAL_ENDED:
+      case Events.SubType.Blockchain.RENTAL_ENDED:
         return {
           type: NotificationType.LAND_RENTAL_ENDED,
           address: event.metadata.address,
@@ -102,7 +98,7 @@ export function createEventParser(): IEventParser {
             title: event.metadata.title
           }
         }
-      case EventType.RENTAL_STARTED:
+      case Events.SubType.Blockchain.RENTAL_STARTED:
         return {
           type: NotificationType.LAND_RENTED,
           address: event.metadata.address,
@@ -121,7 +117,7 @@ export function createEventParser(): IEventParser {
           }
         }
       default:
-        assertNever(event)
+        return undefined
     }
   }
 
