@@ -11,7 +11,7 @@ describe('email rendering tests', () => {
   })
   let renderer: IEmailRenderer
 
-  type EmailableNotificationTypes = Exclude<NotificationType, NotificationType.BADGE_GRANTED>
+  type EmailableNotificationTypes = Exclude<NotificationType, NotificationType.BADGE_GRANTED | NotificationType.REWARD_IN_PROGRESS>
 
   const notifications: Record<EmailableNotificationTypes, NotificationRecord> = {
     [NotificationType.BID_ACCEPTED]: {
@@ -266,21 +266,6 @@ describe('email rendering tests', () => {
         startedAt: '1711212707',
         land: '1,2',
         description: 'Your LAND at 1,2 was rented by 0x951a6698f644a9b1c634abc416b9d9902aaf3db9.'
-      },
-      timestamp: Date.now(),
-      eventKey: '123'
-    },
-    [NotificationType.REWARD_IN_PROGRESS]: {
-      id: '123456789',
-      type: NotificationType.REWARD_IN_PROGRESS,
-      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
-      metadata: {
-        title: 'A Gift is on the Way!',
-        tokenName: 'MESHfair 2024 Halo',
-        tokenImage:
-          'https://peer.decentraland.org/lambdas/collections/contents/urn:decentraland:matic:collections-v2:0x2cbd78a88c8556ac22186b365c4260e8c7855df0:0/thumbnail',
-        description: 'You’ve received MESHfair 2024 Halo for free—try it out once it arrives!',
-        tokenRarity: 'epic'
       },
       timestamp: Date.now(),
       eventKey: '123'
