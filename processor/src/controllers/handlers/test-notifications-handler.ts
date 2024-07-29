@@ -57,6 +57,12 @@ export async function testNotificationPreviewHandler(
   }
 
   const email = await emailRenderer.renderEmail('email@example.com', adapt(notification))
+  if (!email) {
+    return {
+      status: 204
+    }
+  }
+
   const html = await emailRenderer.renderTemplate(email)
 
   return {

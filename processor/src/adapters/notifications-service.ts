@@ -52,8 +52,16 @@ export async function createNotificationsService(
               continue
             }
 
+            const email = await emailRenderer.renderEmail(subscription.email, notification)
+            if (!email) {
+              logger.info(
+                `Skipping sending email for ${notification.address} as there is no template for ${notification.type}`
+              )
+
+              continue
+            }
+
             try {
-              const email = await emailRenderer.renderEmail(subscription.email, notification)
               await sendGridClient.sendEmail(email, {
                 environment: env,
                 tracking_id: notification.id,
