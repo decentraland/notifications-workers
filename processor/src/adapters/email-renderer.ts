@@ -9,7 +9,7 @@ import { signUrl } from '@notifications/common/dist/signing'
 
 export type IEmailRenderer = {
   renderTemplate(email: Email): Promise<string>
-  renderEmail(emailAddress: string, notification: NotificationRecord): Promise<Email>
+  renderEmail(emailAddress: string, notification: NotificationRecord): Promise<Email | null>
 }
 
 enum TemplatePart {
@@ -70,7 +70,11 @@ export async function createEmailRenderer(components: Pick<AppComponents, 'confi
     return emailTemplate(email)
   }
 
-  async function renderEmail(emailAddress: string, notification: NotificationRecord): Promise<Email> {
+  async function renderEmail(emailAddress: string, notification: NotificationRecord): Promise<Email | null> {
+    if (!templates[notification.type]) {
+      return null
+    }
+
     const unsubscribeAllUrl = signUrl(
       signingKey,
       new URL(`/unsubscribe/${notification.address}`, serviceBaseUrl).toString()
