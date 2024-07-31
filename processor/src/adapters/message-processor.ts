@@ -1,4 +1,3 @@
-import { Event } from '@dcl/schemas'
 import { AppComponents, IMessageProcessor } from '../types'
 import { sleep } from '../logic/utils'
 import { NotificationRecord } from '@notifications/common'
@@ -18,7 +17,8 @@ export function createMessageProcessor({
 
   function parseMessageToNotification(message: string): NotificationRecord | undefined {
     try {
-      const parsedMessage = JSON.parse(JSON.parse(message).Message)
+      logger.info('Pulled message from queue', { message })
+      const parsedMessage = JSON.parse(message)
       return eventParser.parseToNotification(parsedMessage)
     } catch (error: any) {
       logger.error(`Failed while parsing message from queue: ${error?.message || 'Unexpected failure'}`)
@@ -40,6 +40,7 @@ export function createMessageProcessor({
 
       for (const message of messages) {
         const { Body, ReceiptHandle } = message
+        logger.info('Pulled message from queue', { message: Body! })
         const notification: NotificationRecord | undefined = parseMessageToNotification(Body!)
 
         if (!notification) {
