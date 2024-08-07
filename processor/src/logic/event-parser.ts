@@ -1,9 +1,13 @@
 import { NotificationRecord } from '@notifications/common'
 import { Event, Events, NotificationType } from '@dcl/schemas'
-import { IEventParser } from '../types'
+import { AppComponents, IEventParser } from '../types'
 
-export function createEventParser(): IEventParser {
+export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEventParser {
+  const logger = logs.getLogger('event-parse')
+
   function parseToNotification(event: Event): NotificationRecord | undefined {
+    logger.info(`Parse notification - type: ${event.type}, subtype: ${event.subType}, key: ${event.key}`)
+
     switch (event.subType) {
       case Events.SubType.Blockchain.ROYALTIES_EARNED:
         return {
@@ -61,7 +65,7 @@ export function createEventParser(): IEventParser {
             network: event.metadata.network
           }
         }
-      case Events.SubType.Blockchain.BID_RECEIVED:
+      case Events.SubType.Marketplace.BID_RECEIVED:
         return {
           type: NotificationType.BID_RECEIVED,
           address: event.metadata.address,
