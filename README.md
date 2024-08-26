@@ -204,11 +204,11 @@ sequenceDiagram
 > deactivated for the user.
 
 ### Prevent sending emails for certain type of notifications
-Currently, the service broadcasts notifications both via email and in-world inboxes. Whenever a new notification is added, the service attempts to deliver it through both channels. However, certain notifications should be broadcasted exclusively in-world to avoid cluttering users’ email inboxes.
+Currently, the service broadcasts notifications both via email and in-world/in-app inbox. Whenever a new notification is added, the service attempts to deliver it through both channels. However, certain notifications should be broadcast exclusively in-world to avoid cluttering users' email inboxes.
 
 The service will attempt to send email notifications if a corresponding template is available in the `processor/src/adapters/email-templates/` directory. To prevent a notification from being sent via email and only broadcast it in-world, simply avoid adding or remove the email template for that notification from this directory.
 
-Additionally, the service tests must be adjusted since they automatically check for a matching template for every notification type. For notifications intended to be broadcasted only in-world, it is needed to exclude them from the test suite located at `/processor/test/unit/adapters/email-renderer.spec.ts`, as has already been done for the `BADGE_GRANTED` notification type.
+Additionally, the service tests must be adjusted since they automatically check for a matching template for every notification type. For notifications intended to be broadcast only in-world, they must be excluded from `/common/src/types.ts` and the test suite located at `/processor/test/unit/adapters/email-renderer.spec.ts`, as has already been done for the `BADGE_GRANTED` notification type.
 
 # Run locally
 
