@@ -1,7 +1,7 @@
 import { createConfigComponent } from '@well-known-components/env-config-provider'
 import { NotificationType } from '@dcl/schemas'
 import { createEmailRenderer, IEmailRenderer } from '../../../src/adapters/email-renderer'
-import { NotificationRecord } from '@notifications/common'
+import { EmailableNotificationTypes, NotificationRecord } from '@notifications/common'
 
 describe('email rendering tests', () => {
   let config = createConfigComponent({
@@ -10,8 +10,6 @@ describe('email rendering tests', () => {
     ENV: 'test'
   })
   let renderer: IEmailRenderer
-
-  type EmailableNotificationTypes = Exclude<NotificationType, NotificationType.BADGE_GRANTED | NotificationType.REWARD_IN_PROGRESS | NotificationType.GOVERNANCE_CLIFF_ENDED | NotificationType.GOVERNANCE_WHALE_VOTE | NotificationType.GOVERNANCE_VOTED_ON_BEHALF>
 
   const notifications: Record<EmailableNotificationTypes, NotificationRecord> = {
     [NotificationType.BID_ACCEPTED]: {
@@ -378,6 +376,7 @@ describe('email rendering tests', () => {
   })
 
   const cases = Object.keys(notifications).map((type) => [type, notifications[type]])
+  console.log({ cases})
 
   test('Examples match the type of their keys', () => {
     Object.keys(notifications).forEach((type) => {
@@ -386,6 +385,7 @@ describe('email rendering tests', () => {
   })
 
   test.each(cases)(`rendering %s`, async (_type: NotificationType, notification: NotificationRecord) => {
+    console.log({ type: _type })
     expect(await renderer.renderEmail('email@example.com', notification)).toMatchSnapshot()
   })
 })
