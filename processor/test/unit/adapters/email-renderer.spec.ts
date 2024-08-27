@@ -376,7 +376,6 @@ describe('email rendering tests', () => {
   })
 
   const cases = Object.keys(notifications).map((type) => [type, notifications[type]])
-  console.log({ cases})
 
   test('Examples match the type of their keys', () => {
     Object.keys(notifications).forEach((type) => {
@@ -385,7 +384,6 @@ describe('email rendering tests', () => {
   })
 
   test.each(cases)(`rendering %s`, async (_type: NotificationType, notification: NotificationRecord) => {
-    console.log({ type: _type })
     expect(await renderer.renderEmail('email@example.com', notification)).toMatchSnapshot()
   })
 })
