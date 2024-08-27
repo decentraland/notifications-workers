@@ -1,7 +1,7 @@
 import { createConfigComponent } from '@well-known-components/env-config-provider'
 import { NotificationType } from '@dcl/schemas'
 import { createEmailRenderer, IEmailRenderer } from '../../../src/adapters/email-renderer'
-import { NotificationRecord } from '@notifications/common'
+import { EmailableNotificationTypes, NotificationRecord } from '@notifications/common'
 
 describe('email rendering tests', () => {
   let config = createConfigComponent({
@@ -10,8 +10,6 @@ describe('email rendering tests', () => {
     ENV: 'test'
   })
   let renderer: IEmailRenderer
-
-  type EmailableNotificationTypes = Exclude<NotificationType, NotificationType.BADGE_GRANTED | NotificationType.REWARD_IN_PROGRESS>
 
   const notifications: Record<EmailableNotificationTypes, NotificationRecord> = {
     [NotificationType.BID_ACCEPTED]: {

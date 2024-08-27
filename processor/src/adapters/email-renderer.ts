@@ -32,7 +32,7 @@ function loadTemplates() {
   handlebars.registerHelper('insert', (text: string, defaultText: string) => (text ? text : defaultText))
 
   return Object.values(EmailableNotificationTypeEnum).reduce(
-    (acc, notificationType) => {
+    (acc: any, notificationType: any) => {
       acc[notificationType] = {
         [TemplatePart.SUBJECT]: handlebars.compile(
           fs.readFileSync(
@@ -60,7 +60,7 @@ export async function createEmailRenderer(components: Pick<AppComponents, 'confi
     components.config.requireString('SERVICE_BASE_URL')
   ])
 
-  const templates = loadTemplates()
+  const templates: any = loadTemplates()
 
   const emailTemplate = handlebars.compile(
     fs.readFileSync(path.join(__dirname, 'email-templates/email-template.handlebars'), 'utf8')

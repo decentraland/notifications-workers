@@ -120,6 +120,19 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
             title: event.metadata.title
           }
         }
+      case Events.SubType.Badge.GRANTED:
+        return {
+          type: NotificationType.BADGE_GRANTED,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            badgeId: event.metadata.badgeId,
+            badgeTierId: event.metadata.badgeTierId,
+            badgeName: event.metadata.badgeName,
+            badgeImage: event.metadata.badgeImageUrl
+          }
+        }
       default:
         return undefined
     }
