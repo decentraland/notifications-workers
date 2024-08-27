@@ -2,7 +2,6 @@ import { NotificationRecord } from '@notifications/common'
 import { Event, Events, NotificationType } from '@dcl/schemas'
 import { AppComponents, IEventParser } from '../types'
 import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
-import { link } from 'joi'
 
 export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEventParser {
   const logger = logs.getLogger('event-parse')
