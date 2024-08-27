@@ -799,10 +799,10 @@
     "@well-known-components/interfaces" "^1.4.2"
     node-fetch "^2.7.0"
 
-"@dcl/schemas@^13.4.0":
-  version "13.4.0"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-13.4.0.tgz#bf6fe3caf71c77233006b10ed7b896f9e49e4403"
-  integrity sha512-4lxkTQisiT1+6mfHgfOGxM6wDain3+dGnTgCr6wfXUMgOKsF7sUY6FeneUvZpu9Xm4yKYAUnyggPVvkHd6OKWA==
+"@dcl/schemas@^13.8.1":
+  version "13.8.1"
+  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-13.8.1.tgz#4c1c4131c19dbd1e22d9ab21df7ab217748578fb"
+  integrity sha512-/GFeZq67qiZ1ky963atu5KCjNevwkHX3dmZEfrsMmPG7ELDRjDdSyXQ/VryG0lNIIFVkVZbocp/dpHR5x0tgzQ==
   dependencies:
     ajv "^8.11.0"
     ajv-errors "^3.0.0"
