@@ -2,6 +2,7 @@ import { NotificationRecord } from '@notifications/common'
 import { Event, Events, NotificationType } from '@dcl/schemas'
 import { AppComponents, IEventParser } from '../types'
 import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
+import { link } from 'joi'
 
 export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEventParser {
   const logger = logs.getLogger('event-parse')
@@ -148,7 +149,8 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
             tokenName: event.metadata.tokenName,
             tokenImage: event.metadata.tokenImage,
             tokenRarity: event.metadata.tokenRarity,
-            tokenCategory: event.metadata.tokenCategory
+            tokenCategory: event.metadata.tokenCategory,
+            link: event.metadata.link
           }
         }
       case Events.SubType.Rewards.CAMPAIGN_OUT_OF_FUNDS:
@@ -163,7 +165,8 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
             title: event.metadata.title,
             description: event.metadata.description,
             campaignId: event.metadata.campaignId,
-            campaignName: event.metadata.campaignName
+            campaignName: event.metadata.campaignName,
+            link: event.metadata.link
           }
         }
       default:
