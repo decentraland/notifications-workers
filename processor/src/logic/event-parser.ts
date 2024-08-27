@@ -1,6 +1,7 @@
 import { NotificationRecord } from '@notifications/common'
 import { Event, Events, NotificationType } from '@dcl/schemas'
 import { AppComponents, IEventParser } from '../types'
+import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
 
 export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEventParser {
   const logger = logs.getLogger('event-parse')
@@ -131,6 +132,38 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
             badgeTierId: event.metadata.badgeTierId,
             badgeName: event.metadata.badgeName,
             badgeImage: event.metadata.badgeImageUrl
+          }
+        }
+      case Events.SubType.Rewards.REWARD_ASSIGNED:
+      case Events.SubType.Rewards.REWARD_IN_PROGRESS:
+      case Events.SubType.Rewards.REWARD_DELAYED:
+        return {
+          type: rewardNotificationTypeByEventSubtype(event.subType),
+          address: event.metadata.beneficiary,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            title: event.metadata.title,
+            description: event.metadata.description,
+            tokenName: event.metadata.tokenName,
+            tokenImage: event.metadata.tokenImage,
+            tokenRarity: event.metadata.tokenRarity,
+            tokenCategory: event.metadata.tokenCategory
+          }
+        }
+      case Events.SubType.Rewards.CAMPAIGN_OUT_OF_FUNDS:
+      case Events.SubType.Rewards.CAMPAIGN_OUT_OF_STOCK:
+      case Events.SubType.Rewards.CAMPAIGN_GAS_PRICE_HIGHER_THAN_EXPECTED:
+        return {
+          type: rewardNotificationTypeByEventSubtype(event.subType),
+          address: event.metadata.owner,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            title: event.metadata.title,
+            description: event.metadata.description,
+            campaignId: event.metadata.campaignId,
+            campaignName: event.metadata.campaignName
           }
         }
       default:
