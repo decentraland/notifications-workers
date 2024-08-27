@@ -11,7 +11,7 @@ describe('email rendering tests', () => {
   })
   let renderer: IEmailRenderer
 
-  type EmailableNotificationTypes = Exclude<NotificationType, NotificationType.BADGE_GRANTED | NotificationType.REWARD_IN_PROGRESS>
+  type EmailableNotificationTypes = Exclude<NotificationType, NotificationType.BADGE_GRANTED | NotificationType.REWARD_IN_PROGRESS | NotificationType.GOVERNANCE_CLIFF_ENDED | NotificationType.GOVERNANCE_WHALE_VOTE | NotificationType.GOVERNANCE_VOTED_ON_BEHALF>
 
   const notifications: Record<EmailableNotificationTypes, NotificationRecord> = {
     [NotificationType.BID_ACCEPTED]: {

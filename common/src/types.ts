@@ -63,7 +63,12 @@ export type Email = {
 }
 
 type NotificationTypeUnion = keyof typeof NotificationType
-type ExcludedNotificationType = 'BADGE_GRANTED' | 'REWARD_IN_PROGRESS'
+type ExcludedNotificationType =
+  | 'BADGE_GRANTED'
+  | 'REWARD_IN_PROGRESS'
+  | 'GOVERNANCE_CLIFF_ENDED'
+  | 'GOVERNANCE_WHALE_VOTE'
+  | 'GOVERNANCE_VOTED_ON_BEHALF'
 type EmailableNotificationTypes = Exclude<NotificationTypeUnion, ExcludedNotificationType>
 
 const emailableNotificationTypeEntries = Object.entries(NotificationType)
