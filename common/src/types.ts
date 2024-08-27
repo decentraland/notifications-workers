@@ -66,10 +66,12 @@ type NotificationTypeUnion = keyof typeof NotificationType
 
 const excludedNotificationTypes = [
   NotificationType.BADGE_GRANTED,
-  NotificationType.REWARD_IN_PROGRESS,
   NotificationType.GOVERNANCE_CLIFF_ENDED,
   NotificationType.GOVERNANCE_WHALE_VOTE,
-  NotificationType.GOVERNANCE_VOTED_ON_BEHALF
+  NotificationType.GOVERNANCE_VOTED_ON_BEHALF,
+  NotificationType.REWARD_CAMPAIGN_GAS_PRICE_HIGHER_THAN_EXPECTED,
+  NotificationType.REWARD_DELAYED,
+  NotificationType.REWARD_IN_PROGRESS
 ].map((type) => type.toUpperCase())
 
 type ExcludedNotificationType = (typeof excludedNotificationTypes)[number]
