@@ -128,10 +128,12 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
           eventKey: event.key,
           timestamp: event.timestamp,
           metadata: {
-            badgeId: event.metadata.badgeId,
-            badgeTierId: event.metadata.badgeTierId,
-            badgeName: event.metadata.badgeName,
-            badgeImage: event.metadata.badgeImageUrl
+            id: event.metadata.badgeId,
+            title: 'New Badge Unlocked!',
+            description: event.metadata.badgeTierName
+              ? `${event.metadata.badgeName} ${event.metadata.badgeTierName}`
+              : event.metadata.badgeName,
+            image: event.metadata.badgeImageUrl
           }
         }
       case Events.SubType.Rewards.REWARD_ASSIGNED:
