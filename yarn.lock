@@ -799,10 +799,10 @@
     "@well-known-components/interfaces" "^1.4.2"
     node-fetch "^2.7.0"
 
-"@dcl/schemas@^13.8.2":
-  version "13.8.2"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-13.8.2.tgz#c4380558ee3783b132ceadcd9215e8b9daf171d3"
-  integrity sha512-fM1px8N//9iS+A7TNr5voQQBV2CxuQFSc35vTS6NWuUB2Ct2qxcXczKf/FPRvg57BU+8V0N+Iqv8JknRq7j5DA==
+"@dcl/schemas@^13.8.4":
+  version "13.8.4"
+  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-13.8.4.tgz#a824be8d65324ba4ffcaa077def55b9966a92ec8"
+  integrity sha512-hhHOpngLLcnsFN6Mvox+0x92beuXbuS9SDVTAl9zs6Jat9ZSd3hJBTBqVMEm6KEaPD2GwAUS3tZt4bN34T8Teg==
   dependencies:
     ajv "^8.11.0"
     ajv-errors "^3.0.0"
@@ -817,6 +817,15 @@
     ajv "^8.11.0"
     ajv-errors "^3.0.0"
     ajv-keywords "^5.1.0"
+
+"@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/fix/expose-address-BadgeGranted/dcl-schemas-13.8.5-10598075278.commit-3900d3b.tgz":
+  version "13.8.5-10598075278.commit-3900d3b"
+  resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/fix/expose-address-BadgeGranted/dcl-schemas-13.8.5-10598075278.commit-3900d3b.tgz#05499e0e70e0bd58e1f0dd94a447472991fb3596"
+  dependencies:
+    ajv "^8.11.0"
+    ajv-errors "^3.0.0"
+    ajv-keywords "^5.1.0"
+    mitt "^3.0.1"
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
