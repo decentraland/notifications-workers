@@ -18,7 +18,16 @@ describe('notifications handler unit test', () => {
       auth: 'user1',
       authMetadata: {}
     }
-    return notificationsHandler({ components, url, verification })
+    return notificationsHandler({
+      components,
+      url,
+      verification,
+      request: {
+        headers: {
+          get: jest.fn()
+        }
+      } as any
+    })
   }
 
   it('default values', async () => {
