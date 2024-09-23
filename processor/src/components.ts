@@ -95,6 +95,13 @@ export async function initComponents(): Promise<AppComponents> {
     l2CollectionsSubGraphUrl
   )
 
+  // This is a temporal fix until the subsquids are reindexed with the fixes
+  const onlySatsumaL2CollectionsSubGraphUrl = await config.getString('ONLY_SATSUMA_COLLECTIONS_L2_SUBGRAPH_URL')
+  const onlySatsumaL2CollectionsSubGraph = await createSubgraphComponent(
+    { config, logs, metrics, fetch },
+    onlySatsumaL2CollectionsSubGraphUrl || l2CollectionsSubGraphUrl
+  )
+
   const rentalsSubGraphUrl = await config.requireString('RENTALS_SUBGRAPH_URL')
   const rentalsSubGraph = await createSubgraphComponent({ config, logs, metrics, fetch }, rentalsSubGraphUrl)
 
@@ -109,7 +116,7 @@ export async function initComponents(): Promise<AppComponents> {
   producerRegistry.addProducer(
     await createProducer(
       { db, logs, notificationsService, workflowMigrationChecker },
-      await itemSoldProducer({ config, l2CollectionsSubGraph })
+      await itemSoldProducer({ config, l2CollectionsSubGraph: onlySatsumaL2CollectionsSubGraph })
     )
   )
   producerRegistry.addProducer(
