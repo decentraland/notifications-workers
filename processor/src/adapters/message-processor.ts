@@ -6,12 +6,8 @@ export function createMessageProcessor({
   logs,
   queueConsumer,
   notificationsService,
-  eventParser,
-  workflowMigrationChecker
-}: Pick<
-  AppComponents,
-  'logs' | 'queueConsumer' | 'notificationsService' | 'eventParser' | 'workflowMigrationChecker'
->): IMessageProcessor {
+  eventParser
+}: Pick<AppComponents, 'logs' | 'queueConsumer' | 'notificationsService' | 'eventParser'>): IMessageProcessor {
   const logger = logs.getLogger('messages-consumer')
   let isRunning = false
 
@@ -51,7 +47,6 @@ export function createMessageProcessor({
         try {
           await notificationsService.saveNotifications([notification])
           logger.info(`Created a new ${notification.type} notification.`)
-          workflowMigrationChecker.addRegistry(notification, 'event')
         } catch (error: any) {
           // TODO: handle retries and DLQ
           logger.error(`Failed while processing event notification: ${error?.message || 'Unexpected failure'}`)

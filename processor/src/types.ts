@@ -8,29 +8,22 @@ import {
 } from '@well-known-components/interfaces'
 import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
-import { ISubgraphComponent } from '@well-known-components/thegraph-component'
 import { NotificationType, Event } from '@dcl/schemas'
 import { Message } from '@aws-sdk/client-sqs'
 import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
-import { RegistryState } from './logic/workflow-migration-checker'
 
 export type AppComponents = {
   config: IConfigComponent
   db: DbComponent
   emailRenderer: IEmailRenderer
   fetch: IFetchComponent
-  l2CollectionsSubGraph: ISubgraphComponent
-  landManagerSubGraph: ISubgraphComponent
   logs: ILoggerComponent
-  marketplaceSubGraph: ISubgraphComponent
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
   notificationsService: INotificationsService
   pg: IPgComponent
-  producerRegistry: IProducerRegistry
-  rentalsSubGraph: ISubgraphComponent
   sendGridClient: ISendGridClient
   server: IHttpServerComponent<GlobalContext>
   statusChecks: IBaseComponent
@@ -38,7 +31,6 @@ export type AppComponents = {
   queueConsumer: IQueueConsumer
   eventParser: IEventParser
   messageProcessor: IMessageProcessor
-  workflowMigrationChecker: IWorkflowMigrationChecker
 }
 
 // this type simplifies the typings of http handlers
@@ -73,11 +65,6 @@ export type INotificationGenerator = {
   notificationType: NotificationType
 }
 
-export type IProducerRegistry = IBaseComponent & {
-  addProducer: (producer: INotificationProducer) => void
-  getProducer: (notificationType: string) => INotificationProducer
-}
-
 export type INotificationProducerResult = {
   notificationType: string
   records: NotificationRecord[]
@@ -96,9 +83,4 @@ export type IMessageProcessor = IBaseComponent
 
 export type IEventParser = {
   parseToNotification(event: Event): NotificationRecord | undefined
-}
-
-export type IWorkflowMigrationChecker = {
-  addRegistry(notification: NotificationRecord, from: 'producer' | 'event'): void
-  getRegistries(): Map<string, { when: number; state: RegistryState }>
 }

@@ -1951,13 +1951,6 @@
     sinon "^17.0.0"
     ts-jest "^29.1.0"
 
-"@well-known-components/thegraph-component@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@well-known-components/thegraph-component/-/thegraph-component-1.6.0.tgz#099466d0e8c21fcb34faa3351f33ab500b5cf928"
-  integrity sha512-LfBszhAnYRoLtLFkCDxjYIFFTk9mWL9wMPUSSnM0l/r0k/X3859DXXe2CrWIu3CeGpXdWI29YHE14EKvaBs3sw==
-  dependencies:
-    "@well-known-components/interfaces" "^1.4.2"
-
 acorn-jsx@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
