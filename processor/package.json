@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.606.0",
-    "@dcl/catalyst-contracts": "^4.4.1",
+    "@dcl/catalyst-contracts": "^4.4.2",
     "@dcl/platform-server-commons": "^0.0.4",
     "@dcl/schemas": "^13.9.0",
     "@notifications/common": "0.0.0",
