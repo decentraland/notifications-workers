@@ -1,5 +1,7 @@
 # Overview
 
+[![Coverage Status](https://coveralls.io/repos/github/decentraland/notifications-workers/badge.svg)](https://coveralls.io/github/decentraland/notifications-workers)
+
 The service is split in two separate workers for scalability and availability.
 
 - Processor worker: handles production of notifications and accepts externally produced notifications.
@@ -12,8 +14,9 @@ The workers share a database to store the notifications and the subscribed users
 ## Processor worker
 
 This worker has two main responsibilities:
-* Run the internal notification producers periodically to generate new notifications for events as they happen.
-* Receive, validate and accept requests from external notification producers and store the notifications in the DB.
+
+- Run the internal notification producers periodically to generate new notifications for events as they happen.
+- Receive, validate and accept requests from external notification producers and store the notifications in the DB.
 
 ## Inbox worker
 
@@ -24,6 +27,7 @@ The worker in charge or retrieving the notifications to the user
 Returns a stream of all the notifications
 
 **Endpoint**
+
 - `GET /notifications/events`
 - Authentication: signed fetch, the user id will be inferred from the auth chain.
 
@@ -50,13 +54,14 @@ sequenceDiagram
   Inbox->>User: stream notifications
 ```
 
-
 ## Get notifications
+
 - `GET /notifications?from=&size=&onlyUnread=true&limit=10`
 - Authentication: signed fetch, the user id will be inferred from the auth chain.
 
 Params:
-- `from`: the timestamp of the event triggered the notification to filter the results from (this means all retrieved notifications will have a timestamp >= 
+
+- `from`: the timestamp of the event triggered the notification to filter the results from (this means all retrieved notifications will have a timestamp >=
   from)
 - `limit`: the number of items retrieved in the query, default 20 and max 50
 - `onlyUnread`: if true, then only unread notifications will be retrieved. If false, notifications will not be filtered by the read status.
@@ -105,7 +110,7 @@ Return:
     "read": true,
     "created_at": "2023-12-05T21:02:02.754Z",
     "updated_at": "2023-12-06T10:27:06.046Z"
-   }
+  }
 ]
 ```
 
@@ -115,6 +120,7 @@ Return:
 - Authentication: signed fetch
 
 Response
+
 ```json
 {
   "updated": 2
@@ -158,6 +164,7 @@ Authorization: Bearer <API_KEY>
 # Email subscriptions
 
 ### Checking email subscription
+
 Check if a user is subscribed to email notifications is done via the regular `/GET subscriptions` endpoint.
 
 If the user is currently in the process of validating their email, the field `unconfirmedEmail` will contain the email that is still pending confirmation.
@@ -174,11 +181,13 @@ sequenceDiagram
 ```
 
 ### Setting up email subscription
+
 This email allows the client to set an email for the user to receive notifications.
 The email will be set into a pending state until the user confirms ownership of the email by clicking a link sent to the email.
 There are two endpoints involved:
-* `PUT /set-email` to start the process of setting an email
-* `PUT /confirm-email` (including the code and address) to confirm the email
+
+- `PUT /set-email` to start the process of setting an email
+- `PUT /confirm-email` (including the code and address) to confirm the email
 
 ```mermaid
 sequenceDiagram
@@ -200,21 +209,21 @@ sequenceDiagram
   deactivate Inbox
 ```
 
-> If the email sent in the `PUT /set-email` request is an empty string, the email will be removed from the subscription and email notifications will be 
+> If the email sent in the `PUT /set-email` request is an empty string, the email will be removed from the subscription and email notifications will be
 > deactivated for the user.
-
 
 # Run locally
 
 ### Prerequisites
 
-Please make sure to have a postgres DB running (locally, docker, any external provider).  You can quickly spin off a new Postgres instance using Docker using:
+Please make sure to have a postgres DB running (locally, docker, any external provider). You can quickly spin off a new Postgres instance using Docker using:
 
 ```
 yarn rundb:local
 ```
 
 ### Run the service
+
 Once the DB is up and running, set up the config in `.env`.
 
 Finally, start the servers.
@@ -223,4 +232,3 @@ Finally, start the servers.
 yarn
 yarn start:local
 ```
-
