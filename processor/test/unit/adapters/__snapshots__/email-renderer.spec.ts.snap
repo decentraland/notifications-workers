@@ -188,10 +188,23 @@ exports[`email rendering tests rendering item_sold 1`] = `
 exports[`email rendering tests rendering rental_ended 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/1249/manage",
-  "actionButtonText": "See My Assets",
-  "content": "<p>The rental period on your LAND 3,2 to 0x135b17eaa25e3e0f3ce8f0a575bcc8867031f77c has ended.</p>
-",
-  "subject": "Rental Period Ended",
+  "actionButtonText": "VIEW CONTRACT",
+  "bannerLabel": "Rental Period Ended",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/60113311-21a4-415a-bd7e-957cc68ff7ea/1200x480.png",
+  "content": "<p style="font-family: Inter, sans-serif; font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; text-decoration: underline;">
+  The rental period on your LAND
+  <span style="color: #FF2D55;">
+    3,2
+  </span>
+  to
+  <span style="color: #FF2D55;">
+    0x135b17eaa25e3e0f3ce8f0a575bcc8867031f77c
+  </span>
+  has ended.
+</p>",
+  "subject": "Rental Period Ended 🙌",
+  "title": "Hey there",
+  "titleHighligth": "Name",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/rental_ended?signature=21a703f932c6e5610468c1d2f2131fe14699976425529b407452769cab6b56ab",
@@ -201,10 +214,38 @@ exports[`email rendering tests rendering rental_ended 1`] = `
 exports[`email rendering tests rendering rental_started 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/marketplace/contracts/0x959e104e1a4db6317fa58f8295f586e1a978c297/tokens/5051/manage",
-  "actionButtonText": "See My Assets",
-  "content": "<p>Your LAND 1,2 has been rented to 0x951a6698f644a9b1c634abc416b9d9902aaf3db9 for 365 days.</p>
-",
-  "subject": "Your LAND Has Been Rented",
+  "actionButtonText": "VIEW CONTRACT",
+  "bannerLabel": "Land Rented",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/d77399af-a1bf-4803-b099-50fb33b5b54a/1200x480.png",
+  "content": "<table
+  style="width: 100%; max-width: 600px; margin: 40px auto 20px; border-spacing: 0; text-align: center;">
+  <tr>
+    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">Your
+      LAND</th>
+    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">has
+      been rented by
+    </th>
+    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">for the
+      price</th>
+  </tr>
+  <tr>
+    <td style="padding: 10px;"><img src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/e597fb31-4ec9-43dd-b549-16375ac3db9e/26x26.png" alt="Location Icon"
+        style="display: block; margin: 0 auto; width: 24px; height: 24px;" /></td>
+    <td style="padding: 10px;"><img src="https://via.placeholder.com/50" alt="User Avatar"
+        style="display: block; margin: 0 auto; width: 50px; height: 50px; border-radius: 50%;" /></td>
+    <td style="padding: 10px;"><img src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/d3fad3d4-34a0-43af-8660-359966d5d71c/33x32.png" alt="Price Icon"
+        style="display: block; margin: 0 auto; width: 24px; height: 24px;" /></td>
+  </tr>
+  <tr>
+    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">11,203</td>
+    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">0x951a6698f644a9b1c634abc416b9d9902aaf3db9</td>
+    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">10.5 <span
+        style="color: #716B7C;">($30.1)</span></td>
+  </tr>
+</table>",
+  "subject": "Your LAND Has Been Rented 💸",
+  "title": "Congratulations",
+  "titleHighligth": "Name",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/rental_started?signature=32ef3d8ee29b758d9822c2efc5d62873c015d414ab6740e01a92329725dc6114",
@@ -214,10 +255,21 @@ exports[`email rendering tests rendering rental_started 1`] = `
 exports[`email rendering tests rendering reward_assignment 1`] = `
 {
   "actionButtonLink": "",
-  "actionButtonText": "Check it Out",
-  "content": "<p>Congratulations! You've received MESHfair 2024 Halo for free!</p>
+  "actionButtonText": "VIEW IN YOUR BACKPACK",
+  "bannerLabel": "Land Rented",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/db19c6c0-b32f-45e6-9588-5da80ff78a4f/1200x480.png",
+  "content": "<p style="font-family: Inter, sans-serif; font-size: 16px; font-weight: 700; line-height: 24px; text-align: center;">
+  You've unlocked
+  <span style="color: #438FFF;">
+    MESHfair 2024 Halo
+  </span>
+</p>
+
+
 ",
-  "subject": "You've Received a Free Item!",
+  "subject": "Reward Received! 🏆",
+  "title": "Congratulations",
+  "titleHighligth": "Name",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/reward_assignment?signature=f0e7a9b4fbf803375b4148cd23f4a07fd84d89b37c91bd1df6b53b1d3d90da32",
