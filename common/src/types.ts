@@ -52,6 +52,10 @@ export type Email = {
   content: string
   actionButtonLink?: string
   actionButtonText?: string
+  title?: string
+  titleHighligth?: string
+  bannerUrl?: string
+  bannerLabel?: string
   unsubscribeAllUrl?: string
   unsubscribeOneUrl?: string
   attachments?: {
@@ -71,7 +75,8 @@ const excludedNotificationTypes = [
   NotificationType.GOVERNANCE_VOTED_ON_BEHALF,
   NotificationType.REWARD_CAMPAIGN_GAS_PRICE_HIGHER_THAN_EXPECTED,
   NotificationType.REWARD_DELAYED,
-  NotificationType.REWARD_IN_PROGRESS
+  NotificationType.REWARD_IN_PROGRESS,
+  NotificationType.ITEM_PUBLISHED
 ].map((type) => type.toUpperCase())
 
 type ExcludedNotificationType = (typeof excludedNotificationTypes)[number]
