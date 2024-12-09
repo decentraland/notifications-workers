@@ -1,3 +1,4 @@
+import { profileFromAdress } from '../logic/profiles'
 import { AppComponents } from '../types'
 import { NotificationRecord, SubscriptionDb } from '@notifications/common'
 
@@ -50,6 +51,13 @@ export async function createNotificationsService(
               )
 
               continue
+            }
+
+            const profile = await profileFromAdress(notification.address)
+            notification.metadata.userName = 'Unknown'
+
+            if (profile && profile.avatars && profile.avatars.length) {
+              notification.metadata.userName = profile.avatars[0].name
             }
 
             const email = await emailRenderer.renderEmail(subscription.email, notification)

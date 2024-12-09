@@ -50,6 +50,7 @@ export type Email = {
   to: string
   subject: string
   content: string
+  userName?: string
   actionButtonLink?: string
   actionButtonText?: string
   title?: string
