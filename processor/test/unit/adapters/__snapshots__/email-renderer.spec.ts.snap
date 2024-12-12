@@ -3,10 +3,31 @@
 exports[`email rendering tests rendering bid_accepted 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/marketplace/contracts/0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09/tokens/21",
-  "actionButtonText": "Check it Out",
-  "content": "<p>Your offer of 1.50 MANA was accepted for Netgate male.</p>
-",
-  "subject": "Your offer was accepted",
+  "actionButtonText": "CHECK IT OUT",
+  "bannerLabel": "Bid Accepted",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/90cd0572-c52d-4307-99cb-50c86c7ca6d5/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your bid was accepted for this item <span style="color: #FF2D55;">Netgate male</span>.
+</p>
+<table
+  style="width: 100%; max-width: 600px; margin: 40px auto 20px; border-spacing: 0; text-align: center;">
+  <tr>
+    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">Item</th>
+    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">Bid</th>
+  <tr>
+    <td style="padding: 10px;"><img src="https://peer.decentraland.org/lambdas/collections/contents/urn:decentraland:matic:collections-v2:0x557539e7792dc12a0555f5ff02d6ec0f0bc88e09:0/thumbnail" alt="Netgate male"
+        style="display: block; margin: 0 auto; width: 24px; height: 24px;" /></td>
+    <td style="padding: 10px;"><img src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/d3fad3d4-34a0-43af-8660-359966d5d71c/33x32.png" alt="Price Icon"
+        style="display: block; margin: 0 auto; width: 24px; height: 24px;" /></td>
+  </tr>
+  <tr>
+    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">Netgate male</td>
+    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">1.50</td>
+  </tr>
+</table>",
+  "subject": "Your Bid Has Been Accepted! 🥳",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/bid_accepted?signature=9ec6a41cd5d70f14ea3ce7f7bfc7278daa1de5627201aa5adeb7b60275e7197d",
@@ -16,10 +37,31 @@ exports[`email rendering tests rendering bid_accepted 1`] = `
 exports[`email rendering tests rendering bid_received 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/marketplace/account?assetType=nft&section=bids",
-  "actionButtonText": "Manage Your Bids",
-  "content": "<p>You've received an offer of 1.50 MANA for Space Jams.</p>
-",
-  "subject": "You've Received a Bid",
+  "actionButtonText": "RESPOND TO BID",
+  "bannerLabel": "Bid Received",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/fb3fd618-6b5b-4f34-9e6c-7354942dbc97/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  You've received a bid for your item <span style="color: #FF2D55;">Space Jams</span>.
+</p>
+<table
+  style="width: 100%; max-width: 600px; margin: 40px auto 20px; border-spacing: 0; text-align: center;">
+  <tr>
+    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">Item</th>
+    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">Bid</th>
+  <tr>
+    <td style="padding: 10px;"><img src="https://peer.decentraland.org/lambdas/collections/contents/urn:decentraland:matic:collections-v2:0xf6ed0f2eea302dbd77482bd4771645ee142ecf7c:1/thumbnail" alt="Space Jams"
+        style="display: block; margin: 0 auto; width: 24px; height: 24px;" /></td>
+    <td style="padding: 10px;"><img src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/d3fad3d4-34a0-43af-8660-359966d5d71c/33x32.png" alt="Price Icon"
+        style="display: block; margin: 0 auto; width: 24px; height: 24px;" /></td>
+  </tr>
+  <tr>
+    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">Space Jams</td>
+    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">1.50</td>
+  </tr>
+</table>",
+  "subject": "You‘ve Received a Bid! 💰",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/bid_received?signature=d5c3e6e4a1213edcbabd8293b60b109f4d583f896724af67f18d8e1ec0a39e2f",
@@ -29,10 +71,38 @@ exports[`email rendering tests rendering bid_received 1`] = `
 exports[`email rendering tests rendering events_started 1`] = `
 {
   "actionButtonLink": "https://play.decentraland.org/?position=14%2C100&realm=main",
-  "actionButtonText": "Jump In",
-  "content": "<p>The event <a href="https://play.decentraland.org/?position=14%2C100&realm=main">Live DJ Music and Dancing in the Unity Café</a> has begun!</p>
-",
-  "subject": "Jump In - Your Event Has Started!",
+  "actionButtonText": "JUMP IN",
+  "bannerLabel": "Event Started",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/1fe47ce6-57a7-4e11-8f73-5576b1ed35d5/1200x480.png",
+  "content": "<table style="width: 100%; max-width: 600px; margin: 0 auto; text-align: center;">
+  <tr>
+    <td>
+      <p
+        style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+        The event you’ve been waiting for has begun!
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img
+        src="https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png" 
+        alt="Event Image" 
+        style="width: 100%; max-width: 600px; border-radius: 12px;" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p
+        style="font-size: 20px; font-weight: 700; line-height: 32px; text-align: center; color: #FF7439;">
+        Live DJ Music and Dancing in the Unity Café
+      </p>
+    </td>
+  </tr>
+</table>",
+  "subject": "Jump In—Your Event Has Started! 🪩",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/events_started?signature=cd81b69793b500eed74735a88f2be42fa2bf419853b014165860c4304998feba",
@@ -45,8 +115,32 @@ exports[`email rendering tests rendering events_starts_soon 1`] = `
   "actionButtonText": "JUMP IN",
   "bannerLabel": "Event Starting Soon",
   "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c0ed81a5-34a7-463c-a0d9-8163861f7d72/1200x480.png",
-  "content": "<p>The event <a href="https://play.decentraland.org/?position=-99%2C35&realm=main">UNMONDAY YOURSELF</a> starts in an hour.</p>
-",
+  "content": "<table style="width: 100%; max-width: 600px; margin: 0 auto; text-align: center;">
+  <tr>
+    <td>
+      <p
+        style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+        The event you’ve been waiting for is about to begin!
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img
+        src="https://events-assets-099ac00.decentraland.org/poster/215052d46626a2a8.png" 
+        alt="Event Image" 
+        style="width: 100%; max-width: 600px; border-radius: 12px;" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p
+        style="font-size: 20px; font-weight: 700; line-height: 32px; text-align: center; color: #FF2D55;">
+        UNMONDAY YOURSELF
+      </p>
+    </td>
+  </tr>
+</table>",
   "subject": "Event Starting Soon! 🔔",
   "title": "Hey there",
   "titleHighligth": "",
@@ -75,10 +169,15 @@ exports[`email rendering tests rendering governance_announcement 1`] = `
 exports[`email rendering tests rendering governance_authored_proposal_finished 1`] = `
 {
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
-  "actionButtonText": "See the Results",
-  "content": "<p>The votes are in! Find out the outcome of the voting on your proposal Limit Grants Re-Submissions.</p>
-",
-  "subject": "Voting Has Ended on Your Proposal",
+  "actionButtonText": "VIEW PROPOSAL",
+  "bannerLabel": "Governance Your Proposal Ended",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c1df78c1-72e1-4f55-9896-655cb1afc0d3/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  The votes are in! Discover the outcome of your proposal <span style="color: #FF2D55;">Limit Grants Re-Submissions</span>.
+</p>",
+  "subject": "Your Proposal: Voting Results Are In! 🗳️",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_authored_proposal_finished?signature=f1ca8c3fd6f39383aa205367335ba70df4f017d676302557ef76b3c37c0eb8f4",
@@ -88,10 +187,15 @@ exports[`email rendering tests rendering governance_authored_proposal_finished 1
 exports[`email rendering tests rendering governance_coauthor_requested 1`] = `
 {
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=cacb1ce3-b5e9-4133-901a-cb787f43871f",
-  "actionButtonText": "Respond to the Request",
-  "content": "<p>You've been invited to collaborate as a co-author on the proposal DCL Community Video Library.</p>
-",
-  "subject": "You've Received a Request to Co-Author a Proposal",
+  "actionButtonText": "RESPOND TO REQUEST",
+  "bannerLabel": "Governance Co-Author Request",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/eddb0d62-4315-4bd2-9815-a13439dd20c6/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  You've been invited to collaborate as a co-author on a the proposal <span style="color: #FF2D55;">DCL Community Video Library</span>!
+</p>",
+  "subject": "Co-Author Request Received! 🤝",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_coauthor_requested?signature=ede0f5a009044402cfb42487e7c300f122b5047cb869f4ca4fca6ab4e715413b",
@@ -104,7 +208,7 @@ exports[`email rendering tests rendering governance_new_comment_on_project_updat
   "actionButtonText": "Read the Comment",
   "content": "<p>Someone's commented on your project update for Duel Arena P2E Continuum, Refinement &amp; Game Expansion [ Resubmission ].</p>
 ",
-  "subject": "There's a New Comment on Your Project Update",
+  "subject": "There‘s a New Comment on Your Project Update",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_new_comment_on_project_update?signature=e2199b81d0ba406972576521fca39817b82720c1221bbfd17427495e8b1b35e3",
@@ -114,10 +218,15 @@ exports[`email rendering tests rendering governance_new_comment_on_project_updat
 exports[`email rendering tests rendering governance_new_comment_on_proposal 1`] = `
 {
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd",
-  "actionButtonText": "Read the Comment",
-  "content": "<p>Someone's commented on your proposal Decentraland No-Code UI Design Studio.</p>
-",
-  "subject": "There's a New Comment on Your Proposal",
+  "actionButtonText": "VIEW COMMENT",
+  "bannerLabel": "Governance New comment on Proposal",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/486d5137-4b06-425e-b421-42c13cae355e/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  A new comment has been posted on the proposal <span style="color: #FF2D55;">Decentraland No-Code UI Design Studio</span>. Check it out and engage in productive discussion.
+</p>",
+  "subject": "New Comment on Proposal 🗨️",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_new_comment_on_proposal?signature=8aac2dc2f0e423b34fa237c2f780678db04317f546f846612c81f8b785ad1be2",
@@ -140,10 +249,15 @@ exports[`email rendering tests rendering governance_pitch_passed 1`] = `
 exports[`email rendering tests rendering governance_proposal_enacted 1`] = `
 {
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=578d3d3e-9fd2-48cb-bea3-ddc6fb5ab1dd",
-  "actionButtonText": "See Proposal",
-  "content": "<p>Congratulations! Your Proposal Decentraland No-Code UI Design Studio has been enacted!</p>
-",
-  "subject": "Your Proposal's Been Enacted!",
+  "actionButtonText": "VIEW CONTRACT",
+  "bannerLabel": "Governance Project is Funded",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c237e820-81d2-48ac-a1a8-130c54a34149/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your Project <span style="color: #FF2D55;">Decentraland No-Code UI Design Studio</span> has been successfully enacted and a funding Vesting Contract was created.
+</p>",
+  "subject": "Your Project is Funded! 🥳",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_proposal_enacted?signature=f3dfdad5828adce10d2dbd465c15a6abe00cce0bd743cd5672a206fb331101a2",
@@ -166,10 +280,15 @@ exports[`email rendering tests rendering governance_tender_passed 1`] = `
 exports[`email rendering tests rendering governance_voting_ended_voter 1`] = `
 {
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
-  "actionButtonText": "See the Results",
-  "content": "<p>Voting has ended on the proposal Limit Grants Re-Submissions, see the outcome of your vote!</p>
-",
-  "subject": "Voting Has Ended on a Proposal You Voted On",
+  "actionButtonText": "DISCOVER THE RESULTS",
+  "bannerLabel": "Governance Voting Ended",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/ac86aea0-cf5b-4f4c-91fc-9ea871f7aa90/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  You voted on the proposal, <span style="color: #FF2D55;">Limit Grants Re-Submissions</span>, and now the results are in! Check out the proposal to see the outcome.
+</p>",
+  "subject": "Voting Closed—Discover the Results! 👀",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_voting_ended_voter?signature=b990e4bad77532500c9cb86bdfd0ed47fc22e5f4dba9733be46ab2de4a896481",
@@ -179,10 +298,15 @@ exports[`email rendering tests rendering governance_voting_ended_voter 1`] = `
 exports[`email rendering tests rendering item_sold 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/marketplace/contracts/0xca520eea5aadff51b48d9e9b3038001a751139ca/tokens/180",
-  "actionButtonText": "Go to Wallet",
-  "content": "<p>Someone just bought your item HeartPrint Shoes. Congratulations!</p>
-",
-  "subject": "You've Sold an Item!",
+  "actionButtonText": "PENDING COPY",
+  "bannerLabel": "Item Sold",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/20807f53-13ac-4150-99d5-57091b75cbd2/1200x480.png",
+  "content": "<p style='font-size: 20px; font-weight: 700; line-height: 24px; color: #43404A; margin: 0;'>
+  You just sold <span style='color: #FF2D55;'>HeartPrint Shoes</span>!
+</p>",
+  "subject": "You’ve Sold an Item! 🥳",
+  "title": "Congratulations",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/item_sold?signature=9d39adb74e120e5abcfd5803e621ae2e80fc716d10f171f73bf011a3f6da8a02",
@@ -226,25 +350,13 @@ exports[`email rendering tests rendering rental_started 1`] = `
   <tr>
     <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">Your
       LAND</th>
-    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">has
-      been rented by
-    </th>
-    <th style="width: 33%; ;color: #43404A; font-size: 16px; font-weight: 700; line-height: 24px;">for the
-      price</th>
   </tr>
   <tr>
     <td style="padding: 10px;"><img src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/e597fb31-4ec9-43dd-b549-16375ac3db9e/26x26.png" alt="Location Icon"
         style="display: block; margin: 0 auto; width: 24px; height: 24px;" /></td>
-    <td style="padding: 10px;"><img src="https://via.placeholder.com/50" alt="User Avatar"
-        style="display: block; margin: 0 auto; width: 50px; height: 50px; border-radius: 50%;" /></td>
-    <td style="padding: 10px;"><img src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/d3fad3d4-34a0-43af-8660-359966d5d71c/33x32.png" alt="Price Icon"
-        style="display: block; margin: 0 auto; width: 24px; height: 24px;" /></td>
   </tr>
   <tr>
-    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">11,203</td>
-    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">0x951a6698f644a9b1c634abc416b9d9902aaf3db9</td>
-    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">10.5 <span
-        style="color: #716B7C;">($30.1)</span></td>
+    <td style="padding: 10px; font-size: 18px; font-weight: bold; color: #000;">1,2</td>
   </tr>
 </table>",
   "subject": "Your LAND Has Been Rented 💸",
@@ -283,10 +395,27 @@ exports[`email rendering tests rendering reward_assignment 1`] = `
 exports[`email rendering tests rendering royalties_earned 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/marketplace/contracts/0x08cbc78c1b2e2eea7627c39c8adf660d52e3d82c/tokens/945",
-  "actionButtonText": "Go to Wallet",
-  "content": "<p>Congratulations! You've earned 0.90 MANA in royalties on a secondary sale of your item Blue santa hat.</p>
-",
-  "subject": "You've Earned Some Royalties!",
+  "actionButtonText": "PENDING COPY",
+  "bannerLabel": "Royalties Earned",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/bb83b925-8920-43e7-9ede-c706b09d6962/1200x480.png",
+  "content": "<p style='font-size: 20px; font-weight: 700; line-height: 24px; color: #43404A; margin: 0;'>
+  You’ve earned
+  <span
+    style='display: inline-flex; align-items: center; padding: 5px 10px; background-color: #3a3745; color: #fff; border-radius: 20px; font-size: 14px; line-height: 1; vertical-align: middle;'
+  >
+    <img
+      src='http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/f04c0202-bbc4-4b5a-8e1c-f2a893f4d590/14x14.png'
+      alt='Polygon Mana'
+      style='height: 16px; width: 16px; margin-right: 5px;'
+    />
+    <span style='margin-right: 8px; font-weight: bold;'>0.90</span>
+  </span>
+  in the secondary sale of
+  <span style='color: #FF2D55;'>Blue santa hat</span>!
+</p>",
+  "subject": "You‘ve Earned Royalties! 💸",
+  "title": "Congratulations",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/royalties_earned?signature=959d803e1bb8bc4e45820c6e2b82184654968fffb6bae1f6380fbef04a96e0fe",
@@ -296,10 +425,15 @@ exports[`email rendering tests rendering royalties_earned 1`] = `
 exports[`email rendering tests rendering worlds_access_restored 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/builder/worlds?tab=dcl",
-  "actionButtonText": "Manage Worlds",
-  "content": "<p>Access to your Worlds has been restored.</p>
-",
-  "subject": "Access to Your Worlds Has Been Restored",
+  "actionButtonText": "MANAGE WORLDS",
+  "bannerLabel": "World access Restored",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c81be6d3-83e7-409c-a04d-e17f297dca61/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Congratulations! Access to your World(s) has been restored.
+</p>",
+  "subject": "World Access Restored 🥳",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_access_restored?signature=aeb5c56796a62bda50e2156422fa41c2560afd22268b5a90b9c34609fc6bc3e5",
@@ -309,11 +443,16 @@ exports[`email rendering tests rendering worlds_access_restored 1`] = `
 exports[`email rendering tests rendering worlds_access_restricted 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/builder/worlds?tab=dcl",
-  "actionButtonText": "Manage Worlds",
-  "content": "<p>Access to your Worlds has been restricted due to insufficient World Storage. To regain access, please decrease your
-    scene's size or get more storage. Learn more <a href="https://docs.decentraland.org/creator/worlds/about/#worlds-size-limit">here</a>.</p>
-",
-  "subject": "Access to Your Worlds Has Been Restricted",
+  "actionButtonText": "MANAGE WORLDS",
+  "bannerLabel": "World access Restricted",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/440a9fe8-9873-4582-8fec-26d9f9e62bff/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Access to your World(s) has been restricted due to insufficient World Storage. To regain access, please decrease your scene’s size or get more storage. Learn more
+  <a href="https://docs.decentraland.org/creator/worlds/about/#worlds-size-limit" style="color: #FF2D55; text-decoration-line: underline; text-decoration-style: solid;">here</a>.
+</p>",
+  "subject": "World Access Restricted 🚨",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_access_restricted?signature=5e65d8cf2afa3afbc02d9d175b8c5b139312dc80ec1d5e6a79c91662c9918cc8",
@@ -323,11 +462,16 @@ exports[`email rendering tests rendering worlds_access_restricted 1`] = `
 exports[`email rendering tests rendering worlds_missing_resources 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/builder/worlds?tab=dcl",
-  "actionButtonText": "Manage Worlds",
-  "content": "<p>Your Worlds have scenes deployed that are larger than your available World Storage. Please rectify this within 48hrs to avoid being restricted access to your Worlds. You can either decrease your scene's size or get more storage.
-    Learn more <a href="https://docs.decentraland.org/creator/worlds/about/#worlds-size-limit">here</a>.</p>
-",
-  "subject": "[Action Needed] Insufficient World Storage",
+  "actionButtonText": "MANAGE WORLDS",
+  "bannerLabel": "World at risk",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/75dc7a55-c7dd-4a4c-b204-8368e7090848/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  A World of yours has a scene deployed that is larger than your available World Storage. Please rectify this within 24hrs to avoid having your World access restricted. You can either decrease your scene’s size or get more storage. Learn more 
+  <a href="https://docs.decentraland.org/creator/worlds/about/#worlds-size-limit" style="color: #FF2D55; text-decoration-line: underline; text-decoration-style: solid;">here</a>.
+</p>",
+  "subject": "🚨 [Action Needed] Insufficient World Storage",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_missing_resources?signature=d65886c8b10069f5d1355a2b05199b2059b7e0a48049a1d6531fcbb9d3398eb6",
@@ -337,10 +481,15 @@ exports[`email rendering tests rendering worlds_missing_resources 1`] = `
 exports[`email rendering tests rendering worlds_permission_granted 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/builder/worlds?tab=dcl",
-  "actionButtonText": "Manage Worlds",
-  "content": "<p>You've been granted the following World permission(s) to the World el.dcl.eth: access.</p>
-",
-  "subject": "You've Been Granted New World Permissions",
+  "actionButtonText": "MANAGE WORLDS",
+  "bannerLabel": "World Permissions Granted",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/e7520d32-cd46-4256-b24b-8169fe9eee3f/600x240.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Congratulations! Permissions to your World(s) has been granted.
+</p>",
+  "subject": "World Permissions Granted 🥳",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_permission_granted?signature=807e16ba5e0d7d196158bcc4e02d49d8f26ee6cd4d6b321e0be3b6bfe096799d",
@@ -350,10 +499,16 @@ exports[`email rendering tests rendering worlds_permission_granted 1`] = `
 exports[`email rendering tests rendering worlds_permission_revoked 1`] = `
 {
   "actionButtonLink": "https://decentraland.org/builder/worlds?tab=dcl",
-  "actionButtonText": "Manage Worlds",
-  "content": "<p>You no longer have the following permission(s) to the World el.dcl.eth: streaming.</p>
-",
-  "subject": "You've Had World Permissions Revoked",
+  "actionButtonText": "MANAGE WORLDS",
+  "bannerLabel": "World permission revoked",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/f3836bd1-9285-4491-90c5-123fe595cb83/600x240.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Access to your World(s) has been restricted due to insufficient World Storage. To regain access, please decrease your scene’s size or get more storage. Learn more
+  <a href="https://docs.decentraland.org/creator/worlds/about/#worlds-size-limit" style="color: #FF2D55; text-decoration-line: underline; text-decoration-style: solid;">here</a>.
+</p>",
+  "subject": "World Access Revoked 🛑",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/worlds_permission_revoked?signature=11ecba1cbdb390cf8ea1cd5e13d746d8c7a1f918a2c3e5d641a03b6269176ba6",
