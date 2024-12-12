@@ -33,7 +33,10 @@ test('POST /notifications', function ({ components, stubComponents }) {
       metadata: {
         url: 'https://decentraland.org/builder/worlds?tab=dcl',
         title: 'Worlds available',
-        description: 'Access to your Worlds has been restored.'
+        description: 'Access to your Worlds has been restored.',
+        world: 'el.dcl.eth',
+        permissions: ['streaming'],
+        userName: 'Unknown'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -57,11 +60,18 @@ test('POST /notifications', function ({ components, stubComponents }) {
 
     const renderedEmail = {
       to: email,
-      subject: 'Access to Your Worlds Has Been Restored',
-      content: '<p>Access to your Worlds has been restored.</p>\n',
-      actionButtonText: 'Manage Worlds',
-      actionButtonLink: 'https://decentraland.org/builder/worlds?tab=dcl'
+      subject: 'World Access Restored 🥳',
+      content:
+        '<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">\nCongratulations! Access to your World(s) has been restored.\n</p>',
+      actionButtonText: 'MANAGE WORLDS',
+      actionButtonLink: 'https://decentraland.org/builder/worlds?tab=dcl',
+      title: 'Hey there',
+      titleHighligth: 'Unknown',
+      bannerUrl:
+        'http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c81be6d3-83e7-409c-a04d-e17f297dca61/1200x480.png',
+      bannerLabel: 'World access Restored'
     }
+
     stubComponents.emailRenderer.renderEmail.withArgs(email, sinon.match(notification)).resolves(renderedEmail)
     stubComponents.sendGridClient.sendEmail.withArgs(renderedEmail).resolves()
 
