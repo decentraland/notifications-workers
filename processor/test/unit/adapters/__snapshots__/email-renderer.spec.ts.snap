@@ -152,14 +152,17 @@ exports[`email rendering tests rendering events_starts_soon 1`] = `
 
 exports[`email rendering tests rendering governance_announcement 1`] = `
 {
-  "content": "<p style="font-weight: 600; font-size: 14px; margin-bottom: 0;">Some title</p>
-<p style="display: inline; color: #a09ba8; margin: 4px 0; gap: 5px; flex-wrap: wrap; align-items: center;">
-    <a href="https://governance.decentraland.org/some-link">
-        Some content
-    </a>
+  "actionButtonLink": "https://governance.decentraland.org/some-link",
+  "actionButtonText": "CATCH UP",
+  "bannerLabel": "Governance Announcement",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c1df78c1-72e1-4f55-9896-655cb1afc0d3/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  DCL DAO have an special announcement for you <span style="color: #FF2D55;">Some content</span>.
 </p>
 ",
-  "subject": "A DAO Announcement Has Been Released",
+  "subject": "A DAO Announcement Has Been Released! 🗳️",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/null?signature=42ad30f79fb01e2c2ae57f84f34ab8b6bff2b70bc7a9e900e021f0b1fa22e7a8",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/null/governance_announcement?signature=033e9737a5b20c9af782facf62c1e65d637469f20331172456337a0a9bbe492d",
@@ -205,10 +208,16 @@ exports[`email rendering tests rendering governance_coauthor_requested 1`] = `
 exports[`email rendering tests rendering governance_new_comment_on_project_update 1`] = `
 {
   "actionButtonLink": "https://governance.decentraland.org/update/?id=a38ec7d7-7eb2-4f9a-b9c8-363785fdcbd6&proposalId=1b8eef75-add3-49d6-9181-3061daaf22ec",
-  "actionButtonText": "Read the Comment",
-  "content": "<p>Someone's commented on your project update for Duel Arena P2E Continuum, Refinement &amp; Game Expansion [ Resubmission ].</p>
+  "actionButtonText": "READ THE COMMENT",
+  "bannerLabel": "Governance New comment on Project",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/486d5137-4b06-425e-b421-42c13cae355e/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Someone's commented on your project update for <span style="color: #FF2D55;">Duel Arena P2E Continuum, Refinement &amp; Game Expansion [ Resubmission ]</span>.
+</p>
 ",
-  "subject": "There‘s a New Comment on Your Project Update",
+  "subject": "There‘s a New Comment on Your Project Update 🗨️",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_new_comment_on_project_update?signature=e2199b81d0ba406972576521fca39817b82720c1221bbfd17427495e8b1b35e3",
@@ -236,10 +245,16 @@ exports[`email rendering tests rendering governance_new_comment_on_proposal 1`] 
 exports[`email rendering tests rendering governance_pitch_passed 1`] = `
 {
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
-  "actionButtonText": "See the Pitch",
-  "content": "<p>The pitch Limit Grants Re-Submissions has passed and can now receive tenders. Help advance this idea by proposing potential solutions.</p>
+  "actionButtonText": "SEE THE PITCH",
+  "bannerLabel": "Governance Pitch Passed",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c1df78c1-72e1-4f55-9896-655cb1afc0d3/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  The pitch <span style="color: #FF2D55;">Limit Grants Re-Submissions</span> has passed and can now receive tenders. Help advance this idea by proposing potential solutions.
+</p>
 ",
-  "subject": "A Pitch You Voted on Has Passed",
+  "subject": "A Pitch You Voted on Has Passed! 🗳️",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_pitch_passed?signature=f62cdb39ed30d32ffcf6304ca423bbef4a15f72d2e75066f8013ef9d639cfe39",
@@ -267,10 +282,16 @@ exports[`email rendering tests rendering governance_proposal_enacted 1`] = `
 exports[`email rendering tests rendering governance_tender_passed 1`] = `
 {
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
-  "actionButtonText": "See the Tender",
-  "content": "<p>The tender you voted on Limit Grants Re-Submissions has passed and can now receive bids. If you think you can tackle this solution, make a bid and propose a project!</p>
+  "actionButtonText": "SEE THE TENDER",
+  "bannerLabel": "Governance Tender Passed",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c1df78c1-72e1-4f55-9896-655cb1afc0d3/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  The tender you voted on <span style="color: #FF2D55;">Limit Grants Re-Submissions</span> has passed and can now receive bids. If you think you can tackle this solution, make a bid and propose a project!
+</p>
 ",
-  "subject": "A Tender You Voted on Has Passed",
+  "subject": "A Tender You Voted on Has Passed! 🗳️",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/governance_tender_passed?signature=55f54b9574722ae7e44aa32dab3c1c941dd5ebe6684f0dae6f963419ac1afd58",
@@ -389,6 +410,44 @@ exports[`email rendering tests rendering reward_assignment 1`] = `
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/reward_assignment?signature=f0e7a9b4fbf803375b4148cd23f4a07fd84d89b37c91bd1df6b53b1d3d90da32",
+}
+`;
+
+exports[`email rendering tests rendering reward_campaign_out_of_funds 1`] = `
+{
+  "actionButtonLink": "https://decentraland.org/rewards/campaign/aksdjlaskjdakl",
+  "actionButtonText": "ADD FUNDS",
+  "bannerLabel": "Campaign out of founds",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c1df78c1-72e1-4f55-9896-655cb1afc0d3/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your campaign "<span style="color: #FF2D55;">Name of the campaign</span>" has run out of funds. Please add more to continue with the minting process.
+</p>
+",
+  "subject": "Your campaign has run out of funds 👀",
+  "title": "Hey there",
+  "titleHighligth": "",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/reward_campaign_out_of_funds?signature=7a1e57984190914db8f28a1c6bd41fb86364ccbdf0f66704d4b1b9513771da1a",
+}
+`;
+
+exports[`email rendering tests rendering reward_campaign_out_of_stock 1`] = `
+{
+  "actionButtonLink": "https://decentraland.org/rewards/campaign/aksdjlaskjdakl",
+  "actionButtonText": "ADD STOCK",
+  "bannerLabel": "Campaign out of stock",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c1df78c1-72e1-4f55-9896-655cb1afc0d3/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your campaign "<span style="color: #FF2D55;">Name of the campaign</span>" has run out of stock.
+</p>
+",
+  "subject": "Your campaign has run out of stock 👀",
+  "title": "Hey there",
+  "titleHighligth": "",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/reward_campaign_out_of_stock?signature=cd8f3f714a6f0a55e8e8dd532e06cabd73ab7c3224733efa186315d78242a318",
 }
 `;
 

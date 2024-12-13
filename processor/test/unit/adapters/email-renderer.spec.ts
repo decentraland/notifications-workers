@@ -283,6 +283,36 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
+    [NotificationType.REWARD_CAMPAIGN_OUT_OF_FUNDS]: {
+      id: '123456789',
+      type: NotificationType.REWARD_CAMPAIGN_OUT_OF_FUNDS,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Campaign title',
+        description: 'Campaign description',
+        link: 'https://decentraland.org/rewards/campaign/aksdjlaskjdakl',
+        owner: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        campaignId: 'string',
+        campaignName: 'Name of the campaign'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.REWARD_CAMPAIGN_OUT_OF_STOCK]: {
+      id: '123456789',
+      type: NotificationType.REWARD_CAMPAIGN_OUT_OF_STOCK,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Campaign title',
+        description: 'Campaign description',
+        link: 'https://decentraland.org/rewards/campaign/aksdjlaskjdakl',
+        owner: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        campaignId: 'string',
+        campaignName: 'Name of the campaign'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.ROYALTIES_EARNED]: {
       id: '123456789',
       type: NotificationType.ROYALTIES_EARNED,
