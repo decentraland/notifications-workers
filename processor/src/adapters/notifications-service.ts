@@ -1,4 +1,3 @@
-import { profileFromAdress } from '../logic/profiles'
 import { AppComponents } from '../types'
 import { NotificationRecord, SubscriptionDb } from '@notifications/common'
 
@@ -7,9 +6,12 @@ export type INotificationsService = {
 }
 
 export async function createNotificationsService(
-  components: Pick<AppComponents, 'config' | 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService'>
+  components: Pick<
+    AppComponents,
+    'config' | 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService' | 'profiles'
+  >
 ): Promise<INotificationsService> {
-  const { db, emailRenderer, logs, sendGridClient, subscriptionService, config } = components
+  const { db, emailRenderer, logs, sendGridClient, subscriptionService, config, profiles } = components
   const logger = logs.getLogger('notifications-service')
   const env = await config.requireString('ENV')
 
@@ -53,7 +55,7 @@ export async function createNotificationsService(
               continue
             }
 
-            const profile = await profileFromAdress(notification.address)
+            const profile = await profiles.getByAddress(notification.address)
             notification.metadata.userName = 'Unknown'
 
             if (profile && profile.avatars && profile.avatars.length) {

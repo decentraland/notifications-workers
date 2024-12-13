@@ -14,6 +14,7 @@ import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
+import { Profile } from 'dcl-catalyst-client/dist/client/specs/lambdas-client'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -31,6 +32,7 @@ export type AppComponents = {
   queueConsumer: IQueueConsumer
   eventParser: IEventParser
   messageProcessor: IMessageProcessor
+  profiles: ProfilesComponent
 }
 
 // this type simplifies the typings of http handlers
@@ -83,4 +85,8 @@ export type IMessageProcessor = IBaseComponent
 
 export type IEventParser = {
   parseToNotification(event: Event): NotificationRecord | undefined
+}
+
+export type ProfilesComponent = {
+  getByAddress(address: string): Promise<Profile | null>
 }

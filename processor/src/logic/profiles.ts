@@ -1,13 +1,18 @@
-import { createCatalystClient } from 'dcl-catalyst-client'
-import { createFetchComponent } from '@well-known-components/fetch-component'
+import { createLambdasClient } from 'dcl-catalyst-client'
+import { AppComponents, ProfilesComponent } from '../types'
+import { Profile } from 'dcl-catalyst-client/dist/client/specs/lambdas-client'
 
 const CATALYST_URL = 'https://peer.decentraland.org'
 
-export async function profileFromAdress(address: string) {
-  const fetcher = createFetchComponent()
-  const client = createCatalystClient({ url: CATALYST_URL, fetcher })
-  const lambdasClient = await client.getLambdasClient()
-  const profiles = await lambdasClient.getAvatarsDetailsByPost({ ids: [address] })
+export function createProfilesComponent({ fetch }: Pick<AppComponents, 'fetch'>): ProfilesComponent {
+  const lambdasClient = createLambdasClient({ url: CATALYST_URL, fetcher: fetch })
 
-  return profiles.length > 0 ? profiles[0] : null
+  async function getByAddress(address: string): Promise<Profile | null> {
+    const profiles = await lambdasClient.getAvatarsDetailsByPost({ ids: [address] })
+    return profiles.length > 0 ? profiles[0] : null
+  }
+
+  return {
+    getByAddress
+  }
 }

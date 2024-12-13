@@ -74,6 +74,9 @@ test('POST /notifications', function ({ components, stubComponents }) {
 
     stubComponents.emailRenderer.renderEmail.withArgs(email, sinon.match(notification)).resolves(renderedEmail)
     stubComponents.sendGridClient.sendEmail.withArgs(renderedEmail).resolves()
+    stubComponents.profiles.getByAddress.withArgs(identity.realAccount.address).resolves({ 
+      avatars: [{ name: 'Unknown' }]
+     })
 
     const response = await localFetch.fetch('/notifications', {
       method: 'POST',

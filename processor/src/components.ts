@@ -18,6 +18,7 @@ import { createNotificationsService } from './adapters/notifications-service'
 import { createQueueConsumer } from './adapters/queue-consumer'
 import { createEventParser } from './logic/event-parser'
 import { createMessageProcessor } from './adapters/message-processor'
+import { createProfilesComponent } from './logic/profiles'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -68,13 +69,16 @@ export async function initComponents(): Promise<AppComponents> {
   const emailRenderer = await createEmailRenderer({ config })
   const sendGridClient = await createSendGrid({ config, fetch, logs })
 
+  const profiles = createProfilesComponent({ fetch })
+
   const notificationsService = await createNotificationsService({
     config,
     db,
     emailRenderer,
     logs,
     subscriptionService,
-    sendGridClient
+    sendGridClient,
+    profiles
   })
 
   const queueConsumer = await createQueueConsumer({ config })
@@ -102,6 +106,7 @@ export async function initComponents(): Promise<AppComponents> {
     subscriptionService,
     queueConsumer,
     eventParser,
-    messageProcessor
+    messageProcessor,
+    profiles
   }
 }
