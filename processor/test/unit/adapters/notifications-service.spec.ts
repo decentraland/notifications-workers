@@ -30,13 +30,15 @@ describe('notifications service tests', () => {
     emailRenderer = await createEmailRenderer({ config })
     const subscriptionService = await createSubscriptionsService({ db, logs })
 
+
     notificationsService = await createNotificationsService({
       config,
       db,
       emailRenderer,
       logs,
       sendGridClient,
-      subscriptionService
+      subscriptionService,
+      profiles: {} as any // TODO: Mock properly
     })
   })
 
