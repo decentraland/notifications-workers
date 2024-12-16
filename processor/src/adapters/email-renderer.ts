@@ -55,9 +55,10 @@ function loadTemplates() {
 }
 
 export async function createEmailRenderer(components: Pick<AppComponents, 'config'>): Promise<IEmailRenderer> {
-  const [signingKey, serviceBaseUrl] = await Promise.all([
+  const [signingKey, serviceBaseUrl, accountLink] = await Promise.all([
     components.config.requireString('SIGNING_KEY'),
-    components.config.requireString('SERVICE_BASE_URL')
+    components.config.requireString('SERVICE_BASE_URL'),
+    components.config.requireString('ACCOUNT_BASE_URL')
   ])
 
   const templates: any = loadTemplates()
@@ -74,7 +75,6 @@ export async function createEmailRenderer(components: Pick<AppComponents, 'confi
     if (!templates[notification.type]) {
       return null
     }
-
     const unsubscribeAllUrl = signUrl(
       signingKey,
       new URL(`/unsubscribe/${notification.address}`, serviceBaseUrl).toString()
@@ -89,7 +89,8 @@ export async function createEmailRenderer(components: Pick<AppComponents, 'confi
       content: templates[notification.type][TemplatePart.CONTENT](notification),
       ...JSON.parse(templates[notification.type][TemplatePart.SUBJECT](notification)),
       unsubscribeAllUrl,
-      unsubscribeOneUrl
+      unsubscribeOneUrl,
+      accountLink
     }
   }
 

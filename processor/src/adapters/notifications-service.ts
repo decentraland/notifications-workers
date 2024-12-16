@@ -54,14 +54,17 @@ export async function createNotificationsService(
 
               continue
             }
-
-            const profile = await profiles.getByAddress(notification.address)
             notification.metadata.userName = 'Unknown'
 
-            if (profile && profile.avatars && profile.avatars.length) {
-              notification.metadata.userName = profile.avatars[0].name
-            }
+            try {
+              const profile = await profiles.getByAddress(notification.address)
 
+              if (profile && profile.avatars && profile.avatars.length) {
+                notification.metadata.userName = profile.avatars[0].name
+              }
+            } catch (error) {
+              logger.warn(`Error getting profile ${error}`)
+            }
             const email = await emailRenderer.renderEmail(subscription.email, notification)
             if (!email) {
               logger.info(
@@ -88,7 +91,7 @@ export async function createNotificationsService(
             }
           }
         } catch (error: any) {
-          logger.warn(`Failed to send emails: ${error.metadata}`)
+          logger.warn(`Failed to send emails: ${error}`)
         }
       })
     }
