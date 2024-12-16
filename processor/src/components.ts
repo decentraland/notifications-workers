@@ -13,12 +13,11 @@ import path from 'path'
 import { createFetchComponent } from '@dcl/platform-server-commons'
 import { createEmailRenderer } from './adapters/email-renderer'
 import { createSubscriptionsService } from './adapters/subscriptions-service'
-import { createDbComponent, createSendGrid } from '@notifications/common'
+import { createDbComponent, createSendGrid, createProfilesComponent } from '@notifications/common'
 import { createNotificationsService } from './adapters/notifications-service'
 import { createQueueConsumer } from './adapters/queue-consumer'
 import { createEventParser } from './logic/event-parser'
 import { createMessageProcessor } from './adapters/message-processor'
-import { createProfilesComponent } from './logic/profiles'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {

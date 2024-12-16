@@ -11,7 +11,12 @@ import {
 
 import { AppComponents, GlobalContext } from './types'
 import { metricDeclarations } from './metrics'
-import { createDataWarehouseClient, createDbComponent, createSendGrid } from '@notifications/common'
+import {
+  createDataWarehouseClient,
+  createDbComponent,
+  createSendGrid,
+  createProfilesComponent
+} from '@notifications/common'
 import { createEmailRenderer } from './adapters/email-renderer'
 import { createPageRenderer } from './adapters/page-renderer'
 
@@ -45,6 +50,8 @@ export async function initComponents(): Promise<AppComponents> {
   const dataWarehouseClient = await createDataWarehouseClient({ config, fetch, logs })
   const sendGridClient = await createSendGrid({ config, fetch, logs })
 
+  const profiles = createProfilesComponent({ fetch })
+
   return {
     config,
     db,
@@ -55,6 +62,7 @@ export async function initComponents(): Promise<AppComponents> {
     metrics,
     pageRenderer,
     pg,
+    profiles,
     sendGridClient,
     server,
     statusChecks
