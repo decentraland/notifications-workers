@@ -5,7 +5,7 @@ exports[`email rendering tests rendering validate-email 1`] = `
   "accountUrl": "",
   "bannerLabel": "Subscription Confirmation",
   "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/12244cde-2c01-422b-8d61-b3c09e7d8d71/600x240.png",
-  "content": "<p>You're receiving this email because you signed up for Decentraland email notifications.</p>
+  "content": "<p>You're receiving this email because you signed up for email notifications from Decentraland.</p>
 <p>You'll be able to customize exactly what kind of notifications you'd like to receive (e.g., Marketplace, DAO, Events,
   etc.), but you must first confirm your email.</p>
 
@@ -19,7 +19,7 @@ exports[`email rendering tests rendering validate-email 1`] = `
 <p>Or you can copy and paste this URL into the browser:
   <a href='https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG' style='font-size: 13px;'>https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG</a>
 </p>",
-  "subject": "[Action Needed] Confirm Email 📩",
+  "subject": "[Action Needed] Confirm Your Email 📩",
   "title": "Hey there",
   "titleHighligth": "",
   "to": "email@example.com",

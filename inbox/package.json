@@ -8,7 +8,8 @@
     "start": "node --trace-warnings --abort-on-uncaught-exception --unhandled-rejections=strict dist/index.js",
     "test": "jest --forceExit --detectOpenHandles --coverage --verbose",
     "lint:check": "npx eslint . --ext .ts",
-    "lint:fix": "npx eslint . --ext .ts --fix"
+    "lint:fix": "npx eslint . --ext .ts --fix",
+    "update:snapshots": "jest --updateSnapshot"
   },
   "license": "Apache-2.0",
   "devDependencies": {
