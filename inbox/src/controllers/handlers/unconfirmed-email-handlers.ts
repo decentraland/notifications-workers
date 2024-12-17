@@ -10,12 +10,15 @@ const CODE_LENGTH = 32
 
 export async function storeUnconfirmedEmailHandler(
   context: Pick<
-    HandlerContextWithPath<'config' | 'dataWarehouseClient' | 'db' | 'emailRenderer' | 'sendGridClient', '/set-email'>,
+    HandlerContextWithPath<
+      'config' | 'dataWarehouseClient' | 'db' | 'emailRenderer' | 'sendGridClient' | 'profiles' | 'logs',
+      '/set-email'
+    >,
     'url' | 'request' | 'components' | 'verification'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { config, dataWarehouseClient, db, emailRenderer, sendGridClient } = context.components
-
+  const { config, dataWarehouseClient, db, emailRenderer, sendGridClient, profiles, logs } = context.components
+  const logger = logs.getLogger('unconfirmed-email-handler')
   const address = context.verification!.auth
   const env = await config.requireString('ENV')
 
@@ -37,10 +40,25 @@ export async function storeUnconfirmedEmailHandler(
     const accountBaseUrl = await config.requireString('ACCOUNT_BASE_URL')
     const code = makeId(CODE_LENGTH)
     await db.saveUnconfirmedEmail(address, body.email, code)
+
+    let userName
+
+    try {
+      const profile = await profiles.getByAddress(address)
+
+      if (profile && profile.avatars && profile.avatars.length) {
+        userName = profile.avatars[0].name
+      }
+    } catch (error) {
+      logger.warn(`Error getting profile ${error}`)
+    }
+
     const email: Sendable = {
       ...(await emailRenderer.renderEmail(InboxTemplates.VALIDATE_EMAIL, body.email, {
         validateButtonLink: `${accountBaseUrl}/confirm-email/${code}`,
-        validateButtonText: 'Click Here to Confirm Your Email'
+        validateButtonText: 'Click Here to Confirm Your Email',
+        userName,
+        accountBaseUrl
       }))
     }
     await sendGridClient.sendEmail(email, {

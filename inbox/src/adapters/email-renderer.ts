@@ -45,7 +45,7 @@ export async function createEmailRenderer(): Promise<IEmailRenderer> {
   async function renderEmail(template: InboxTemplates, to: string, context: any): Promise<Email> {
     return {
       to,
-      subject: templates[template][TemplatePart.SUBJECT](context),
+      ...JSON.parse(templates[template][TemplatePart.SUBJECT](context)),
       content: templates[template][TemplatePart.CONTENT](context)
     }
   }
