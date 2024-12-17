@@ -2,31 +2,26 @@
 
 exports[`email rendering tests rendering validate-email 1`] = `
 {
-  "content": "<p>Hello!</p>
-<p>You're receiving this email because you signed up for Decentraland email notifications.</p>
+  "accountUrl": "",
+  "bannerLabel": "Subscription Confirmation",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/12244cde-2c01-422b-8d61-b3c09e7d8d71/600x240.png",
+  "content": "<p>You're receiving this email because you signed up for Decentraland email notifications.</p>
 <p>You'll be able to customize exactly what kind of notifications you'd like to receive (e.g., Marketplace, DAO, Events,
-    etc.), but you must first confirm your email.</p>
+  etc.), but you must first confirm your email.</p>
 
-<p style="height: 41px; padding-top: 8px; padding-bottom: 8px;"><a
-        href="https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG" target="_blank"
-        rel="noopener"
-        style="
-            background-color: #ff2d55;
-            width: 365px;
-            height: 41px;
-            border-radius: 6px;
-            color: #fff;
-            padding: 12px 44px 12px 44px;
-            text-decoration: none;
-            font-family: system-ui, BlinkMacSystemFont, 'Segoe UI',
-              Roboto, 'Helvetica Neue', Arial, sans-serif;
-          ">Click Here to Confirm Your Email</a>
+<p style='height: 41px; padding-top: 8px; padding-bottom: 8px;'>
+  <a
+    href='https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG'
+    style='display: inline-block; background-color: #f03e53; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;'
+  >Click Here to Confirm Your Email</a>
 </p>
 
-<p>Or you can copy and paste this URL into the browser: <a href="https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG" style="font-size: 13px;">https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG</a>
-</p>
-",
-  "subject": "[Action Needed] Confirm Email :envelope_with_arrow:",
+<p>Or you can copy and paste this URL into the browser:
+  <a href='https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG' style='font-size: 13px;'>https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG</a>
+</p>",
+  "subject": "[Action Needed] Confirm Email 📩",
+  "title": "Hey there",
+  "titleHighligth": "",
   "to": "email@example.com",
 }
 `;
