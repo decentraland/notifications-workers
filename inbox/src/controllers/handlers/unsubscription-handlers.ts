@@ -27,14 +27,10 @@ export async function unsubscribeAllHandler(
 
   let userName
 
-  try {
-    const profile = await profiles.getByAddress(address)
+  const profile = await profiles.getByAddress(address)
 
-    if (profile && profile.avatars && profile.avatars.length) {
-      userName = profile.avatars[0].name
-    }
-  } catch (error) {
-    logger.warn(`Error getting profile ${error}`)
+  if (profile && profile.avatars && profile.avatars.length) {
+    userName = profile.avatars[0].name
   }
 
   await dataWarehouseClient.sendEvent({
