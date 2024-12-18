@@ -118,7 +118,7 @@ exports[`email rendering tests rendering events_starts_soon 1`] = `
   "actionButtonLink": "https://play.decentraland.org/?position=-99%2C35&realm=main",
   "actionButtonText": "JUMP IN",
   "bannerLabel": "Event Starting Soon",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c0ed81a5-34a7-463c-a0d9-8163861f7d72/1200x480.png",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/d96a0ad5-b3bb-4117-a0b0-1e30b53f1607/1200x480.png",
   "content": "<table style="width: 100%; max-width: 600px; margin: 0 auto; text-align: center;">
   <tr>
     <td>
@@ -199,7 +199,7 @@ exports[`email rendering tests rendering governance_coauthor_requested 1`] = `
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=cacb1ce3-b5e9-4133-901a-cb787f43871f",
   "actionButtonText": "RESPOND TO REQUEST",
   "bannerLabel": "Governance Co-Author Request",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/eddb0d62-4315-4bd2-9815-a13439dd20c6/1200x480.png",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/0b3877bd-4ce6-4571-bd11-d2dfa9af2230/1200x480.png",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
   You've been invited to collaborate as a co-author on a the proposal <span style="color: #FF2D55;">DCL Community Video Library</span>!
 </p>",
@@ -257,7 +257,7 @@ exports[`email rendering tests rendering governance_pitch_passed 1`] = `
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
   "actionButtonText": "SEE THE PITCH",
   "bannerLabel": "Governance Pitch Passed",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/cfb1e152-199a-4d50-a5f9-56b55337c8a6/600x240.png",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/8ac7d8fe-2a59-40c8-90a0-ba648047742e/600x240.png",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
   The pitch, <span style="color: #FF2D55;">Limit Grants Re-Submissions</span>, has passed and can now receive tenders. Help advance this idea by proposing potential solutions.
 </p>
@@ -296,7 +296,7 @@ exports[`email rendering tests rendering governance_tender_passed 1`] = `
   "actionButtonLink": "https://governance.decentraland.org/proposal/?id=c9564934-1f5e-44a3-836e-c0e94c1f593f",
   "actionButtonText": "SEE THE TENDER",
   "bannerLabel": "Governance Tender Passed",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/41501a13-620a-477e-a8e2-8a3f2a82f3f0/600x240.png",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/4b6840b3-bf35-45fa-8dea-c089d0a2f46c/600x240.png",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
   The tender you voted on, <span style="color: #FF2D55;">Limit Grants Re-Submissions</span>, has passed and can now receive bids. If you think you can tackle this solution, make a bid and propose a project!
 </p>
@@ -394,8 +394,8 @@ exports[`email rendering tests rendering reward_assignment 1`] = `
   "accountLink": "https://decentraland.zone/account",
   "actionButtonLink": "",
   "actionButtonText": "VIEW IN YOUR BACKPACK",
-  "bannerLabel": "Land Rented",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/db19c6c0-b32f-45e6-9588-5da80ff78a4f/1200x480.png",
+  "bannerLabel": "Free Item Received Banner",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/1c60d4c8-2c42-412c-8714-debc28473661/1200x480.png",
   "content": "<p style="font-family: Inter, sans-serif; font-size: 16px; font-weight: 700; line-height: 24px; text-align: center;">
   You've received <span style="color: #438FFF;">MESHfair 2024 Halo</span> for free! Find it in your Backpack and try it out.
 </p>
@@ -415,7 +415,7 @@ exports[`email rendering tests rendering reward_campaign_out_of_funds 1`] = `
   "actionButtonLink": "https://decentraland.org/rewards/campaign/aksdjlaskjdakl",
   "actionButtonText": "MANAGE CAMPAIGN",
   "bannerLabel": "Campaign out of founds",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/0527f4cd-9c7c-4b88-b166-da4364fed7d2/600x240.png",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/326b02c6-4c0a-4860-9609-e3c983a57227/600x240.png",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
   Your giveaway campaign, <span style="color: #FF2D55;">Name of the campaign</span>, has run out of funds to cover gas fees. Add more to get it running again.
 </p>
@@ -435,7 +435,7 @@ exports[`email rendering tests rendering reward_campaign_out_of_stock 1`] = `
   "actionButtonLink": "https://decentraland.org/rewards/campaign/aksdjlaskjdakl",
   "actionButtonText": "MANAGE CAMPAIGN",
   "bannerLabel": "Campaign out of stock",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/9d02f3fc-f9d8-4349-9922-106a9769d499/600x240.png",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/e6c6ab73-1a86-449b-9052-450e7db4a10e/600x240.png",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
   The items allocated to your giveaway campaign, <span style="color: #FF2D55;">Name of the campaign</span>, have run out. Add more to get it running again.
 </p>

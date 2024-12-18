@@ -38,7 +38,7 @@ describe('notifications service tests', () => {
       logs,
       sendGridClient,
       subscriptionService,
-      profiles: {} as any // TODO: Mock properly
+      profiles: { getByAddress: jest.fn() }
     })
   })
 

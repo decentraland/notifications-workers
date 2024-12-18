@@ -1,25 +1,41 @@
 import { createLambdasClient } from 'dcl-catalyst-client'
-import { IFetchComponent } from '@well-known-components/interfaces'
+import { IFetchComponent, IConfigComponent, ILoggerComponent } from '@well-known-components/interfaces'
 import { Profile } from 'dcl-catalyst-client/dist/client/specs/lambdas-client'
-
-const CATALYST_LAMBDAS_URL = 'https://peer.decentraland.org/lambdas'
 
 type AppComponents = {
   fetch: IFetchComponent
+  config: IConfigComponent
+  logs: ILoggerComponent
 }
 
 export type ProfilesComponent = {
   getByAddress(address: string): Promise<Profile | null>
 }
 
-export function createProfilesComponent({ fetch }: Pick<AppComponents, 'fetch'>): ProfilesComponent {
-  const lambdasClient = createLambdasClient({ url: CATALYST_LAMBDAS_URL, fetcher: fetch })
+export async function createProfilesComponent({
+  fetch,
+  config,
+  logs
+}: Pick<AppComponents, 'fetch' | 'config' | 'logs'>): Promise<ProfilesComponent> {
+  let catalystLambdasUrl = await config.requireString('CATALYST_LAMBDAS_URL')
 
-  async function getByAddress(address: string): Promise<Profile | null> {
-    const profiles = await lambdasClient.getAvatarsDetailsByPost({ ids: [address] })
-    return profiles.length > 0 ? profiles[0] : null
+  if (!catalystLambdasUrl.endsWith('/lambdas')) {
+    catalystLambdasUrl += '/lambdas'
   }
 
+  const lambdasClient = createLambdasClient({ url: catalystLambdasUrl, fetcher: fetch })
+  const logger = logs.getLogger('create-profiles-component')
+
+  async function getByAddress(address: string): Promise<Profile | null> {
+    try {
+      const profiles = await lambdasClient.getAvatarsDetailsByPost({ ids: [address] })
+      return profiles.length > 0 ? profiles[0] : null
+    } catch (error) {
+      logger.warn(`Error getting profile ${error}`)
+    }
+
+    return null
+  }
   return {
     getByAddress
   }

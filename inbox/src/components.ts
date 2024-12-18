@@ -50,7 +50,7 @@ export async function initComponents(): Promise<AppComponents> {
   const dataWarehouseClient = await createDataWarehouseClient({ config, fetch, logs })
   const sendGridClient = await createSendGrid({ config, fetch, logs })
 
-  const profiles = createProfilesComponent({ fetch })
+  const profiles = await createProfilesComponent({ fetch, config, logs })
 
   return {
     config,

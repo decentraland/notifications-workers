@@ -56,15 +56,12 @@ export async function createNotificationsService(
             }
             notification.metadata.userName = 'Unknown'
 
-            try {
-              const profile = await profiles.getByAddress(notification.address)
+            const profile = await profiles.getByAddress(notification.address)
 
-              if (profile && profile.avatars && profile.avatars.length) {
-                notification.metadata.userName = profile.avatars[0].name
-              }
-            } catch (error) {
-              logger.warn(`Error getting profile ${error}`)
+            if (profile && profile.avatars && profile.avatars.length) {
+              notification.metadata.userName = profile.avatars[0].name
             }
+
             const email = await emailRenderer.renderEmail(subscription.email, notification)
             if (!email) {
               logger.info(
