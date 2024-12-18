@@ -10,11 +10,10 @@ import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { NotificationType, Event } from '@dcl/schemas'
 import { Message } from '@aws-sdk/client-sqs'
-import { DbComponent, ISendGridClient, NotificationRecord } from '@notifications/common'
+import { DbComponent, ISendGridClient, NotificationRecord, ProfilesComponent } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
-import { Profile } from 'dcl-catalyst-client/dist/client/specs/lambdas-client'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -85,8 +84,4 @@ export type IMessageProcessor = IBaseComponent
 
 export type IEventParser = {
   parseToNotification(event: Event): NotificationRecord | undefined
-}
-
-export type ProfilesComponent = {
-  getByAddress(address: string): Promise<Profile | null>
 }
