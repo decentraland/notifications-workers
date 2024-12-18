@@ -14,6 +14,7 @@ describe('notifications service tests', () => {
   let config = createConfigComponent({
     SIGNING_KEY: 'some-super-secret-key',
     SERVICE_BASE_URL: 'https://notifications.decentraland.org',
+    ACCOUNT_BASE_URL: 'https://decentraland.zone/account',
     ENV: 'test'
   })
   let logs: ILoggerComponent
@@ -36,7 +37,8 @@ describe('notifications service tests', () => {
       emailRenderer,
       logs,
       sendGridClient,
-      subscriptionService
+      subscriptionService,
+      profiles: { getByAddress: jest.fn() }
     })
   })
 

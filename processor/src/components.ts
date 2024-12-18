@@ -13,7 +13,7 @@ import path from 'path'
 import { createFetchComponent } from '@dcl/platform-server-commons'
 import { createEmailRenderer } from './adapters/email-renderer'
 import { createSubscriptionsService } from './adapters/subscriptions-service'
-import { createDbComponent, createSendGrid } from '@notifications/common'
+import { createDbComponent, createSendGrid, createProfilesComponent } from '@notifications/common'
 import { createNotificationsService } from './adapters/notifications-service'
 import { createQueueConsumer } from './adapters/queue-consumer'
 import { createEventParser } from './logic/event-parser'
@@ -68,13 +68,16 @@ export async function initComponents(): Promise<AppComponents> {
   const emailRenderer = await createEmailRenderer({ config })
   const sendGridClient = await createSendGrid({ config, fetch, logs })
 
+  const profiles = await createProfilesComponent({ fetch, config, logs })
+
   const notificationsService = await createNotificationsService({
     config,
     db,
     emailRenderer,
     logs,
     subscriptionService,
-    sendGridClient
+    sendGridClient,
+    profiles
   })
 
   const queueConsumer = await createQueueConsumer({ config })
@@ -102,6 +105,7 @@ export async function initComponents(): Promise<AppComponents> {
     subscriptionService,
     queueConsumer,
     eventParser,
-    messageProcessor
+    messageProcessor,
+    profiles
   }
 }

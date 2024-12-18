@@ -6,9 +6,12 @@ export type INotificationsService = {
 }
 
 export async function createNotificationsService(
-  components: Pick<AppComponents, 'config' | 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService'>
+  components: Pick<
+    AppComponents,
+    'config' | 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService' | 'profiles'
+  >
 ): Promise<INotificationsService> {
-  const { db, emailRenderer, logs, sendGridClient, subscriptionService, config } = components
+  const { db, emailRenderer, logs, sendGridClient, subscriptionService, config, profiles } = components
   const logger = logs.getLogger('notifications-service')
   const env = await config.requireString('ENV')
 
@@ -51,6 +54,13 @@ export async function createNotificationsService(
 
               continue
             }
+            notification.metadata.userName = 'Unknown'
+
+            const profile = await profiles.getByAddress(notification.address)
+
+            if (profile && profile.avatars && profile.avatars.length) {
+              notification.metadata.userName = profile.avatars[0].name
+            }
 
             const email = await emailRenderer.renderEmail(subscription.email, notification)
             if (!email) {
@@ -78,7 +88,7 @@ export async function createNotificationsService(
             }
           }
         } catch (error: any) {
-          logger.warn(`Failed to send emails: ${error.metadata}`)
+          logger.warn(`Failed to send emails: ${error}`)
         }
       })
     }

@@ -8,7 +8,8 @@
     "start": "node --trace-warnings --abort-on-uncaught-exception --unhandled-rejections=strict dist/index.js",
     "test": "jest --forceExit --detectOpenHandles --coverage --verbose",
     "lint:check": "eslint '**/*.{js,ts}'",
-    "lint:fix": "eslint '**/*.{js,ts}' --fix"
+    "lint:fix": "eslint '**/*.{js,ts}' --fix",
+    "update:snapshots": "jest --updateSnapshot"
   },
   "license": "Apache-2.0",
   "prettier": {
@@ -39,6 +40,7 @@
     "@well-known-components/metrics": "^2.1.0",
     "@well-known-components/pg-component": "^0.2.3",
     "cron": "^3.1.6",
+    "dcl-catalyst-client": "^21.7.0",
     "handlebars": "^4.7.8",
     "joi": "^17.12.2"
   }
