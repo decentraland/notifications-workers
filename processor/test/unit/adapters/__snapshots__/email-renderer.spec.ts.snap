@@ -336,7 +336,7 @@ exports[`email rendering tests rendering item_sold 1`] = `
   "actionButtonText": "SEE ITEM PAGE",
   "bannerLabel": "Item Sold",
   "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/20807f53-13ac-4150-99d5-57091b75cbd2/1200x480.png",
-  "content": "<p style='font-size: 20px; font-weight: 700; line-height: 24px; color: #43404A; margin: 0;'>
+  "content": "<p style='font-size: 20px; font-weight: 700; line-height: 24px; color: #43404A; margin: 24px auto;'>
   You just sold <span style='color: #FF2D55;'>HeartPrint Shoes</span>!
 </p>",
   "subject": "You’ve Sold an Item! 🥳",
@@ -355,15 +355,9 @@ exports[`email rendering tests rendering rental_ended 1`] = `
   "actionButtonText": "VIEW CONTRACT",
   "bannerLabel": "Rental Period Ended",
   "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/60113311-21a4-415a-bd7e-957cc68ff7ea/1200x480.png",
-  "content": "<p style="font-family: Inter, sans-serif; font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; text-decoration: underline;">
-  The rental period on your LAND
-  <span style="color: #FF2D55;">
-    3,2
-  </span>
-  to
-  <span style="color: #FF2D55;">
-    0x135b17eaa25e3e0f3ce8f0a575bcc8867031f77c
-  </span>
+  "content": "<p style='font-family: Inter, sans-serif; font-size: 16px; font-weight: 700; line-height: 24px; text-align: center;'>
+  The rental period on your LAND (<span style='color: #FF2D55;'>3,2</span>) to
+  <span style='color: #FF2D55;'>0x135b17eaa25e3e0f3ce8f0a575bcc8867031f77c</span>
   has ended.
 </p>",
   "subject": "Rental Period Ended 🙌",
