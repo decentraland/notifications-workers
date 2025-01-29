@@ -76,7 +76,10 @@ const excludedNotificationTypes = [
   NotificationType.GOVERNANCE_VOTED_ON_BEHALF,
   NotificationType.REWARD_CAMPAIGN_GAS_PRICE_HIGHER_THAN_EXPECTED,
   NotificationType.REWARD_DELAYED,
-  NotificationType.REWARD_IN_PROGRESS
+  NotificationType.REWARD_IN_PROGRESS,
+  NotificationType.ITEM_PUBLISHED,
+  NotificationType.SOCIAL_SERVICE_FRIENDSHIP_REQUEST,
+  NotificationType.SOCIAL_SERVICE_FRIENDSHIP_ACCEPTED
 ].map((type) => type.toUpperCase())
 
 type ExcludedNotificationType = (typeof excludedNotificationTypes)[number]
