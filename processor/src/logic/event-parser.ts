@@ -170,6 +170,35 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
             link: event.metadata.link
           }
         }
+      case Events.SubType.SocialService.FRIENDSHIP_REQUEST:
+        return {
+          type: NotificationType.SOCIAL_SERVICE_FRIENDSHIP_REQUEST,
+          address: event.metadata.receiver.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            sender: {
+              address: event.metadata.sender.address,
+              name: event.metadata.sender.name,
+              profileImageUrl: event.metadata.sender.profileImageUrl
+            },
+            message: event.metadata.message
+          }
+        }
+      case Events.SubType.SocialService.FRIENDSHIP_ACCEPTED:
+        return {
+          type: NotificationType.SOCIAL_SERVICE_FRIENDSHIP_ACCEPTED,
+          address: event.metadata.receiver.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            sender: {
+              address: event.metadata.sender.address,
+              name: event.metadata.sender.name,
+              profileImageUrl: event.metadata.sender.profileImageUrl
+            }
+          }
+        }
       default:
         return undefined
     }

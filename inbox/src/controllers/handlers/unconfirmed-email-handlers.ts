@@ -17,8 +17,7 @@ export async function storeUnconfirmedEmailHandler(
     'url' | 'request' | 'components' | 'verification'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { config, dataWarehouseClient, db, emailRenderer, sendGridClient, profiles, logs } = context.components
-  const logger = logs.getLogger('unconfirmed-email-handler')
+  const { config, dataWarehouseClient, db, emailRenderer, sendGridClient, profiles } = context.components
   const address = context.verification!.auth
   const env = await config.requireString('ENV')
 
