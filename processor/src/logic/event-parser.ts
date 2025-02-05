@@ -177,10 +177,18 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
           eventKey: event.key,
           timestamp: event.timestamp,
           metadata: {
+            requestId: event.metadata.requestId,
             sender: {
               address: event.metadata.sender.address,
               name: event.metadata.sender.name,
-              profileImageUrl: event.metadata.sender.profileImageUrl
+              profileImageUrl: event.metadata.sender.profileImageUrl,
+              hasClaimedName: event.metadata.sender.hasClaimedName
+            },
+            receiver: {
+              address: event.metadata.receiver.address,
+              name: event.metadata.receiver.name,
+              profileImageUrl: event.metadata.receiver.profileImageUrl,
+              hasClaimedName: event.metadata.receiver.hasClaimedName
             },
             message: event.metadata.message
           }
@@ -192,10 +200,18 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
           eventKey: event.key,
           timestamp: event.timestamp,
           metadata: {
+            requestId: event.metadata.requestId,
             sender: {
               address: event.metadata.sender.address,
               name: event.metadata.sender.name,
-              profileImageUrl: event.metadata.sender.profileImageUrl
+              profileImageUrl: event.metadata.sender.profileImageUrl,
+              hasClaimedName: event.metadata.sender.hasClaimedName
+            },
+            receiver: {
+              address: event.metadata.receiver.address,
+              name: event.metadata.receiver.name,
+              profileImageUrl: event.metadata.receiver.profileImageUrl,
+              hasClaimedName: event.metadata.receiver.hasClaimedName
             }
           }
         }
