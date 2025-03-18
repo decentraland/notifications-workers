@@ -1,11 +1,11 @@
 import { Router } from '@well-known-components/http-server'
 import { statusHandler } from './handlers/status-handler'
 import { notificationsHandler } from './handlers/notifications-handler'
-import { errorHandler, NotAuthorizedError } from '@dcl/platform-server-commons'
+import { bearerTokenMiddleware, errorHandler, NotAuthorizedError } from '@dcl/platform-server-commons'
 import { wellKnownComponents } from '@dcl/platform-crypto-middleware'
 import { GlobalContext } from '../types'
 import { readNotificationsHandler } from './handlers/read-notifications-handler'
-import { getSubscriptionHandler } from './handlers/get-subscription-handler'
+import { getSubscriptionAsAdminHandler, getSubscriptionHandler } from './handlers/get-subscription-handler'
 import { putSubscriptionHandler } from './handlers/put-subscription-handler'
 import { confirmEmailHandler, storeUnconfirmedEmailHandler } from './handlers/unconfirmed-email-handlers'
 import { unsubscribeAllHandler, unsubscribeOneHandler } from './handlers/unsubscription-handlers'
@@ -21,6 +21,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
   const { config, fetch } = components
 
   const signingKey = await config.requireString('SIGNING_KEY')
+  const adminApiKey = await config.requireString('ADMIN_API_KEY')
 
   const signedFetchMiddleware = wellKnownComponents({
     fetcher: fetch,
@@ -58,6 +59,8 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   router.put('/set-email', signedFetchMiddleware, storeUnconfirmedEmailHandler)
   router.put('/confirm-email', confirmEmailHandler)
+
+  router.get('/subscription/:address', bearerTokenMiddleware(adminApiKey), getSubscriptionAsAdminHandler)
 
   return router
 }
