@@ -7,7 +7,7 @@ export async function createEventParser({
   logs,
   config
 }: Pick<AppComponents, 'logs' | 'config'>): Promise<IEventParser> {
-  const CDN_URL = config.requireString('CDN_URL')
+  const CDN_URL = await config.requireString('CDN_URL')
   const logger = logs.getLogger('event-parse')
 
   function parseToNotification(event: Event): NotificationRecord | undefined {
