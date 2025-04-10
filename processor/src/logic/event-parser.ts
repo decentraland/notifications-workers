@@ -228,7 +228,7 @@ export async function createEventParser({
           metadata: {
             goalId: event.metadata.goalId,
             creditsObtained: event.metadata.creditsObtained,
-            image: `${CDN_URL}/credits/notification-icon.png`,
+            image: `${CDN_URL}credits/notification-icon.png`,
             title: 'Weekly Goal Completed!',
             description: 'Claim your Credits to unlock them'
           }
