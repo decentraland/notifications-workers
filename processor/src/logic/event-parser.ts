@@ -220,6 +220,7 @@ export async function createEventParser({
           }
         }
       case Events.SubType.CreditsService.CREDITS_GOAL_COMPLETED:
+        console.log('Handling Credits Goal Completed event', { event: JSON.stringify(event) })
         return {
           type: NotificationType.CREDITS_GOAL_COMPLETED,
           address: event.metadata.address,
