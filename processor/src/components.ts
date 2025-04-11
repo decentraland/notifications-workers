@@ -82,7 +82,7 @@ export async function initComponents(): Promise<AppComponents> {
 
   const queueConsumer = await createQueueConsumer({ config })
 
-  const eventParser = createEventParser({ logs })
+  const eventParser = await createEventParser({ logs, config })
   const messageProcessor = createMessageProcessor({
     logs,
     queueConsumer,

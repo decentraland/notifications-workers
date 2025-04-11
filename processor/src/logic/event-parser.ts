@@ -3,7 +3,11 @@ import { Event, Events, NotificationType } from '@dcl/schemas'
 import { AppComponents, IEventParser } from '../types'
 import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
 
-export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEventParser {
+export async function createEventParser({
+  logs,
+  config
+}: Pick<AppComponents, 'logs' | 'config'>): Promise<IEventParser> {
+  const CDN_URL = await config.requireString('CDN_URL')
   const logger = logs.getLogger('event-parse')
 
   function parseToNotification(event: Event): NotificationRecord | undefined {
@@ -213,6 +217,20 @@ export function createEventParser({ logs }: Pick<AppComponents, 'logs'>): IEvent
               profileImageUrl: event.metadata.receiver.profileImageUrl,
               hasClaimedName: event.metadata.receiver.hasClaimedName
             }
+          }
+        }
+      case Events.SubType.CreditsService.CREDITS_GOAL_COMPLETED:
+        return {
+          type: NotificationType.CREDITS_GOAL_COMPLETED,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            goalId: event.metadata.goalId,
+            creditsObtained: event.metadata.creditsObtained,
+            image: `${CDN_URL}credits/notification-icon.png`,
+            title: 'Weekly Goal Completed!',
+            description: 'Claim your Credits to unlock them'
           }
         }
       default:
