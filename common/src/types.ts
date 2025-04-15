@@ -59,7 +59,6 @@ export type Email = {
   bannerLabel?: string
   unsubscribeAllUrl?: string
   unsubscribeOneUrl?: string
-  accountUrl?: string
   attachments?: {
     content: string
     filename: string
