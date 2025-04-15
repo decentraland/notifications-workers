@@ -234,7 +234,6 @@ export async function createEventParser({
             description: 'Claim your Credits to unlock them'
           }
         }
-
       case Events.SubType.Streaming.STREAMING_KEY_RESET:
       case Events.SubType.Streaming.STREAMING_KEY_REVOKE:
       case Events.SubType.Streaming.STREAMING_KEY_EXPIRED:
@@ -252,6 +251,18 @@ export async function createEventParser({
             worldName: event.metadata.worldName,
             isWorld: event.metadata.isWorld,
             url: event.metadata.url
+          }
+        }
+      case Events.SubType.CreditsService.COMPLETE_GOALS_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_COMPLETE_GOALS,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            seasonId: event.metadata.seasonId,
+            weekNumber: event.metadata.weekNumber,
+            pendingGoalIds: event.metadata.pendingGoalIds
           }
         }
       default:
