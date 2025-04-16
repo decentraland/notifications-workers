@@ -292,7 +292,11 @@ export async function createEventParser({
           address: event.metadata.address,
           eventKey: event.key,
           timestamp: event.timestamp,
-          metadata: {}
+          metadata: {
+            expirationDate: event.metadata.expirationDate,
+            balance: event.metadata.creditsAmount,
+            link: 'https://decentrland.org/marketplace' // TODO: change link by env variable
+          }
         }
       case Events.SubType.CreditsService.USAGE_REMINDER:
         return {
@@ -300,7 +304,11 @@ export async function createEventParser({
           address: event.metadata.address,
           eventKey: event.key,
           timestamp: event.timestamp,
-          metadata: {}
+          metadata: {
+            expirationDate: event.metadata.expirationDate,
+            balance: event.metadata.creditsAmount,
+            link: 'https://decentrland.org/marketplace'
+          }
         }
       default:
         return undefined
