@@ -88,6 +88,11 @@ export async function createNotificationsService(
             }
           }
         } catch (error: any) {
+          logger.error(`DEBUG`, {
+            stack: error.stack,
+            message: error.message,
+            name: error.name
+          })
           logger.warn(`Failed to send emails: ${error}`)
         }
       })
