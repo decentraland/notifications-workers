@@ -819,16 +819,6 @@
     ajv-keywords "^5.1.0"
     mitt "^3.0.1"
 
-"@dcl/schemas@^16.3.0":
-  version "16.3.0"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-16.3.0.tgz#d776a12e365c8339da92d40d6411e5894dfc3186"
-  integrity sha512-P15oywvi8cC7bNZt8eocNBx7+B0aO5DarGe158TQd2YvF0RxBzDGAj4NrJvysyJkUToSX3Qkgi7rWYrP2Mf7UA==
-  dependencies:
-    ajv "^8.11.0"
-    ajv-errors "^3.0.0"
-    ajv-keywords "^5.1.0"
-    mitt "^3.0.1"
-
 "@dcl/schemas@^9.2.0":
   version "9.15.0"
   resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-9.15.0.tgz#81337faa396d21a2d1e704e5ec3cfd7b7b14343e"
@@ -841,6 +831,15 @@
 "@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.3.1-14477947787.commit-89feb09.tgz":
   version "16.3.1-14477947787.commit-89feb09"
   resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.3.1-14477947787.commit-89feb09.tgz#28c1cef8fc47285699d8c129161729e825cede3a"
+  dependencies:
+    ajv "^8.11.0"
+    ajv-errors "^3.0.0"
+    ajv-keywords "^5.1.0"
+    mitt "^3.0.1"
+
+"@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.3.1-14496168640.commit-7ccfc79.tgz":
+  version "16.3.1-14496168640.commit-7ccfc79"
+  resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.3.1-14496168640.commit-7ccfc79.tgz#caa509b5e994a7fe5a04acd26a9b41b18e098c29"
   dependencies:
     ajv "^8.11.0"
     ajv-errors "^3.0.0"

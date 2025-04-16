@@ -25,7 +25,7 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.3.1-14477947787.commit-89feb09.tgz",
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.3.1-14496168640.commit-7ccfc79.tgz",
     "@well-known-components/interfaces": "^1.4.3",
     "@well-known-components/pg-component": "^1.1.0"
   }
