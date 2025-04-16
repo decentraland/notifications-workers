@@ -9,6 +9,7 @@ export async function createEventParser({
   config
 }: Pick<AppComponents, 'logs' | 'config'>): Promise<IEventParser> {
   const CDN_URL = await config.requireString('CDN_URL')
+  const JUMP_IN_URL = (await config.getString('JUMP_IN_URL')) || 'https://decentraland.org/play'
   const logger = logs.getLogger('event-parse')
 
   function parseToNotification(event: Event): NotificationRecord | undefined {
@@ -264,6 +265,42 @@ export async function createEventParser({
             weekNumber: event.metadata.weekNumber,
             pendingGoalIds: event.metadata.pendingGoalIds
           }
+        }
+      case Events.SubType.CreditsService.CLAIM_CREDITS_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_CLAIM_CREDITS,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            seasonId: event.metadata.seasonId,
+            weekNumber: event.metadata.weekNumber,
+            link: JUMP_IN_URL
+          }
+        }
+      case Events.SubType.CreditsService.DO_NOT_MISS_OUT_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_DO_NOT_MISS_OUT,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {}
+        }
+      case Events.SubType.CreditsService.USAGE_24_HOURS_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_USAGE_24_HOURS,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {}
+        }
+      case Events.SubType.CreditsService.USAGE_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_USAGE,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {}
         }
       default:
         return undefined
