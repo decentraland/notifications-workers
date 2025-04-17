@@ -2,6 +2,7 @@ import { NotificationRecord } from '@notifications/common'
 import { Event, Events, NotificationType } from '@dcl/schemas'
 import { AppComponents, IEventParser } from '../types'
 import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
+import { streamingNotificationTypeByEventSubtype } from './streaming-utils'
 
 export async function createEventParser({
   logs,
@@ -231,6 +232,30 @@ export async function createEventParser({
             image: `${CDN_URL}credits/notification-icon.png`,
             title: 'Weekly Goal Completed!',
             description: 'Claim your Credits to unlock them'
+          }
+        }
+
+      case Events.SubType.Streaming.STREAMING_KEY_RESET:
+      case Events.SubType.Streaming.STREAMING_KEY_REVOKE:
+      case Events.SubType.Streaming.STREAMING_KEY_EXPIRED:
+      case Events.SubType.Streaming.STREAMING_TIME_EXCEEDED:
+      case Events.SubType.Streaming.STREAMING_PLACE_UPDATED:
+        return {
+          type: streamingNotificationTypeByEventSubtype(event.subType),
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            title: event.metadata.title,
+            description: event.metadata.description,
+            position: event.metadata.position,
+            worldName: event.metadata.worldName,
+            host: event.metadata.host,
+            url: event.metadata.url,
+            userName: event.metadata.userName,
+            placeLabel: event.metadata.host.includes('worlds-content-server')
+              ? event.metadata.worldName
+              : event.metadata.position
           }
         }
       default:
