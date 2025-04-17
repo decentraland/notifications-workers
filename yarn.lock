@@ -819,10 +819,10 @@
     ajv-keywords "^5.1.0"
     mitt "^3.0.1"
 
-"@dcl/schemas@^16.4.0":
-  version "16.4.0"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-16.4.0.tgz#8f2e763bcafd67bff81b69d81a909e816b13e2ee"
-  integrity sha512-uSnzmt4AdWtnuQ7EIWIAhcYm8APhfdiVrjlh6r+CUEGoagd2S/MVc5jM937VdnKlWqsVVj8p0ZFGx3+zsBMCLA==
+"@dcl/schemas@^16.6.3":
+  version "16.6.3"
+  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-16.6.3.tgz#a78bad80b3d36a3f9df9c1b43464a2073520cd72"
+  integrity sha512-3FruNzfTVx0OvqAetZ/Ze9CIX6ABgsZQLFvaFAiM/azc9aDhj/G1HTT+H9/ycIPV/pG2UnTt25h6WxEMP0sDcg==
   dependencies:
     ajv "^8.11.0"
     ajv-errors "^3.0.0"

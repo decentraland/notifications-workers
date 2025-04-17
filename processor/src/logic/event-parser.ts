@@ -250,12 +250,8 @@ export async function createEventParser({
             description: event.metadata.description,
             position: event.metadata.position,
             worldName: event.metadata.worldName,
-            host: event.metadata.host,
-            url: event.metadata.url,
-            userName: event.metadata.userName,
-            placeLabel: event.metadata.host.includes('worlds-content-server')
-              ? event.metadata.worldName
-              : event.metadata.position
+            isWorld: event.metadata.isWorld,
+            url: event.metadata.url
           }
         }
       default:

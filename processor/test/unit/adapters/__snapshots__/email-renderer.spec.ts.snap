@@ -480,6 +480,91 @@ exports[`email rendering tests rendering royalties_earned 1`] = `
 }
 `;
 
+exports[`email rendering tests rendering streaming_key_expired 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth",
+  "actionButtonText": "JUMP TO YOUR SCENE",
+  "bannerLabel": "Streaming Key Expired",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/aa968b00-65d2-43f5-8900-a0ac7ee426f8/600x240.png",
+  "content": "<p>The stream key for the scene at my-world.dcl.eth has expired. If you'd like to stream to this location, please generate a new stream key from the Admin Tools panel in Decentraland.</p> ",
+  "subject": "Your Stream Key Has Expired 🔑",
+  "title": "Hey there",
+  "titleHighligth": "",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/streaming_key_expired?signature=319411b2d2d1807040a2f412c17d8d8849438947b916fdedfa148b1306843105",
+}
+`;
+
+exports[`email rendering tests rendering streaming_key_reset 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth",
+  "actionButtonText": "JUMP TO YOUR SCENE",
+  "bannerLabel": "Streaming Key Reset",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/d9a55c91-29a0-434c-8548-a81b5bf3651b/600x240.png",
+  "content": "<p>The stream key for the scene at my-world.dcl.eth has been reset. If you'd like to stream to this location, please generate a new stream key from the Admin Tools panel in Decentraland.</p> ",
+  "subject": "Your Stream Key Has Been Reset 🔑",
+  "title": "Hey there",
+  "titleHighligth": "",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/streaming_key_reset?signature=668944cba9e41563bcd6e4ce0cf140a786e02d902d6b52ab5745f9c2e42c456f",
+}
+`;
+
+exports[`email rendering tests rendering streaming_key_revoke 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth",
+  "actionButtonText": "jump TO YOUR SCENE",
+  "bannerLabel": "Streaming Key Deactivated",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/b2952fb9-69f1-4ef7-a692-7cc28a817642/600x240.png",
+  "content": "<p>The stream key for the scene at my-world.dcl.eth has been deactivated. If you need a new key, you can always generate one from the Admin Tools panel in Decentraland.</p> ",
+  "subject": "Your Stream Key Has Been Deactivated 🔑",
+  "title": "Hey there",
+  "titleHighligth": "",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/streaming_key_revoke?signature=d357fc46e0d0b57f1fd6b12483d3f224f53644a16ab14834f6416f81a12e818b",
+}
+`;
+
+exports[`email rendering tests rendering streaming_place_updated 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth",
+  "actionButtonText": "JUMP TO YOUR SCENE",
+  "bannerLabel": "Streaming Scene Updated",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/7276f99a-8ced-4e2c-9f48-83b09bfd2947/600x240.png",
+  "content": "<p>The scene at my-world.dcl.eth has been modified, invalidating active stream keys. If you'd like to stream to this location, please generate a new stream key from the Admin Tools panel in Decentraland.</p> ",
+  "subject": "Stream Scene Altered—New Key Required for Streaming 🚧",
+  "title": "Hey there",
+  "titleHighligth": "",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/streaming_place_updated?signature=67d7e0111536c4a9cf46b8d8025a993ec7622228be1b94b989480b129cc36d77",
+}
+`;
+
+exports[`email rendering tests rendering streaming_time_exceeded 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth",
+  "actionButtonText": "JUMP TO YOUR SCENE",
+  "bannerLabel": "Streaming Time Limit Reached",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/a8787ece-72a7-4e33-ab41-cd700835e34d/600x240.png",
+  "content": "<p>Streams to Decentraland automatically timeout after 4 hours. If you'd like to continue streaming to my-world.dcl.eth, just restart your stream in your broadcasting software (e.g. OBS).</p> ",
+  "subject": "Stream Timed Out—Are You Still Streaming? 🕙",
+  "title": "Hey there",
+  "titleHighligth": "",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/streaming_time_exceeded?signature=28b73d88de7f560b14fec1a2ca7677a449000da2f6e6e25d2eba6f2a53ad7156",
+}
+`;
+
 exports[`email rendering tests rendering worlds_access_restored 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
