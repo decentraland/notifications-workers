@@ -221,20 +221,6 @@ export async function createEventParser({
             }
           }
         }
-      case Events.SubType.CreditsService.CREDITS_GOAL_COMPLETED:
-        return {
-          type: NotificationType.CREDITS_GOAL_COMPLETED,
-          address: event.metadata.address,
-          eventKey: event.key,
-          timestamp: event.timestamp,
-          metadata: {
-            goalId: event.metadata.goalId,
-            creditsObtained: event.metadata.creditsObtained,
-            image: `${CDN_URL}credits/notification-icon.png`,
-            title: 'Weekly Goal Completed!',
-            description: 'Claim your Credits to unlock them'
-          }
-        }
       case Events.SubType.Streaming.STREAMING_KEY_RESET:
       case Events.SubType.Streaming.STREAMING_KEY_REVOKE:
       case Events.SubType.Streaming.STREAMING_KEY_EXPIRED:
@@ -252,6 +238,20 @@ export async function createEventParser({
             worldName: event.metadata.worldName,
             isWorld: event.metadata.isWorld,
             url: event.metadata.url
+          }
+        }
+      case Events.SubType.CreditsService.CREDITS_GOAL_COMPLETED:
+        return {
+          type: NotificationType.CREDITS_GOAL_COMPLETED,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            goalId: event.metadata.goalId,
+            creditsObtained: event.metadata.creditsObtained,
+            image: `${CDN_URL}credits/notification-icon.png`,
+            title: 'Weekly Goal Completed!',
+            description: 'Claim your Credits to unlock them'
           }
         }
       case Events.SubType.CreditsService.COMPLETE_GOALS_REMINDER:
