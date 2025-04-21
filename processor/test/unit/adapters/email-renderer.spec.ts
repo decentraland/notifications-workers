@@ -399,6 +399,81 @@ describe('email rendering tests', () => {
       },
       timestamp: Date.now(),
       eventKey: '123'
+    },
+    [NotificationType.STREAMING_KEY_RESET]: {
+      id: '123456789',
+      type: NotificationType.STREAMING_KEY_RESET,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Streaming Key Reset',
+        description: 'Your streaming key has been reset',
+        position: '10,10',
+        worldName: 'my-world.dcl.eth',
+        isWorld: true,
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.STREAMING_KEY_REVOKE]: {
+      id: '123456789',
+      type: NotificationType.STREAMING_KEY_REVOKE,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Streaming Key Revoked',
+        description: 'Your streaming key has been revoked',
+        position: '10,10',
+        worldName: 'my-world.dcl.eth',
+        isWorld: true,
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.STREAMING_KEY_EXPIRED]: {
+      id: '123456789',
+      type: NotificationType.STREAMING_KEY_EXPIRED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Streaming Key Expired',
+        description: 'Your streaming key has expired',
+        position: '10,10',
+        worldName: 'my-world.dcl.eth',
+        isWorld: true,
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.STREAMING_TIME_EXCEEDED]: {
+      id: '123456789',
+      type: NotificationType.STREAMING_TIME_EXCEEDED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Streaming Time Exceeded',
+        description: 'Your stream has exceeded the maximum allowed time',
+        position: '10,10',
+        worldName: 'my-world.dcl.eth',
+        isWorld: true,
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.STREAMING_PLACE_UPDATED]: {
+      id: '123456789',
+      type: NotificationType.STREAMING_PLACE_UPDATED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        title: 'Streaming Place Updated',
+        description: 'The place you are streaming to has been updated',
+        position: '10,10',
+        worldName: 'my-world.dcl.eth',
+        isWorld: true,
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
     }
   }
 
