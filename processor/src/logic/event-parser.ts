@@ -9,7 +9,7 @@ export async function createEventParser({
   config
 }: Pick<AppComponents, 'logs' | 'config'>): Promise<IEventParser> {
   const CDN_URL = await config.requireString('CDN_URL')
-  const JUMP_IN_URL = (await config.getString('JUMP_IN_URL')) || 'https://decentraland.org/play'
+  const DECENTRALAND_URL = (await config.getString('DECENTRALAND_URL')) || 'https://decentraland.org'
   const logger = logs.getLogger('event-parse')
 
   function parseToNotification(event: Event): NotificationRecord | undefined {
@@ -263,7 +263,9 @@ export async function createEventParser({
           metadata: {
             seasonId: event.metadata.seasonId,
             weekNumber: event.metadata.weekNumber,
-            pendingGoalIds: event.metadata.pendingGoalIds
+            pendingGoalIds: event.metadata.pendingGoalIds,
+            link: `${DECENTRALAND_URL}/play`,
+            accountLink: `${DECENTRALAND_URL}/account`
           }
         }
       case Events.SubType.CreditsService.CLAIM_CREDITS_REMINDER:
@@ -275,7 +277,8 @@ export async function createEventParser({
           metadata: {
             seasonId: event.metadata.seasonId,
             weekNumber: event.metadata.weekNumber,
-            link: JUMP_IN_URL
+            link: `${DECENTRALAND_URL}/play`,
+            accountLink: `${DECENTRALAND_URL}/account`
           }
         }
       case Events.SubType.CreditsService.DO_NOT_MISS_OUT_REMINDER:
@@ -284,7 +287,10 @@ export async function createEventParser({
           address: event.metadata.address,
           eventKey: event.key,
           timestamp: event.timestamp,
-          metadata: {}
+          metadata: {
+            link: `${DECENTRALAND_URL}/play`,
+            accountLink: `${DECENTRALAND_URL}/account`
+          }
         }
       case Events.SubType.CreditsService.USAGE_24_HOURS_REMINDER:
         return {
@@ -295,7 +301,8 @@ export async function createEventParser({
           metadata: {
             expirationDate: event.metadata.expirationDate,
             balance: event.metadata.creditsAmount,
-            link: 'https://decentrland.org/marketplace' // TODO: change link by env variable
+            link: `${DECENTRALAND_URL}/marketplace`,
+            accountLink: `${DECENTRALAND_URL}/account`
           }
         }
       case Events.SubType.CreditsService.USAGE_REMINDER:
@@ -307,7 +314,8 @@ export async function createEventParser({
           metadata: {
             expirationDate: event.metadata.expirationDate,
             balance: event.metadata.creditsAmount,
-            link: 'https://decentrland.org/marketplace'
+            link: `${DECENTRALAND_URL}/marketplace`,
+            accountLink: `${DECENTRALAND_URL}/account`
           }
         }
       default:
