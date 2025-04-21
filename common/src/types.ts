@@ -65,6 +65,7 @@ export type Email = {
     type: string
     disposition: string
   }[]
+  accountLink?: string
 }
 
 type NotificationTypeUnion = keyof typeof NotificationType
