@@ -838,6 +838,15 @@
     ajv-errors "^3.0.0"
     ajv-keywords "^5.1.0"
 
+"@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.6.5-14575643507.commit-24f5de1.tgz":
+  version "16.6.5-14575643507.commit-24f5de1"
+  resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.6.5-14575643507.commit-24f5de1.tgz#8d131f836d34e10ede6e4cd9b69ce3be1976e2c8"
+  dependencies:
+    ajv "^8.11.0"
+    ajv-errors "^3.0.0"
+    ajv-keywords "^5.1.0"
+    mitt "^3.0.1"
+
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.4.0.tgz#a23514e8fb9af1269d5f7788aa556798d61c6b59"

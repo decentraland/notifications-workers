@@ -29,7 +29,7 @@
   "dependencies": {
     "@dcl/platform-crypto-middleware": "^1.1.0",
     "@dcl/platform-server-commons": "^0.0.4",
-    "@dcl/schemas": "^16.6.3",
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/credits-events/dcl-schemas-16.6.5-14575643507.commit-24f5de1.tgz",
     "@notifications/common": "0.0.0",
     "@well-known-components/env-config-provider": "^1.2.0",
     "@well-known-components/fetch-component": "^2.0.2",
