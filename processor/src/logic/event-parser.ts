@@ -9,6 +9,7 @@ export async function createEventParser({
   config
 }: Pick<AppComponents, 'logs' | 'config'>): Promise<IEventParser> {
   const CDN_URL = await config.requireString('CDN_URL')
+  const DECENTRALAND_URL = (await config.getString('DECENTRALAND_URL')) || 'https://decentraland.org'
   const logger = logs.getLogger('event-parse')
 
   function parseToNotification(event: Event): NotificationRecord | undefined {
@@ -220,21 +221,6 @@ export async function createEventParser({
             }
           }
         }
-      case Events.SubType.CreditsService.CREDITS_GOAL_COMPLETED:
-        return {
-          type: NotificationType.CREDITS_GOAL_COMPLETED,
-          address: event.metadata.address,
-          eventKey: event.key,
-          timestamp: event.timestamp,
-          metadata: {
-            goalId: event.metadata.goalId,
-            creditsObtained: event.metadata.creditsObtained,
-            image: `${CDN_URL}credits/notification-icon.png`,
-            title: 'Weekly Goal Completed!',
-            description: 'Claim your Credits to unlock them'
-          }
-        }
-
       case Events.SubType.Streaming.STREAMING_KEY_RESET:
       case Events.SubType.Streaming.STREAMING_KEY_REVOKE:
       case Events.SubType.Streaming.STREAMING_KEY_EXPIRED:
@@ -252,6 +238,79 @@ export async function createEventParser({
             worldName: event.metadata.worldName,
             isWorld: event.metadata.isWorld,
             url: event.metadata.url
+          }
+        }
+      case Events.SubType.CreditsService.CREDITS_GOAL_COMPLETED:
+        return {
+          type: NotificationType.CREDITS_GOAL_COMPLETED,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            goalId: event.metadata.goalId,
+            creditsObtained: event.metadata.creditsObtained,
+            image: `${CDN_URL}credits/notification-icon.png`,
+            title: 'Weekly Goal Completed!',
+            description: 'Claim your Credits to unlock them'
+          }
+        }
+      case Events.SubType.CreditsService.COMPLETE_GOALS_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_COMPLETE_GOALS,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            seasonId: event.metadata.seasonId,
+            weekNumber: event.metadata.weekNumber,
+            pendingGoalIds: event.metadata.pendingGoalIds,
+            link: `${DECENTRALAND_URL}/play`
+          }
+        }
+      case Events.SubType.CreditsService.CLAIM_CREDITS_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_CLAIM_CREDITS,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            seasonId: event.metadata.seasonId,
+            weekNumber: event.metadata.weekNumber,
+            link: `${DECENTRALAND_URL}/play`
+          }
+        }
+      case Events.SubType.CreditsService.DO_NOT_MISS_OUT_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_DO_NOT_MISS_OUT,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            link: `${DECENTRALAND_URL}/play`
+          }
+        }
+      case Events.SubType.CreditsService.USAGE_24_HOURS_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_USAGE_24_HOURS,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            expirationDate: event.metadata.expirationDate,
+            balance: event.metadata.creditsAmount,
+            link: `${DECENTRALAND_URL}/marketplace`
+          }
+        }
+      case Events.SubType.CreditsService.USAGE_REMINDER:
+        return {
+          type: NotificationType.CREDITS_REMINDER_USAGE,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            expirationDate: event.metadata.expirationDate,
+            balance: event.metadata.creditsAmount,
+            link: `${DECENTRALAND_URL}/marketplace`
           }
         }
       default:
