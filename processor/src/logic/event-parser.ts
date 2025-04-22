@@ -264,8 +264,7 @@ export async function createEventParser({
             seasonId: event.metadata.seasonId,
             weekNumber: event.metadata.weekNumber,
             pendingGoalIds: event.metadata.pendingGoalIds,
-            link: `${DECENTRALAND_URL}/play`,
-            accountLink: `${DECENTRALAND_URL}/account`
+            link: `${DECENTRALAND_URL}/play`
           }
         }
       case Events.SubType.CreditsService.CLAIM_CREDITS_REMINDER:
@@ -277,8 +276,7 @@ export async function createEventParser({
           metadata: {
             seasonId: event.metadata.seasonId,
             weekNumber: event.metadata.weekNumber,
-            link: `${DECENTRALAND_URL}/play`,
-            accountLink: `${DECENTRALAND_URL}/account`
+            link: `${DECENTRALAND_URL}/play`
           }
         }
       case Events.SubType.CreditsService.DO_NOT_MISS_OUT_REMINDER:
@@ -288,8 +286,7 @@ export async function createEventParser({
           eventKey: event.key,
           timestamp: event.timestamp,
           metadata: {
-            link: `${DECENTRALAND_URL}/play`,
-            accountLink: `${DECENTRALAND_URL}/account`
+            link: `${DECENTRALAND_URL}/play`
           }
         }
       case Events.SubType.CreditsService.USAGE_24_HOURS_REMINDER:
@@ -301,8 +298,7 @@ export async function createEventParser({
           metadata: {
             expirationDate: event.metadata.expirationDate,
             balance: event.metadata.creditsAmount,
-            link: `${DECENTRALAND_URL}/marketplace`,
-            accountLink: `${DECENTRALAND_URL}/account`
+            link: `${DECENTRALAND_URL}/marketplace`
           }
         }
       case Events.SubType.CreditsService.USAGE_REMINDER:
@@ -314,8 +310,7 @@ export async function createEventParser({
           metadata: {
             expirationDate: event.metadata.expirationDate,
             balance: event.metadata.creditsAmount,
-            link: `${DECENTRALAND_URL}/marketplace`,
-            accountLink: `${DECENTRALAND_URL}/account`
+            link: `${DECENTRALAND_URL}/marketplace`
           }
         }
       default:
