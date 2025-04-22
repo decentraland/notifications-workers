@@ -38,12 +38,22 @@
       .decentraland-logo {
           width: 52px
        }
+       .social_media_link_mobile {
+           display: none
+       }
     @media (max-width: 600px) {
       .container {
         width: 100% !important;
       }
       .decentraland-logo {
-          width: 48px
+          width: 48px;
+       }
+       .social_media_link_desktop {
+           display: none;
+       }
+       .social_media_link_mobile {
+           display: table-row;
+           text-align: center;
        }
     }
   </style>
@@ -87,7 +97,9 @@
             <td>
                 {{#if actionButtonLink }}
                 <a href="{{ actionButtonLink }}"
-                    style="display: inline-block; background-color: #f03e53; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;">{{actionButtonText}}</a>
+                   style="display: inline-block; background-color: #FF2D55; color: #FFFFFF; text-decoration: none; border-radius: 5px;">
+                   <span style="display: inline-block; padding: 16px 64px; font-size: 14px; font-weight: 600;">{{actionButtonText}}</span>
+                </a>
                 {{/if}}
             </td>
           </tr>
@@ -95,7 +107,7 @@
       </td>
     </tr>
     <!-- Social Media Links -->
-    <tr>
+     <tr class="social_media_link_desktop">
       <td>
         <div style="margin-top: 40px;">
           <a href="https://dcl.gg/discord"><img
@@ -110,6 +122,39 @@
           <a href="https://www.instagram.com/decentraland_foundation/"><img
               src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/8ece53a3-2e8d-46aa-840b-44cac9a951ff/50x49.png"
               alt="Instagram" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
+          <a href="https://www.youtube.com/@decentraland_foundation"><img
+              src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/20c004d5-5632-4980-93f2-6e776c86ccac/50x49.png"
+              alt="YouTube" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
+          <a href="https://www.tiktok.com/@decentraland_fdn"><img
+              src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/1afd6661-435b-4077-bd42-31fa8e1aeb9f/50x49.png"
+              alt="TikTok" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
+          <a href="https://www.linkedin.com/company/decentralandorg"><img
+              src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/7e0bca78-c20c-4a8a-b293-87d45c9a6de7/50x49.png"
+              alt="LinkedIn" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
+        </div>
+      </td>
+    </tr>
+    <tr class="social_media_link_mobile">
+      <td>
+        <div style="margin-top: 40px;">
+          <a href="https://dcl.gg/discord"><img
+              src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/83007823-8c78-4e46-a0d8-8af8bbce1348/49x49.png"
+              alt="Discord" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
+          <a href="https://github.com/decentraland"><img
+              src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/7e80e36c-0de5-4aea-b6b8-039ab7ae2495/50x49.png"
+              alt="GitHub" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
+          <a href="https://x.com/decentraland"><img
+              src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/6a7ba0a5-a312-425d-8501-63ee46c08f94/50x49.png"
+              alt="X" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
+          <a href="https://www.instagram.com/decentraland_foundation/"><img
+              src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/8ece53a3-2e8d-46aa-840b-44cac9a951ff/50x49.png"
+              alt="Instagram" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
+        </div>
+      </td>
+    </tr>
+     <tr class="social_media_link_mobile">
+      <td>
+        <div style="margin-top: 10px;">
           <a href="https://www.youtube.com/@decentraland_foundation"><img
               src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/20c004d5-5632-4980-93f2-6e776c86ccac/50x49.png"
               alt="YouTube" style="width: 26px; height: 25px; margin: 0 10px;" /></a>
