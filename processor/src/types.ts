@@ -76,7 +76,7 @@ export type QueueMessage = any
 
 export type IQueueConsumer = {
   send(message: QueueMessage): Promise<void>
-  receiveMessages(): Promise<Message[]>
+  receiveMessages(maxMessages: number): Promise<Message[]>
   deleteMessage(receiptHandle: string): Promise<void>
 }
 
