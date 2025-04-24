@@ -1,6 +1,6 @@
 import { AppComponents, IMessageProcessor } from '../types'
-import { sleep } from '../logic/utils'
 import { NotificationRecord } from '@notifications/common'
+import { START_COMPONENT, STOP_COMPONENT } from '@well-known-components/interfaces'
 
 export function createMessageProcessor({
   logs,
@@ -10,6 +10,7 @@ export function createMessageProcessor({
 }: Pick<AppComponents, 'logs' | 'queueConsumer' | 'notificationsService' | 'eventParser'>): IMessageProcessor {
   const logger = logs.getLogger('messages-consumer')
   let isRunning = false
+  let processLoopPromise: Promise<void> | null = null
 
   function parseMessageToNotification(message: string): NotificationRecord | undefined {
     try {
@@ -22,17 +23,11 @@ export function createMessageProcessor({
     }
   }
 
-  async function start() {
+  async function processLoop() {
     logger.info('Starting to listen messages from queue')
     isRunning = true
     while (isRunning) {
-      const messages = await queueConsumer.receiveMessages()
-
-      if (messages.length === 0) {
-        logger.info('No messages found in queue, waiting 10 seconds to check again')
-        await sleep(10 * 1000)
-        continue
-      }
+      const messages = await queueConsumer.receiveMessages(10)
 
       for (const message of messages) {
         const { Body, ReceiptHandle } = message
@@ -57,9 +52,29 @@ export function createMessageProcessor({
     }
   }
 
-  async function stop() {
-    isRunning = false
+  async function start() {
+    logger.info('Starting messages consumer component')
+    isRunning = true
+
+    // Start the processing loop in the background
+    processLoopPromise = processLoop()
+
+    // Return immediately to not block other components
+    return Promise.resolve()
   }
 
-  return { start, stop }
+  async function stop() {
+    logger.info('Stopping messages consumer component')
+    isRunning = false
+
+    if (processLoopPromise) {
+      await processLoopPromise
+      processLoopPromise = null
+    }
+  }
+
+  return {
+    [START_COMPONENT]: start,
+    [STOP_COMPONENT]: stop
+  }
 }

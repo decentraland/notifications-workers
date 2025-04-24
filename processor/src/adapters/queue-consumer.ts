@@ -24,7 +24,8 @@ export async function createQueueConsumer({ config }: Pick<AppComponents, 'confi
     const receiveCommand = new ReceiveMessageCommand({
       QueueUrl: endpoint,
       MaxNumberOfMessages: maxMessages,
-      VisibilityTimeout: 60 // 1 minute
+      VisibilityTimeout: 60, // 1 minute
+      WaitTimeSeconds: 20
     })
     const { Messages = [] } = await client.send(receiveCommand)
 
