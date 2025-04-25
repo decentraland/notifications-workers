@@ -410,7 +410,8 @@ describe('email rendering tests', () => {
         position: '10,10',
         worldName: 'my-world.dcl.eth',
         isWorld: true,
-        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth',
+        image: 'https://assets-cdn.decentraland.zone/streaming/streaming-notification.png'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -425,7 +426,8 @@ describe('email rendering tests', () => {
         position: '10,10',
         worldName: 'my-world.dcl.eth',
         isWorld: true,
-        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth',
+        image: 'https://assets-cdn.decentraland.zone/streaming/streaming-notification.png'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -440,7 +442,8 @@ describe('email rendering tests', () => {
         position: '10,10',
         worldName: 'my-world.dcl.eth',
         isWorld: true,
-        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth',
+        image: 'https://assets-cdn.decentraland.zone/streaming/streaming-notification.png'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -455,7 +458,8 @@ describe('email rendering tests', () => {
         position: '10,10',
         worldName: 'my-world.dcl.eth',
         isWorld: true,
-        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth',
+        image: 'https://assets-cdn.decentraland.zone/streaming/streaming-notification.png'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -470,7 +474,8 @@ describe('email rendering tests', () => {
         position: '10,10',
         worldName: 'my-world.dcl.eth',
         isWorld: true,
-        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth'
+        url: 'https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth',
+        image: 'https://assets-cdn.decentraland.zone/streaming/streaming-notification.png'
       },
       timestamp: Date.now(),
       eventKey: '123'

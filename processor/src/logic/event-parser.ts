@@ -237,7 +237,8 @@ export async function createEventParser({
             position: event.metadata.position,
             worldName: event.metadata.worldName,
             isWorld: event.metadata.isWorld,
-            url: event.metadata.url
+            url: event.metadata.url,
+            image: event.metadata.image
           }
         }
       case Events.SubType.CreditsService.CREDITS_GOAL_COMPLETED:
