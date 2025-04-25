@@ -518,7 +518,7 @@ exports[`email rendering tests rendering streaming_key_revoke 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
   "actionButtonLink": "https://play.decentraland.org/?position=10%2C10&realm=my-world.dcl.eth",
-  "actionButtonText": "jump TO YOUR SCENE",
+  "actionButtonText": "JUMP TO YOUR SCENE",
   "bannerLabel": "Streaming Key Deactivated",
   "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/b2952fb9-69f1-4ef7-a692-7cc28a817642/600x240.png",
   "content": "<p>The stream key for the scene at my-world.dcl.eth has been deactivated. If you need a new key, you can always generate one from the Admin Tools panel in Decentraland.</p> ",
