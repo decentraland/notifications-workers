@@ -314,6 +314,17 @@ export async function createEventParser({
             link: `${DECENTRALAND_URL}/marketplace`
           }
         }
+      case Events.SubType.Client.WALKED_PARCELS:
+        return {
+          type: NotificationType.WALKED_PARCELS,
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            amountOfParcelsVisited: event.metadata.amountOfParcelsVisited,
+            lastParcel: event.metadata.lastParcel
+          }
+        }
       default:
         return undefined
     }
