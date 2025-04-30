@@ -314,7 +314,7 @@ export async function createEventParser({
             link: `${DECENTRALAND_URL}/marketplace`
           }
         }
-      case Events.SubType.Client.WALKED_PARCELS:
+      case Events.SubType.Client.WALKED_PARCELS: // TODO: remove after PoC
         return {
           type: NotificationType.WALKED_PARCELS,
           address: event.metadata.address,
