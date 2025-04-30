@@ -16,9 +16,12 @@ export function createMessageProcessor({
     try {
       logger.info('Pulled message from queue', { message })
       const parsedMessage = JSON.parse(message)
-      return eventParser.parseToNotification(parsedMessage)
+      logger.info('Parsed message:', { parsedMessage })
+      const notification = eventParser.parseToNotification(parsedMessage)
+      logger.info('Parsed notification:', { notification: JSON.stringify(notification) })
+      return notification
     } catch (error: any) {
-      logger.error(`Failed while parsing message from queue: ${error?.message || 'Unexpected failure'}`)
+      logger.error(`Failed while parsing message from queue: ${error?.message || 'Unexpected failure'}`, { error })
       return undefined
     }
   }
@@ -28,22 +31,24 @@ export function createMessageProcessor({
     isRunning = true
     while (isRunning) {
       const messages = await queueConsumer.receiveMessages(10)
+      logger.info('Received messages from queue', { count: messages.length })
 
       for (const message of messages) {
         const { Body, ReceiptHandle } = message
-        logger.info('Pulled message from queue', { message: Body! })
+        logger.info('Processing message', { message: Body! })
         const notification: NotificationRecord | undefined = parseMessageToNotification(Body!)
 
         if (!notification) {
+          logger.info('No notification created, deleting message')
           await queueConsumer.deleteMessage(ReceiptHandle!)
           continue
         }
 
         try {
+          logger.info('Saving notification', { notification: JSON.stringify(notification) })
           await notificationsService.saveNotifications([notification])
           logger.info(`Created a new ${notification.type} notification.`)
         } catch (error: any) {
-          // TODO: handle retries and DLQ
           logger.error(`Failed while processing event notification: ${error?.message || 'Unexpected failure'}`)
         } finally {
           await queueConsumer.deleteMessage(ReceiptHandle!)

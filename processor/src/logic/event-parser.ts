@@ -14,6 +14,7 @@ export async function createEventParser({
 
   function parseToNotification(event: Event): NotificationRecord | undefined {
     logger.info(`Parse notification - type: ${event.type}, subtype: ${event.subType}, key: ${event.key}`)
+    logger.info('Event data:', { event: JSON.stringify(event) })
 
     switch (event.subType) {
       case Events.SubType.Blockchain.ROYALTIES_EARNED:
@@ -314,8 +315,9 @@ export async function createEventParser({
             link: `${DECENTRALAND_URL}/marketplace`
           }
         }
-      case Events.SubType.Client.WALKED_PARCELS: // TODO: remove after PoC
-        return {
+      case Events.SubType.Client.WALKED_PARCELS:
+        logger.info('Processing WALKED_PARCELS event')
+        const notification = {
           type: NotificationType.WALKED_PARCELS,
           address: event.metadata.address,
           eventKey: event.key,
@@ -325,6 +327,8 @@ export async function createEventParser({
             lastParcel: event.metadata.lastParcel
           }
         }
+        logger.info('Created notification:', { notification: JSON.stringify(notification) })
+        return notification
       default:
         return undefined
     }

@@ -15,12 +15,23 @@ export function createBroadcasterComponent({
   return {
     sendMessageToAddress: (address: string, message: NotificationRecord) => {
       const connections = (memoryCache.get(address) as ConnectionData[]) || []
+      logger.info('Broadcasting message to address', {
+        address,
+        connectionCount: connections.length
+      })
+
+      if (connections.length === 0) {
+        return
+      }
+
       connections.forEach((connection) => {
         try {
-          connection.ws.send(JSON.stringify(message))
+          const messageStr = JSON.stringify(message)
+          connection.ws.send(messageStr)
         } catch (error) {
           logger.error('Error sending message to connection', {
             address,
+            connectionId: connection.connectionId,
             error: error instanceof Error ? error.message : String(error)
           })
         }

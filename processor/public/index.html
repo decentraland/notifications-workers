@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin-bottom: 5px;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+        .status {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Test</h1>
+    <div id="status" class="status disconnected">Disconnected</div>
+    <div id="messages"></div>
+    <input type="text" id="address" placeholder="Enter Ethereum address (0x...)" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+    <button onclick="connect()">Connect</button>
+    <button onclick="disconnect()">Disconnect</button>
+
+    <script>
+        let ws = null;
+        const messagesDiv = document.getElementById('messages');
+        const statusDiv = document.getElementById('status');
+        const addressInput = document.getElementById('address');
+
+        function addMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.textContent = message;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function connect() {
+            const address = addressInput.value.trim();
+            if (!address || !address.match(/^0x[a-fA-F0-9]{40}$/)) {
+                alert('Please enter a valid Ethereum address');
+                return;
+            }
+
+            if (ws) {
+                ws.close();
+            }
+
+            ws = new WebSocket(`ws://localhost:5003/${address}/notifications`);
+
+            ws.onopen = () => {
+                statusDiv.className = 'status connected';
+                statusDiv.textContent = 'Connected';
+                addMessage('Connected to WebSocket server');
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    addMessage(JSON.stringify(data, null, 2));
+                } catch (e) {
+                    addMessage(event.data);
+                }
+            };
+
+            ws.onclose = () => {
+                statusDiv.className = 'status disconnected';
+                statusDiv.textContent = 'Disconnected';
+                addMessage('Disconnected from WebSocket server');
+                ws = null;
+            };
+
+            ws.onerror = (error) => {
+                addMessage('Error: ' + (error.message || 'Unknown error occurred'));
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        function disconnect() {
+            if (ws) {
+                ws.close();
+            }
+        }
+    </script>
+</body>
+</html> 

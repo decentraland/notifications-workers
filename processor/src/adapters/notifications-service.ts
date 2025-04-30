@@ -17,6 +17,7 @@ export async function createNotificationsService(
 
   async function saveNotifications(notifications: NotificationRecord[]): Promise<void> {
     if (notifications.length === 0) {
+      logger.info('No notifications to save')
       return
     }
 
@@ -24,13 +25,16 @@ export async function createNotificationsService(
     logger.info(
       `Inserted ${result.inserted.length} new notifications and updated ${result.updated.length} existing ones.`
     )
+
+    for (const notification of [...result.inserted, ...result.updated]) {
+      broadcaster.sendMessageToAddress(notification.address, notification)
+    }
+
     if (result.inserted.length > 0) {
-      // Defer the email sending function
       setImmediate(async () => {
         try {
           const addresses = result.inserted.map((notification) => notification.address.toLowerCase())
           const uniqueAddresses = [...new Set(addresses)]
-
           const subscriptions = await subscriptionService.findSubscriptionsForAddresses(uniqueAddresses)
           const addressesWithSubscriptions = subscriptions.reduce(
             (acc, subscription) => {
@@ -42,35 +46,23 @@ export async function createNotificationsService(
 
           for (const notification of result.inserted) {
             const address = notification.address.toLowerCase()
-            broadcaster.sendMessageToAddress(address, notification)
-
             const subscription = addressesWithSubscriptions[notification.address.toLowerCase()]
             if (!subscription?.email || subscription.details.ignore_all_email) {
-              logger.info(`Skipping sending email for ${notification.address} as all email notifications are ignored`)
               continue
             }
 
             if (!subscription.details.message_type[notification.type]?.email) {
-              logger.info(
-                `Skipping sending email for ${notification.address} as email notifications for ${notification.type} are ignored`
-              )
-
               continue
             }
             notification.metadata.userName = 'Unknown'
 
             const profile = await profiles.getByAddress(notification.address)
-
             if (profile && profile.avatars && profile.avatars.length) {
               notification.metadata.userName = profile.avatars[0].name
             }
 
             const email = await emailRenderer.renderEmail(subscription.email, notification)
             if (!email) {
-              logger.info(
-                `Skipping sending email for ${notification.address} as there is no template for ${notification.type}`
-              )
-
               continue
             }
 

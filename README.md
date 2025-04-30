@@ -232,3 +232,11 @@ Finally, start the servers.
 yarn
 yarn start:local
 ```
+
+# Test
+
+## Queue message using LocalStack
+
+````
+ aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url http://0.0.0.0:4566/000000000000/notification-queue --message-body '{"type":"Client","subType":"walked-parcels","key":"test-walked-parcels-key","timestamp":1710000000000,"metadata":{"address":"0x5447C87068b3d99F50a439f98a2B420585B34A93","amountOfParcelsVisited":5,"lastParcel":"-10,10"}}' --message-attributes '{"ContentType":{"DataType":"String","StringValue":"application/json"}}'
+ ```

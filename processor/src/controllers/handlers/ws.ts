@@ -32,6 +32,14 @@ export function setupWebSocketEventsHandler(
       const address = req.getParameter(0)
       logger.info(`Client connecting with address: ${address}`)
 
+      // Validate address format
+      if (!address || !address.match(/^0x[a-fA-F0-9]{40}$/)) {
+        res.writeStatus('400 Bad Request')
+        res.writeHeader('Access-Control-Allow-Origin', '*')
+        res.end('Invalid address format')
+        return
+      }
+
       res.upgrade(
         { address },
         req.getHeader('sec-websocket-key'),
@@ -49,9 +57,9 @@ export function setupWebSocketEventsHandler(
       // Get existing connections for this address or create new array
       const existingConnections = (memoryCache.get(address) as ConnectionData[]) || []
 
-      // Add new connection
+      // Add new connection with timestamp-based ID
       const newConnection: ConnectionData = {
-        connectionId: (ws as any).id.toString(),
+        connectionId: Date.now().toString(),
         ws: ws
       }
 
@@ -65,34 +73,15 @@ export function setupWebSocketEventsHandler(
         const address = userData.address || 'unknown'
         const data = JSON.parse(Buffer.from(message).toString())
 
-        if (data.metadata && !data.metadata.address) {
-          data.metadata.address = address
-        }
+        logger.info(`Received message from ${address}:`, data)
 
-        logger.info(`Received event from ${address}:`, data)
-
-        try {
-          const parsedEvent = {
-            metadata: {
-              visitedParcel: data.new_parcel as string,
-              address: address
-            }
-          }
-
-          logger.info(`Processing event from ${address}:`, {
-            parsedEvent: JSON.stringify(parsedEvent)
+        // Echo the message back to the client
+        ws.send(
+          JSON.stringify({
+            ok: true,
+            message: 'Message received'
           })
-        } catch (pubError) {
-          logger.error('Error processing event', {
-            error: pubError instanceof Error ? pubError.message : String(pubError)
-          })
-          ws.send(
-            JSON.stringify({
-              ok: false,
-              error: 'Failed to process event'
-            })
-          )
-        }
+        )
       } catch (error) {
         logger.error('Error processing WebSocket message', {
           error: error instanceof Error ? error.message : String(error)
@@ -113,7 +102,7 @@ export function setupWebSocketEventsHandler(
 
       // Remove the disconnected connection from memory cache
       const connections = (memoryCache.get(address) as ConnectionData[]) || []
-      const updatedConnections = connections.filter((conn) => conn.connectionId !== (ws as any).id.toString())
+      const updatedConnections = connections.filter((conn) => conn.ws !== ws)
 
       if (updatedConnections.length > 0) {
         memoryCache.set(address, updatedConnections)
