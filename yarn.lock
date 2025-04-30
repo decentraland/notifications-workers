@@ -1979,6 +1979,14 @@
     sinon "^17.0.0"
     ts-jest "^29.1.0"
 
+"@well-known-components/uws-http-server@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@well-known-components/uws-http-server/-/uws-http-server-0.0.2.tgz#5ba577fd895bd63b67936b15f7803b2b7e9c1149"
+  integrity sha512-zwq7kpXnr+ml3py1bcuU3ILOGVO+6tg5e8+pf01G2wudWQlLMV3Cp66/U8tlrAFgIo5Ob7ZQmKdAnCQpHm9gFA==
+  dependencies:
+    "@well-known-components/interfaces" "^1.4.3"
+    uWebSockets.js "github:uNetworking/uWebSockets.js#v20.43.0"
+
 acorn-jsx@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
@@ -4625,6 +4633,10 @@ typescript@^5.3.3:
   version "5.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.3.tgz#e1b0a3c394190838a0b168e771b0ad56a0af0faa"
   integrity sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==
+
+"uWebSockets.js@github:uNetworking/uWebSockets.js#v20.43.0":
+  version "20.43.0"
+  resolved "https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/1977b5039938ad863d42fc4958d48c17e5a1fa06"
 
 uglify-js@^3.1.4:
   version "3.18.0"

@@ -8,10 +8,10 @@ export type INotificationsService = {
 export async function createNotificationsService(
   components: Pick<
     AppComponents,
-    'config' | 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService' | 'profiles'
+    'config' | 'db' | 'emailRenderer' | 'logs' | 'sendGridClient' | 'subscriptionService' | 'profiles' | 'broadcaster'
   >
 ): Promise<INotificationsService> {
-  const { db, emailRenderer, logs, sendGridClient, subscriptionService, config, profiles } = components
+  const { db, emailRenderer, logs, sendGridClient, subscriptionService, config, profiles, broadcaster } = components
   const logger = logs.getLogger('notifications-service')
   const env = await config.requireString('ENV')
 
@@ -41,6 +41,9 @@ export async function createNotificationsService(
           )
 
           for (const notification of result.inserted) {
+            const address = notification.address.toLowerCase()
+            broadcaster.sendMessageToAddress(address, notification)
+
             const subscription = addressesWithSubscriptions[notification.address.toLowerCase()]
             if (!subscription?.email || subscription.details.ignore_all_email) {
               logger.info(`Skipping sending email for ${notification.address} as all email notifications are ignored`)

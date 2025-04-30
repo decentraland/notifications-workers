@@ -14,6 +14,7 @@ import { DbComponent, ISendGridClient, NotificationRecord, ProfilesComponent } f
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
+import { IUWsComponent } from '@well-known-components/uws-http-server'
 
 export type AppComponents = {
   config: IConfigComponent
@@ -32,6 +33,9 @@ export type AppComponents = {
   eventParser: IEventParser
   messageProcessor: IMessageProcessor
   profiles: ProfilesComponent
+  uwsServer: IUWsComponent
+  memoryCache: IMemoryCache
+  broadcaster: IBroadcaster
 }
 
 // this type simplifies the typings of http handlers
@@ -84,4 +88,17 @@ export type IMessageProcessor = IBaseComponent
 
 export type IEventParser = {
   parseToNotification(event: Event): NotificationRecord | undefined
+}
+
+export type IMemoryCache = {
+  get(key: string): any
+  set(key: string, value: any): void
+}
+
+export type IWsHandler = {
+  uwsServer: IUWsComponent
+}
+
+export type IBroadcaster = {
+  sendMessageToAddress: (address: string, message: NotificationRecord) => void
 }
