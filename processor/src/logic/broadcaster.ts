@@ -21,6 +21,7 @@ export function createBroadcasterComponent({
       })
 
       if (connections.length === 0) {
+        logger.info('No connections found for address', { address })
         return
       }
 
