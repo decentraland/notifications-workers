@@ -48,9 +48,8 @@ export async function storeUnconfirmedEmailHandler(
       userName = profile.avatars[0].name
     }
 
-    const validateButtonLink = !!body.isCreditsWorkflow
-      ? `${accountBaseUrl}/credits-email-confirmed/${code}?address=${address}${body.redirect ? `?redirect=${encodeURIComponent(body.redirect)}` : ''}`
-      : `${accountBaseUrl}/confirm-email/${code}${body.redirect ? `?redirect=${encodeURIComponent(body.redirect)}` : ''}`
+    const creditsConfirmationUrl = `${accountBaseUrl}/credits-email-confirmed/${code}?address=${address}${body.redirect ? `?redirect=${encodeURIComponent(body.redirect)}` : ''}`
+    const normalConfirmationUrl = `${accountBaseUrl}/confirm-email/${code}${body.redirect ? `?redirect=${encodeURIComponent(body.redirect)}` : ''}`
 
     const emailTemplate = !!body.isCreditsWorkflow
       ? InboxTemplates.VALIDATE_CREDITS_EMAIL
@@ -58,7 +57,7 @@ export async function storeUnconfirmedEmailHandler(
 
     const email: Sendable = {
       ...(await emailRenderer.renderEmail(emailTemplate, body.email, {
-        validateButtonLink,
+        validateButtonLink: !!body.isCreditsWorkflow ? creditsConfirmationUrl : normalConfirmationUrl,
         validateButtonText: 'Click Here to Confirm Your Email',
         userName,
         accountBaseUrl
