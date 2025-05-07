@@ -1,5 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`email rendering tests rendering validate-credits-email 1`] = `
+{
+  "accountUrl": "",
+  "bannerLabel": "Confirm Your Email",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/cb67605b-d594-4847-a163-34d0a1b27120/600x240.png",
+  "content": "<p>You're almost ready to start earning Marketplace Credits!<br>Click the button below to complete the email confirmation process.</p>
+
+<p style='height: 41px; padding-top: 8px; padding-bottom: 8px;'>
+  <a
+    href='https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG'
+    style='display: inline-block; background-color: #f03e53; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;'
+  >Click Here to Confirm Your Email</a>
+</p>
+
+<p>Or you can copy and paste this URL into the browser:
+  <a href='https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG' style='font-size: 13px;'>https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG</a>
+</p>",
+  "subject": "[Action Needed] Confirm Your Email for Weekly Rewards 📩",
+  "title": "Hey there",
+  "titleHighligth": "",
+  "to": "email@example.com",
+}
+`;
+
 exports[`email rendering tests rendering validate-email 1`] = `
 {
   "accountUrl": "",

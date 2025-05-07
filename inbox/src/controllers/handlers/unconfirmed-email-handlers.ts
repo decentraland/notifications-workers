@@ -21,7 +21,7 @@ export async function storeUnconfirmedEmailHandler(
   const address = context.verification!.auth
   const env = await config.requireString('ENV')
 
-  const body = await parseJson<{ email: string }>(context.request)
+  const body = await parseJson<{ email: string; redirect?: string; isCreditsWorkflow?: boolean }>(context.request)
   if (body.email !== '' && !Email.validate(body.email)) {
     throw new InvalidRequestError('Invalid email')
   }
@@ -48,9 +48,16 @@ export async function storeUnconfirmedEmailHandler(
       userName = profile.avatars[0].name
     }
 
+    const creditsConfirmationUrl = `${accountBaseUrl}/credits-email-confirmed/${code}?address=${address}${body.redirect ? `?redirect=${encodeURIComponent(body.redirect)}` : ''}`
+    const normalConfirmationUrl = `${accountBaseUrl}/confirm-email/${code}${body.redirect ? `?redirect=${encodeURIComponent(body.redirect)}` : ''}`
+
+    const emailTemplate = !!body.isCreditsWorkflow
+      ? InboxTemplates.VALIDATE_CREDITS_EMAIL
+      : InboxTemplates.VALIDATE_EMAIL
+
     const email: Sendable = {
-      ...(await emailRenderer.renderEmail(InboxTemplates.VALIDATE_EMAIL, body.email, {
-        validateButtonLink: `${accountBaseUrl}/confirm-email/${code}`,
+      ...(await emailRenderer.renderEmail(emailTemplate, body.email, {
+        validateButtonLink: !!body.isCreditsWorkflow ? creditsConfirmationUrl : normalConfirmationUrl,
         validateButtonText: 'Click Here to Confirm Your Email',
         userName,
         accountBaseUrl
@@ -79,7 +86,7 @@ export async function storeUnconfirmedEmailHandler(
 export async function confirmEmailHandler(
   context: Pick<
     HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs', '/confirm-email'>,
-    'components' | 'request' | 'verification'
+    'components' | 'request' | 'verification' | 'url'
   >
 ): Promise<IHttpServerComponent.IResponse> {
   const { dataWarehouseClient, db } = context.components
