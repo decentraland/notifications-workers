@@ -1,4 +1,4 @@
-import { createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
+import { createConfigComponent, createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
 import {
   createServerComponent,
   createStatusCheckComponent,
@@ -18,10 +18,13 @@ import { createNotificationsService } from './adapters/notifications-service'
 import { createQueueConsumer } from './adapters/queue-consumer'
 import { createEventParser } from './logic/event-parser'
 import { createMessageProcessor } from './adapters/message-processor'
+import { createUWsComponent } from '@well-known-components/uws-http-server'
+import { createInMemoryCacheComponent } from './adapters/memory-cache'
+import { createBroadcasterComponent } from './logic/broadcaster'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
-  const config = await createDotEnvConfigComponent({ path: ['.env.default', '.env'] })
+  const config = await createDotEnvConfigComponent({ path: ['.env.default', '.env.local', '.env'] })
   const logs = await createLogComponent({})
   const metrics = await createMetricsComponent(metricDeclarations, { config })
   const server = await createServerComponent<GlobalContext>(
@@ -36,6 +39,10 @@ export async function initComponents(): Promise<AppComponents> {
   await instrumentHttpServerWithPromClientRegistry({ server, metrics, config, registry: metrics.registry! })
 
   const statusChecks = await createStatusCheckComponent({ server, config })
+
+  const WS_SERVER_PORT = await config.requireString('WS_SERVER_PORT')
+  const configForWS = createConfigComponent({ HTTP_SERVER_PORT: WS_SERVER_PORT, HTTP_SERVER_HOST: '0.0.0.0' })
+  const uwsServer = await createUWsComponent({ config: configForWS, logs })
 
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
   if (!databaseUrl) {
@@ -70,6 +77,13 @@ export async function initComponents(): Promise<AppComponents> {
 
   const profiles = await createProfilesComponent({ fetch, config, logs })
 
+  const memoryCache = createInMemoryCacheComponent()
+
+  const broadcaster = createBroadcasterComponent({
+    memoryCache,
+    logs
+  })
+
   const notificationsService = await createNotificationsService({
     config,
     db,
@@ -77,7 +91,8 @@ export async function initComponents(): Promise<AppComponents> {
     logs,
     subscriptionService,
     sendGridClient,
-    profiles
+    profiles,
+    broadcaster
   })
 
   const queueConsumer = await createQueueConsumer({ config })
@@ -106,6 +121,9 @@ export async function initComponents(): Promise<AppComponents> {
     queueConsumer,
     eventParser,
     messageProcessor,
-    profiles
+    profiles,
+    uwsServer,
+    memoryCache,
+    broadcaster
   }
 }

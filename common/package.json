@@ -25,7 +25,7 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "@dcl/schemas": "^16.8.0",
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/poc-real-time/dcl-schemas-16.8.1-14729217012.commit-1cfa64f.tgz",
     "@well-known-components/interfaces": "^1.5.2",
     "@well-known-components/pg-component": "^1.1.0"
   }

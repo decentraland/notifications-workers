@@ -18,9 +18,11 @@ RUN yarn install --prod --frozen-lockfile
 
 ########################## END OF BUILD STAGE ##########################
 
-FROM node:18-alpine
+FROM node:20-alpine
 
-RUN apk update && apk add --update wget && apk add --update tini
+RUN apk update && \
+    apk add --no-cache wget tini libstdc++ gcompat && \
+    rm -rf /var/cache/apk/*
 
 # NODE_ENV is used to configure some runtime options, like JSON logger
 ENV NODE_ENV production
