@@ -10,9 +10,12 @@ import { metricDeclarations } from './metrics'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
 import { Readable } from 'node:stream'
-import { DbComponent, IDataWarehouseClient, ISendGridClient, ProfilesComponent } from '@notifications/common'
+import { DbComponent, IDataWarehouseClient, ISendGridClient, IProfilesComponent } from '@notifications/common'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { IPageRenderer } from './adapters/page-renderer'
+import { IFeaturesComponent } from '@well-known-components/features-component'
+import { IFeatureFlagsAdapter } from './adapters/feature-flags-adapter'
+import { IChallengerAdapter } from './adapters/challenger-adapter'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -31,12 +34,15 @@ export type BaseComponents = {
   pg: IPgComponent
   sendGridClient: ISendGridClient
   server: IHttpServerComponent<GlobalContext>
-  profiles: ProfilesComponent
+  profiles: IProfilesComponent
+  challengerAdapter: IChallengerAdapter
+  featureFlagsAdapter: IFeatureFlagsAdapter
 }
 
 // components used in runtime
 export type AppComponents = BaseComponents & {
   statusChecks: IBaseComponent
+  features: IFeaturesComponent
 }
 
 // components used in tests
@@ -69,4 +75,8 @@ export type NotificationEvent = {
   metadata: any
   timestamp: number
   read: boolean
+}
+
+export enum Feature {
+  TURNSTILE_VERIFICATION = 'turnstile-verification'
 }

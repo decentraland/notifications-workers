@@ -1,23 +1,53 @@
-import { HandlerContextWithPath } from '../../types'
-import { IHttpServerComponent } from '@well-known-components/interfaces'
+import { Feature, HandlerContextWithPath } from '../../types'
+import { IConfigComponent, IHttpServerComponent } from '@well-known-components/interfaces'
 import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
 import { Email, EthAddress } from '@dcl/schemas'
 import { Email as Sendable } from '@notifications/common'
 import { makeId } from '../../logic/utils'
 import { InboxTemplates } from '../../adapters/email-renderer'
+import { IFeatureFlagsAdapter } from '../../adapters/feature-flags-adapter'
 
 const CODE_LENGTH = 32
+
+const getConfirmEmailRoute = async (
+  config: IConfigComponent,
+  featureFlagsAdapter: IFeatureFlagsAdapter,
+  address: EthAddress,
+  code: string,
+  isCreditsWorkflow: boolean
+): Promise<string> => {
+  const accountBaseUrl = await config.requireString('ACCOUNT_BASE_URL')
+  const isChallengeEnabled = featureFlagsAdapter.isEnabled(Feature.TURNSTILE_VERIFICATION)
+
+  if (isChallengeEnabled) {
+    return `${accountBaseUrl}/confirm-email/${code}?address=${address}&source=${isCreditsWorkflow ? 'credits' : 'account'}`
+  }
+
+  if (isCreditsWorkflow) {
+    return `${accountBaseUrl}/credits-email-confirmed/${code}?address=${address}`
+  }
+
+  return `${accountBaseUrl}/confirm-email/${code}`
+}
 
 export async function storeUnconfirmedEmailHandler(
   context: Pick<
     HandlerContextWithPath<
-      'config' | 'dataWarehouseClient' | 'db' | 'emailRenderer' | 'sendGridClient' | 'profiles' | 'logs',
+      | 'config'
+      | 'dataWarehouseClient'
+      | 'db'
+      | 'emailRenderer'
+      | 'sendGridClient'
+      | 'profiles'
+      | 'logs'
+      | 'featureFlagsAdapter',
       '/set-email'
     >,
     'url' | 'request' | 'components' | 'verification'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { config, dataWarehouseClient, db, emailRenderer, sendGridClient, profiles } = context.components
+  const { config, dataWarehouseClient, db, emailRenderer, sendGridClient, profiles, featureFlagsAdapter } =
+    context.components
   const address = context.verification!.auth
   const env = await config.requireString('ENV')
 
@@ -48,8 +78,13 @@ export async function storeUnconfirmedEmailHandler(
       userName = profile.avatars[0].name
     }
 
-    const creditsConfirmationUrl = `${accountBaseUrl}/credits-email-confirmed/${code}?address=${address}${body.redirect ? `?redirect=${encodeURIComponent(body.redirect)}` : ''}`
-    const normalConfirmationUrl = `${accountBaseUrl}/confirm-email/${code}${body.redirect ? `?redirect=${encodeURIComponent(body.redirect)}` : ''}`
+    const confirmationUrl = await getConfirmEmailRoute(
+      config,
+      featureFlagsAdapter,
+      address,
+      code,
+      body.isCreditsWorkflow ?? false
+    )
 
     const emailTemplate = !!body.isCreditsWorkflow
       ? InboxTemplates.VALIDATE_CREDITS_EMAIL
@@ -57,7 +92,7 @@ export async function storeUnconfirmedEmailHandler(
 
     const email: Sendable = {
       ...(await emailRenderer.renderEmail(emailTemplate, body.email, {
-        validateButtonLink: !!body.isCreditsWorkflow ? creditsConfirmationUrl : normalConfirmationUrl,
+        validateButtonLink: confirmationUrl,
         validateButtonText: 'Click Here to Confirm Your Email',
         userName,
         accountBaseUrl
@@ -85,12 +120,14 @@ export async function storeUnconfirmedEmailHandler(
 
 export async function confirmEmailHandler(
   context: Pick<
-    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs', '/confirm-email'>,
+    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs' | 'challengerAdapter', '/confirm-email'>,
     'components' | 'request' | 'verification' | 'url'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { dataWarehouseClient, db } = context.components
-  const body = await parseJson<{ address: string; code: string }>(context.request)
+  const { dataWarehouseClient, challengerAdapter, db } = context.components
+  const body = await parseJson<{ address: string; code: string; turnstileToken?: string; source?: string }>(
+    context.request
+  )
 
   const address = body.address
   if (!address || !EthAddress.validate(address)) {
@@ -100,6 +137,10 @@ export async function confirmEmailHandler(
   const code = body.code
   if (!code || code.length !== CODE_LENGTH) {
     throw new InvalidRequestError('Missing code')
+  }
+
+  if (!(await challengerAdapter.verifyChallengeIfEnabled(body.turnstileToken, address))) {
+    throw new InvalidRequestError('Invalid captcha')
   }
 
   const unconfirmedEmail = await db.findUnconfirmedEmail(address)
