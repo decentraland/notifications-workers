@@ -90,7 +90,7 @@ export async function confirmEmailHandler(
   >
 ): Promise<IHttpServerComponent.IResponse> {
   const { dataWarehouseClient, db } = context.components
-  const body = await parseJson<{ address: string; code: string }>(context.request)
+  const body = await parseJson<{ address: string; code: string, cfCode: string }>(context.request)
 
   const address = body.address
   if (!address || !EthAddress.validate(address)) {
@@ -109,6 +109,27 @@ export async function confirmEmailHandler(
 
   if (unconfirmedEmail.code !== code) {
     throw new InvalidRequestError('Invalid code')
+  }
+
+  if (body.cfCode) {
+    const token = body.cfCode
+    const secret = '0x0000000000000000000000000000000000000000'
+
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: JSON.stringify({
+        secret,
+        response: token,
+      })
+    })
+
+    const data = await response.json()
+
+    if (!data.success) {
+      throw new InvalidRequestError('Invalid captcha')
+    }
+  } else {
+    throw new InvalidRequestError('missing captcha')
   }
 
   const subscription = await db.findSubscription(address)
