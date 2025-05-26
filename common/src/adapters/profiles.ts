@@ -8,11 +8,11 @@ type AppComponents = {
   logs: ILoggerComponent
 }
 
-export type ProfilesComponent = {
+export type IProfilesComponent = {
   getByAddress(address: string): Promise<Profile | null>
 }
 
-export async function createProfilesComponent({ fetch, config, logs }: AppComponents): Promise<ProfilesComponent> {
+export async function createProfilesComponent({ fetch, config, logs }: AppComponents): Promise<IProfilesComponent> {
   let catalystLambdasUrl = await config.requireString('CATALYST_LAMBDAS_URL')
 
   if (!catalystLambdasUrl.endsWith('/lambdas')) {

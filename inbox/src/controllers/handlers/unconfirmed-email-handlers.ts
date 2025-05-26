@@ -1,4 +1,4 @@
-import { HandlerContextWithPath } from '../../types'
+import { Feature, HandlerContextWithPath } from '../../types'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
 import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
 import { Email, EthAddress } from '@dcl/schemas'
@@ -85,12 +85,12 @@ export async function storeUnconfirmedEmailHandler(
 
 export async function confirmEmailHandler(
   context: Pick<
-    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs', '/confirm-email'>,
+    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs' | 'challengerAdapter', '/confirm-email'>,
     'components' | 'request' | 'verification' | 'url'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { dataWarehouseClient, db } = context.components
-  const body = await parseJson<{ address: string; code: string, cfCode: string }>(context.request)
+  const { dataWarehouseClient, challengerAdapter, db } = context.components
+  const body = await parseJson<{ address: string; code: string; cfCode?: string }>(context.request)
 
   const address = body.address
   if (!address || !EthAddress.validate(address)) {
@@ -102,6 +102,15 @@ export async function confirmEmailHandler(
     throw new InvalidRequestError('Missing code')
   }
 
+  if (
+    !(await challengerAdapter.verifyChallengeIfEnabled(body.cfCode, {
+      userAddress: address,
+      request: context.request
+    }))
+  ) {
+    throw new InvalidRequestError('Invalid captcha')
+  }
+
   const unconfirmedEmail = await db.findUnconfirmedEmail(address)
   if (!unconfirmedEmail) {
     throw new InvalidRequestError('No unconfirmed email for this address')
@@ -109,27 +118,6 @@ export async function confirmEmailHandler(
 
   if (unconfirmedEmail.code !== code) {
     throw new InvalidRequestError('Invalid code')
-  }
-
-  if (body.cfCode) {
-    const token = body.cfCode
-    const secret = '0x0000000000000000000000000000000000000000'
-
-    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      body: JSON.stringify({
-        secret,
-        response: token,
-      })
-    })
-
-    const data = await response.json()
-
-    if (!data.success) {
-      throw new InvalidRequestError('Invalid captcha')
-    }
-  } else {
-    throw new InvalidRequestError('missing captcha')
   }
 
   const subscription = await db.findSubscription(address)

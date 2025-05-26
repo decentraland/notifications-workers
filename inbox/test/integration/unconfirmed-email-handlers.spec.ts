@@ -159,11 +159,12 @@ test('PUT /set-email', function ({ components, stubComponents }) {
   })
 })
 
-test('GET /confirm-email', function ({ components }) {
+test('GET /confirm-email', function ({ components, spyComponents }) {
   let identity: Identity
 
   beforeEach(async () => {
     identity = await getIdentity()
+    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue(false)
   })
 
   it('should confirm email in the DB if the code exists', async () => {
@@ -266,6 +267,27 @@ test('GET /confirm-email', function ({ components }) {
     expect(await response.json()).toMatchObject({
       error: 'Bad request',
       message: 'Invalid code'
+    })
+  })
+
+  it('should fail if the challenge is enabled and origin is the expected one but the token is invalid', async () => {
+    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue(true)
+
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address,
+        code: makeid(32)
+      }),
+      headers: {
+        origin: 'http://localhost:8080'
+      }
+    })
+
+    expect(response.status).toBe(400)
+    expect(await response.json()).toMatchObject({
+      error: 'Bad request',
+      message: 'Invalid captcha'
     })
   })
 })
