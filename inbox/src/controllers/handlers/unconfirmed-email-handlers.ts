@@ -1,4 +1,4 @@
-import { HandlerContextWithPath } from '../../types'
+import { Feature, HandlerContextWithPath } from '../../types'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
 import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
 import { Email, EthAddress } from '@dcl/schemas'
@@ -85,12 +85,12 @@ export async function storeUnconfirmedEmailHandler(
 
 export async function confirmEmailHandler(
   context: Pick<
-    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs', '/confirm-email'>,
+    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs' | 'challengerAdapter', '/confirm-email'>,
     'components' | 'request' | 'verification' | 'url'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { dataWarehouseClient, db } = context.components
-  const body = await parseJson<{ address: string; code: string }>(context.request)
+  const { dataWarehouseClient, challengerAdapter, db } = context.components
+  const body = await parseJson<{ address: string; code: string; cfCode?: string }>(context.request)
 
   const address = body.address
   if (!address || !EthAddress.validate(address)) {
@@ -100,6 +100,15 @@ export async function confirmEmailHandler(
   const code = body.code
   if (!code || code.length !== CODE_LENGTH) {
     throw new InvalidRequestError('Missing code')
+  }
+
+  if (
+    !(await challengerAdapter.verifyChallengeIfEnabled(body.cfCode, {
+      userAddress: address,
+      request: context.request
+    }))
+  ) {
+    throw new InvalidRequestError('Invalid captcha')
   }
 
   const unconfirmedEmail = await db.findUnconfirmedEmail(address)
