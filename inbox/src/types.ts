@@ -36,13 +36,13 @@ export type BaseComponents = {
   server: IHttpServerComponent<GlobalContext>
   profiles: IProfilesComponent
   challengerAdapter: IChallengerAdapter
+  features: IFeaturesComponent
   featureFlagsAdapter: IFeatureFlagsAdapter
 }
 
 // components used in runtime
 export type AppComponents = BaseComponents & {
   statusChecks: IBaseComponent
-  features: IFeaturesComponent
 }
 
 // components used in tests

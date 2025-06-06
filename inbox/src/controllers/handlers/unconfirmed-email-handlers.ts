@@ -20,14 +20,15 @@ const getConfirmEmailRoute = async (
   const isChallengeEnabled = featureFlagsAdapter.isEnabled(Feature.TURNSTILE_VERIFICATION)
 
   if (isChallengeEnabled) {
-    return `${accountBaseUrl}/confirm-email/${code}?address=${address}&source=${isCreditsWorkflow ? 'credits' : 'account'}`
+    return `${accountBaseUrl}/confirm-email-challenge/${code}?address=${address}&source=${isCreditsWorkflow ? 'credits' : 'account'}`
   }
 
   if (isCreditsWorkflow) {
     return `${accountBaseUrl}/credits-email-confirmed/${code}?address=${address}`
   }
 
-  return `${accountBaseUrl}/confirm-email/${code}`
+  //Accounts confirm-email route is unprotected after this change, so we need to add the address to the url.
+  return `${accountBaseUrl}/confirm-email/${code}?address=${address}`
 }
 
 export async function storeUnconfirmedEmailHandler(
