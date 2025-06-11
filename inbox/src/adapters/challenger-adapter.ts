@@ -40,6 +40,9 @@ export async function createChallengerAdapter(
 
     const response = await fetch.fetch(CLOUDFLARE_CHALLENGE_URL, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         secret: CLOUDFLARE_SECRET,
         response: token
