@@ -61,7 +61,7 @@ export async function initComponents(): Promise<AppComponents> {
       logs,
       fetch
     },
-    await config.requireString('NOTIFICATIONS_WORKERS_URL')
+    await config.requireString('SERVICE_BASE_URL')
   )
 
   const featureFlagsAdapter = await createFeatureFlagsAdapter({ logs, features })

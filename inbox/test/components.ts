@@ -35,7 +35,7 @@ async function initComponents(): Promise<TestComponents> {
     ENV: 'dev',
     ORIGIN_EXPECTED_FOR_CLOUDFLARE_CHALLENGE: 'http://localhost:8080',
     CLOUDFLARE_SECRET: '0x0000000000000000000000000000000000000000',
-    NOTIFICATIONS_WORKERS_URL: 'https://notifications-workers.decentraland.zone'
+    SERVICE_BASE_URL: 'https://notifications-workers.decentraland.zone'
   })
 
   let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
