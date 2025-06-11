@@ -164,7 +164,9 @@ test('GET /confirm-email', function ({ components, spyComponents }) {
 
   beforeEach(async () => {
     identity = await getIdentity()
-    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue(false)
+
+    spyComponents.featureFlagsAdapter.isEnabled.mockReturnValue(false)
+    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue(true) // Default: allow (pass captcha)
   })
 
   it('should confirm email in the DB if the code exists', async () => {
@@ -271,7 +273,7 @@ test('GET /confirm-email', function ({ components, spyComponents }) {
   })
 
   it('should fail if the challenge is enabled and origin is the expected one but the token is invalid', async () => {
-    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue(true)
+    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue(false) // Fail captcha verification
 
     const response = await components.localFetch.fetch(`/confirm-email`, {
       method: 'PUT',
