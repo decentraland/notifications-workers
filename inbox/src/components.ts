@@ -3,6 +3,7 @@ import { createLogComponent } from '@well-known-components/logger'
 import { createMetricsComponent } from '@well-known-components/metrics'
 import { createPgComponent } from '@well-known-components/pg-component'
 import { createFetchComponent } from '@well-known-components/fetch-component'
+import { createFeaturesComponent } from '@well-known-components/features-component'
 import {
   createServerComponent,
   createStatusCheckComponent,
@@ -19,6 +20,8 @@ import {
 } from '@notifications/common'
 import { createEmailRenderer } from './adapters/email-renderer'
 import { createPageRenderer } from './adapters/page-renderer'
+import { createFeatureFlagsAdapter } from './adapters/feature-flags-adapter'
+import { createChallengerAdapter } from './adapters/challenger-adapter'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -52,6 +55,18 @@ export async function initComponents(): Promise<AppComponents> {
 
   const profiles = await createProfilesComponent({ fetch, config, logs })
 
+  const features = await createFeaturesComponent(
+    {
+      config,
+      logs,
+      fetch
+    },
+    await config.requireString('SERVICE_BASE_URL')
+  )
+
+  const featureFlagsAdapter = await createFeatureFlagsAdapter({ logs, features })
+  const challengerAdapter = await createChallengerAdapter({ logs, config, fetch, featureFlagsAdapter })
+
   return {
     config,
     db,
@@ -65,6 +80,9 @@ export async function initComponents(): Promise<AppComponents> {
     profiles,
     sendGridClient,
     server,
-    statusChecks
+    statusChecks,
+    features,
+    featureFlagsAdapter,
+    challengerAdapter
   }
 }

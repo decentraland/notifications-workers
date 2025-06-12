@@ -10,7 +10,7 @@ import { metricDeclarations } from '@well-known-components/logger'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { NotificationType, Event } from '@dcl/schemas'
 import { Message } from '@aws-sdk/client-sqs'
-import { DbComponent, ISendGridClient, NotificationRecord, ProfilesComponent } from '@notifications/common'
+import { DbComponent, ISendGridClient, NotificationRecord, IProfilesComponent } from '@notifications/common'
 import { INotificationsService } from './adapters/notifications-service'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { ISubscriptionService } from './adapters/subscriptions-service'
@@ -31,7 +31,7 @@ export type AppComponents = {
   queueConsumer: IQueueConsumer
   eventParser: IEventParser
   messageProcessor: IMessageProcessor
-  profiles: ProfilesComponent
+  profiles: IProfilesComponent
 }
 
 // this type simplifies the typings of http handlers
