@@ -328,6 +328,7 @@ export async function createEventParser({
             tier: event.metadata.tier,
             url: event.metadata.url,
             image: event.metadata.image,
+            invitedUserAddress: event.metadata.invitedUserAddress,
             invitedUsers: event.metadata.invitedUsers
           }
         }
