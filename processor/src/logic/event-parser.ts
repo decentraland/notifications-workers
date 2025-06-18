@@ -3,6 +3,7 @@ import { Event, Events, NotificationType } from '@dcl/schemas'
 import { AppComponents, IEventParser } from '../types'
 import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
 import { streamingNotificationTypeByEventSubtype } from './streaming-utils'
+import { referralNotificationTypeByEventSubtype } from './referral-utils'
 
 export async function createEventParser({
   logs,
@@ -312,6 +313,23 @@ export async function createEventParser({
             expirationDate: event.metadata.expirationDate,
             balance: event.metadata.creditsAmount,
             link: `${DECENTRALAND_URL}/marketplace`
+          }
+        }
+      case Events.SubType.Referral.REFERRAL_INVITED_USERS_ACCEPTED:
+      case Events.SubType.Referral.REFERRAL_NEW_TIER_REACHED:
+        return {
+          type: referralNotificationTypeByEventSubtype(event.subType),
+          address: event.metadata.address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            title: event.metadata.title,
+            description: event.metadata.description,
+            tier: event.metadata.tier,
+            url: event.metadata.url,
+            image: event.metadata.image,
+            invitedUserAddress: event.metadata.invitedUserAddress,
+            invitedUsers: event.metadata.invitedUsers
           }
         }
       default:
