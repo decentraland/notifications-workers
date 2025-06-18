@@ -159,11 +159,14 @@ test('PUT /set-email', function ({ components, stubComponents }) {
   })
 })
 
-test('GET /confirm-email', function ({ components }) {
+test('GET /confirm-email', function ({ components, spyComponents }) {
   let identity: Identity
 
   beforeEach(async () => {
     identity = await getIdentity()
+
+    spyComponents.featureFlagsAdapter.isEnabled.mockReturnValue(false)
+    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue({ errorCodes: [], result: true }) // Default: allow (pass captcha)
   })
 
   it('should confirm email in the DB if the code exists', async () => {
@@ -267,5 +270,97 @@ test('GET /confirm-email', function ({ components }) {
       error: 'Bad request',
       message: 'Invalid code'
     })
+  })
+
+  it('should fail if the challenge is enabled and origin is the expected one but the token is invalid', async () => {
+    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue({
+      errorCodes: ['invalid-input-response'],
+      result: false
+    }) // Fail captcha verification
+
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address,
+        code: makeid(32)
+      }),
+      headers: {
+        origin: 'http://localhost:8080'
+      }
+    })
+
+    expect(response.status).toBe(401)
+    expect(await response.json()).toMatchObject({
+      error: 'Not Authorized',
+      message: 'Invalid captcha'
+    })
+  })
+
+  it('should confirm email when challenge is correctly verified and feature flag is enabled', async () => {
+    const email = randomEmail()
+    const code = makeid(32)
+    await components.db.saveUnconfirmedEmail(identity.realAccount.address, email, code)
+
+    // Enable the turnstile feature flag
+    spyComponents.featureFlagsAdapter.isEnabled.mockReturnValue(true)
+    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue({ errorCodes: [], result: true })
+
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address,
+        code,
+        turnstileToken: 'valid-token'
+      })
+    })
+
+    expect(response.status).toBe(204)
+
+    const subscription = await components.db.findSubscription(identity.realAccount.address)
+    expect(subscription.email).toBe(email)
+
+    const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
+    expect(unconfirmedEmail).toBeUndefined()
+
+    // Verify that the challenger adapter was called with the correct parameters
+    expect(spyComponents.challengerAdapter.verifyChallengeIfEnabled).toHaveBeenCalledWith(
+      'valid-token',
+      identity.realAccount.address
+    )
+  })
+
+  it('should fail when challenge verification fails with feature flag enabled', async () => {
+    const email = randomEmail()
+    const code = makeid(32)
+    await components.db.saveUnconfirmedEmail(identity.realAccount.address, email, code)
+
+    // Enable the turnstile feature flag
+    spyComponents.featureFlagsAdapter.isEnabled.mockReturnValue(true)
+    spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue({
+      errorCodes: ['invalid-input-response', 'timeout-or-duplicate'],
+      result: false
+    })
+
+    const response = await components.localFetch.fetch(`/confirm-email`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        address: identity.realAccount.address,
+        code,
+        turnstileToken: 'invalid-token'
+      })
+    })
+
+    expect(response.status).toBe(401)
+    expect(await response.json()).toMatchObject({
+      error: 'Not Authorized',
+      message: 'Invalid captcha'
+    })
+
+    // Verify email was not confirmed
+    const subscription = await components.db.findSubscription(identity.realAccount.address)
+    expect(subscription.email).toBeUndefined()
+
+    const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
+    expect(unconfirmedEmail).toBeDefined()
   })
 })

@@ -15,6 +15,7 @@
   "devDependencies": {
     "@dcl/eslint-config": "^2.1.0",
     "@types/node": "^20.11.24",
+    "@well-known-components/test-helpers": "^1.5.6",
     "typescript": "^5.3.3"
   },
   "prettier": {
@@ -25,8 +26,10 @@
     "tabWidth": 2
   },
   "dependencies": {
+    "@well-known-components/env-config-provider": "^1.2.0",
     "@dcl/schemas": "^16.10.0",
     "@well-known-components/interfaces": "^1.5.2",
+    "@well-known-components/logger": "^3.1.3",
     "@well-known-components/pg-component": "^1.1.0"
   }
 }

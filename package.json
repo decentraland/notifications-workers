@@ -14,5 +14,8 @@
     "lint:check": "yarn workspaces run lint:check",
     "lint:fix": "yarn workspaces run lint:fix"
   },
+  "resolutions": {
+    "@well-known-components/interfaces": "^1.5.2"
+  },
   "license": "Apache-2.0"
 }
