@@ -1,6 +1,6 @@
 import { Feature, HandlerContextWithPath } from '../../types'
 import { IConfigComponent, IHttpServerComponent } from '@well-known-components/interfaces'
-import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
+import { InvalidRequestError, NotAuthorizedError, parseJson } from '@dcl/platform-server-commons'
 import { Email, EthAddress } from '@dcl/schemas'
 import { Email as Sendable } from '@notifications/common'
 import { makeId } from '../../logic/utils'
@@ -130,6 +130,8 @@ export async function confirmEmailHandler(
     context.request
   )
 
+  const logger = context.components.logs.getLogger('confirm-email-handler')
+
   const address = body.address
   if (!address || !EthAddress.validate(address)) {
     throw new InvalidRequestError('Missing address')
@@ -140,8 +142,16 @@ export async function confirmEmailHandler(
     throw new InvalidRequestError('Missing code')
   }
 
-  if (!(await challengerAdapter.verifyChallengeIfEnabled(body.turnstileToken, address))) {
-    throw new InvalidRequestError('Invalid captcha')
+  const { errorCodes, result } = await challengerAdapter.verifyChallengeIfEnabled(body.turnstileToken, address)
+
+  if (!result) {
+    logger.debug('Captcha validation failed', {
+      errorCodes: JSON.stringify(errorCodes),
+      address,
+      code,
+      turnstileToken: body.turnstileToken ?? ''
+    })
+    throw new NotAuthorizedError('Invalid captcha')
   }
 
   const unconfirmedEmail = await db.findUnconfirmedEmail(address)

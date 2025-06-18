@@ -3,7 +3,10 @@ import { AppComponents, Feature } from '../types'
 import { EthAddress } from '@dcl/schemas'
 
 export type IChallengerAdapter = IBaseComponent & {
-  verifyChallengeIfEnabled: (token: string | undefined, userAddress: EthAddress) => Promise<boolean>
+  verifyChallengeIfEnabled: (
+    token: string | undefined,
+    userAddress: EthAddress
+  ) => Promise<{ errorCodes: string[]; result: boolean }>
 }
 
 export async function createChallengerAdapter(
@@ -11,7 +14,7 @@ export async function createChallengerAdapter(
 ) {
   const { logs, config, fetch, featureFlagsAdapter } = components
 
-  const CLOUDFLARE_CHALLENGE_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+  const CLOUDFLARE_CHALLENGE_URL = await config.requireString('CLOUDFLARE_CHALLENGE_URL')
   const CLOUDFLARE_SECRET = await config.requireString('CLOUDFLARE_SECRET')
   const logger = logs.getLogger('challenger-adapter')
 
@@ -21,7 +24,10 @@ export async function createChallengerAdapter(
    * @param userAddress - The address of the user
    * @returns True if the challenge is disabled or the token is correct
    */
-  async function verifyChallengeIfEnabled(token: string | undefined, userAddress: EthAddress) {
+  async function verifyChallengeIfEnabled(
+    token: string | undefined,
+    userAddress: EthAddress
+  ): Promise<{ errorCodes: string[]; result: boolean }> {
     const isChallengeEnabled = featureFlagsAdapter.isEnabled(Feature.TURNSTILE_VERIFICATION)
 
     logger.debug('CloudFlare challenge is enabled, verifying token', {
@@ -31,11 +37,11 @@ export async function createChallengerAdapter(
     })
 
     if (!isChallengeEnabled) {
-      return true
+      return { errorCodes: [], result: true }
     }
 
     if (!token) {
-      return false
+      return { errorCodes: [], result: false }
     }
 
     const response = await fetch.fetch(CLOUDFLARE_CHALLENGE_URL, {
@@ -51,7 +57,7 @@ export async function createChallengerAdapter(
 
     const data = await response.json()
 
-    return data.success
+    return { errorCodes: data['error-codes'] ?? [], result: data.success }
   }
 
   return {
