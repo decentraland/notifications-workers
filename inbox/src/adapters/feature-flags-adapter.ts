@@ -19,7 +19,7 @@ export async function createFeatureFlagsAdapter(components: Pick<AppComponents, 
 
   async function refreshFeatureFlags() {
     try {
-      // Get credits server feature flag
+      // Get Turnstile Verification feature flag
       const isTurnstileVerificationEnabled = await features.getIsFeatureEnabled(
         ApplicationName.DAPPS,
         Feature.TURNSTILE_VERIFICATION
