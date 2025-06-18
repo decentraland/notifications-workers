@@ -329,7 +329,8 @@ export async function createEventParser({
             url: event.metadata.url,
             image: event.metadata.image,
             invitedUserAddress: event.metadata.invitedUserAddress,
-            invitedUsers: event.metadata.invitedUsers
+            invitedUsers: event.metadata.invitedUsers,
+            rarity: event.metadata.rarity
           }
         }
       default:
