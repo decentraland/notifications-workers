@@ -2,7 +2,13 @@ import { IConfigComponent, IFetchComponent, ILoggerComponent } from '@well-known
 
 export type Event = {
   context: 'notification_server'
-  event: 'email_sent' | 'email_validation_started' | 'email_validated' | 'subscription_changed' | 'user_unsubscribed'
+  event:
+    | 'email_sent'
+    | 'email_validation_started'
+    | 'email_validated'
+    | 'subscription_changed'
+    | 'user_unsubscribed'
+    | 'email_validation_failed'
   body: {
     env: 'prd' | 'dev'
   } & any
