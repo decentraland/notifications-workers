@@ -108,7 +108,8 @@ export async function storeUnconfirmedEmailHandler(
       event: 'email_validation_started',
       body: {
         address,
-        email_to_validate: body.email
+        email_to_validate: body.email,
+        is_credits_workflow: body.isCreditsWorkflow ?? false
       }
     })
   }
@@ -151,6 +152,18 @@ export async function confirmEmailHandler(
       code,
       turnstileToken: body.turnstileToken ?? ''
     })
+
+    await dataWarehouseClient.sendEvent({
+      context: 'notification_server',
+      event: 'email_validation_failed',
+      body: {
+        address,
+        error: 'captcha_validation_failed',
+        is_credits_workflow: body.source === 'credits',
+        error_codes: JSON.stringify(errorCodes)
+      }
+    })
+
     throw new NotAuthorizedError('Invalid captcha')
   }
 
@@ -173,7 +186,8 @@ export async function confirmEmailHandler(
     event: 'email_validated',
     body: {
       address,
-      validated_email: unconfirmedEmail.email
+      validated_email: unconfirmedEmail.email,
+      is_credits_workflow: body.source === 'credits'
     }
   })
 
