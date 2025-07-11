@@ -10,7 +10,8 @@ enum TemplatePart {
 
 export enum InboxTemplates {
   VALIDATE_EMAIL = 'validate-email',
-  VALIDATE_CREDITS_EMAIL = 'validate-credits-email'
+  VALIDATE_CREDITS_EMAIL = 'validate-credits-email',
+  COMMON = 'common'
 }
 
 export type IEmailRenderer = {

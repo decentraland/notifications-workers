@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`email rendering tests rendering common 1`] = `
+{
+  "bannerLabel": "communication",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/519f099b-f5a6-4ef5-9d73-0319d560f6f5/600x240.png",
+  "content": "Hello, world!",
+  "subject": "Test Subject",
+  "title": "Title",
+  "titleHighligth": "Test",
+  "to": "email@example.com",
+}
+`;
+
 exports[`email rendering tests rendering validate-credits-email 1`] = `
 {
   "accountUrl": "",
