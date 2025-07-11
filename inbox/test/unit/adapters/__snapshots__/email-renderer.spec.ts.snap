@@ -6,8 +6,8 @@ exports[`email rendering tests rendering common 1`] = `
   "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/a5ba492b-fbfd-4937-a529-0a4d37046d81/1540x508.png",
   "content": "Hello, world!",
   "subject": "Test Subject",
-  "title": "Test Title",
-  "titleHighligth": "Test Title Highligth",
+  "title": "Title",
+  "titleHighligth": "Test",
   "to": "email@example.com",
 }
 `;
