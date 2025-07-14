@@ -223,7 +223,7 @@ test('POST /notifications/email', function ({ components, stubComponents }) {
     })
 
     describe('and the email renderer fails', () => {
-      it('should propagate the error', async () => {
+      it('should respond with a 500 and the error', async () => {
         stubComponents.emailRenderer.renderEmail.rejects(new Error('Render error'))
 
         const response = await components.localFetch.fetch('/notifications/email', {
@@ -237,7 +237,7 @@ test('POST /notifications/email', function ({ components, stubComponents }) {
     })
 
     describe('and the sendGridClient fails', () => {
-      it('should propagate the error', async () => {
+      it('should respond with a 500 and the error', async () => {
         stubComponents.sendGridClient.sendEmail.rejects(new Error('SendGrid error'))
 
         const response = await components.localFetch.fetch('/notifications/email', {
