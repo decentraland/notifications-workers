@@ -29,7 +29,7 @@ describe('email rendering tests', () => {
         content: 'Hello, world!',
         subject: 'Test Subject',
         title: 'Title',
-        titleHighligth: 'Test'
+        titleHighlight: 'Test'
       }
     }
   }

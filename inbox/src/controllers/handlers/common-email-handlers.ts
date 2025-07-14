@@ -1,12 +1,12 @@
 import { HandlerContextWithPath } from '../../types'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
-import { parseJson } from '@dcl/platform-server-commons'
+import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
 import { Email as Sendable } from '@notifications/common'
 import { InboxTemplates } from '../../adapters/email-renderer'
 
 export async function commonEmailHandler(
   context: Pick<
-    HandlerContextWithPath<'emailRenderer' | 'sendGridClient' | 'logs' | 'config', '/send-common-email'>,
+    HandlerContextWithPath<'emailRenderer' | 'sendGridClient' | 'logs' | 'config', '/notifications/email'>,
     'components' | 'request' | 'verification' | 'url'
   >
 ): Promise<IHttpServerComponent.IResponse> {
@@ -19,8 +19,18 @@ export async function commonEmailHandler(
     subject: string
     email: string
     title?: string
-    titleHighligth?: string
+    titleHighlight?: string
   }>(context.request)
+
+  if (!body.email) {
+    throw new InvalidRequestError('Missing email')
+  }
+  if (!body.content) {
+    throw new InvalidRequestError('Missing content')
+  }
+  if (!body.subject) {
+    throw new InvalidRequestError('Missing subject')
+  }
 
   const logger = context.components.logs.getLogger('common-email-handler')
 
@@ -29,7 +39,7 @@ export async function commonEmailHandler(
       content: body.content,
       subject: body.subject,
       title: body.title || 'New',
-      titleHighligth: body.titleHighligth || 'Notification'
+      titleHighlight: body.titleHighlight || 'Notification'
     }))
   }
 

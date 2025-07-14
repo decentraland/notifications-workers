@@ -45,7 +45,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
     return next()
   }
 
-  const secret = await components.config.requireString('INTERNAL_API_KEY')
+  const secret = await components.config.requireString('NOTIFICATION_SERVICE_TOKEN')
 
   router.use(errorHandler)
 
@@ -61,7 +61,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   router.put('/set-email', signedFetchMiddleware, storeUnconfirmedEmailHandler)
   router.put('/confirm-email', confirmEmailHandler)
-  router.post('/send-common-email', bearerTokenMiddleware(secret), commonEmailHandler)
+  router.post('/notifications/email', bearerTokenMiddleware(secret), commonEmailHandler)
 
   return router
 }
