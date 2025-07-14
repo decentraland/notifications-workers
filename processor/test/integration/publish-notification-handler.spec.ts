@@ -10,7 +10,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
 
   beforeEach(async () => {
     identity = await getIdentity()
-    apiKey = await components.config.getString('INTERNAL_API_KEY')
+    apiKey = await components.config.getString('NOTIFICATION_SERVICE_TOKEN')
   })
 
   async function findNotification(someEventKey: string, type: string, address: string) {
@@ -66,7 +66,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
       actionButtonText: 'MANAGE WORLDS',
       actionButtonLink: 'https://decentraland.org/builder/worlds?tab=dcl',
       title: 'Hey there',
-      titleHighligth: 'Unknown',
+      titleHighlight: 'Unknown',
       bannerUrl:
         'http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c81be6d3-83e7-409c-a04d-e17f297dca61/1200x480.png',
       bannerLabel: 'World access Restored'

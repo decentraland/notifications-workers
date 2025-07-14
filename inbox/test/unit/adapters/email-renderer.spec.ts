@@ -22,6 +22,15 @@ describe('email rendering tests', () => {
         validateButtonLink: 'https://decentraland.zone/account/confirm-email/0oekmfzAAJccU2d1el57WQWqJrb3FSuG',
         validateButtonText: 'Click Here to Confirm Your Email'
       }
+    },
+    [InboxTemplates.COMMON]: {
+      to: 'email@example.com',
+      context: {
+        content: 'Hello, world!',
+        subject: 'Test Subject',
+        title: 'Title',
+        titleHighlight: 'Test'
+      }
     }
   }
 

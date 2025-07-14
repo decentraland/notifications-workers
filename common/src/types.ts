@@ -54,7 +54,7 @@ export type Email = {
   actionButtonLink?: string
   actionButtonText?: string
   title?: string
-  titleHighligth?: string
+  titleHighlight?: string
   bannerUrl?: string
   bannerLabel?: string
   unsubscribeAllUrl?: string

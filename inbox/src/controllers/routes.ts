@@ -1,7 +1,7 @@
 import { Router } from '@well-known-components/http-server'
 import { statusHandler } from './handlers/status-handler'
 import { notificationsHandler } from './handlers/notifications-handler'
-import { errorHandler, NotAuthorizedError } from '@dcl/platform-server-commons'
+import { bearerTokenMiddleware, errorHandler, NotAuthorizedError } from '@dcl/platform-server-commons'
 import { wellKnownComponents } from '@dcl/platform-crypto-middleware'
 import { GlobalContext } from '../types'
 import { readNotificationsHandler } from './handlers/read-notifications-handler'
@@ -11,6 +11,7 @@ import { confirmEmailHandler, storeUnconfirmedEmailHandler } from './handlers/un
 import { unsubscribeAllHandler, unsubscribeOneHandler } from './handlers/unsubscription-handlers'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
 import { hasValidSignature } from '@notifications/common'
+import { commonEmailHandler } from './handlers/common-email-handlers'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 
@@ -44,6 +45,8 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
     return next()
   }
 
+  const secret = await components.config.requireString('NOTIFICATION_SERVICE_TOKEN')
+
   router.use(errorHandler)
 
   router.get('/status', statusHandler)
@@ -58,6 +61,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   router.put('/set-email', signedFetchMiddleware, storeUnconfirmedEmailHandler)
   router.put('/confirm-email', confirmEmailHandler)
+  router.post('/notifications/email', bearerTokenMiddleware(secret), commonEmailHandler)
 
   return router
 }

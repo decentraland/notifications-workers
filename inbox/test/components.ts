@@ -33,6 +33,7 @@ async function initComponents(): Promise<TestComponents> {
     LOG_LEVEL: 'INFO',
     SIGNING_KEY: 'random-key',
     ENV: 'dev',
+    NOTIFICATION_SERVICE_TOKEN: 'test-token',
     ORIGIN_EXPECTED_FOR_CLOUDFLARE_CHALLENGE: 'http://localhost:8080',
     CLOUDFLARE_SECRET: '0x0000000000000000000000000000000000000000',
     SERVICE_BASE_URL: 'https://notifications-workers.decentraland.zone'

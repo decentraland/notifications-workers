@@ -50,7 +50,7 @@ export async function createSendGrid(
             actionButtonLink: email.actionButtonLink,
             actionButtonText: email.actionButtonText,
             title: email.title,
-            titleHighligth: email.titleHighligth,
+            titleHighlight: email.titleHighlight,
             bannerUrl: email.bannerUrl,
             bannerLabel: email.bannerLabel,
             unsubscribeAllUrl: email.unsubscribeAllUrl,
