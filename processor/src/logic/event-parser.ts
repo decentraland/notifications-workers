@@ -311,6 +311,7 @@ export async function createEventParser({
           timestamp: event.timestamp,
           metadata: {
             expirationDate: event.metadata.expirationDate,
+            expirationDay: event.metadata.expirationDay,
             balance: event.metadata.creditsAmount,
             link: `${DECENTRALAND_URL}/marketplace`
           }
