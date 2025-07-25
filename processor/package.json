@@ -30,7 +30,7 @@
     "@aws-sdk/client-sqs": "^3.606.0",
     "@dcl/catalyst-contracts": "^4.4.1",
     "@dcl/platform-server-commons": "^0.0.4",
-    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/communities-events/dcl-schemas-17.0.1-16527278566.commit-c818a14.tgz",
+    "@dcl/schemas": "^17.1.0",
     "@notifications/common": "0.0.0",
     "@well-known-components/env-config-provider": "^1.2.0",
     "@well-known-components/fetch-component": "^2.0.2",
