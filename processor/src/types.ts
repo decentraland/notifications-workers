@@ -83,5 +83,5 @@ export type IQueueConsumer = {
 export type IMessageProcessor = IBaseComponent
 
 export type IEventParser = {
-  parseToNotification(event: Event): NotificationRecord | undefined
+  parseToNotifications(event: Event): NotificationRecord[]
 }

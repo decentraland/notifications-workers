@@ -12,14 +12,14 @@ export function createMessageProcessor({
   let isRunning = false
   let processLoopPromise: Promise<void> | null = null
 
-  function parseMessageToNotification(message: string): NotificationRecord | undefined {
+  function parseMessageToNotification(message: string): NotificationRecord[] {
     try {
       logger.info('Pulled message from queue', { message })
       const parsedMessage = JSON.parse(message)
-      return eventParser.parseToNotification(parsedMessage)
+      return eventParser.parseToNotifications(parsedMessage)
     } catch (error: any) {
       logger.error(`Failed while parsing message from queue: ${error?.message || 'Unexpected failure'}`)
-      return undefined
+      return []
     }
   }
 
@@ -32,16 +32,16 @@ export function createMessageProcessor({
       for (const message of messages) {
         const { Body, ReceiptHandle } = message
         logger.info('Pulled message from queue', { message: Body! })
-        const notification: NotificationRecord | undefined = parseMessageToNotification(Body!)
+        const notifications: NotificationRecord[] = parseMessageToNotification(Body!)
 
-        if (!notification) {
+        if (notifications.length === 0) {
           await queueConsumer.deleteMessage(ReceiptHandle!)
           continue
         }
 
         try {
-          await notificationsService.saveNotifications([notification])
-          logger.info(`Created a new ${notification.type} notification.`)
+          await notificationsService.saveNotifications(notifications)
+          logger.info(`Created ${notifications.length} notifications.`)
         } catch (error: any) {
           // TODO: handle retries and DLQ
           logger.error(`Failed while processing event notification: ${error?.message || 'Unexpected failure'}`)

@@ -17,5 +17,8 @@
   "resolutions": {
     "@well-known-components/interfaces": "^1.5.2"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/communities-events/dcl-schemas-17.0.1-16501786857.commit-4e5e84c.tgz"
+  }
 }
