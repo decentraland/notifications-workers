@@ -386,7 +386,9 @@ export async function createEventParser({
             metadata: {
               ...event.metadata,
               communityId: event.metadata.id,
-              id: undefined, // rename to communityId
+              communityName: event.subType === Events.SubType.Community.DELETED ? event.metadata.name : undefined,
+              name: undefined, // renamed to communityName
+              id: undefined, // renamed to communityId
               memberAddresses: undefined // whole member list is not needed
             }
           }
@@ -406,8 +408,8 @@ export async function createEventParser({
               ...event.metadata,
               communityId: event.metadata.id,
               communityName: event.metadata.name,
-              id: undefined, // rename to communityId
-              name: undefined, // rename to communityName
+              id: undefined, // renamed to communityId
+              name: undefined, // renamed to communityName
               memberAddress: undefined // already assigned to address
             }
           }
