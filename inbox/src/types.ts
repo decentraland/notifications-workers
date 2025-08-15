@@ -81,5 +81,5 @@ export type NotificationEvent = {
 
 export enum Feature {
   TURNSTILE_VERIFICATION = 'turnstile-verification',
-  CREDITS_BLACKLISTED_EMAILS_DOMAIN = 'credits-blacklisted-domain'
+  CREDITS_BLACKLISTED_EMAILS_DOMAIN = 'credits-blacklisted-domains'
 }
