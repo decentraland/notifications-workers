@@ -41,14 +41,23 @@ export async function storeUnconfirmedEmailHandler(
       | 'sendGridClient'
       | 'profiles'
       | 'logs'
-      | 'featureFlagsAdapter',
+      | 'featureFlagsAdapter'
+      | 'domainValidator',
       '/set-email'
     >,
     'url' | 'request' | 'components' | 'verification'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { config, dataWarehouseClient, db, emailRenderer, sendGridClient, profiles, featureFlagsAdapter } =
-    context.components
+  const {
+    config,
+    dataWarehouseClient,
+    db,
+    emailRenderer,
+    sendGridClient,
+    profiles,
+    featureFlagsAdapter,
+    domainValidator
+  } = context.components
   const address = context.verification!.auth
   const env = await config.requireString('ENV')
 
@@ -67,6 +76,10 @@ export async function storeUnconfirmedEmailHandler(
   } else if (subscription.email === body.email) {
     await db.deleteUnconfirmedEmail(address)
   } else {
+    if (await domainValidator.isDomainBlacklisted(body.email)) {
+      throw new InvalidRequestError('Email domain not allowed')
+    }
+
     const accountBaseUrl = await config.requireString('ACCOUNT_BASE_URL')
     const code = makeId(CODE_LENGTH)
     await db.saveUnconfirmedEmail(address, body.email, code)
@@ -122,11 +135,14 @@ export async function storeUnconfirmedEmailHandler(
 
 export async function confirmEmailHandler(
   context: Pick<
-    HandlerContextWithPath<'dataWarehouseClient' | 'db' | 'logs' | 'challengerAdapter', '/confirm-email'>,
+    HandlerContextWithPath<
+      'dataWarehouseClient' | 'db' | 'logs' | 'challengerAdapter' | 'domainValidator',
+      '/confirm-email'
+    >,
     'components' | 'request' | 'verification' | 'url'
   >
 ): Promise<IHttpServerComponent.IResponse> {
-  const { dataWarehouseClient, challengerAdapter, db } = context.components
+  const { dataWarehouseClient, challengerAdapter, db, domainValidator } = context.components
   const body = await parseJson<{ address: string; code: string; turnstileToken?: string; source?: string }>(
     context.request
   )
@@ -174,6 +190,10 @@ export async function confirmEmailHandler(
 
   if (unconfirmedEmail.code !== code) {
     throw new InvalidRequestError('Invalid code')
+  }
+
+  if (await domainValidator.isDomainBlacklisted(unconfirmedEmail.email)) {
+    throw new InvalidRequestError('Email domain not allowed')
   }
 
   const subscription = await db.findSubscription(address)

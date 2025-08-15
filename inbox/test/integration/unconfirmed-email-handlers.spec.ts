@@ -8,11 +8,18 @@ const manageSubscriptionMetadata = {
   intent: 'dcl:account:manage-subscription'
 }
 
-test('PUT /set-email', function ({ components, stubComponents }) {
+test('PUT /set-email', function ({ components, stubComponents, spyComponents }) {
   let identity: Identity
 
   beforeEach(async () => {
     identity = await getIdentity()
+
+    // Set up default domain validator mock to allow all domains
+    spyComponents.domainValidator.isDomainBlacklisted.mockResolvedValue(false)
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
   })
 
   it('should store the email as an unconfirmed email in the db', async () => {
@@ -157,6 +164,72 @@ test('PUT /set-email', function ({ components, stubComponents }) {
     expect(response.status).toBe(400)
     expect(await response.json()).toMatchObject({ error: 'Bad request', message: 'Invalid email' })
   })
+
+  describe('when the email domain is blacklisted', () => {
+    let blacklistedEmail: string
+
+    beforeEach(() => {
+      blacklistedEmail = 'user@blacklisted-domain.com'
+      spyComponents.domainValidator.isDomainBlacklisted.mockResolvedValue(true)
+    })
+
+    it('should respond with a 400 and domain not allowed error', async () => {
+      const response = await makeRequest(
+        components.localFetch,
+        '/set-email',
+        identity,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            email: blacklistedEmail
+          })
+        },
+        manageSubscriptionMetadata
+      )
+
+      expect(response.status).toBe(400)
+      expect(await response.json()).toMatchObject({
+        error: 'Bad request',
+        message: 'Email domain not allowed'
+      })
+      expect(spyComponents.domainValidator.isDomainBlacklisted).toHaveBeenCalledWith(blacklistedEmail)
+    })
+
+    it('should not save the unconfirmed email to the database', async () => {
+      await makeRequest(
+        components.localFetch,
+        '/set-email',
+        identity,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            email: blacklistedEmail
+          })
+        },
+        manageSubscriptionMetadata
+      )
+
+      const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
+      expect(unconfirmedEmail).toBeUndefined()
+    })
+
+    it('should not send any email', async () => {
+      await makeRequest(
+        components.localFetch,
+        '/set-email',
+        identity,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            email: blacklistedEmail
+          })
+        },
+        manageSubscriptionMetadata
+      )
+
+      expect(stubComponents.sendGridClient.sendEmail.notCalled).toBeTruthy()
+    })
+  })
 })
 
 test('GET /confirm-email', function ({ components, spyComponents }) {
@@ -167,6 +240,11 @@ test('GET /confirm-email', function ({ components, spyComponents }) {
 
     spyComponents.featureFlagsAdapter.isEnabled.mockReturnValue(false)
     spyComponents.challengerAdapter.verifyChallengeIfEnabled.mockResolvedValue({ errorCodes: [], result: true }) // Default: allow (pass captcha)
+    spyComponents.domainValidator.isDomainBlacklisted.mockResolvedValue(false) // Default: allow all domains
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
   })
 
   it('should confirm email in the DB if the code exists', async () => {
@@ -362,5 +440,61 @@ test('GET /confirm-email', function ({ components, spyComponents }) {
 
     const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
     expect(unconfirmedEmail).toBeDefined()
+  })
+
+  describe('when the email domain is blacklisted', () => {
+    let blacklistedEmail: string
+    let code: string
+
+    beforeEach(async () => {
+      blacklistedEmail = 'user@blacklisted-domain.com'
+      code = makeid(32)
+      await components.db.saveUnconfirmedEmail(identity.realAccount.address, blacklistedEmail, code)
+      spyComponents.domainValidator.isDomainBlacklisted.mockResolvedValue(true)
+    })
+
+    it('should respond with a 400 and domain not allowed error', async () => {
+      const response = await components.localFetch.fetch(`/confirm-email`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          address: identity.realAccount.address,
+          code
+        })
+      })
+
+      expect(response.status).toBe(400)
+      expect(await response.json()).toMatchObject({
+        error: 'Bad request',
+        message: 'Email domain not allowed'
+      })
+      expect(spyComponents.domainValidator.isDomainBlacklisted).toHaveBeenCalledWith(blacklistedEmail)
+    })
+
+    it('should not confirm the email in the subscription', async () => {
+      await components.localFetch.fetch(`/confirm-email`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          address: identity.realAccount.address,
+          code
+        })
+      })
+
+      const subscription = await components.db.findSubscription(identity.realAccount.address)
+      expect(subscription.email).toBeUndefined()
+    })
+
+    it('should not delete the unconfirmed email from the database', async () => {
+      await components.localFetch.fetch(`/confirm-email`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          address: identity.realAccount.address,
+          code
+        })
+      })
+
+      const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
+      expect(unconfirmedEmail).toBeDefined()
+      expect(unconfirmedEmail?.email).toBe(blacklistedEmail)
+    })
   })
 })
