@@ -68,7 +68,7 @@ export async function initComponents(): Promise<AppComponents> {
   const featureFlagsAdapter = await createFeatureFlagsAdapter({ logs, features })
   const challengerAdapter = await createChallengerAdapter({ logs, config, fetch, featureFlagsAdapter })
 
-  const domainValidator = createEmailDomainValidator({ featureFlagsAdapter })
+  const domainValidator = createEmailDomainValidator({ featureFlagsAdapter, logs })
 
   return {
     config,
