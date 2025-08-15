@@ -22,6 +22,7 @@ import { createEmailRenderer } from './adapters/email-renderer'
 import { createPageRenderer } from './adapters/page-renderer'
 import { createFeatureFlagsAdapter } from './adapters/feature-flags-adapter'
 import { createChallengerAdapter } from './adapters/challenger-adapter'
+import { createEmailDomainValidator } from './logic/domain-validator'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -67,6 +68,8 @@ export async function initComponents(): Promise<AppComponents> {
   const featureFlagsAdapter = await createFeatureFlagsAdapter({ logs, features })
   const challengerAdapter = await createChallengerAdapter({ logs, config, fetch, featureFlagsAdapter })
 
+  const domainValidator = createEmailDomainValidator({ featureFlagsAdapter })
+
   return {
     config,
     db,
@@ -83,6 +86,7 @@ export async function initComponents(): Promise<AppComponents> {
     statusChecks,
     features,
     featureFlagsAdapter,
-    challengerAdapter
+    challengerAdapter,
+    domainValidator
   }
 }

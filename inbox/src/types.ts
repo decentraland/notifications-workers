@@ -16,6 +16,7 @@ import { IPageRenderer } from './adapters/page-renderer'
 import { IFeaturesComponent } from '@well-known-components/features-component'
 import { IFeatureFlagsAdapter } from './adapters/feature-flags-adapter'
 import { IChallengerAdapter } from './adapters/challenger-adapter'
+import { IDomainValidator } from './logic/domain-validator'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -38,6 +39,7 @@ export type BaseComponents = {
   challengerAdapter: IChallengerAdapter
   features: IFeaturesComponent
   featureFlagsAdapter: IFeatureFlagsAdapter
+  domainValidator: IDomainValidator
 }
 
 // components used in runtime
@@ -78,5 +80,6 @@ export type NotificationEvent = {
 }
 
 export enum Feature {
-  TURNSTILE_VERIFICATION = 'turnstile-verification'
+  TURNSTILE_VERIFICATION = 'turnstile-verification',
+  CREDITS_BLACKLISTED_EMAILS_DOMAIN = 'credits-blacklisted-domain'
 }

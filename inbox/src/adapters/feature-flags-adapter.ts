@@ -3,13 +3,17 @@ import { AppComponents, Feature } from '../types'
 import { ApplicationName } from '@well-known-components/features-component'
 
 export type IFeatureFlagsAdapter = IBaseComponent & {
+  refreshFeatureFlags: () => Promise<void>
   isEnabled: (feature: Feature) => boolean
+  getVariants: <T>(feature: Feature) => Promise<T | undefined>
 }
 
 // How often to refresh feature flags (4 minutes in milliseconds)
 const FEATURE_FLAG_REFRESH_INTERVAL = 4 * 60 * 1000
 
-export async function createFeatureFlagsAdapter(components: Pick<AppComponents, 'logs' | 'features'>) {
+export async function createFeatureFlagsAdapter(
+  components: Pick<AppComponents, 'logs' | 'features'>
+): Promise<IFeatureFlagsAdapter> {
   const { logs, features } = components
 
   const logger = logs.getLogger('feature-flags-adapter')
@@ -29,11 +33,37 @@ export async function createFeatureFlagsAdapter(components: Pick<AppComponents, 
       })
 
       featuresFlagMap.set(Feature.TURNSTILE_VERIFICATION, isTurnstileVerificationEnabled)
+
+      // Get Credits Blacklisted Emails Domain feature flag
+      const isCreditsBlacklistedEmailsDomainEnabled = await features.getIsFeatureEnabled(
+        ApplicationName.DAPPS,
+        Feature.CREDITS_BLACKLISTED_EMAILS_DOMAIN
+      )
+      logger.debug('Refreshed Credits Blacklisted Emails Domain feature flag', {
+        isEnabled: isCreditsBlacklistedEmailsDomainEnabled ? 'enabled' : 'disabled'
+      })
+
+      featuresFlagMap.set(Feature.CREDITS_BLACKLISTED_EMAILS_DOMAIN, isCreditsBlacklistedEmailsDomainEnabled)
     } catch (error) {
       logger.error('Failed to refresh feature flags', {
         error: error instanceof Error ? error.message : String(error)
       })
     }
+  }
+
+  async function getVariants<T>(feature: Feature): Promise<T | undefined> {
+    const variant = await features.getFeatureVariant(ApplicationName.DAPPS, feature)
+
+    if (variant?.payload?.value) {
+      const values = variant.payload.value
+        .replace('\n', '')
+        .split(',')
+        .map((domain) => domain.toLowerCase().trim())
+
+      return values as T
+    }
+
+    return undefined
   }
 
   /**
@@ -73,6 +103,7 @@ export async function createFeatureFlagsAdapter(components: Pick<AppComponents, 
     refreshFeatureFlags,
     isEnabled: (feature: Feature) => {
       return featuresFlagMap.get(feature) ?? false
-    }
+    },
+    getVariants
   }
 }
