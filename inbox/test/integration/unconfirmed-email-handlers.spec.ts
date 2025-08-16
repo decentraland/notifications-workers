@@ -58,7 +58,39 @@ test('PUT /set-email', function ({ components, stubComponents, spyComponents }) 
     })
   })
 
-  it('should remove the unconfirmed email if it is already the same as in the subscription', async () => {
+  it('should throw an error if the email is already confirmed by another address', async () => {
+    const email = randomEmail()
+    const anotherIdentity = await getIdentity()
+
+    // First address confirms the email
+    const subscriptionDetails = randomSubscriptionDetails()
+    subscriptionDetails.ignore_all_email = false
+    await components.db.saveSubscriptionEmail(anotherIdentity.realAccount.address, email)
+    await components.db.saveSubscriptionDetails(anotherIdentity.realAccount.address, subscriptionDetails)
+
+    // Second address tries to use the same email
+    const response = await makeRequest(
+      components.localFetch,
+      '/set-email',
+      identity,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          email
+        })
+      },
+      manageSubscriptionMetadata
+    )
+
+    expect(response.status).toBe(400)
+    expect(await response.json()).toMatchObject({
+      error: 'Bad request',
+      message: 'Email is already confirmed by another address'
+    })
+    expect(stubComponents.sendGridClient.sendEmail.notCalled).toBeTruthy()
+  })
+
+  it('should allow the same address to reconfirm their own email', async () => {
     const email = randomEmail()
 
     const subscriptionDetails = randomSubscriptionDetails()
@@ -66,8 +98,6 @@ test('PUT /set-email', function ({ components, stubComponents, spyComponents }) 
     await components.db.saveSubscriptionEmail(identity.realAccount.address, email)
     await components.db.saveSubscriptionDetails(identity.realAccount.address, subscriptionDetails)
     await components.db.saveUnconfirmedEmail(identity.realAccount.address, randomEmail(), makeid(32))
-
-    stubComponents.sendGridClient.sendEmail.withArgs(expect.objectContaining({ to: email })).rejects()
 
     const response = await makeRequest(
       components.localFetch,

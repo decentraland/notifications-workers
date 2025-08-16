@@ -73,9 +73,21 @@ export async function storeUnconfirmedEmailHandler(
     await db.saveSubscriptionEmail(address, undefined)
     await db.saveSubscriptionDetails(address, subscription.details)
     await db.deleteUnconfirmedEmail(address)
-  } else if (subscription.email === body.email) {
-    await db.deleteUnconfirmedEmail(address)
   } else {
+    // Check if any other address has already confirmed this email
+    const existingSubscriptionWithEmail = await db.findSubscriptionByEmail(body.email, address)
+    if (existingSubscriptionWithEmail) {
+      throw new InvalidRequestError('Email is already confirmed by another address')
+    }
+
+    // Allow the same address to reconfirm the same email
+    if (subscription.email === body.email) {
+      await db.deleteUnconfirmedEmail(address)
+      return {
+        status: 204,
+        body: ''
+      }
+    }
     if (await domainValidator.isDomainBlacklisted(body.email)) {
       throw new InvalidRequestError('Email domain not allowed')
     }
