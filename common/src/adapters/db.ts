@@ -16,6 +16,7 @@ export type UpsertResult<T> = {
 export type DbComponent = {
   findSubscription(address: EthAddress): Promise<SubscriptionDb>
   findSubscriptions(addresses: EthAddress[]): Promise<SubscriptionDb[]>
+  findSubscriptionByEmail(email: Email, excludeAddress?: EthAddress): Promise<SubscriptionDb | undefined>
   findNotification(id: string): Promise<NotificationDb | undefined>
   findNotifications(users: EthAddress[], onlyUnread: boolean, from: number, limit: number): Promise<NotificationDb[]>
   markNotificationsAsRead(userId: EthAddress, notificationIds: string[]): Promise<number>
@@ -64,6 +65,40 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
           updated_at: Date.now()
         }
     )
+  }
+
+  async function findSubscriptionByEmail(
+    email: Email,
+    excludeAddress?: EthAddress
+  ): Promise<SubscriptionDb | undefined> {
+    const query: SQLStatement = excludeAddress
+      ? SQL`
+          SELECT address,
+                 email,
+                 details,
+                 created_at,
+                 updated_at
+          FROM subscriptions
+          WHERE email = ${email} AND address != ${excludeAddress.toLowerCase()}
+          LIMIT 1
+        `
+      : SQL`
+          SELECT address,
+                 email,
+                 details,
+                 created_at,
+                 updated_at
+          FROM subscriptions
+          WHERE email = ${email}
+          LIMIT 1
+        `
+
+    const result = await pg.query<SubscriptionDb>(query)
+    if (result.rowCount === 0) {
+      return undefined
+    }
+
+    return autoMigrate(result.rows[0])
   }
 
   async function findNotification(id: string): Promise<NotificationDb | undefined> {
@@ -303,6 +338,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     findNotification,
     findSubscription,
     findSubscriptions,
+    findSubscriptionByEmail,
     fetchLastUpdateForNotificationType,
     updateLastUpdateForNotificationType,
     insertNotifications,
