@@ -71,6 +71,8 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     email: Email,
     excludeAddress?: EthAddress
   ): Promise<SubscriptionDb | undefined> {
+    const normalizedEmail = email.toLowerCase()
+
     const query: SQLStatement = excludeAddress
       ? SQL`
           SELECT address,
@@ -79,7 +81,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
                  created_at,
                  updated_at
           FROM subscriptions
-          WHERE email = ${email} AND address != ${excludeAddress.toLowerCase()}
+          WHERE LOWER(email) = ${normalizedEmail} AND address != ${excludeAddress.toLowerCase()}
           LIMIT 1
         `
       : SQL`
@@ -89,7 +91,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
                  created_at,
                  updated_at
           FROM subscriptions
-          WHERE email = ${email}
+          WHERE LOWER(email) = ${normalizedEmail}
           LIMIT 1
         `
 
