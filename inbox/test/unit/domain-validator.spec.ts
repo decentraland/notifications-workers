@@ -173,7 +173,7 @@ describe('Domain Validator', () => {
       expect(await domainValidator.isDomainBlacklisted('user@guerrillamail.com')).toBe(true)
       expect(await domainValidator.isDomainBlacklisted('user@temp-mail.org')).toBe(true)
       expect(await domainValidator.isDomainBlacklisted('user@mailinator.com')).toBe(true)
-      
+
       // Test that non-disposable domains are still allowed
       expect(await domainValidator.isDomainBlacklisted('user@gmail.com')).toBe(false)
     })
@@ -183,25 +183,27 @@ describe('Domain Validator', () => {
     it('should actually fetch from GitHub and test real disposable email domains', async () => {
       // This test bypasses the TypeScript interface issues by testing the core logic directly
       // We'll fetch the GitHub list manually and test our parsing logic
-      
+
       console.log('\n🔍 Fetching real disposable email list from GitHub...')
-      
+
       try {
         // Fetch the actual GitHub list
-        const response = await fetch('https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/main/disposable_email_blocklist.conf')
+        const response = await fetch(
+          'https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/main/disposable_email_blocklist.conf'
+        )
         const content = await response.text()
-        
+
         console.log(`✅ Successfully fetched ${content.split('\n').length} lines from GitHub`)
-        
+
         // Parse the content the same way our domain validator does
         const domains = content
           .split('\n')
           .map((line: string) => line.trim())
           .filter((line: string) => line && !line.startsWith('#'))
           .map((domain: string) => domain.toLowerCase())
-        
+
         console.log(`📊 Found ${domains.length} disposable email domains`)
-        
+
         // Test some known disposable domains that should be in the list
         const testDisposableEmails = [
           'test@10minutemail.com',
@@ -211,7 +213,7 @@ describe('Domain Validator', () => {
           'test@sharklasers.com',
           'test@yopmail.com'
         ]
-        
+
         console.log('\n🔍 Testing disposable email domains:')
         for (const email of testDisposableEmails) {
           const domain = email.split('@')[1].toLowerCase()
@@ -219,29 +221,23 @@ describe('Domain Validator', () => {
           const status = isBlocked ? '❌ BLOCKED' : '✅ ALLOWED'
           console.log(`  ${email}: ${status}`)
         }
-        
+
         // Test some known non-disposable domains
-        const testNonDisposableEmails = [
-          'test@gmail.com',
-          'test@yahoo.com',
-          'test@hotmail.com',
-          'test@outlook.com'
-        ]
-        
+        const testNonDisposableEmails = ['test@gmail.com', 'test@yahoo.com', 'test@hotmail.com', 'test@outlook.com']
+
         console.log('\n🔍 Testing non-disposable email domains:')
         for (const email of testNonDisposableEmails) {
           const domain = email.split('@')[1].toLowerCase()
           const isBlocked = domains.includes(domain)
           const status = isBlocked ? '❌ BLOCKED' : '✅ ALLOWED'
           console.log(`  ${email}: ${status}`)
-          
+
           // These should definitely not be blocked
           expect(isBlocked).toBe(false)
         }
-        
+
         // Verify we have a reasonable number of domains
         expect(domains.length).toBeGreaterThan(100) // The list should have many domains
-                
       } catch (error) {
         console.error('Failed to fetch from GitHub:', error)
         // Don't fail the test if GitHub is unreachable, just log the error

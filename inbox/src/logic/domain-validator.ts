@@ -4,7 +4,8 @@ export interface IDomainValidator {
   isDomainBlacklisted: (email: string) => Promise<boolean>
 }
 
-const DISPOSABLE_EMAIL_LIST_URL = 'https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/main/disposable_email_blocklist.conf'
+const DISPOSABLE_EMAIL_LIST_URL =
+  'https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/main/disposable_email_blocklist.conf'
 const CACHE_REFRESH_INTERVAL = 1 * 60 * 60 * 1000 // 1 hour in milliseconds
 
 export function createEmailDomainValidator({
@@ -20,7 +21,7 @@ export function createEmailDomainValidator({
     try {
       logger.info('Fetching disposable email domains list')
       const response = await fetch.fetch(DISPOSABLE_EMAIL_LIST_URL)
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch disposable email domains: ${response.status} ${response.statusText}`)
       }
@@ -34,7 +35,7 @@ export function createEmailDomainValidator({
 
       disposableDomains = new Set(domains)
       lastRefresh = Date.now()
-      
+
       logger.info('Successfully fetched disposable email domains', {
         count: disposableDomains.size,
         lastRefresh: new Date(lastRefresh).toISOString()
@@ -44,7 +45,7 @@ export function createEmailDomainValidator({
         error: error instanceof Error ? error.message : String(error),
         url: DISPOSABLE_EMAIL_LIST_URL
       })
-      
+
       // If we have cached domains, continue using them
       if (disposableDomains.size > 0) {
         logger.warn('Continuing to use cached disposable email domains due to fetch failure')
