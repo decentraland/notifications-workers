@@ -93,6 +93,53 @@ describe('Domain Validator', () => {
       expect(result).toBe(true)
     })
 
+    it('should block emails with more than 1 dot in local part', async () => {
+      // Test emails with more than 1 dot in local part (before @)
+      expect(await domainValidator.isDomainBlacklisted('user..name@gmail.com')).toBe(true) // 2 dots
+      expect(await domainValidator.isDomainBlacklisted('user...name@gmail.com')).toBe(true) // 3 dots
+      expect(await domainValidator.isDomainBlacklisted('chloe.abele.07@gmail.com')).toBe(true) // 2 dots
+      expect(await domainValidator.isDomainBlacklisted('ch.l.o.e.abe.le.07@gmail.com')).toBe(true) // 6 dots
+      expect(await domainValidator.isDomainBlacklisted('user.name.more@gmail.com')).toBe(true) // 2 dots
+
+      // Test emails with dots at the beginning or end of local part
+      expect(await domainValidator.isDomainBlacklisted('.user@gmail.com')).toBe(true) // starts with dot
+      expect(await domainValidator.isDomainBlacklisted('user.@gmail.com')).toBe(true) // ends with dot
+    })
+
+    it('should allow emails with 0 or 1 dot in local part', async () => {
+      // Test valid local part formats with 0 or 1 dot
+      expect(await domainValidator.isDomainBlacklisted('user@gmail.com')).toBe(false) // 0 dots
+      expect(await domainValidator.isDomainBlacklisted('user.name@gmail.com')).toBe(false) // 1 dot
+      expect(await domainValidator.isDomainBlacklisted('user-name@gmail.com')).toBe(false) // 0 dots
+      expect(await domainValidator.isDomainBlacklisted('user_name@gmail.com')).toBe(false) // 0 dots
+      expect(await domainValidator.isDomainBlacklisted('user+tag@gmail.com')).toBe(false) // 0 dots
+      expect(await domainValidator.isDomainBlacklisted('user123@gmail.com')).toBe(false) // 0 dots
+      expect(await domainValidator.isDomainBlacklisted('chloe.abele@gmail.com')).toBe(false) // 1 dot
+      expect(await domainValidator.isDomainBlacklisted('ch.loe@gmail.com')).toBe(false) // 1 dot
+    })
+
+    it('should correctly count dots in local part', async () => {
+      // Test the specific cases mentioned
+      expect(await domainValidator.isDomainBlacklisted('chloe.abele.07@gmail.com')).toBe(true) // 2 dots, should be blocked
+      expect(await domainValidator.isDomainBlacklisted('chloe.abele@gmail.com')).toBe(false) // 1 dot, should be allowed
+      expect(await domainValidator.isDomainBlacklisted('chloe@gmail.com')).toBe(false) // 0 dots, should be allowed
+
+      // More examples
+      expect(await domainValidator.isDomainBlacklisted('ch.l.o.e@gmail.com')).toBe(true) // 3 dots, blocked
+      expect(await domainValidator.isDomainBlacklisted('ch.loe@gmail.com')).toBe(false) // 1 dot, allowed
+      expect(await domainValidator.isDomainBlacklisted('chloe@gmail.com')).toBe(false) // 0 dots, allowed
+    })
+
+    it('should allow emails with dots in domain part', async () => {
+      // Test that dots in domain are allowed
+      expect(await domainValidator.isDomainBlacklisted('user@test..com')).toBe(false) // Only checks local part
+      expect(await domainValidator.isDomainBlacklisted('user@..test.com')).toBe(false) // Only checks local part
+      expect(await domainValidator.isDomainBlacklisted('user@test.com..')).toBe(false) // Only checks local part
+      expect(await domainValidator.isDomainBlacklisted('user@.gmail.com')).toBe(false) // Only checks local part
+      expect(await domainValidator.isDomainBlacklisted('user@gmail.com.')).toBe(false) // Only checks local part
+      expect(await domainValidator.isDomainBlacklisted('user@sub.domain.com')).toBe(false)
+    })
+
     it('should check feature flag blacklist after disposable email check', async () => {
       // Mock successful fetch response with no disposable domains
       const mockResponse = {

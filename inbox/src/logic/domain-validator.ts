@@ -64,8 +64,23 @@ export function createEmailDomainValidator({
       return true // Invalid email format
     }
 
-    const domain = emailParts[1].toLowerCase()
-    const isDisposable = disposableDomains.has(domain)
+    // Check for invalid email patterns
+    const [localPart, domain] = emailParts
+
+    // Check for more than 1 dot in local part (before @) - not allowed
+    const dotCount = (localPart.match(/\./g) || []).length
+    if (dotCount > 1) {
+      logger.info('Email local part contains more than 1 dot and is not allowed', { email, localPart, dotCount })
+      return true
+    }
+
+    // Check for dots at the beginning or end of local part only
+    if (localPart.startsWith('.') || localPart.endsWith('.')) {
+      logger.info('Email local part starts or ends with dots and is invalid', { email, localPart })
+      return true
+    }
+
+    const isDisposable = disposableDomains.has(domain.toLowerCase())
 
     if (isDisposable) {
       logger.info('Email domain is disposable and blocked', { email, domain })
