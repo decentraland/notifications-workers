@@ -194,14 +194,12 @@ test('PUT /set-email', function ({ components, stubComponents, spyComponents }) 
     )
 
     expect(response.status).toBe(400)
-    expect(await response.json()).toMatchObject(
-      {
-        error: 'Bad request',
-        // This error message shouldn't change as it is expected by client-side
-        // TODO: return error code so client can render whatever they want
-        message: 'Email already registered to another account. Please use a different email to proceed'
-      }
-    )
+    expect(await response.json()).toMatchObject({
+      error: 'Bad request',
+      // This error message shouldn't change as it is expected by client-side
+      // TODO: return error code so client can render whatever they want
+      message: 'Email already registered to another account. Please use a different email to proceed'
+    })
   })
 
   describe('when the email domain is blacklisted', () => {
