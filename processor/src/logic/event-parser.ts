@@ -434,7 +434,8 @@ export async function createEventParser({
             eventKey: event.key,
             timestamp: event.timestamp,
             metadata: {
-              ...event.metadata
+              ...event.metadata,
+              addressesToNotify: undefined
             }
           }
         })
@@ -446,7 +447,8 @@ export async function createEventParser({
             eventKey: event.key,
             timestamp: event.timestamp,
             metadata: {
-              ...event.metadata
+              ...event.metadata,
+              memberAddress: undefined
             }
           }
         ]
