@@ -207,7 +207,7 @@ export async function confirmEmailHandler(
   }
 
   if (await domainValidator.isDomainBlacklisted(unconfirmedEmail.email)) {
-    throw new InvalidRequestError('Email domain not allowed')
+    throw new InvalidRequestError('Email address invalid. Please use a functioning email to continue')
   }
 
   const subscription = await db.findSubscription(address)
