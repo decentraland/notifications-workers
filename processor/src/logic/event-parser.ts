@@ -414,6 +414,22 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Community.DELETED_CONTENT_VIOLATION:
+        const { id, name, ownerAddress, thumbnailUrl } = event.metadata
+        return [
+          {
+            type: NotificationType.COMMUNITY_DELETED_CONTENT_VIOLATION,
+            address: ownerAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              communityId: id,
+              communityName: name,
+              thumbnailUrl: thumbnailUrl
+            }
+          }
+        ]
+
       default:
         return []
     }
