@@ -819,10 +819,10 @@
     ajv-keywords "^5.1.0"
     mitt "^3.0.1"
 
-"@dcl/schemas@^17.2.0":
-  version "17.2.0"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-17.2.0.tgz#0ec1ac6b663e8d38615731fd3a100583ce4b6467"
-  integrity sha512-l1VpY3fIShlWutIJkv6//OUGCdvW1Q4GDmfj7+RZzsLV7DFAAxWlIpD3P47ndbV+Hdb1DGjpuDDjRhma44fxqQ==
+"@dcl/schemas@^18.2.0":
+  version "18.2.0"
+  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-18.2.0.tgz#1e5bf37e9218123b2a886fb4f6eb8cbe81f5623c"
+  integrity sha512-8TbkY6MRfqcZxIZsm2aKgB1uoJCzWUwcKpKV13kCPoQ789JV8IycRWfm5M/WcaU/wUW99XX7mk9KykWWRC3yvg==
   dependencies:
     ajv "^8.11.0"
     ajv-errors "^3.0.0"
@@ -847,9 +847,9 @@
     ajv-keywords "^5.1.0"
     mitt "^3.0.1"
 
-"@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/new-notification-community-deleted-content-violation/dcl-schemas-18.1.1-17397645903.commit-bb33a00.tgz":
-  version "18.1.1-17397645903.commit-bb33a00"
-  resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/new-notification-community-deleted-content-violation/dcl-schemas-18.1.1-17397645903.commit-bb33a00.tgz#2c230773706b7e96b2be233fc76fb24f2f974ba1"
+"@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/new-notification-community-deleted-content-violation/dcl-schemas-18.2.1-17407869569.commit-3f3620c.tgz":
+  version "18.2.1-17407869569.commit-3f3620c"
+  resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/new-notification-community-deleted-content-violation/dcl-schemas-18.2.1-17407869569.commit-3f3620c.tgz#c3ab80ab098075fefb60aaea1944ad340d11628b"
   dependencies:
     ajv "^8.11.0"
     ajv-errors "^3.0.0"

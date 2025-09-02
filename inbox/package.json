@@ -29,7 +29,7 @@
   "dependencies": {
     "@dcl/platform-crypto-middleware": "^1.1.0",
     "@dcl/platform-server-commons": "^0.0.4",
-    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/new-notification-community-deleted-content-violation/dcl-schemas-18.1.1-17397645903.commit-bb33a00.tgz",
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/new-notification-community-deleted-content-violation/dcl-schemas-18.2.1-17407869569.commit-3f3620c.tgz",
     "@notifications/common": "0.0.0",
     "@well-known-components/env-config-provider": "^1.2.0",
     "@well-known-components/features-component": "^2.1.0",
