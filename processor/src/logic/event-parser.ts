@@ -414,6 +414,44 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Community.REQUEST_TO_JOIN_ACCEPTED:
+        return [
+          {
+            type: NotificationType.COMMUNITY_REQUEST_TO_JOIN_ACCEPTED,
+            address: event.metadata.memberAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              ...event.metadata
+            }
+          }
+        ]
+      case Events.SubType.Community.REQUEST_TO_JOIN_RECEIVED:
+        return event.metadata.addressesToNotify.map((address: EthAddress) => {
+          return {
+            type: NotificationType.COMMUNITY_REQUEST_TO_JOIN_RECEIVED,
+            address: address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              ...event.metadata,
+              addressesToNotify: undefined
+            }
+          }
+        })
+      case Events.SubType.Community.INVITE_RECEIVED:
+        return [
+          {
+            type: NotificationType.COMMUNITY_INVITE_RECEIVED,
+            address: event.metadata.memberAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              ...event.metadata,
+              memberAddress: undefined
+            }
+          }
+        ]
       default:
         return []
     }
