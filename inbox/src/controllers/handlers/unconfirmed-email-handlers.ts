@@ -63,7 +63,7 @@ export async function storeUnconfirmedEmailHandler(
 
   const body = await parseJson<{ email: string; redirect?: string; isCreditsWorkflow?: boolean }>(context.request)
   if (body.email !== '' && !Email.validate(body.email)) {
-    throw new InvalidRequestError('Invalid email')
+    throw new InvalidRequestError('Email address invalid. Please use a functioning email to continue')
   }
 
   const subscription = await db.findSubscription(address)
@@ -77,7 +77,9 @@ export async function storeUnconfirmedEmailHandler(
     // Check if any other address has already confirmed this email
     const existingSubscriptionWithEmail = await db.findSubscriptionByEmail(body.email, address)
     if (existingSubscriptionWithEmail) {
-      throw new InvalidRequestError('Email is already confirmed by another address')
+      throw new InvalidRequestError(
+        'Email already registered to another account. Please use a different email to proceed'
+      )
     }
 
     // Allow the same address to reconfirm the same email
@@ -89,7 +91,7 @@ export async function storeUnconfirmedEmailHandler(
       }
     }
     if (await domainValidator.isDomainBlacklisted(body.email)) {
-      throw new InvalidRequestError('Email domain not allowed')
+      throw new InvalidRequestError('Email address invalid. Please use a functioning email to continue')
     }
 
     const accountBaseUrl = await config.requireString('ACCOUNT_BASE_URL')
@@ -205,7 +207,7 @@ export async function confirmEmailHandler(
   }
 
   if (await domainValidator.isDomainBlacklisted(unconfirmedEmail.email)) {
-    throw new InvalidRequestError('Email domain not allowed')
+    throw new InvalidRequestError('Email address invalid. Please use a functioning email to continue')
   }
 
   const subscription = await db.findSubscription(address)
