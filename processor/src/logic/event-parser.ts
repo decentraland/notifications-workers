@@ -4,6 +4,7 @@ import { AppComponents, IEventParser } from '../types'
 import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
 import { streamingNotificationTypeByEventSubtype } from './streaming-utils'
 import { referralNotificationTypeByEventSubtype } from './referral-utils'
+import { commsNotificationTypeByEventSubtype } from './comms-utils'
 
 export async function createEventParser({
   logs,
@@ -464,6 +465,19 @@ export async function createEventParser({
             metadata: {
               ...event.metadata,
               memberAddress: undefined
+            }
+          }
+        ]
+      case Events.SubType.Comms.USER_BANNED_FROM_SCENE:
+      case Events.SubType.Comms.USER_UNBANNED_FROM_SCENE:
+        return [
+          {
+            type: commsNotificationTypeByEventSubtype(event.subType),
+            address: event.metadata.userAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              placeTitle: event.metadata.placeTitle
             }
           }
         ]

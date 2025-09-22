@@ -30,7 +30,7 @@
     "@aws-sdk/client-sqs": "^3.606.0",
     "@dcl/catalyst-contracts": "^4.4.1",
     "@dcl/platform-server-commons": "^0.0.4",
-    "@dcl/schemas": "^18.3.0",
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/user-banned-and-unnbanned-from-scene-events/dcl-schemas-18.7.2-17911500510.commit-e037d51.tgz",
     "@notifications/common": "0.0.0",
     "@well-known-components/env-config-provider": "^1.2.0",
     "@well-known-components/fetch-component": "^2.0.2",
