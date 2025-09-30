@@ -481,6 +481,310 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Event.EVENT_CREATED:
+        return [
+          {
+            type: NotificationType.EVENT_CREATED,
+            address: event.metadata.attendee,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              name: event.metadata.name,
+              image: event.metadata.image,
+              communityId: event.metadata.communityId,
+              communityName: event.metadata.communityName,
+              communityThumbnail: event.metadata.communityThumbnail
+            }
+          }
+        ]
+      case Events.SubType.Event.EVENT_STARTED:
+        return [
+          {
+            type: NotificationType.EVENTS_STARTED,
+            address: event.metadata.attendee,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              name: event.metadata.name,
+              image: event.metadata.image,
+              link: event.metadata.link,
+              communityThumbnail: event.metadata.communityThumbnail
+            }
+          }
+        ]
+      case Events.SubType.Event.EVENT_STARTS_SOON:
+        return [
+          {
+            type: NotificationType.EVENTS_STARTS_SOON,
+            address: event.metadata.attendee,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              name: event.metadata.name,
+              image: event.metadata.image,
+              link: event.metadata.link,
+              startsAt: event.metadata.startsAt,
+              endsAt: event.metadata.endsAt
+            }
+          }
+        ]
+      case Events.SubType.Governance.PROPOSAL_ENACTED:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_PROPOSAL_ENACTED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.COAUTHOR_REQUESTED:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_COAUTHOR_REQUESTED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.PITCH_PASSED:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_PITCH_PASSED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.TENDER_PASSED:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_TENDER_PASSED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.AUTHORED_PROPOSAL_FINISHED:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_AUTHORED_PROPOSAL_FINISHED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.VOTING_ENDED_VOTER:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_VOTING_ENDED_VOTER,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.NEW_COMMENT_ON_PROPOSAL:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.NEW_COMMENT_ON_PROJECT_UPDATED:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROJECT_UPDATE,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.WHALE_VOTE:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_WHALE_VOTE,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.VOTED_ON_BEHALF:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_VOTED_ON_BEHALF,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Governance.CLIFF_ENDED:
+        return [
+          {
+            type: NotificationType.GOVERNANCE_CLIFF_ENDED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              proposalId: event.metadata.proposalId,
+              proposalTitle: event.metadata.proposalTitle,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              link: event.metadata.link
+            }
+          }
+        ]
+      case Events.SubType.Worlds.WORLDS_PERMISSION_GRANTED:
+        return [
+          {
+            type: NotificationType.WORLDS_PERMISSION_GRANTED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              world: event.metadata.world,
+              permissions: event.metadata.permissions,
+              url: event.metadata.url
+            }
+          }
+        ]
+      case Events.SubType.Worlds.WORLDS_PERMISSION_REVOKED:
+        return [
+          {
+            type: NotificationType.WORLDS_PERMISSION_REVOKED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              world: event.metadata.world,
+              permissions: event.metadata.permissions,
+              url: event.metadata.url
+            }
+          }
+        ]
+      case Events.SubType.Worlds.WORLDS_ACCESS_RESTORED:
+        return [
+          {
+            type: NotificationType.WORLDS_ACCESS_RESTORED,
+            address: event.metadata.attendee,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              url: event.metadata.url
+            }
+          }
+        ]
+      case Events.SubType.Worlds.WORLDS_ACCESS_RESTRICTED:
+        return [
+          {
+            type: NotificationType.WORLDS_ACCESS_RESTRICTED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              when: event.metadata.when
+            }
+          }
+        ]
+      case Events.SubType.Worlds.WORLDS_MISSING_RESOURCES:
+        return [
+          {
+            type: NotificationType.WORLDS_MISSING_RESOURCES,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              url: event.metadata.url,
+              when: event.metadata.when
+            }
+          }
+        ]
       default:
         return []
     }
