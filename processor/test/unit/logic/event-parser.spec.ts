@@ -9,8 +9,10 @@ describe('when parsing event notifications', () => {
   let config: any
   let logs: ILoggerComponent
   let eventParser: IEventParser
+  let fixedTimestamp: number
 
   beforeEach(async () => {
+    fixedTimestamp = 1640995200000 // Fixed timestamp: 2022-01-01T00:00:00.000Z
     config = createConfigComponent({
       CDN_URL: 'https://cdn.decentraland.org',
       DECENTRALAND_URL: 'https://decentraland.org'
@@ -27,7 +29,7 @@ describe('when parsing event notifications', () => {
         type: Events.Type.EVENT,
         subType: Events.SubType.Event.EVENT_CREATED,
         key: 'event-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Community Event Added',
           description: 'The Test Community has added a new event.',
@@ -49,7 +51,7 @@ describe('when parsing event notifications', () => {
         type: NotificationType.EVENT_CREATED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'event-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Community Event Added',
           description: 'The Test Community has added a new event.',
@@ -71,7 +73,7 @@ describe('when parsing event notifications', () => {
         type: Events.Type.EVENT,
         subType: Events.SubType.Event.EVENT_STARTED,
         key: 'event-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Event started',
           description: 'The event Test Event has begun!',
@@ -92,7 +94,7 @@ describe('when parsing event notifications', () => {
         type: NotificationType.EVENTS_STARTED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'event-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Event started',
           description: 'The event Test Event has begun!',
@@ -113,7 +115,7 @@ describe('when parsing event notifications', () => {
         type: Events.Type.EVENT,
         subType: Events.SubType.Event.EVENT_STARTS_SOON,
         key: 'event-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Event starts in an hour',
           description: 'The event Test Event starts in an hour.',
@@ -135,7 +137,7 @@ describe('when parsing event notifications', () => {
         type: NotificationType.EVENTS_STARTS_SOON,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'event-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Event starts in an hour',
           description: 'The event Test Event starts in an hour.',
@@ -157,7 +159,7 @@ describe('when parsing event notifications', () => {
         type: Events.Type.EVENT,
         subType: 'UNSUPPORTED_EVENT_TYPE',
         key: 'event-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           attendee: '0x1234567890123456789012345678901234567890'
         }
@@ -176,8 +178,10 @@ describe('when parsing governance notifications', () => {
   let config: any
   let logs: ILoggerComponent
   let eventParser: IEventParser
+  let fixedTimestamp: number
 
   beforeEach(async () => {
+    fixedTimestamp = 1640995200000 // Fixed timestamp: 2022-01-01T00:00:00.000Z
     config = createConfigComponent({
       CDN_URL: 'https://cdn.decentraland.org',
       DECENTRALAND_URL: 'https://decentraland.org'
@@ -194,7 +198,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.PROPOSAL_ENACTED,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -214,7 +218,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_PROPOSAL_ENACTED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -234,7 +238,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.COAUTHOR_REQUESTED,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -254,7 +258,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_COAUTHOR_REQUESTED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -274,7 +278,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.PITCH_PASSED,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Pitch',
@@ -294,7 +298,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_PITCH_PASSED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Pitch',
@@ -314,7 +318,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.TENDER_PASSED,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Tender',
@@ -334,7 +338,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_TENDER_PASSED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Tender',
@@ -354,7 +358,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.AUTHORED_PROPOSAL_FINISHED,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -374,7 +378,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_AUTHORED_PROPOSAL_FINISHED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -394,7 +398,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.VOTING_ENDED_VOTER,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -414,7 +418,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_VOTING_ENDED_VOTER,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -434,7 +438,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.NEW_COMMENT_ON_PROPOSAL,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -454,7 +458,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROPOSAL,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -474,7 +478,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.NEW_COMMENT_ON_PROJECT_UPDATED,
         key: 'update-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -494,7 +498,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_NEW_COMMENT_ON_PROJECT_UPDATE,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'update-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -514,7 +518,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.WHALE_VOTE,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -534,7 +538,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_WHALE_VOTE,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -554,7 +558,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.VOTED_ON_BEHALF,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -574,7 +578,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_VOTED_ON_BEHALF,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -594,7 +598,7 @@ describe('when parsing governance notifications', () => {
         type: Events.Type.GOVERNANCE,
         subType: Events.SubType.Governance.CLIFF_ENDED,
         key: 'proposal-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -614,7 +618,7 @@ describe('when parsing governance notifications', () => {
         type: NotificationType.GOVERNANCE_CLIFF_ENDED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'proposal-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           proposalId: 'proposal-123',
           proposalTitle: 'Test Proposal',
@@ -631,8 +635,10 @@ describe('when parsing worlds notifications', () => {
   let config: any
   let logs: ILoggerComponent
   let eventParser: IEventParser
+  let fixedTimestamp: number
 
   beforeEach(async () => {
+    fixedTimestamp = 1640995200000 // Fixed timestamp: 2022-01-01T00:00:00.000Z
     config = createConfigComponent({
       CDN_URL: 'https://cdn.decentraland.org',
       DECENTRALAND_URL: 'https://decentraland.org'
@@ -649,7 +655,7 @@ describe('when parsing worlds notifications', () => {
         type: Events.Type.WORLD,
         subType: Events.SubType.Worlds.WORLDS_PERMISSION_GRANTED,
         key: 'world-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Permission Granted',
           description: 'You have been granted permissions to access this world.',
@@ -669,7 +675,7 @@ describe('when parsing worlds notifications', () => {
         type: NotificationType.WORLDS_PERMISSION_GRANTED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'world-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Permission Granted',
           description: 'You have been granted permissions to access this world.',
@@ -689,7 +695,7 @@ describe('when parsing worlds notifications', () => {
         type: Events.Type.WORLD,
         subType: Events.SubType.Worlds.WORLDS_PERMISSION_REVOKED,
         key: 'world-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Permission Revoked',
           description: 'Your permissions to access this world have been revoked.',
@@ -709,7 +715,7 @@ describe('when parsing worlds notifications', () => {
         type: NotificationType.WORLDS_PERMISSION_REVOKED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'world-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Permission Revoked',
           description: 'Your permissions to access this world have been revoked.',
@@ -729,7 +735,7 @@ describe('when parsing worlds notifications', () => {
         type: Events.Type.WORLD,
         subType: Events.SubType.Worlds.WORLDS_ACCESS_RESTORED,
         key: 'world-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Worlds available',
           description: 'Access to your Worlds has been restored.',
@@ -747,7 +753,7 @@ describe('when parsing worlds notifications', () => {
         type: NotificationType.WORLDS_ACCESS_RESTORED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'world-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Worlds available',
           description: 'Access to your Worlds has been restored.',
@@ -765,11 +771,11 @@ describe('when parsing worlds notifications', () => {
         type: Events.Type.WORLD,
         subType: Events.SubType.Worlds.WORLDS_ACCESS_RESTRICTED,
         key: 'world-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Worlds restricted',
           description: 'Access to your Worlds has been restricted due to insufficient resources.',
-          when: Date.now() + 86400000, // 24 hours from now
+          when: fixedTimestamp + 86400000, // 24 hours from now
           address: '0x1234567890123456789012345678901234567890'
         }
       }
@@ -783,11 +789,11 @@ describe('when parsing worlds notifications', () => {
         type: NotificationType.WORLDS_ACCESS_RESTRICTED,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'world-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Worlds restricted',
           description: 'Access to your Worlds has been restricted due to insufficient resources.',
-          when: Date.now() + 86400000
+          when: fixedTimestamp + 86400000
         }
       })
     })
@@ -801,12 +807,12 @@ describe('when parsing worlds notifications', () => {
         type: Events.Type.WORLD,
         subType: Events.SubType.Worlds.WORLDS_MISSING_RESOURCES,
         key: 'world-123',
-        timestamp: Date.now(),
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Missing Resources',
           description: 'World access at risk in 48hs. Rectify now to prevent disruption.',
           url: 'https://builder.decentraland.org/worlds?tab=dcl',
-          when: Date.now() + 172800000, // 48 hours from now
+          when: fixedTimestamp + 172800000, // 48 hours from now
           address: '0x1234567890123456789012345678901234567890'
         }
       }
@@ -820,12 +826,12 @@ describe('when parsing worlds notifications', () => {
         type: NotificationType.WORLDS_MISSING_RESOURCES,
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'world-123',
-        timestamp: event.timestamp,
+        timestamp: fixedTimestamp,
         metadata: {
           title: 'Missing Resources',
           description: 'World access at risk in 48hs. Rectify now to prevent disruption.',
           url: 'https://builder.decentraland.org/worlds?tab=dcl',
-          when: Date.now() + 172800000
+          when: fixedTimestamp + 172800000
         }
       })
     })
