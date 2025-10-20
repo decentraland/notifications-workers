@@ -479,6 +479,16 @@ describe('email rendering tests', () => {
       },
       timestamp: Date.now(),
       eventKey: '123'
+    },
+    [NotificationType.CREDITS_ON_DEMAND_GRANTED]: {
+      id: '123456789',
+      type: NotificationType.CREDITS_ON_DEMAND_GRANTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        creditsGranted: '100'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
     }
   }
 
