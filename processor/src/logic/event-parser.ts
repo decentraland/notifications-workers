@@ -293,8 +293,9 @@ export async function createEventParser({
             metadata: {
               creditsGranted: event.metadata.creditsGranted,
               image: `${CDN_URL}credits/notification-icon.png`,
-              title: 'Credits Granted!',
-              description: 'You were granted credits to be used in this season. Spend them before they expire!',
+              title: 'Bonus credits unlocked',
+              description:
+                "Congrats! You've earned extra Credits for this season. Make sure to use them before they expire!",
               link: `${DECENTRALAND_URL}/marketplace`
             }
           }
