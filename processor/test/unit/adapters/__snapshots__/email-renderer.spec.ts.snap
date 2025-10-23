@@ -75,18 +75,20 @@ exports[`email rendering tests rendering credits_on_demand_granted 1`] = `
   "accountLink": "https://decentraland.zone/account",
   "actionButtonLink": """",
   "actionButtonText": "GO TO MARKETPLACE",
-  "bannerLabel": "You were granted credits!",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/d649d299-d7fc-4db5-913d-537d7502997f/600x240.png",
+  "bannerLabel": "Credits Incoming!",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/42e29048-ebe5-4b87-8d51-ee360ecaca9b/600x240.png",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
-  You were granted 
+  Congratulations! You've earned extra Marketplace Credits for this season. Make sure to spend them before they expire!
+</p>
+
+<div style="text-align: center;">
+  <span style="font-size: 14px; font-weight: 400; color: #716B7C; line-height: 100%; display: inline-block; vertical-align: middle;">Credits Earned:</span>
   <span style="display: inline-block; font-size: 16px; vertical-align: middle; font-weight: 700; color: #43404A; margin-left: 4px; line-height: 24px;">
     <img src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/fd0562e1-968e-49df-97cb-19b7ea5f3dda/34x33.png" alt="Credits Icon" style="vertical-align: middle; margin-right: 4px;">
     100
   </span>
-   credits to be used in this season. Spend them before they expire!
-</p>
-",
-  "subject": "Credits Granted! 💸",
+</div>",
+  "subject": "💸 Bonus Marketplace Credits Unlocked!",
   "title": "Hey there",
   "titleHighlight": "",
   "to": "email@example.com",
