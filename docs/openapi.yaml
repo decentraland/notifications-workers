@@ -6,16 +6,21 @@ info:
   contact:
     name: Decentraland
     url: https://decentraland.org
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
   x-api-id: notifications-inbox-api
 servers:
   - url: /
     description: Service root
+security: []
 paths:
   /status:
     get:
       summary: Get service health status
       description: Returns health status of the service
       operationId: getStatus
+      security: []
       responses:
         '200':
           description: Service health status
@@ -23,6 +28,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /notifications:
     get:
       summary: Get user notifications
@@ -162,6 +179,7 @@ paths:
       summary: Unsubscribe from all notifications
       description: Unsubscribes a user from all notifications (requires signed URL)
       operationId: unsubscribeAll
+      security: []
       parameters:
         - name: address
           in: path
@@ -199,6 +217,7 @@ paths:
       summary: Unsubscribe from specific notification type
       description: Unsubscribes a user from a specific notification type (requires signed URL)
       operationId: unsubscribeOne
+      security: []
       parameters:
         - name: address
           in: path
@@ -274,6 +293,7 @@ paths:
       summary: Confirm email address
       description: Confirms an email address for a user
       operationId: confirmEmail
+      security: []
       requestBody:
         required: true
         content:
