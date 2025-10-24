@@ -9,10 +9,7 @@
     "test": "jest --forceExit --detectOpenHandles --coverage --verbose",
     "lint:check": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "update:snapshots": "jest --updateSnapshot",
-    "docs:build": "yarn redocly build-docs ../docs/notifications-inbox-openapi.yaml -o ../docs/index.html",
-    "predocs:preview": "yarn docs:build",
-    "docs:preview": "yarn redocly preview-docs ../docs/notifications-inbox-openapi.yaml"
+    "update:snapshots": "jest --updateSnapshot"
   },
   "license": "Apache-2.0",
   "devDependencies": {
@@ -20,8 +17,7 @@
     "@types/node": "^20.11.24",
     "@well-known-components/test-helpers": "^1.5.6",
     "copyfiles": "^2.4.1",
-    "typescript": "^5.3.3",
-    "@redocly/redoc-cli": "latest"
+    "typescript": "^5.3.3"
   },
   "prettier": {
     "printWidth": 120,
@@ -33,7 +29,7 @@
   "dependencies": {
     "@dcl/platform-crypto-middleware": "^1.1.0",
     "@dcl/platform-server-commons": "^0.0.4",
-    "@dcl/schemas": "^18.8.0",
+    "@dcl/schemas": "^19.4.0",
     "@notifications/common": "0.0.0",
     "@well-known-components/env-config-provider": "^1.2.0",
     "@well-known-components/features-component": "^2.1.0",
