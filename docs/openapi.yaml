@@ -1,0 +1,507 @@
+openapi: 3.1.0
+info:
+  title: Notifications Inbox API
+  description: API for notifications inbox service providing user notification management and subscription preferences
+  version: 1.0.0
+  contact:
+    name: Decentraland
+    url: https://decentraland.org
+  x-api-id: notifications-inbox-api
+servers:
+  - url: /
+    description: Service root
+paths:
+  /status:
+    get:
+      summary: Get service health status
+      description: Returns health status of the service
+      operationId: getStatus
+      responses:
+        '200':
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /notifications:
+    get:
+      summary: Get user notifications
+      description: Returns notifications for a specific user (requires signed fetch)
+      operationId: getNotifications
+      security:
+        - SignedFetch: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+          description: Number of notifications to return
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: number
+          description: Number of notifications to skip
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by notification type
+      responses:
+        '200':
+          description: User notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationsResponse'
+        '401':
+          description: Unauthorized - invalid signed fetch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - invalid metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /notifications/read:
+    put:
+      summary: Mark notifications as read
+      description: Marks notifications as read for a specific user (requires signed fetch)
+      operationId: markNotificationsAsRead
+      security:
+        - SignedFetch: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarkAsReadRequest'
+      responses:
+        '200':
+          description: Notifications marked as read
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarkAsReadResponse'
+        '401':
+          description: Unauthorized - invalid signed fetch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - invalid metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /subscription:
+    get:
+      summary: Get user subscription preferences
+      description: Returns subscription preferences for a specific user (requires signed fetch)
+      operationId: getSubscription
+      security:
+        - SignedFetch: []
+      responses:
+        '200':
+          description: User subscription preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionPreferences'
+        '401':
+          description: Unauthorized - invalid signed fetch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - invalid metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update subscription preferences
+      description: Updates subscription preferences for a specific user (requires signed fetch)
+      operationId: updateSubscription
+      security:
+        - SignedFetch: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubscriptionRequest'
+      responses:
+        '200':
+          description: Subscription preferences updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionPreferences'
+        '401':
+          description: Unauthorized - invalid signed fetch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - invalid metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /unsubscribe/{address}:
+    get:
+      summary: Unsubscribe from all notifications
+      description: Unsubscribes a user from all notifications (requires signed URL)
+      operationId: unsubscribeAll
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User address
+        - name: signature
+          in: query
+          required: true
+          schema:
+            type: string
+          description: URL signature
+        - name: timestamp
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Signature timestamp
+      responses:
+        '200':
+          description: Successfully unsubscribed from all notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsubscribeResponse'
+        '400':
+          description: Invalid signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /unsubscribe/{address}/{notificationType}:
+    get:
+      summary: Unsubscribe from specific notification type
+      description: Unsubscribes a user from a specific notification type (requires signed URL)
+      operationId: unsubscribeOne
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User address
+        - name: notificationType
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Notification type
+        - name: signature
+          in: query
+          required: true
+          schema:
+            type: string
+          description: URL signature
+        - name: timestamp
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Signature timestamp
+      responses:
+        '200':
+          description: Successfully unsubscribed from notification type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsubscribeResponse'
+        '400':
+          description: Invalid signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /set-email:
+    put:
+      summary: Store unconfirmed email
+      description: Stores an unconfirmed email address for a user (requires signed fetch)
+      operationId: storeUnconfirmedEmail
+      security:
+        - SignedFetch: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetEmailRequest'
+      responses:
+        '200':
+          description: Email stored successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetEmailResponse'
+        '401':
+          description: Unauthorized - invalid signed fetch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - invalid metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /confirm-email:
+    put:
+      summary: Confirm email address
+      description: Confirms an email address for a user
+      operationId: confirmEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmEmailRequest'
+      responses:
+        '200':
+          description: Email confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmEmailResponse'
+        '400':
+          description: Invalid confirmation token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    SignedFetch:
+      type: http
+      scheme: bearer
+      description: 'Signed fetch authentication using @dcl/platform-crypto-middleware (ADR-44) with 5-minute expiration and metadata validation to prevent requests from decentraland-kernel-scene. Requires auth chain headers (x-identity, x-signature, x-timestamp) for signature validation. Example: Authorization: Bearer <signed-fetch-token>'
+  schemas:
+    Status:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Service health status
+        timestamp:
+          type: string
+          format: date-time
+          description: Status timestamp
+      required:
+        - status
+    NotificationsResponse:
+      type: object
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+          description: List of notifications
+        total:
+          type: number
+          description: Total number of notifications
+        unreadCount:
+          type: number
+          description: Number of unread notifications
+      required:
+        - notifications
+        - total
+        - unreadCount
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Notification ID
+        type:
+          type: string
+          description: Notification type
+        title:
+          type: string
+          description: Notification title
+        message:
+          type: string
+          description: Notification message
+        isRead:
+          type: boolean
+          description: Whether notification is read
+        createdAt:
+          type: string
+          format: date-time
+          description: Notification creation timestamp
+        metadata:
+          type: object
+          description: Additional notification metadata
+      required:
+        - id
+        - type
+        - title
+        - message
+        - isRead
+        - createdAt
+    MarkAsReadRequest:
+      type: object
+      properties:
+        notificationIds:
+          type: array
+          items:
+            type: string
+          description: List of notification IDs to mark as read
+      required:
+        - notificationIds
+    MarkAsReadResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Operation success status
+        updatedCount:
+          type: number
+          description: Number of notifications updated
+      required:
+        - success
+        - updatedCount
+    SubscriptionPreferences:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+        isEmailConfirmed:
+          type: boolean
+          description: Whether email is confirmed
+        preferences:
+          type: object
+          properties:
+            emailNotifications:
+              type: boolean
+              description: Email notifications enabled
+            pushNotifications:
+              type: boolean
+              description: Push notifications enabled
+            notificationTypes:
+              type: object
+              description: Preferences by notification type
+          description: User notification preferences
+        createdAt:
+          type: string
+          format: date-time
+          description: Preferences creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Preferences last update timestamp
+      required:
+        - email
+        - isEmailConfirmed
+        - preferences
+    UpdateSubscriptionRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+        preferences:
+          type: object
+          properties:
+            emailNotifications:
+              type: boolean
+              description: Email notifications enabled
+            pushNotifications:
+              type: boolean
+              description: Push notifications enabled
+            notificationTypes:
+              type: object
+              description: Preferences by notification type
+          description: User notification preferences
+      required:
+        - preferences
+    UnsubscribeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Unsubscribe success status
+        message:
+          type: string
+          description: Unsubscribe message
+      required:
+        - success
+        - message
+    SetEmailRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email address to store
+      required:
+        - email
+    SetEmailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Email storage success status
+        message:
+          type: string
+          description: Response message
+      required:
+        - success
+        - message
+    ConfirmEmailRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Email confirmation token
+      required:
+        - token
+    ConfirmEmailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Email confirmation success status
+        message:
+          type: string
+          description: Response message
+      required:
+        - success
+        - message
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+      required:
+        - error

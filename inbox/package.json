@@ -9,7 +9,10 @@
     "test": "jest --forceExit --detectOpenHandles --coverage --verbose",
     "lint:check": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "update:snapshots": "jest --updateSnapshot"
+    "update:snapshots": "jest --updateSnapshot",
+    "docs:build": "yarn redocly build-docs ../docs/notifications-inbox-openapi.yaml -o ../docs/index.html",
+    "predocs:preview": "yarn docs:build",
+    "docs:preview": "yarn redocly preview-docs ../docs/notifications-inbox-openapi.yaml"
   },
   "license": "Apache-2.0",
   "devDependencies": {
@@ -17,7 +20,8 @@
     "@types/node": "^20.11.24",
     "@well-known-components/test-helpers": "^1.5.6",
     "copyfiles": "^2.4.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "@redocly/redoc-cli": "latest"
   },
   "prettier": {
     "printWidth": 120,
