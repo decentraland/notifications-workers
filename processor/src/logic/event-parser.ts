@@ -283,6 +283,23 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.CreditsService.ON_DEMAND_CREDITS_GRANTED:
+        return [
+          {
+            type: NotificationType.CREDITS_ON_DEMAND_GRANTED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              creditsGranted: event.metadata.creditsGranted,
+              image: `${CDN_URL}credits/notification-icon.png`,
+              title: 'Bonus credits unlocked',
+              description:
+                "Congrats! You've earned extra Credits for this season. Make sure to use them before they expire!",
+              link: `${DECENTRALAND_URL}/marketplace`
+            }
+          }
+        ]
       case Events.SubType.CreditsService.COMPLETE_GOALS_REMINDER:
         return [
           {

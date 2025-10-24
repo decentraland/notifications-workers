@@ -70,6 +70,33 @@ exports[`email rendering tests rendering bid_received 1`] = `
 }
 `;
 
+exports[`email rendering tests rendering credits_on_demand_granted 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": """",
+  "actionButtonText": "GO TO MARKETPLACE",
+  "bannerLabel": "Credits Incoming!",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/42e29048-ebe5-4b87-8d51-ee360ecaca9b/600x240.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Congratulations! You've earned extra Marketplace Credits for this season. Make sure to spend them before they expire!
+</p>
+
+<div style="text-align: center;">
+  <span style="font-size: 14px; font-weight: 400; color: #716B7C; line-height: 100%; display: inline-block; vertical-align: middle;">Credits Earned:</span>
+  <span style="display: inline-block; font-size: 16px; vertical-align: middle; font-weight: 700; color: #43404A; margin-left: 4px; line-height: 24px;">
+    <img src="http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/fd0562e1-968e-49df-97cb-19b7ea5f3dda/34x33.png" alt="Credits Icon" style="vertical-align: middle; margin-right: 4px;">
+    100
+  </span>
+</div>",
+  "subject": "💸 Bonus Marketplace Credits Unlocked!",
+  "title": "Hey there",
+  "titleHighlight": "",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/credits_on_demand_granted?signature=e5f203bd96c736c066eabab3462f843d6888d4ec130c104cf2e9d8c382d80da1",
+}
+`;
+
 exports[`email rendering tests rendering events_started 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
