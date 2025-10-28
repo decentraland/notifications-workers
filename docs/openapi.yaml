@@ -1,7 +1,14 @@
 openapi: 3.1.0
 info:
-  title: Notifications Inbox API
-  description: API for notifications inbox service providing user notification management and subscription preferences
+  title: Notifications Workers API
+  description: |
+    API for Decentraland's notification system, consisting of two services:
+    
+    **Inbox Worker**: Manages user notifications, subscription preferences, and email verification.
+    
+    **Processor Worker**: Handles notification creation and publishing from external sources.
+    
+    The services share a database and support both in-app and email notifications with granular user preferences per notification type.
   version: 1.0.0
   contact:
     name: Decentraland
@@ -9,17 +16,34 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  x-api-id: notifications-inbox-api
+  x-api-id: notifications-workers-api
 servers:
-  - url: /
-    description: Service root
+  - url: https://notifications.decentraland.org
+    description: Production environment
+  - url: https://notifications.decentraland.zone
+    description: Development environment
+  - url: http://localhost:5001
+    description: Local Inbox worker (default port)
+  - url: http://localhost:5002
+    description: Local Processor worker (default port)
 security: []
+tags:
+  - name: Health
+    description: Service health and status endpoints (available in both Inbox and Processor services)
+  - name: Notifications
+    description: User notification retrieval and management (Inbox service)
+  - name: Subscriptions
+    description: User subscription preferences and email verification (Inbox service)
+  - name: Publishing
+    description: External notification creation and publishing (Processor service)
 paths:
   /status:
     get:
       summary: Get service health status
       description: Returns health status of the service
       operationId: getStatus
+      tags:
+        - Health
       security: []
       responses:
         '200':
@@ -28,59 +52,91 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   /notifications:
     get:
       summary: Get user notifications
-      description: Returns notifications for a specific user (requires signed fetch)
+      description: |
+        Retrieves paginated notifications for the authenticated user, including both user-specific and broadcast notifications.
+        The user's address is extracted from the signed fetch authentication chain.
       operationId: getNotifications
+      tags:
+        - Notifications
       security:
         - SignedFetch: []
       parameters:
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+          description: Unix timestamp in milliseconds. Only return notifications with timestamp >= this value
+          example: 1701379983000
         - name: limit
           in: query
           required: false
           schema:
-            type: number
-          description: Number of notifications to return
-        - name: offset
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+          description: Maximum number of notifications to return (capped at 50)
+        - name: onlyUnread
           in: query
           required: false
           schema:
-            type: number
-          description: Number of notifications to skip
-        - name: type
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Filter by notification type
+            type: boolean
+          description: If present (value doesn't matter), only unread notifications are returned
       responses:
         '200':
-          description: User notifications
+          description: User notifications retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotificationsResponse'
         '401':
-          description: Unauthorized - invalid signed fetch
+          description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden - invalid metadata
+          description: Forbidden - signed fetch metadata validation failed (e.g., request from decentraland-kernel-scene)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Publish notifications
+      description: |
+        Creates and stores new notifications. This endpoint is used by external services to publish notifications to users.
+        Notifications are validated, stored in the database, and if the user has email notifications enabled, an email is sent.
+        Available only in the Processor service.
+      operationId: publishNotifications
+      tags:
+        - Publishing
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublishNotificationRequest'
+              minItems: 1
+      responses:
+        '204':
+          description: Notifications published successfully
+        '400':
+          description: Invalid request body or validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - missing or invalid API key
           content:
             application/json:
               schema:
@@ -88,8 +144,12 @@ paths:
   /notifications/read:
     put:
       summary: Mark notifications as read
-      description: Marks notifications as read for a specific user (requires signed fetch)
+      description: |
+        Marks specified notifications as read for the authenticated user. This operation is irreversible.
+        The user's address is extracted from the signed fetch authentication chain.
       operationId: markNotificationsAsRead
+      tags:
+        - Notifications
       security:
         - SignedFetch: []
       requestBody:
@@ -98,21 +158,65 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/MarkAsReadRequest'
+            example:
+              notificationIds:
+                - "3a33a38a-e17a-4153-926b-c18f1e57e3e1"
+                - "f098bed0-bff9-4ebe-a160-5687ffa4fe36"
       responses:
         '200':
-          description: Notifications marked as read
+          description: Notifications marked as read successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MarkAsReadResponse'
+              example:
+                updated: 2
+        '400':
+          description: Bad request - missing or invalid notificationIds array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
-          description: Unauthorized - invalid signed fetch
+          description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden - invalid metadata
+          description: Forbidden - signed fetch metadata validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /notifications/email:
+    post:
+      summary: Send common email notification
+      description: |
+        Sends a generic email notification using a common template. Used by internal services to send custom email notifications.
+        Available only in the Inbox service.
+      operationId: sendCommonEmail
+      tags:
+        - Notifications
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommonEmailRequest'
+      responses:
+        '204':
+          description: Email sent successfully
+        '400':
+          description: Invalid request - missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - missing or invalid API key
           content:
             application/json:
               schema:
@@ -120,33 +224,43 @@ paths:
   /subscription:
     get:
       summary: Get user subscription preferences
-      description: Returns subscription preferences for a specific user (requires signed fetch)
+      description: |
+        Retrieves the subscription preferences for the authenticated user, including confirmed email, unconfirmed email (if any),
+        and detailed notification preferences for each notification type. If no subscription exists, returns default preferences
+        with all notifications enabled.
       operationId: getSubscription
+      tags:
+        - Subscriptions
       security:
         - SignedFetch: []
       responses:
         '200':
-          description: User subscription preferences
+          description: User subscription preferences retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SubscriptionPreferences'
+                $ref: '#/components/schemas/SubscriptionResponse'
         '401':
-          description: Unauthorized - invalid signed fetch
+          description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden - invalid metadata
+          description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
     put:
       summary: Update subscription preferences
-      description: Updates subscription preferences for a specific user (requires signed fetch)
+      description: |
+        Updates the subscription preferences for the authenticated user. Allows configuring global email/in-app preferences
+        and per-notification-type preferences. The request is validated against the SubscriptionDetails schema.
+        Sends an analytics event to the data warehouse.
       operationId: updateSubscription
+      tags:
+        - Subscriptions
       security:
         - SignedFetch: []
       requestBody:
@@ -154,31 +268,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateSubscriptionRequest'
+              $ref: '#/components/schemas/SubscriptionDetails'
       responses:
-        '200':
-          description: Subscription preferences updated
+        '204':
+          description: Subscription preferences updated successfully
+        '400':
+          description: Invalid request - validation error in subscription details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SubscriptionPreferences'
+                $ref: '#/components/schemas/Error'
         '401':
-          description: Unauthorized - invalid signed fetch
+          description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden - invalid metadata
+          description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
   /unsubscribe/{address}:
     get:
-      summary: Unsubscribe from all notifications
-      description: Unsubscribes a user from all notifications (requires signed URL)
+      summary: Unsubscribe from all email notifications
+      description: |
+        Unsubscribes a user from all email notifications by setting `ignore_all_email` to true.
+        The URL must be signed with HMAC-SHA256 using the service's signing key. Returns an HTML confirmation page.
+        This endpoint is typically accessed via links in notification emails.
       operationId: unsubscribeAll
+      tags:
+        - Subscriptions
       security: []
       parameters:
         - name: address
@@ -186,28 +307,31 @@ paths:
           required: true
           schema:
             type: string
-          description: User address
+            pattern: '^0x[a-fA-F0-9]{40}$'
+          description: Ethereum address of the user
+          example: "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314"
         - name: signature
           in: query
           required: true
           schema:
             type: string
-          description: URL signature
+          description: HMAC-SHA256 signature of the URL path and query parameters
         - name: timestamp
           in: query
           required: true
           schema:
             type: string
-          description: Signature timestamp
+          description: Unix timestamp when the signature was generated
       responses:
         '200':
-          description: Successfully unsubscribed from all notifications
+          description: Successfully unsubscribed from all email notifications - returns HTML page
           content:
-            application/json:
+            text/html:
               schema:
-                $ref: '#/components/schemas/UnsubscribeResponse'
+                type: string
+                description: HTML confirmation page
         '400':
-          description: Invalid signature
+          description: Invalid signature or expired link
           content:
             application/json:
               schema:
@@ -215,8 +339,13 @@ paths:
   /unsubscribe/{address}/{notificationType}:
     get:
       summary: Unsubscribe from specific notification type
-      description: Unsubscribes a user from a specific notification type (requires signed URL)
+      description: |
+        Unsubscribes a user from email notifications for a specific notification type.
+        The URL must be signed with HMAC-SHA256 using the service's signing key. Returns an HTML confirmation page.
+        This endpoint is typically accessed via links in notification emails.
       operationId: unsubscribeOne
+      tags:
+        - Subscriptions
       security: []
       parameters:
         - name: address
@@ -224,43 +353,56 @@ paths:
           required: true
           schema:
             type: string
-          description: User address
+            pattern: '^0x[a-fA-F0-9]{40}$'
+          description: Ethereum address of the user
+          example: "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314"
         - name: notificationType
           in: path
           required: true
           schema:
             type: string
-          description: Notification type
+          description: Notification type to unsubscribe from (must be a valid NotificationType enum value)
+          example: "bid_accepted"
         - name: signature
           in: query
           required: true
           schema:
             type: string
-          description: URL signature
+          description: HMAC-SHA256 signature of the URL path and query parameters
         - name: timestamp
           in: query
           required: true
           schema:
             type: string
-          description: Signature timestamp
+          description: Unix timestamp when the signature was generated
       responses:
         '200':
-          description: Successfully unsubscribed from notification type
+          description: Successfully unsubscribed from notification type - returns HTML page
           content:
-            application/json:
+            text/html:
               schema:
-                $ref: '#/components/schemas/UnsubscribeResponse'
+                type: string
+                description: HTML confirmation page
         '400':
-          description: Invalid signature
+          description: Invalid signature, expired link, or invalid notification type
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
   /set-email:
     put:
-      summary: Store unconfirmed email
-      description: Stores an unconfirmed email address for a user (requires signed fetch)
+      summary: Set or update email address
+      description: |
+        Initiates email verification process by storing an unconfirmed email and sending a confirmation email.
+        - If email is an empty string, removes the current email and disables email notifications
+        - If email already exists for another address, returns an error
+        - If email matches the currently confirmed email, skips verification
+        - Otherwise, generates a 32-character code and sends verification email via SendGrid
+        
+        The confirmation email contains a link that may include Turnstile challenge if the feature flag is enabled.
       operationId: storeUnconfirmedEmail
+      tags:
+        - Subscriptions
       security:
         - SignedFetch: []
       requestBody:
@@ -270,20 +412,22 @@ paths:
             schema:
               $ref: '#/components/schemas/SetEmailRequest'
       responses:
-        '200':
-          description: Email stored successfully
+        '204':
+          description: Email verification process initiated successfully (or email removed if empty string provided)
+        '400':
+          description: Invalid email format or email already registered to another account or domain blacklisted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SetEmailResponse'
+                $ref: '#/components/schemas/Error'
         '401':
-          description: Unauthorized - invalid signed fetch
+          description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '403':
-          description: Forbidden - invalid metadata
+          description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
@@ -291,8 +435,13 @@ paths:
   /confirm-email:
     put:
       summary: Confirm email address
-      description: Confirms an email address for a user
+      description: |
+        Confirms an email address using the verification code sent via email. Validates the code against the stored
+        unconfirmed email entry. If Turnstile verification is enabled, also validates the captcha token.
+        Upon success, moves the email to the confirmed subscriptions table and deletes the unconfirmed entry.
       operationId: confirmEmail
+      tags:
+        - Subscriptions
       security: []
       requestBody:
         required: true
@@ -301,14 +450,16 @@ paths:
             schema:
               $ref: '#/components/schemas/ConfirmEmailRequest'
       responses:
-        '200':
+        '204':
           description: Email confirmed successfully
+        '400':
+          description: Invalid or missing confirmation code, address, or email domain blacklisted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConfirmEmailResponse'
-        '400':
-          description: Invalid confirmation token
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Invalid captcha token (when Turnstile verification is enabled)
           content:
             application/json:
               schema:
@@ -318,7 +469,33 @@ components:
     SignedFetch:
       type: http
       scheme: bearer
-      description: 'Signed fetch authentication using @dcl/platform-crypto-middleware (ADR-44) with 5-minute expiration and metadata validation to prevent requests from decentraland-kernel-scene. Requires auth chain headers (x-identity, x-signature, x-timestamp) for signature validation. Example: Authorization: Bearer <signed-fetch-token>'
+      description: |
+        Signed fetch authentication using @dcl/platform-crypto-middleware implementing Decentraland's ADR-44.
+        
+        **Requirements:**
+        - Authentication chain headers: `x-identity`, `x-signature`, `x-timestamp`
+        - Token expiration: 5 minutes
+        - Metadata validation: Rejects requests with `signer: "decentraland-kernel-scene"`
+        - The user's Ethereum address is extracted from the auth chain
+        
+        **Example:**
+        ```
+        Authorization: Bearer <signed-fetch-token>
+        x-identity: <auth-chain-json>
+        x-signature: <signature>
+        x-timestamp: <timestamp>
+        ```
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        Bearer token authentication using a shared API key (`NOTIFICATION_SERVICE_TOKEN`).
+        Used for service-to-service communication and external notification publishing.
+        
+        **Example:**
+        ```
+        Authorization: Bearer <api-key>
+        ```
   schemas:
     Status:
       type: object
@@ -326,6 +503,7 @@ components:
         status:
           type: string
           description: Service health status
+          example: "ok"
         timestamp:
           type: string
           format: date-time
@@ -339,49 +517,54 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Notification'
-          description: List of notifications
-        total:
-          type: number
-          description: Total number of notifications
-        unreadCount:
-          type: number
-          description: Number of unread notifications
+          description: List of notifications for the user
       required:
         - notifications
-        - total
-        - unreadCount
+      example:
+        notifications:
+          - id: "3a33a38a-e17a-4153-926b-c18f1e57e3e1"
+            type: "bid_accepted"
+            address: "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314"
+            metadata:
+              link: "https://decentraland.zone/marketplace/contracts/0x5d670bab052f21c3b1984231b1187be34852db24/tokens/105312291668557186697918027683670432318895095400549111254310977537"
+              title: "Bid Accepted"
+            timestamp: "1701379983"
+            read: false
     Notification:
       type: object
       properties:
         id:
           type: string
-          description: Notification ID
+          format: uuid
+          description: Unique notification identifier
         type:
           type: string
-          description: Notification type
-        title:
-          type: string
-          description: Notification title
-        message:
-          type: string
-          description: Notification message
-        isRead:
-          type: boolean
-          description: Whether notification is read
-        createdAt:
-          type: string
-          format: date-time
-          description: Notification creation timestamp
+          description: Notification type (from NotificationType enum)
+          example: "bid_accepted"
+        address:
+          oneOf:
+            - type: string
+              pattern: '^0x[a-fA-F0-9]{40}$'
+            - type: "null"
+          description: User's Ethereum address (null for broadcast notifications)
         metadata:
           type: object
-          description: Additional notification metadata
+          description: Notification-specific metadata containing details like links, titles, descriptions, etc.
+          additionalProperties: true
+        timestamp:
+          type: string
+          description: Unix timestamp (in seconds) when the notification event occurred
+          example: "1701379983"
+        read:
+          type: boolean
+          description: Whether the notification has been marked as read by the user
       required:
         - id
         - type
-        - title
-        - message
-        - isRead
-        - createdAt
+        - address
+        - metadata
+        - timestamp
+        - read
     MarkAsReadRequest:
       type: object
       properties:
@@ -389,139 +572,205 @@ components:
           type: array
           items:
             type: string
-          description: List of notification IDs to mark as read
+            format: uuid
+          minItems: 1
+          description: Array of notification IDs to mark as read
       required:
         - notificationIds
     MarkAsReadResponse:
       type: object
       properties:
-        success:
-          type: boolean
-          description: Operation success status
-        updatedCount:
-          type: number
-          description: Number of notifications updated
+        updated:
+          type: integer
+          description: Number of notifications successfully marked as read
+          example: 2
       required:
-        - success
-        - updatedCount
-    SubscriptionPreferences:
+        - updated
+    PublishNotificationRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Notification type (must be a valid NotificationType enum value)
+          example: "worlds_access_restored"
+        address:
+          type: string
+          pattern: '^0x[a-fA-F0-9]{40}$'
+          description: Ethereum address of the recipient user
+        eventKey:
+          type: string
+          description: Unique identifier for this event (used for deduplication)
+          example: "0xf17828d89d6056215d65451fc61a802f5054fa01aa0acc39b644dc191086dd8b"
+        metadata:
+          type: object
+          description: Notification-specific metadata (content varies by notification type)
+          additionalProperties: true
+        timestamp:
+          type: integer
+          description: Unix timestamp in milliseconds when the event occurred (must be after 2023-01-01)
+          minimum: 1672531200000
+          example: 1701379983000
+      required:
+        - type
+        - address
+        - eventKey
+        - metadata
+        - timestamp
+    CommonEmailRequest:
       type: object
       properties:
         email:
           type: string
           format: email
-          description: User email address
-        isEmailConfirmed:
-          type: boolean
-          description: Whether email is confirmed
-        preferences:
-          type: object
-          properties:
-            emailNotifications:
-              type: boolean
-              description: Email notifications enabled
-            pushNotifications:
-              type: boolean
-              description: Push notifications enabled
-            notificationTypes:
-              type: object
-              description: Preferences by notification type
-          description: User notification preferences
-        createdAt:
+          description: Recipient email address
+        subject:
           type: string
-          format: date-time
-          description: Preferences creation timestamp
-        updatedAt:
+          description: Email subject line
+        content:
           type: string
-          format: date-time
-          description: Preferences last update timestamp
+          description: Email body content (HTML)
+        title:
+          type: string
+          description: Optional title for the email template
+          default: "New"
+        titleHighlight:
+          type: string
+          description: Optional highlighted portion of the title
+          default: "Notification"
       required:
         - email
-        - isEmailConfirmed
-        - preferences
-    UpdateSubscriptionRequest:
+        - subject
+        - content
+    SubscriptionResponse:
       type: object
       properties:
         email:
-          type: string
-          format: email
-          description: User email address
-        preferences:
-          type: object
-          properties:
-            emailNotifications:
-              type: boolean
-              description: Email notifications enabled
-            pushNotifications:
-              type: boolean
-              description: Push notifications enabled
-            notificationTypes:
-              type: object
-              description: Preferences by notification type
-          description: User notification preferences
+          oneOf:
+            - type: string
+              format: email
+            - type: "null"
+          description: Confirmed email address (null if not set)
+        unconfirmedEmail:
+          oneOf:
+            - type: string
+              format: email
+            - type: "null"
+          description: Email pending confirmation (null if no pending email)
+        details:
+          $ref: '#/components/schemas/SubscriptionDetails'
       required:
-        - preferences
-    UnsubscribeResponse:
+        - details
+      example:
+        email: "user@example.com"
+        unconfirmedEmail: null
+        details:
+          ignore_all_email: false
+          ignore_all_in_app: false
+          message_type:
+            bid_accepted:
+              email: true
+              in_app: true
+            bid_received:
+              email: true
+              in_app: true
+    SubscriptionDetails:
       type: object
       properties:
-        success:
+        ignore_all_email:
           type: boolean
-          description: Unsubscribe success status
-        message:
-          type: string
-          description: Unsubscribe message
+          description: If true, user will not receive any email notifications
+        ignore_all_in_app:
+          type: boolean
+          description: If true, user will not receive any in-app notifications
+        message_type:
+          type: object
+          description: Per-notification-type preferences mapping NotificationType to channel preferences
+          additionalProperties:
+            $ref: '#/components/schemas/NotificationChannelType'
       required:
-        - success
-        - message
+        - ignore_all_email
+        - ignore_all_in_app
+        - message_type
+      example:
+        ignore_all_email: false
+        ignore_all_in_app: false
+        message_type:
+          bid_accepted:
+            email: true
+            in_app: true
+          item_sold:
+            email: false
+            in_app: true
+    NotificationChannelType:
+      type: object
+      properties:
+        email:
+          type: boolean
+          description: Enable email notifications for this type
+        in_app:
+          type: boolean
+          description: Enable in-app notifications for this type
+      required:
+        - email
+        - in_app
     SetEmailRequest:
       type: object
       properties:
         email:
           type: string
           format: email
-          description: Email address to store
+          description: Email address to set (provide empty string to remove email and disable notifications)
+        redirect:
+          type: string
+          description: Optional redirect URL for email confirmation flow
+        isCreditsWorkflow:
+          type: boolean
+          description: Whether this is part of the credits workflow (affects confirmation URL and email template)
+          default: false
       required:
         - email
-    SetEmailResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Email storage success status
-        message:
-          type: string
-          description: Response message
-      required:
-        - success
-        - message
+      example:
+        email: "user@example.com"
+        isCreditsWorkflow: false
     ConfirmEmailRequest:
       type: object
       properties:
-        token:
+        address:
           type: string
-          description: Email confirmation token
-      required:
-        - token
-    ConfirmEmailResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Email confirmation success status
-        message:
+          pattern: '^0x[a-fA-F0-9]{40}$'
+          description: Ethereum address of the user confirming the email
+        code:
           type: string
-          description: Response message
+          minLength: 32
+          maxLength: 32
+          description: 32-character verification code sent via email
+        turnstileToken:
+          type: string
+          description: Cloudflare Turnstile captcha token (required when Turnstile verification is enabled)
+        source:
+          type: string
+          enum: ["credits", "account"]
+          description: Source of the email confirmation (used for analytics)
       required:
-        - success
-        - message
+        - address
+        - code
+      example:
+        address: "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314"
+        code: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+        source: "account"
     Error:
       type: object
       properties:
         error:
           type: string
-          description: Error message
+          description: Error type or category
+          example: "Bad request"
+        message:
+          type: string
+          description: Detailed error message
+          example: "Missing notificationIds"
         code:
           type: string
-          description: Error code
+          description: Optional error code for programmatic error handling
       required:
         - error
