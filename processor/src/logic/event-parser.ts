@@ -485,6 +485,19 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Community.POST_ADDED:
+        return [
+          {
+            type: NotificationType.COMMUNITY_POST_ADDED,
+            address: event.metadata.memberAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              ...event.metadata,
+              memberAddress: undefined
+            }
+          }
+        ]
       case Events.SubType.Comms.USER_BANNED_FROM_SCENE:
       case Events.SubType.Comms.USER_UNBANNED_FROM_SCENE:
         return [
