@@ -39,3 +39,9 @@
 - Social service events (friend requests, friend accepted)
 - Profile update events
 - Custom notification events from various Decentraland services
+
+**Database Schema:**
+
+- **Tables**: `notifications` (user notifications), `subscriptions` (user preferences), `unconfirmed_emails` (email verification), `broadcast_read` (broadcast read status), `cursors` (event processing)
+- **Key Columns**: `notifications.id` (PK), `notifications.address` (nullable for broadcasts), `notifications` unique `(event_key, type, address)`, `subscriptions.address` (PK), `broadcast_read` composite PK `(notification_id, address)`
+- **Full Documentation**: See [docs/database-schema.md](docs/database-schema.md) for detailed schema, column definitions, and relationships
