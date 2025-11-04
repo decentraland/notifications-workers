@@ -233,7 +233,7 @@ yarn
 yarn start:local
 ```
 
-## 🤖 AI Agent Context
+## AI Agent Context
 
 **Service Purpose:** Manages user notifications across the Decentraland platform. Split into two workers (Processor and Inbox) for scalability. Handles notification production, storage, delivery via Server-Sent Events, and email notifications via SendGrid.
 
