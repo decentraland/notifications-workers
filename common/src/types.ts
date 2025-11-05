@@ -92,6 +92,7 @@ const excludedNotificationTypes = [
   NotificationType.COMMUNITY_REQUEST_TO_JOIN_RECEIVED,
   NotificationType.COMMUNITY_INVITE_RECEIVED,
   NotificationType.COMMUNITY_POST_ADDED,
+  NotificationType.COMMUNITY_OWNERSHIP_TRANSFERRED,
   NotificationType.USER_BANNED_FROM_SCENE,
   NotificationType.USER_UNBANNED_FROM_SCENE
 ].map((type) => type.toUpperCase())
