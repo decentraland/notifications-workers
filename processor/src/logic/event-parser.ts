@@ -486,15 +486,26 @@ export async function createEventParser({
           }
         ]
       case Events.SubType.Community.POST_ADDED:
+        return event.metadata.addressesToNotify.map((address: EthAddress) => ({
+          type: NotificationType.COMMUNITY_POST_ADDED,
+          address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            ...event.metadata,
+            addressesToNotify: undefined
+          }
+        }))
+      case Events.SubType.Community.OWNERSHIP_TRANSFERRED:
         return [
           {
-            type: NotificationType.COMMUNITY_POST_ADDED,
-            address: event.metadata.memberAddress,
+            type: NotificationType.COMMUNITY_OWNERSHIP_TRANSFERRED,
+            address: event.metadata.newOwnerAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
             metadata: {
               ...event.metadata,
-              memberAddress: undefined
+              newOwnerAddress: undefined
             }
           }
         ]
