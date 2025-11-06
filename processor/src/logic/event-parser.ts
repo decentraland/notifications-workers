@@ -485,6 +485,35 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Community.POST_ADDED:
+        return event.metadata.addressesToNotify.map((address: EthAddress) => ({
+          type: NotificationType.COMMUNITY_POST_ADDED,
+          address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          metadata: {
+            communityId: event.metadata.communityId,
+            communityName: event.metadata.communityName,
+            thumbnailUrl: event.metadata.thumbnailUrl,
+            postId: event.metadata.postId,
+            authorAddress: event.metadata.authorAddress
+          }
+        }))
+      case Events.SubType.Community.OWNERSHIP_TRANSFERRED:
+        return [
+          {
+            type: NotificationType.COMMUNITY_OWNERSHIP_TRANSFERRED,
+            address: event.metadata.newOwnerAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              communityId: event.metadata.communityId,
+              communityName: event.metadata.communityName,
+              thumbnailUrl: event.metadata.thumbnailUrl,
+              oldOwnerAddress: event.metadata.oldOwnerAddress
+            }
+          }
+        ]
       case Events.SubType.Comms.USER_BANNED_FROM_SCENE:
       case Events.SubType.Comms.USER_UNBANNED_FROM_SCENE:
         return [
