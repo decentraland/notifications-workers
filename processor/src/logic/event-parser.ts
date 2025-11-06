@@ -492,8 +492,11 @@ export async function createEventParser({
           eventKey: event.key,
           timestamp: event.timestamp,
           metadata: {
-            ...event.metadata,
-            addressesToNotify: undefined
+            communityId: event.metadata.communityId,
+            communityName: event.metadata.communityName,
+            thumbnailUrl: event.metadata.thumbnailUrl,
+            postId: event.metadata.postId,
+            authorAddress: event.metadata.authorAddress
           }
         }))
       case Events.SubType.Community.OWNERSHIP_TRANSFERRED:
@@ -504,8 +507,10 @@ export async function createEventParser({
             eventKey: event.key,
             timestamp: event.timestamp,
             metadata: {
-              ...event.metadata,
-              newOwnerAddress: undefined
+              communityId: event.metadata.communityId,
+              communityName: event.metadata.communityName,
+              thumbnailUrl: event.metadata.thumbnailUrl,
+              oldOwnerAddress: event.metadata.oldOwnerAddress
             }
           }
         ]
