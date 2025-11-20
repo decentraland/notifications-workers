@@ -72,6 +72,9 @@ test('POST /notifications', function ({ components, stubComponents }) {
       bannerLabel: 'World access Restored'
     }
 
+    // Mock hasNotificationOptOut to return false (no opt-out) so email can be sent
+    jest.spyOn(components.db, 'hasNotificationOptOut').mockResolvedValue(false)
+
     stubComponents.emailRenderer.renderEmail.withArgs(email, sinon.match(notification)).resolves(renderedEmail)
     stubComponents.sendGridClient.sendEmail.withArgs(renderedEmail).resolves()
     await stubComponents.profiles.getByAddress.withArgs(identity.realAccount.address).resolves({
@@ -95,6 +98,10 @@ test('POST /notifications', function ({ components, stubComponents }) {
     expect(found.metadata).toEqual(notification.metadata)
     expect(found.read_at).toBeNull()
     expect(found.timestamp).toEqual(`${notification.timestamp}`)
+
+    // Wait for the async email sending to complete (setImmediate callback)
+    // setImmediate schedules a callback in the next event loop tick, so we need to wait for it
+    await new Promise((resolve) => setImmediate(resolve))
 
     expect(stubComponents.emailRenderer.renderEmail.calledWith(email, { ...notification, id: found.id })).toBeTruthy()
     expect(stubComponents.sendGridClient.sendEmail.calledWith(renderedEmail)).toBeTruthy()

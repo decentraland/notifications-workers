@@ -9,6 +9,14 @@ import { getSubscriptionHandler } from './handlers/get-subscription-handler'
 import { putSubscriptionHandler } from './handlers/put-subscription-handler'
 import { confirmEmailHandler, storeUnconfirmedEmailHandler } from './handlers/unconfirmed-email-handlers'
 import { unsubscribeAllHandler, unsubscribeOneHandler } from './handlers/unsubscription-handlers'
+import {
+  createNotificationOptOutHandler,
+  updateNotificationOptOutHandler,
+  deleteNotificationOptOutHandler,
+  getNotificationOptOutsHandler,
+  CreateNotificationOptOutSchema,
+  UpdateNotificationOptOutSchema
+} from './handlers/notification-opt-out'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
 import { hasValidSignature } from '@notifications/common'
 import { commonEmailHandler } from './handlers/common-email-handlers'
@@ -56,6 +64,24 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   router.get('/subscription', signedFetchMiddleware, getSubscriptionHandler)
   router.put('/subscription', signedFetchMiddleware, putSubscriptionHandler)
+  router.get('/subscription/opt-outs', signedFetchMiddleware, getNotificationOptOutsHandler)
+  router.post(
+    '/subscription/opt-outs',
+    signedFetchMiddleware,
+    components.schemaValidator.withSchemaValidatorMiddleware(CreateNotificationOptOutSchema),
+    createNotificationOptOutHandler
+  )
+  router.put(
+    '/subscription/opt-outs/:metadataKey/:metadataValue',
+    signedFetchMiddleware,
+    components.schemaValidator.withSchemaValidatorMiddleware(UpdateNotificationOptOutSchema),
+    updateNotificationOptOutHandler
+  )
+  router.delete(
+    '/subscription/opt-outs/:metadataKey/:metadataValue',
+    signedFetchMiddleware,
+    deleteNotificationOptOutHandler
+  )
   router.get('/unsubscribe/:address', signedUrlMiddleware, unsubscribeAllHandler)
   router.get('/unsubscribe/:address/:notificationType', signedUrlMiddleware, unsubscribeOneHandler)
 

@@ -22,6 +22,15 @@ export type UnconfirmedEmailDb = {
   updated_at: number
 }
 
+export type NotificationOptOutDb = {
+  address: string
+  metadata_key: string
+  metadata_value: string
+  notification_types: string[] | null
+  created_at: number
+  updated_at: number
+}
+
 export type NotificationEvent = {
   id: string
   type: string

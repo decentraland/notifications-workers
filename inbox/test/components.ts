@@ -13,6 +13,7 @@ import { createLogComponent } from '@well-known-components/logger'
 import { createPgComponent } from '@well-known-components/pg-component'
 import path from 'path'
 import { createDbComponent, createDummyDataWarehouseClient } from '@notifications/common'
+import { createNotificationOptOutsManager } from '../src/logic/notification-opt-out'
 
 /**
  * Behaves like Jest "describe" function, used to describe a test for a
@@ -64,14 +65,18 @@ async function initComponents(): Promise<TestComponents> {
     logs: components.logs
   })
 
+  const logs = await createLogComponent({ config })
+  const notificationOptOutsManager = createNotificationOptOutsManager({ db, logs })
+
   return {
     ...components,
     pg,
     db,
-    logs: await createLogComponent({ config }),
+    logs,
     config,
     localFetch: await createLocalFetchCompoment(config),
     metrics: createTestMetricsComponent(metricDeclarations),
-    dataWarehouseClient
+    dataWarehouseClient,
+    notificationOptOutsManager
   }
 }

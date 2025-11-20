@@ -1,5 +1,12 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { NotificationDb, NotificationEvent, NotificationRecord, SubscriptionDb, UnconfirmedEmailDb } from '../types'
+import {
+  NotificationDb,
+  NotificationEvent,
+  NotificationRecord,
+  NotificationOptOutDb,
+  SubscriptionDb,
+  UnconfirmedEmailDb
+} from '../types'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { defaultSubscription } from '../subscriptions'
 import { Email, EthAddress, NotificationChannelType, NotificationType, SubscriptionDetails } from '@dcl/schemas'
@@ -28,6 +35,10 @@ export type DbComponent = {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
   updateLastUpdateForNotificationType(notificationType: string, timestamp: number): Promise<void>
   insertNotifications(notificationRecord: NotificationRecord[]): Promise<UpsertResult<NotificationRecord>>
+  findNotificationOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]>
+  saveNotificationOptOut(optOut: NotificationOptOutDb): Promise<void>
+  deleteNotificationOptOut(address: EthAddress, metadataKey: string, metadataValue: string): Promise<void>
+  hasNotificationOptOut(notification: NotificationRecord): Promise<boolean>
 }
 
 export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent {
@@ -156,6 +167,18 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     if (onlyUnread) {
       whereClause.push(SQL`(n.address IS NOT NULL AND n.read_at IS NULL) OR (n.address IS NULL AND br.read_at IS NULL)`)
     }
+
+    // Filter out notifications where user has opted out
+    // This uses dynamic JSONB matching: jsonb_extract_path_text extracts value for dynamic key
+    whereClause.push(SQL`
+      NOT EXISTS (
+        SELECT 1 FROM notification_opt_outs opt
+        WHERE opt.address = COALESCE(n.address, '')
+          AND jsonb_extract_path_text(n.metadata, opt.metadata_key) = opt.metadata_value
+          AND (opt.notification_types IS NULL OR opt.notification_types @> jsonb_build_array(n.type))
+      )
+    `)
+
     let where = SQL` WHERE `.append(whereClause[0])
     for (const condition of whereClause.slice(1)) {
       where = where.append(' AND ').append(condition)
@@ -336,6 +359,73 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     return upsertResult
   }
 
+  async function findNotificationOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]> {
+    const query: SQLStatement = SQL`
+      SELECT address,
+             metadata_key,
+             metadata_value,
+             notification_types,
+             created_at,
+             updated_at
+      FROM notification_opt_outs
+      WHERE address = ${address.toLowerCase()}
+      ORDER BY created_at DESC
+    `
+
+    const result = await pg.query<NotificationOptOutDb>(query)
+    return result.rows
+  }
+
+  async function saveNotificationOptOut(optOut: NotificationOptOutDb): Promise<void> {
+    const now = Date.now()
+    const notificationTypesJson = optOut.notification_types ? JSON.stringify(optOut.notification_types) : null
+    const query: SQLStatement = SQL`
+      INSERT INTO notification_opt_outs (address, metadata_key, metadata_value, notification_types, created_at, updated_at)
+      VALUES (${optOut.address.toLowerCase()},
+              ${optOut.metadata_key},
+              ${optOut.metadata_value},
+              ${notificationTypesJson}::jsonb,
+              ${optOut.created_at || now},
+              ${now}
+      )
+      ON CONFLICT (address, metadata_key, metadata_value) DO UPDATE
+            SET notification_types = ${notificationTypesJson}::jsonb,
+                updated_at = ${now}
+    `
+
+    await pg.query(query)
+  }
+
+  async function deleteNotificationOptOut(
+    address: EthAddress,
+    metadataKey: string,
+    metadataValue: string
+  ): Promise<void> {
+    const query: SQLStatement = SQL`
+      DELETE FROM notification_opt_outs
+      WHERE address = ${address.toLowerCase()}
+        AND metadata_key = ${metadataKey}
+        AND metadata_value = ${metadataValue}
+    `
+
+    await pg.query(query)
+  }
+
+  async function hasNotificationOptOut(notification: NotificationRecord): Promise<boolean> {
+    const metadataJson = JSON.stringify(notification.metadata)
+    const query: SQLStatement = SQL`
+      SELECT EXISTS (
+        SELECT 1 FROM notification_opt_outs opt
+        WHERE opt.address = ${notification.address.toLowerCase()}
+          AND jsonb_extract_path_text(${metadataJson}::jsonb, opt.metadata_key) = opt.metadata_value
+          AND (opt.notification_types IS NULL OR opt.notification_types @> jsonb_build_array(${notification.type}))
+      )
+    `
+
+    const result = await pg.query<{ exists: boolean }>(query)
+    return result.rows[0]?.exists || false
+  }
+
   return {
     findNotification,
     findSubscription,
@@ -350,7 +440,11 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     saveSubscriptionEmail,
     findUnconfirmedEmail,
     saveUnconfirmedEmail,
-    deleteUnconfirmedEmail
+    deleteUnconfirmedEmail,
+    findNotificationOptOuts,
+    saveNotificationOptOut,
+    deleteNotificationOptOut,
+    hasNotificationOptOut
   }
 }
 

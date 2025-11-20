@@ -23,6 +23,8 @@ import { createPageRenderer } from './adapters/page-renderer'
 import { createFeatureFlagsAdapter } from './adapters/feature-flags-adapter'
 import { createChallengerAdapter } from './adapters/challenger-adapter'
 import { createEmailDomainValidator } from './logic/domain-validator'
+import { createNotificationOptOutsManager } from './logic/notification-opt-out'
+import { createSchemaValidatorComponent } from '@dcl/schema-validator-component'
 
 // Initialize all the components of the app
 export async function initComponents(): Promise<AppComponents> {
@@ -70,6 +72,10 @@ export async function initComponents(): Promise<AppComponents> {
 
   const domainValidator = createEmailDomainValidator({ featureFlagsAdapter, logs, fetch })
 
+  const schemaValidator = createSchemaValidatorComponent({ ensureJsonContentType: false })
+
+  const notificationOptOutsManager = createNotificationOptOutsManager({ db, logs })
+
   return {
     config,
     db,
@@ -87,6 +93,8 @@ export async function initComponents(): Promise<AppComponents> {
     features,
     featureFlagsAdapter,
     challengerAdapter,
-    domainValidator
+    domainValidator,
+    schemaValidator,
+    notificationOptOutsManager
   }
 }
