@@ -1,5 +1,6 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest } from '../utils'
+import { NotificationType } from '@dcl/schemas'
 
 const manageSubscriptionMetadata = {
   signer: 'dcl:account',
@@ -57,7 +58,7 @@ test('POST /subscription/opt-outs', function ({ components }) {
         body: JSON.stringify({
           metadataKey: 'communityId',
           metadataValue: 'community-456',
-          notificationTypes: ['COMMUNITY_POST_ADDED', 'COMMUNITY_INVITE_RECEIVED']
+          notificationTypes: [NotificationType.COMMUNITY_POST_ADDED, NotificationType.COMMUNITY_INVITE_RECEIVED]
         })
       },
       manageSubscriptionMetadata
@@ -68,13 +69,13 @@ test('POST /subscription/opt-outs', function ({ components }) {
     expect(responseBody).toMatchObject({
       metadataKey: 'communityId',
       metadataValue: 'community-456',
-      notificationTypes: ['COMMUNITY_POST_ADDED', 'COMMUNITY_INVITE_RECEIVED']
+      notificationTypes: [NotificationType.COMMUNITY_POST_ADDED, NotificationType.COMMUNITY_INVITE_RECEIVED]
     })
 
     const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
     const optOut = optOuts.find((o) => o.metadata_value === 'community-456')
     expect(optOut).toMatchObject({
-      notification_types: ['COMMUNITY_POST_ADDED', 'COMMUNITY_INVITE_RECEIVED']
+      notification_types: [NotificationType.COMMUNITY_POST_ADDED, NotificationType.COMMUNITY_INVITE_RECEIVED]
     })
   })
 

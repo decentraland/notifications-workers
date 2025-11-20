@@ -1,6 +1,7 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest } from '../utils'
 import { NotificationOptOutDb } from '@notifications/common'
+import { NotificationType } from '@dcl/schemas'
 
 const manageSubscriptionMetadata = {
   signer: 'dcl:account',
@@ -42,7 +43,7 @@ test('GET /subscription/opt-outs', function ({ components }) {
       address: identity.realAccount.address.toLowerCase(),
       metadata_key: 'communityId',
       metadata_value: 'community-456',
-      notification_types: ['COMMUNITY_POST_ADDED'],
+      notification_types: [NotificationType.COMMUNITY_POST_ADDED],
       created_at: Date.now(),
       updated_at: Date.now()
     }
@@ -68,7 +69,7 @@ test('GET /subscription/opt-outs', function ({ components }) {
     expect(body).toContainEqual({
       metadataKey: 'communityId',
       metadataValue: 'community-456',
-      notificationTypes: ['COMMUNITY_POST_ADDED']
+      notificationTypes: [NotificationType.COMMUNITY_POST_ADDED]
     })
   })
 

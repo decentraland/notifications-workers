@@ -1,6 +1,7 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest } from '../utils'
 import { NotificationOptOutDb } from '@notifications/common'
+import { NotificationType } from '@dcl/schemas'
 
 const manageSubscriptionMetadata = {
   signer: 'dcl:account',
@@ -34,7 +35,7 @@ test('PUT /subscription/opt-outs/:metadataKey/:metadataValue', function ({ compo
       {
         method: 'PUT',
         body: JSON.stringify({
-          notificationTypes: ['COMMUNITY_POST_ADDED']
+          notificationTypes: [NotificationType.COMMUNITY_POST_ADDED]
         })
       },
       manageSubscriptionMetadata
@@ -45,13 +46,13 @@ test('PUT /subscription/opt-outs/:metadataKey/:metadataValue', function ({ compo
     expect(responseBody).toMatchObject({
       metadataKey: 'communityId',
       metadataValue: 'community-123',
-      notificationTypes: ['COMMUNITY_POST_ADDED']
+      notificationTypes: [NotificationType.COMMUNITY_POST_ADDED]
     })
 
     const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
     const updated = optOuts.find((o) => o.metadata_value === 'community-123')
     expect(updated).toMatchObject({
-      notification_types: ['COMMUNITY_POST_ADDED']
+      notification_types: [NotificationType.COMMUNITY_POST_ADDED]
     })
     expect(Number(updated?.updated_at)).toBeGreaterThan(optOut.updated_at)
   })
@@ -64,7 +65,7 @@ test('PUT /subscription/opt-outs/:metadataKey/:metadataValue', function ({ compo
       {
         method: 'PUT',
         body: JSON.stringify({
-          notificationTypes: ['COMMUNITY_POST_ADDED']
+          notificationTypes: [NotificationType.COMMUNITY_POST_ADDED]
         })
       },
       manageSubscriptionMetadata
