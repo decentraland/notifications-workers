@@ -7,15 +7,14 @@ export interface INotificationOptOutsManager {
     address: EthAddress,
     metadataKey: string,
     metadataValue: string,
-    notificationTypes?: string[] | null
-  ): Promise<NotificationOptOutDb>
-  updateOptOut(
+    notificationTypes: string[]
+  ): Promise<NotificationOptOutDb[]>
+  deleteOptOut(
     address: EthAddress,
     metadataKey: string,
     metadataValue: string,
-    notificationTypes?: string[] | null
-  ): Promise<NotificationOptOutDb>
-  deleteOptOut(address: EthAddress, metadataKey: string, metadataValue: string): Promise<void>
+    notificationType?: string
+  ): Promise<void>
   getOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]>
 }
 
@@ -29,69 +28,52 @@ export function createNotificationOptOutsManager({
     address: EthAddress,
     metadataKey: string,
     metadataValue: string,
-    notificationTypes?: string[] | null
-  ): Promise<NotificationOptOutDb> {
+    notificationTypes: string[]
+  ): Promise<NotificationOptOutDb[]> {
+    if (!notificationTypes || notificationTypes.length === 0) {
+      throw new Error('notificationTypes must be a non-empty array')
+    }
+
     logger.info('Creating notification opt-out', {
       address,
       metadataKey,
-      metadataValue
+      metadataValue,
+      notificationTypesCount: notificationTypes.length
     })
 
-    const optOut: NotificationOptOutDb = {
-      address: address.toLowerCase(),
+    const now = Date.now()
+    const lowerAddress = address.toLowerCase()
+
+    // Build all opt-outs at once
+    const optOuts: NotificationOptOutDb[] = notificationTypes.map((type) => ({
+      address: lowerAddress,
       metadata_key: metadataKey,
       metadata_value: metadataValue,
-      notification_types: notificationTypes ?? null,
-      created_at: Date.now(),
-      updated_at: Date.now()
-    }
+      notification_type: type,
+      created_at: now,
+      updated_at: now
+    }))
 
-    await db.saveNotificationOptOut(optOut)
+    // Batch insert all at once (single query)
+    await db.saveNotificationOptOuts(optOuts)
 
-    return optOut
+    return optOuts
   }
 
-  async function updateOptOut(
+  async function deleteOptOut(
     address: EthAddress,
     metadataKey: string,
     metadataValue: string,
-    notificationTypes?: string[] | null
-  ): Promise<NotificationOptOutDb> {
-    logger.info('Updating notification opt-out', {
-      address,
-      metadataKey,
-      metadataValue
-    })
-
-    // Get existing opt-out to preserve other fields
-    const existingOptOuts = await db.findNotificationOptOuts(address)
-    const existingOptOut = existingOptOuts.find(
-      (opt) => opt.metadata_key === metadataKey && opt.metadata_value === metadataValue
-    )
-
-    if (!existingOptOut) {
-      throw new Error(`Opt-out not found: ${metadataKey}/${metadataValue} for address ${address}`)
-    }
-
-    const updatedOptOut: NotificationOptOutDb = {
-      ...existingOptOut,
-      notification_types: notificationTypes !== undefined ? notificationTypes : existingOptOut.notification_types,
-      updated_at: Date.now()
-    }
-
-    await db.saveNotificationOptOut(updatedOptOut)
-
-    return updatedOptOut
-  }
-
-  async function deleteOptOut(address: EthAddress, metadataKey: string, metadataValue: string): Promise<void> {
+    notificationType?: string
+  ): Promise<void> {
     logger.info('Deleting notification opt-out', {
       address,
       metadataKey,
-      metadataValue
+      metadataValue,
+      ...(notificationType && { notificationType })
     })
 
-    await db.deleteNotificationOptOut(address, metadataKey, metadataValue)
+    await db.deleteNotificationOptOut(address, metadataKey, metadataValue, notificationType)
   }
 
   async function getOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]> {
@@ -102,7 +84,6 @@ export function createNotificationOptOutsManager({
 
   return {
     createOptOut,
-    updateOptOut,
     deleteOptOut,
     getOptOuts
   }

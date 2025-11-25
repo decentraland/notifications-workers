@@ -12,7 +12,7 @@ export async function createNotificationOptOutHandler(
   const address = context.verification!.auth
   const body: CreateNotificationOptOutRequestBody = await context.request.json()
 
-  const optOut = await context.components.notificationOptOutsManager.createOptOut(
+  const optOuts = await context.components.notificationOptOutsManager.createOptOut(
     address,
     body.metadataKey,
     body.metadataValue,
@@ -22,15 +22,19 @@ export async function createNotificationOptOutHandler(
   logger.info('Notification opt-out created', {
     address,
     metadataKey: body.metadataKey,
-    metadataValue: body.metadataValue
+    metadataValue: body.metadataValue,
+    notificationTypesCount: body.notificationTypes.length
   })
+
+  // Group by metadata_key and metadata_value, extract notification types
+  const notificationTypes = optOuts.map((optOut) => optOut.notification_type)
 
   return {
     status: 201,
     body: {
-      metadataKey: optOut.metadata_key,
-      metadataValue: optOut.metadata_value,
-      notificationTypes: optOut.notification_types
+      metadataKey: body.metadataKey,
+      metadataValue: body.metadataValue,
+      notificationTypes
     }
   }
 }

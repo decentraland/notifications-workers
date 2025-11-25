@@ -4,7 +4,7 @@ import { ILoggerComponent } from '@well-known-components/interfaces'
 
 describe('Notification Opt-Outs Manager', () => {
   let mockDb: jest.Mocked<
-    Pick<DbComponent, 'findNotificationOptOuts' | 'saveNotificationOptOut' | 'deleteNotificationOptOut'>
+    Pick<DbComponent, 'findNotificationOptOuts' | 'saveNotificationOptOuts' | 'deleteNotificationOptOut'>
   >
   let mockLogs: jest.Mocked<Pick<ILoggerComponent, 'getLogger'>>
   let notificationOptOutsManager: INotificationOptOutsManager
@@ -12,10 +12,10 @@ describe('Notification Opt-Outs Manager', () => {
   beforeEach(() => {
     mockDb = {
       findNotificationOptOuts: jest.fn(),
-      saveNotificationOptOut: jest.fn(),
+      saveNotificationOptOuts: jest.fn(),
       deleteNotificationOptOut: jest.fn()
     } as jest.Mocked<
-      Pick<DbComponent, 'findNotificationOptOuts' | 'saveNotificationOptOut' | 'deleteNotificationOptOut'>
+      Pick<DbComponent, 'findNotificationOptOuts' | 'saveNotificationOptOuts' | 'deleteNotificationOptOut'>
     >
 
     mockLogs = {
@@ -37,144 +37,141 @@ describe('Notification Opt-Outs Manager', () => {
     jest.resetAllMocks()
   })
 
-  describe('when creating an opt-out', () => {
-    let address: string
-    let metadataKey: string
-    let metadataValue: string
-    let notificationTypes: string[] | null
+  describe('createOptOut', () => {
+    const address = '0x1234567890123456789012345678901234567890'
+    const metadataKey = 'communityId'
+    const metadataValue = 'community-123'
 
-    beforeEach(() => {
-      address = '0x1234567890123456789012345678901234567890'
-      metadataKey = 'communityId'
-      metadataValue = 'community-123'
-      notificationTypes = null
+    describe('with valid input', () => {
+      describe('with single notification type', () => {
+        const notificationTypes = ['community_post_added']
+
+        beforeEach(() => {
+          mockDb.saveNotificationOptOuts.mockResolvedValue(undefined)
+        })
+
+        it('should create and save opt-out via batch insert', async () => {
+          const result = await notificationOptOutsManager.createOptOut(address, metadataKey, metadataValue, notificationTypes)
+
+          expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledTimes(1)
+          expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledWith(
+            expect.arrayContaining([
+              expect.objectContaining({
+                address: address.toLowerCase(),
+                metadata_key: metadataKey,
+                metadata_value: metadataValue,
+                notification_type: 'community_post_added'
+              })
+            ])
+          )
+          expect(result).toHaveLength(1)
+          expect(result[0].notification_type).toBe('community_post_added')
+        })
+      })
+
+      describe('with multiple notification types', () => {
+        const notificationTypes = ['community_post_added', 'community_invite_received']
+
+        beforeEach(() => {
+          mockDb.saveNotificationOptOuts.mockResolvedValue(undefined)
+        })
+
+        it('should create multiple opt-outs via single batch insert', async () => {
+          const result = await notificationOptOutsManager.createOptOut(address, metadataKey, metadataValue, notificationTypes)
+
+          expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledTimes(1)
+          expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledWith(
+            expect.arrayContaining([
+              expect.objectContaining({ notification_type: 'community_post_added' }),
+              expect.objectContaining({ notification_type: 'community_invite_received' })
+            ])
+          )
+          expect(result).toHaveLength(2)
+        })
+      })
+
+      describe('with uppercase address', () => {
+        const notificationTypes = ['community_post_added']
+        const upperCaseAddress = address.toUpperCase()
+
+        beforeEach(() => {
+          mockDb.saveNotificationOptOuts.mockResolvedValue(undefined)
+        })
+
+        it('should normalize address to lowercase', async () => {
+          await notificationOptOutsManager.createOptOut(upperCaseAddress, metadataKey, metadataValue, notificationTypes)
+
+          expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledWith(
+            expect.arrayContaining([
+              expect.objectContaining({
+                address: address.toLowerCase()
+              })
+            ])
+          )
+        })
+      })
     })
 
-    it('should create and save the opt-out', async () => {
-      await notificationOptOutsManager.createOptOut(address, metadataKey, metadataValue, notificationTypes)
-
-      expect(mockDb.saveNotificationOptOut).toHaveBeenCalledWith(
-        expect.objectContaining({
-          address: address.toLowerCase(),
-          metadata_key: metadataKey,
-          metadata_value: metadataValue,
-          notification_types: null
+    describe('with invalid input', () => {
+      describe('when notificationTypes is empty array', () => {
+        it('should throw error', async () => {
+          await expect(
+            notificationOptOutsManager.createOptOut(address, metadataKey, metadataValue, [])
+          ).rejects.toThrow('notificationTypes must be a non-empty array')
         })
-      )
-    })
-
-    it('should create opt-out with notification types', async () => {
-      notificationTypes = ['COMMUNITY_POST_ADDED', 'COMMUNITY_INVITE_RECEIVED']
-
-      await notificationOptOutsManager.createOptOut(address, metadataKey, metadataValue, notificationTypes)
-
-      expect(mockDb.saveNotificationOptOut).toHaveBeenCalledWith(
-        expect.objectContaining({
-          notification_types: notificationTypes
-        })
-      )
-    })
-
-    it('should normalize address to lowercase', async () => {
-      const upperCaseAddress = address.toUpperCase()
-
-      await notificationOptOutsManager.createOptOut(upperCaseAddress, metadataKey, metadataValue)
-
-      expect(mockDb.saveNotificationOptOut).toHaveBeenCalledWith(
-        expect.objectContaining({
-          address: address.toLowerCase()
-        })
-      )
+      })
     })
   })
 
-  describe('when updating an opt-out', () => {
-    let address: string
-    let metadataKey: string
-    let metadataValue: string
-    let existingOptOut: NotificationOptOutDb
+  describe('deleteOptOut', () => {
+    const address = '0x1234567890123456789012345678901234567890'
+    const metadataKey = 'communityId'
+    const metadataValue = 'community-123'
 
     beforeEach(() => {
-      address = '0x1234567890123456789012345678901234567890'
-      metadataKey = 'communityId'
-      metadataValue = 'community-123'
-      existingOptOut = {
-        address: address.toLowerCase(),
-        metadata_key: metadataKey,
-        metadata_value: metadataValue,
-        notification_types: null,
-        created_at: Date.now() - 1000,
-        updated_at: Date.now() - 1000
-      }
-
-      mockDb.findNotificationOptOuts.mockResolvedValue([existingOptOut])
+      mockDb.deleteNotificationOptOut.mockResolvedValue(undefined)
     })
 
-    it('should update notification types', async () => {
-      const newNotificationTypes = ['COMMUNITY_POST_ADDED']
+    describe('when notificationType is not provided', () => {
+      it('should delete all opt-outs for key-value pair', async () => {
+        await notificationOptOutsManager.deleteOptOut(address, metadataKey, metadataValue)
 
-      await notificationOptOutsManager.updateOptOut(address, metadataKey, metadataValue, newNotificationTypes)
-
-      expect(mockDb.saveNotificationOptOut).toHaveBeenCalledWith(
-        expect.objectContaining({
-          ...existingOptOut,
-          notification_types: newNotificationTypes,
-          updated_at: expect.any(Number)
-        })
-      )
+        expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledTimes(1)
+        expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledWith(address, metadataKey, metadataValue, undefined)
+      })
     })
 
-    it('should preserve existing notification types when not provided', async () => {
-      existingOptOut.notification_types = ['COMMUNITY_POST_ADDED']
+    describe('when notificationType is provided', () => {
+      const notificationType = 'community_post_added'
 
-      await notificationOptOutsManager.updateOptOut(address, metadataKey, metadataValue, undefined)
+      it('should delete specific notification type', async () => {
+        await notificationOptOutsManager.deleteOptOut(address, metadataKey, metadataValue, notificationType)
 
-      expect(mockDb.saveNotificationOptOut).toHaveBeenCalledWith(
-        expect.objectContaining({
-          notification_types: ['COMMUNITY_POST_ADDED']
-        })
-      )
-    })
-
-    it('should throw error when opt-out not found', async () => {
-      mockDb.findNotificationOptOuts.mockResolvedValue([])
-
-      await expect(notificationOptOutsManager.updateOptOut(address, metadataKey, metadataValue, null)).rejects.toThrow(
-        'not found'
-      )
+        expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledTimes(1)
+        expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledWith(address, metadataKey, metadataValue, notificationType)
+      })
     })
   })
 
-  describe('when deleting an opt-out', () => {
-    let address: string
-    let metadataKey: string
-    let metadataValue: string
-
-    beforeEach(() => {
-      address = '0x1234567890123456789012345678901234567890'
-      metadataKey = 'communityId'
-      metadataValue = 'community-123'
-    })
-
-    it('should delete the opt-out', async () => {
-      await notificationOptOutsManager.deleteOptOut(address, metadataKey, metadataValue)
-
-      expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledWith(address, metadataKey, metadataValue)
-    })
-  })
-
-  describe('when getting opt-outs', () => {
-    let address: string
+  describe('getOptOuts', () => {
+    const address = '0x1234567890123456789012345678901234567890'
     let optOuts: NotificationOptOutDb[]
 
     beforeEach(() => {
-      address = '0x1234567890123456789012345678901234567890'
       optOuts = [
         {
           address: address.toLowerCase(),
           metadata_key: 'communityId',
           metadata_value: 'community-123',
-          notification_types: null,
+          notification_type: 'community_post_added',
+          created_at: Date.now(),
+          updated_at: Date.now()
+        },
+        {
+          address: address.toLowerCase(),
+          metadata_key: 'communityId',
+          metadata_value: 'community-123',
+          notification_type: 'community_invite_received',
           created_at: Date.now(),
           updated_at: Date.now()
         },
@@ -182,7 +179,7 @@ describe('Notification Opt-Outs Manager', () => {
           address: address.toLowerCase(),
           metadata_key: 'communityId',
           metadata_value: 'community-456',
-          notification_types: ['COMMUNITY_POST_ADDED'],
+          notification_type: 'community_post_added',
           created_at: Date.now(),
           updated_at: Date.now()
         }
@@ -194,8 +191,9 @@ describe('Notification Opt-Outs Manager', () => {
     it('should return all opt-outs for the address', async () => {
       const result = await notificationOptOutsManager.getOptOuts(address)
 
-      expect(result).toEqual(optOuts)
+      expect(mockDb.findNotificationOptOuts).toHaveBeenCalledTimes(1)
       expect(mockDb.findNotificationOptOuts).toHaveBeenCalledWith(address)
+      expect(result).toEqual(optOuts)
     })
   })
 })

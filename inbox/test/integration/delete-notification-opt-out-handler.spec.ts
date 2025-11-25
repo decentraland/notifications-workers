@@ -1,6 +1,7 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest } from '../utils'
 import { NotificationOptOutDb } from '@notifications/common'
+import { NotificationType } from '@dcl/schemas'
 
 const manageSubscriptionMetadata = {
   signer: 'dcl:account',
@@ -9,103 +10,175 @@ const manageSubscriptionMetadata = {
 
 test('DELETE /subscription/opt-outs/:metadataKey/:metadataValue', function ({ components }) {
   let identity: Identity
+  const metadataKey = 'communityId'
 
   beforeEach(async () => {
     identity = await getIdentity()
   })
 
-  it('should delete an existing opt-out', async () => {
-    // Create opt-out first
-    const optOut: NotificationOptOutDb = {
-      address: identity.realAccount.address.toLowerCase(),
-      metadata_key: 'communityId',
-      metadata_value: 'community-123',
-      notification_types: null,
-      created_at: Date.now(),
-      updated_at: Date.now()
-    }
-    await components.db.saveNotificationOptOut(optOut)
+  describe('when notificationType is not provided', () => {
+    describe('with multiple opt-outs for same key-value pair', () => {
+      const metadataValue = 'community-123'
+      let optOuts: NotificationOptOutDb[]
 
-    // Delete it
-    const response = await makeRequest(
-      components.localFetch,
-      '/subscription/opt-outs/communityId/community-123',
-      identity,
-      {
-        method: 'DELETE'
-      },
-      manageSubscriptionMetadata
-    )
+      beforeEach(async () => {
+        optOuts = [
+          {
+            address: identity.realAccount.address.toLowerCase(),
+            metadata_key: metadataKey,
+            metadata_value: metadataValue,
+            notification_type: NotificationType.COMMUNITY_POST_ADDED,
+            created_at: Date.now(),
+            updated_at: Date.now()
+          },
+          {
+            address: identity.realAccount.address.toLowerCase(),
+            metadata_key: metadataKey,
+            metadata_value: metadataValue,
+            notification_type: NotificationType.COMMUNITY_INVITE_RECEIVED,
+            created_at: Date.now(),
+            updated_at: Date.now()
+          }
+        ]
+        await components.db.saveNotificationOptOuts(optOuts)
+      })
 
-    expect(response.status).toBe(204)
+      it('should delete all opt-outs for key-value pair', async () => {
+        const response = await makeRequest(
+          components.localFetch,
+          `/subscription/opt-outs/${metadataKey}/${metadataValue}`,
+          identity,
+          {
+            method: 'DELETE'
+          },
+          manageSubscriptionMetadata
+        )
 
-    const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
-    expect(optOuts).toHaveLength(0)
+        expect(response.status).toBe(204)
+
+        const remainingOptOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
+        expect(remainingOptOuts).toHaveLength(0)
+      })
+    })
+
+    describe('with URL-encoded metadata values', () => {
+      const metadataValue = 'community-123-abc'
+      let optOut: NotificationOptOutDb
+
+      beforeEach(async () => {
+        optOut = {
+          address: identity.realAccount.address.toLowerCase(),
+          metadata_key: metadataKey,
+          metadata_value: metadataValue,
+          notification_type: NotificationType.COMMUNITY_POST_ADDED,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        }
+        await components.db.saveNotificationOptOuts([optOut])
+      })
+
+      it('should handle URL-encoded metadata values', async () => {
+        const response = await makeRequest(
+          components.localFetch,
+          `/subscription/opt-outs/${metadataKey}/${metadataValue}`,
+          identity,
+          {
+            method: 'DELETE'
+          },
+          manageSubscriptionMetadata
+        )
+
+        expect(response.status).toBe(204)
+
+        const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
+        expect(optOuts).toHaveLength(0)
+      })
+    })
+
+    describe('with multiple different key-value pairs', () => {
+      beforeEach(async () => {
+        await components.db.saveNotificationOptOuts([
+          {
+            address: identity.realAccount.address.toLowerCase(),
+            metadata_key: metadataKey,
+            metadata_value: 'community-123',
+            notification_type: NotificationType.COMMUNITY_POST_ADDED,
+            created_at: Date.now(),
+            updated_at: Date.now()
+          },
+          {
+            address: identity.realAccount.address.toLowerCase(),
+            metadata_key: metadataKey,
+            metadata_value: 'community-456',
+            notification_type: NotificationType.COMMUNITY_POST_ADDED,
+            created_at: Date.now(),
+            updated_at: Date.now()
+          }
+        ])
+      })
+
+      it('should only delete the specific opt-out, not others', async () => {
+        const response = await makeRequest(
+          components.localFetch,
+          '/subscription/opt-outs/communityId/community-123',
+          identity,
+          {
+            method: 'DELETE'
+          },
+          manageSubscriptionMetadata
+        )
+
+        expect(response.status).toBe(204)
+
+        const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
+        expect(optOuts).toHaveLength(1)
+        expect(optOuts[0].metadata_value).toBe('community-456')
+      })
+    })
   })
 
-  it('should handle URL-encoded metadata values', async () => {
-    const optOut: NotificationOptOutDb = {
-      address: identity.realAccount.address.toLowerCase(),
-      metadata_key: 'communityId',
-      metadata_value: 'community-123-abc',
-      notification_types: null,
-      created_at: Date.now(),
-      updated_at: Date.now()
-    }
-    await components.db.saveNotificationOptOut(optOut)
+  describe('when notificationType is provided', () => {
+    const metadataValue = 'community-456'
+    let optOuts: NotificationOptOutDb[]
 
-    const response = await makeRequest(
-      components.localFetch,
-      '/subscription/opt-outs/communityId/community-123-abc',
-      identity,
-      {
-        method: 'DELETE'
-      },
-      manageSubscriptionMetadata
-    )
+    beforeEach(async () => {
+      optOuts = [
+        {
+          address: identity.realAccount.address.toLowerCase(),
+          metadata_key: metadataKey,
+          metadata_value: metadataValue,
+          notification_type: NotificationType.COMMUNITY_POST_ADDED,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        },
+        {
+          address: identity.realAccount.address.toLowerCase(),
+          metadata_key: metadataKey,
+          metadata_value: metadataValue,
+          notification_type: NotificationType.COMMUNITY_INVITE_RECEIVED,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        }
+      ]
+      await components.db.saveNotificationOptOuts(optOuts)
+    })
 
-    expect(response.status).toBe(204)
+    it('should delete only the specific notification type', async () => {
+      const response = await makeRequest(
+        components.localFetch,
+        `/subscription/opt-outs/${metadataKey}/${metadataValue}?notificationType=${NotificationType.COMMUNITY_POST_ADDED}`,
+        identity,
+        {
+          method: 'DELETE'
+        },
+        manageSubscriptionMetadata
+      )
 
-    const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
-    expect(optOuts).toHaveLength(0)
-  })
+      expect(response.status).toBe(204)
 
-  it('should only delete the specific opt-out, not others', async () => {
-    // Create multiple opt-outs
-    const optOut1: NotificationOptOutDb = {
-      address: identity.realAccount.address.toLowerCase(),
-      metadata_key: 'communityId',
-      metadata_value: 'community-123',
-      notification_types: null,
-      created_at: Date.now(),
-      updated_at: Date.now()
-    }
-    const optOut2: NotificationOptOutDb = {
-      address: identity.realAccount.address.toLowerCase(),
-      metadata_key: 'communityId',
-      metadata_value: 'community-456',
-      notification_types: null,
-      created_at: Date.now(),
-      updated_at: Date.now()
-    }
-    await components.db.saveNotificationOptOut(optOut1)
-    await components.db.saveNotificationOptOut(optOut2)
-
-    // Delete only one
-    const response = await makeRequest(
-      components.localFetch,
-      '/subscription/opt-outs/communityId/community-123',
-      identity,
-      {
-        method: 'DELETE'
-      },
-      manageSubscriptionMetadata
-    )
-
-    expect(response.status).toBe(204)
-
-    const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
-    expect(optOuts).toHaveLength(1)
-    expect(optOuts[0].metadata_value).toBe('community-456')
+      const remainingOptOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
+      expect(remainingOptOuts).toHaveLength(1)
+      expect(remainingOptOuts[0].notification_type).toBe(NotificationType.COMMUNITY_INVITE_RECEIVED)
+    })
   })
 })

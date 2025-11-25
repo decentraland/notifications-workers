@@ -12,18 +12,20 @@ export async function deleteNotificationOptOutHandler(
   const address = context.verification!.auth
   const metadataKey = context.params.metadataKey
   const metadataValue = decodeURIComponent(context.params.metadataValue)
+  const notificationType = context.url.searchParams.get('notificationType') || undefined
 
   if (!metadataKey || !metadataValue) {
     logger.warn(`Invalid opt-out deletion request: missing metadataKey or metadataValue`)
     throw new InvalidRequestError('Invalid opt-out deletion request. metadataKey and metadataValue are required.')
   }
 
-  await context.components.notificationOptOutsManager.deleteOptOut(address, metadataKey, metadataValue)
+  await context.components.notificationOptOutsManager.deleteOptOut(address, metadataKey, metadataValue, notificationType)
 
   logger.info('Notification opt-out deleted', {
     address,
     metadataKey,
-    metadataValue
+    metadataValue,
+    ...(notificationType && { notificationType })
   })
 
   return {

@@ -55,15 +55,6 @@ export async function createNotificationsService(
               continue
             }
 
-            // Check if user has opted out of this notification based on metadata
-            const hasOptOut = await db.hasNotificationOptOut(notification)
-            if (hasOptOut) {
-              logger.info(
-                `Skipping sending email for ${notification.address} due to opt-out for notification type ${notification.type}`
-              )
-              continue
-            }
-
             notification.metadata.userName = 'Unknown'
 
             const profile = await profiles.getByAddress(notification.address)

@@ -26,7 +26,7 @@ export type NotificationOptOutDb = {
   address: string
   metadata_key: string
   metadata_value: string
-  notification_types: string[] | null
+  notification_type: string
   created_at: number
   updated_at: number
 }

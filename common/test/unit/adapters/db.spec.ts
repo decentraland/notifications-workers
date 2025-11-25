@@ -270,13 +270,17 @@ describe('db client tests', () => {
         metadata: {},
         timestamp: Date.now()
       } as NotificationRecord
-      pg.query = jest
-        .fn()
-        .mockResolvedValueOnce({ rowCount: 1, rows: [{ xmax: '0' }] })
-        .mockResolvedValueOnce({ rowCount: 1, rows: [{ xmax: '1' }] })
+
+      pg.query = jest.fn().mockResolvedValueOnce({
+        rowCount: 2,
+        rows: [
+          { id: 'id1', event_key: 'some-event-1', type: NotificationType.WORLDS_ACCESS_RESTRICTED, address: '0x123', xmax: '0' },
+          { id: 'id2', event_key: 'some-event-2', type: NotificationType.WORLDS_PERMISSION_REVOKED, address: null, xmax: '1' }
+        ]
+      })
 
       const result = await db.insertNotifications([notification1, notification2])
-      expect(pg.query).toHaveBeenCalledTimes(2)
+      expect(pg.query).toHaveBeenCalledTimes(1)
       expect(result.inserted).toMatchObject([notification1])
       expect(result.updated).toMatchObject([notification2])
     })

@@ -6,11 +6,7 @@ export type MetadataKey = 'id' | 'communityId'
 export type CreateNotificationOptOutRequestBody = {
   metadataKey: MetadataKey
   metadataValue: string
-  notificationTypes?: string[] | null
-}
-
-export type UpdateNotificationOptOutRequestBody = {
-  notificationTypes?: string[] | null
+  notificationTypes: string[]
 }
 
 const COMMUNITY_NOTIFICATION_TYPES = [
@@ -28,7 +24,7 @@ const COMMUNITY_NOTIFICATION_TYPES = [
 
 export const CreateNotificationOptOutSchema: Schema = {
   type: 'object',
-  required: ['metadataKey', 'metadataValue'],
+  required: ['metadataKey', 'metadataValue', 'notificationTypes'],
   additionalProperties: false,
   properties: {
     metadataKey: {
@@ -40,38 +36,13 @@ export const CreateNotificationOptOutSchema: Schema = {
       minLength: 1
     },
     notificationTypes: {
-      oneOf: [
-        { type: 'null' },
-        {
-          type: 'array',
-          items: {
-            type: 'string',
-            enum: COMMUNITY_NOTIFICATION_TYPES
-          },
-          minItems: 1
-        }
-      ]
-    }
-  }
-}
-
-export const UpdateNotificationOptOutSchema: Schema = {
-  type: 'object',
-  required: [],
-  additionalProperties: false,
-  properties: {
-    notificationTypes: {
-      oneOf: [
-        { type: 'null' },
-        {
-          type: 'array',
-          items: {
-            type: 'string',
-            enum: COMMUNITY_NOTIFICATION_TYPES
-          },
-          minItems: 1
-        }
-      ]
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: COMMUNITY_NOTIFICATION_TYPES
+      },
+      minItems: 1,
+      uniqueItems: true
     }
   }
 }
