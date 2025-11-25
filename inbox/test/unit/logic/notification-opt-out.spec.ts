@@ -51,7 +51,12 @@ describe('Notification Opt-Outs Manager', () => {
         })
 
         it('should create and save opt-out via batch insert', async () => {
-          const result = await notificationOptOutsManager.createOptOut(address, metadataKey, metadataValue, notificationTypes)
+          const result = await notificationOptOutsManager.createOptOut(
+            address,
+            metadataKey,
+            metadataValue,
+            notificationTypes
+          )
 
           expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledTimes(1)
           expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledWith(
@@ -77,7 +82,12 @@ describe('Notification Opt-Outs Manager', () => {
         })
 
         it('should create multiple opt-outs via single batch insert', async () => {
-          const result = await notificationOptOutsManager.createOptOut(address, metadataKey, metadataValue, notificationTypes)
+          const result = await notificationOptOutsManager.createOptOut(
+            address,
+            metadataKey,
+            metadataValue,
+            notificationTypes
+          )
 
           expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledTimes(1)
           expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledWith(
@@ -148,7 +158,12 @@ describe('Notification Opt-Outs Manager', () => {
         await notificationOptOutsManager.deleteOptOut(address, metadataKey, metadataValue, notificationType)
 
         expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledTimes(1)
-        expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledWith(address, metadataKey, metadataValue, notificationType)
+        expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledWith(
+          address,
+          metadataKey,
+          metadataValue,
+          notificationType
+        )
       })
     })
   })

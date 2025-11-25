@@ -87,9 +87,7 @@ test('POST /subscription/opt-outs', function ({ components }) {
         const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
         const community456OptOuts = optOuts.filter((o) => o.metadata_value === metadataValue)
         expect(community456OptOuts).toHaveLength(2)
-        expect(community456OptOuts.map((o) => o.notification_type)).toEqual(
-          expect.arrayContaining(notificationTypes)
-        )
+        expect(community456OptOuts.map((o) => o.notification_type)).toEqual(expect.arrayContaining(notificationTypes))
       })
     })
 

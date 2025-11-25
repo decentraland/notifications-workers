@@ -83,10 +83,7 @@ test('GET /subscription/opt-outs', function ({ components }) {
         expect(community123.metadataKey).toBe('communityId')
         expect(community123.notificationTypes).toHaveLength(2)
         expect(community123.notificationTypes).toEqual(
-          expect.arrayContaining([
-            NotificationType.COMMUNITY_POST_ADDED,
-            NotificationType.COMMUNITY_INVITE_RECEIVED
-          ])
+          expect.arrayContaining([NotificationType.COMMUNITY_POST_ADDED, NotificationType.COMMUNITY_INVITE_RECEIVED])
         )
 
         const community456 = body.find((item: any) => item.metadataValue === 'community-456')
