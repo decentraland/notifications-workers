@@ -4,11 +4,11 @@ info:
   description: |
     ## Overview
     API for Decentraland's notification system, consisting of two services:
-    
+
     **Inbox Worker**: Manages user notifications, subscription preferences, and email verification.
-    
+
     **Processor Worker**: Handles notification creation and publishing from external sources.
-    
+
     The services share a database and support both in-app and email notifications with granular user preferences per notification type.
   version: 1.0.0
   contact:
@@ -47,12 +47,12 @@ paths:
         - Health
       security: []
       responses:
-        '200':
+        "200":
           description: Service health status
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Status'
+                $ref: "#/components/schemas/Status"
   /notifications:
     get:
       summary: Get user notifications
@@ -89,24 +89,24 @@ paths:
             type: boolean
           description: If present (value doesn't matter), only unread notifications are returned
       responses:
-        '200':
+        "200":
           description: User notifications retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotificationsResponse'
-        '401':
+                $ref: "#/components/schemas/NotificationsResponse"
+        "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '403':
+                $ref: "#/components/schemas/Error"
+        "403":
           description: Forbidden - signed fetch metadata validation failed (e.g., request from decentraland-kernel-scene)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     post:
       summary: Publish notifications
       description: |
@@ -125,23 +125,23 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/PublishNotificationRequest'
+                $ref: "#/components/schemas/PublishNotificationRequest"
               minItems: 1
       responses:
-        '204':
+        "204":
           description: Notifications published successfully
-        '400':
+        "400":
           description: Invalid request body or validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized - missing or invalid API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /notifications/read:
     put:
       summary: Mark notifications as read
@@ -158,38 +158,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MarkAsReadRequest'
+              $ref: "#/components/schemas/MarkAsReadRequest"
             example:
               notificationIds:
                 - "3a33a38a-e17a-4153-926b-c18f1e57e3e1"
                 - "f098bed0-bff9-4ebe-a160-5687ffa4fe36"
       responses:
-        '200':
+        "200":
           description: Notifications marked as read successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MarkAsReadResponse'
+                $ref: "#/components/schemas/MarkAsReadResponse"
               example:
                 updated: 2
-        '400':
+        "400":
           description: Bad request - missing or invalid notificationIds array
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '403':
+                $ref: "#/components/schemas/Error"
+        "403":
           description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /notifications/email:
     post:
       summary: Send common email notification
@@ -206,22 +206,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CommonEmailRequest'
+              $ref: "#/components/schemas/CommonEmailRequest"
       responses:
-        '204':
+        "204":
           description: Email sent successfully
-        '400':
+        "400":
           description: Invalid request - missing required fields
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized - missing or invalid API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /subscription:
     get:
       summary: Get user subscription preferences
@@ -235,24 +235,24 @@ paths:
       security:
         - SignedFetch: []
       responses:
-        '200':
+        "200":
           description: User subscription preferences retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SubscriptionResponse'
-        '401':
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '403':
+                $ref: "#/components/schemas/Error"
+        "403":
           description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     put:
       summary: Update subscription preferences
       description: |
@@ -269,28 +269,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubscriptionDetails'
+              $ref: "#/components/schemas/SubscriptionDetails"
       responses:
-        '204':
+        "204":
           description: Subscription preferences updated successfully
-        '400':
+        "400":
           description: Invalid request - validation error in subscription details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '403':
+                $ref: "#/components/schemas/Error"
+        "403":
           description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /unsubscribe/{address}:
     get:
       summary: Unsubscribe from all email notifications
@@ -308,7 +308,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[a-fA-F0-9]{40}$'
+            pattern: "^0x[a-fA-F0-9]{40}$"
           description: Ethereum address of the user
           example: "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314"
         - name: signature
@@ -324,19 +324,19 @@ paths:
             type: string
           description: Unix timestamp when the signature was generated
       responses:
-        '200':
+        "200":
           description: Successfully unsubscribed from all email notifications - returns HTML page
           content:
             text/html:
               schema:
                 type: string
                 description: HTML confirmation page
-        '400':
+        "400":
           description: Invalid signature or expired link
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /unsubscribe/{address}/{notificationType}:
     get:
       summary: Unsubscribe from specific notification type
@@ -354,7 +354,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[a-fA-F0-9]{40}$'
+            pattern: "^0x[a-fA-F0-9]{40}$"
           description: Ethereum address of the user
           example: "0xb5D7D1A05f553b5098D9274Df6B292e4e8222314"
         - name: notificationType
@@ -377,19 +377,19 @@ paths:
             type: string
           description: Unix timestamp when the signature was generated
       responses:
-        '200':
+        "200":
           description: Successfully unsubscribed from notification type - returns HTML page
           content:
             text/html:
               schema:
                 type: string
                 description: HTML confirmation page
-        '400':
+        "400":
           description: Invalid signature, expired link, or invalid notification type
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /set-email:
     put:
       summary: Set or update email address
@@ -399,7 +399,7 @@ paths:
         - If email already exists for another address, returns an error
         - If email matches the currently confirmed email, skips verification
         - Otherwise, generates a 32-character code and sends verification email via SendGrid
-        
+
         The confirmation email contains a link that may include Turnstile challenge if the feature flag is enabled.
       operationId: storeUnconfirmedEmail
       tags:
@@ -411,28 +411,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SetEmailRequest'
+              $ref: "#/components/schemas/SetEmailRequest"
       responses:
-        '204':
+        "204":
           description: Email verification process initiated successfully (or email removed if empty string provided)
-        '400':
+        "400":
           description: Invalid email format or email already registered to another account or domain blacklisted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '403':
+                $ref: "#/components/schemas/Error"
+        "403":
           description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /confirm-email:
     put:
       summary: Confirm email address
@@ -449,22 +449,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConfirmEmailRequest'
+              $ref: "#/components/schemas/ConfirmEmailRequest"
       responses:
-        '204':
+        "204":
           description: Email confirmed successfully
-        '400':
+        "400":
           description: Invalid or missing confirmation code, address, or email domain blacklisted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Invalid captcha token (when Turnstile verification is enabled)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /subscription/opt-outs:
     get:
       summary: Get notification opt-outs
@@ -479,37 +479,37 @@ paths:
       security:
         - SignedFetch: []
       responses:
-        '200':
+        "200":
           description: Notification opt-outs retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/NotificationOptOut'
-        '401':
+                  $ref: "#/components/schemas/NotificationOptOut"
+        "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '403':
+                $ref: "#/components/schemas/Error"
+        "403":
           description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     post:
       summary: Create notification opt-out
       description: |
         Creates notification opt-out configurations for the authenticated user. Opt-outs filter notifications
         based on metadata key-value pairs. For example, to opt out of notifications for a specific community,
         set `metadataKey: "communityId"` and `metadataValue: "<community-id>"`.
-        
+
         The `notificationTypes` array is required and must contain at least one notification type. One opt-out
         record is created for each notification type in the array. If an opt-out already exists for a given
         (address, metadataKey, metadataValue, notificationType) combination, it is updated (no error is thrown).
-        
+
         Currently supported metadata keys: `id`, `communityId`.
         Currently supported notification types: community-related notification types only.
       operationId: createNotificationOptOut
@@ -522,39 +522,39 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateNotificationOptOutRequest'
+              $ref: "#/components/schemas/CreateNotificationOptOutRequest"
       responses:
-        '201':
+        "201":
           description: Notification opt-out created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotificationOptOut'
-        '400':
+                $ref: "#/components/schemas/NotificationOptOut"
+        "400":
           description: Invalid request - validation error (invalid metadataKey, invalid notificationTypes, etc.)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '403':
+                $ref: "#/components/schemas/Error"
+        "403":
           description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /subscription/opt-outs/{metadataKey}/{metadataValue}:
     delete:
       summary: Delete notification opt-out
       description: |
         Deletes notification opt-out configuration(s). The opt-out is identified by `metadataKey` and
         `metadataValue` in the URL path. The `metadataValue` must be URL-encoded if it contains special characters.
-        
+
         If the optional `notificationType` query parameter is provided, only the opt-out for that specific
         notification type is deleted. If not provided, all opt-outs for the given (metadataKey, metadataValue)
         combination are deleted.
@@ -569,7 +569,7 @@ paths:
           required: true
           schema:
             type: string
-            enum: ['id', 'communityId']
+            enum: ["id", "communityId"]
           description: Metadata key for the opt-out (e.g., "communityId")
         - name: metadataValue
           in: path
@@ -584,26 +584,26 @@ paths:
             type: string
           description: Optional notification type. If provided, only deletes the opt-out for this specific type. If omitted, deletes all opt-outs for the given metadata key-value pair.
       responses:
-        '204':
+        "204":
           description: Notification opt-out deleted successfully
-        '400':
+        "400":
           description: Invalid request - missing metadataKey or metadataValue
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '403':
+                $ref: "#/components/schemas/Error"
+        "403":
           description: Forbidden - signed fetch metadata validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 components:
   securitySchemes:
     SignedFetch:
@@ -611,13 +611,13 @@ components:
       scheme: bearer
       description: |
         Signed fetch authentication using @dcl/platform-crypto-middleware implementing Decentraland's ADR-44.
-        
+
         **Requirements:**
         - Authentication chain headers: `x-identity`, `x-signature`, `x-timestamp`
         - Token expiration: 5 minutes
         - Metadata validation: Rejects requests with `signer: "decentraland-kernel-scene"`
         - The user's Ethereum address is extracted from the auth chain
-        
+
         **Example:**
         ```
         Authorization: Bearer <signed-fetch-token>
@@ -631,7 +631,7 @@ components:
       description: |
         Bearer token authentication using a shared API key (`NOTIFICATION_SERVICE_TOKEN`).
         Used for service-to-service communication and external notification publishing.
-        
+
         **Example:**
         ```
         Authorization: Bearer <api-key>
@@ -656,7 +656,7 @@ components:
         notifications:
           type: array
           items:
-            $ref: '#/components/schemas/Notification'
+            $ref: "#/components/schemas/Notification"
           description: List of notifications for the user
       required:
         - notifications
@@ -684,7 +684,7 @@ components:
         address:
           oneOf:
             - type: string
-              pattern: '^0x[a-fA-F0-9]{40}$'
+              pattern: "^0x[a-fA-F0-9]{40}$"
             - type: "null"
           description: User's Ethereum address (null for broadcast notifications)
         metadata:
@@ -735,7 +735,7 @@ components:
           example: "worlds_access_restored"
         address:
           type: string
-          pattern: '^0x[a-fA-F0-9]{40}$'
+          pattern: "^0x[a-fA-F0-9]{40}$"
           description: Ethereum address of the recipient user
         eventKey:
           type: string
@@ -797,7 +797,7 @@ components:
             - type: "null"
           description: Email pending confirmation (null if no pending email)
         details:
-          $ref: '#/components/schemas/SubscriptionDetails'
+          $ref: "#/components/schemas/SubscriptionDetails"
       required:
         - details
       example:
@@ -826,7 +826,7 @@ components:
           type: object
           description: Per-notification-type preferences mapping NotificationType to channel preferences
           additionalProperties:
-            $ref: '#/components/schemas/NotificationChannelType'
+            $ref: "#/components/schemas/NotificationChannelType"
       required:
         - ignore_all_email
         - ignore_all_in_app
@@ -877,7 +877,7 @@ components:
       properties:
         address:
           type: string
-          pattern: '^0x[a-fA-F0-9]{40}$'
+          pattern: "^0x[a-fA-F0-9]{40}$"
           description: Ethereum address of the user confirming the email
         code:
           type: string
@@ -903,7 +903,7 @@ components:
       properties:
         metadataKey:
           type: string
-          enum: ['id', 'communityId']
+          enum: ["id", "communityId"]
           description: Metadata key used for filtering notifications
           example: "communityId"
         metadataValue:
@@ -928,7 +928,7 @@ components:
       properties:
         metadataKey:
           type: string
-          enum: ['id', 'communityId']
+          enum: ["id", "communityId"]
           description: Metadata key for filtering notifications
           example: "communityId"
         metadataValue:

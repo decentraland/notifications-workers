@@ -10,7 +10,7 @@ The database contains the following active tables:
 2. **`subscriptions`** - User notification preferences and email subscriptions
 3. **`unconfirmed_emails`** - Email confirmation codes for email verification
 4. **`broadcast_read`** - Tracks read status for broadcast notifications
-5. **`notification_opt_outs`** - User opt-out configurations for specific notifications based on metadata
+5. **`notification_opt_outs`** - User opt-out configurations scoped to metadata and notification type
 6. **`cursors`** - Event processing cursors for tracking processed events
 
 ---
@@ -57,7 +57,7 @@ erDiagram
         VARCHAR address PK "User address"
         VARCHAR metadata_key PK "Metadata key"
         VARCHAR metadata_value PK "Metadata value"
-        JSONB notification_types "Notification types array (nullable)"
+        VARCHAR notification_type PK "Notification type"
         BIGINT created_at "Creation timestamp"
         BIGINT updated_at "Update timestamp"
     }
@@ -76,7 +76,7 @@ erDiagram
 
 - **Foreign Key**: `broadcast_read.notification_id` → `notifications.id`
 - **Composite Primary Key**: `broadcast_read` has composite PK `(notification_id, address)`
-- **Composite Primary Key**: `notification_opt_outs` has composite PK `(address, metadata_key, metadata_value)`
+- **Composite Primary Key**: `notification_opt_outs` has composite PK `(address, metadata_key, metadata_value, notification_type)`
 - **Unique Constraint**: `notifications` has unique constraint on `(event_key, type, address)` for deduplication
 - **Address Optional**: `notifications.address` can be NULL for broadcast notifications
 
@@ -194,34 +194,33 @@ Tracks read status for broadcast notifications (notifications without a specific
 
 ## Table: `notification_opt_outs`
 
-Stores user opt-out configurations for filtering notifications based on metadata key-value pairs.
+Stores user opt-out configurations for filtering notifications based on metadata key-value pairs and notification type.
 
 ### Columns
 
-| Column               | Type    | Nullable | Description                                                                                                                |
-| -------------------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `address`            | VARCHAR | NOT NULL | **Primary Key (part 1)**. Ethereum address of the user.                                                                    |
-| `metadata_key`       | VARCHAR | NOT NULL | **Primary Key (part 2)**. Metadata key used for filtering (e.g., `"communityId"`).                                         |
-| `metadata_value`     | VARCHAR | NOT NULL | **Primary Key (part 3)**. Metadata value used for filtering (e.g., community ID).                                          |
-| `notification_types` | JSONB   | NULL     | Array of notification types to opt out from. NULL means opt out from all notification types that support the metadata key. |
-| `created_at`         | BIGINT  | NOT NULL | Timestamp (in milliseconds) when opt-out was created.                                                                      |
-| `updated_at`         | BIGINT  | NOT NULL | Timestamp (in milliseconds) when opt-out was last updated.                                                                 |
+| Column              | Type    | Nullable | Description                                                                                               |
+| ------------------- | ------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `address`           | VARCHAR | NOT NULL | **Primary Key (part 1)**. Ethereum address of the user.                                                   |
+| `metadata_key`      | VARCHAR | NOT NULL | **Primary Key (part 2)**. Metadata key used for filtering (e.g., `"communityId"`).                        |
+| `metadata_value`    | VARCHAR | NOT NULL | **Primary Key (part 3)**. Metadata value used for filtering (e.g., a specific community ID).              |
+| `notification_type` | VARCHAR | NOT NULL | **Primary Key (part 4)**. Specific notification type (must match `NotificationType` from `@dcl/schemas`). |
+| `created_at`        | BIGINT  | NOT NULL | Timestamp (in milliseconds) when the opt-out entry was created.                                           |
+| `updated_at`        | BIGINT  | NOT NULL | Timestamp (in milliseconds) when the opt-out entry was last updated.                                      |
 
 ### Indexes
 
-- **Composite Primary Key**: `(address, metadata_key, metadata_value)` - One opt-out per user per metadata key-value pair
-- **Index**: On `address` - For efficient user opt-out queries
-- **Index**: On `(metadata_key, metadata_value)` - For efficient metadata-based filtering
+- **Composite Primary Key**: `(address, metadata_key, metadata_value, notification_type)` – one opt-out record per user, metadata, and notification type
+- **Index**: On `address` – for efficient opt-out lookups per user
+- **Index**: On `(metadata_key, metadata_value, notification_type)` – for efficient metadata-based filtering when inserting notifications
 
 ### Business Rules
 
-1. One opt-out record per user per metadata key-value combination
-2. `notification_types` is NULL by default (applies to all supported notification types)
-3. When `notification_types` is provided, it must be an array of valid notification type strings
-4. Currently supports metadata keys: `id`, `communityId`
-5. Currently supports community-related notification types only
-6. Opt-outs are applied at query time to filter notifications before delivery (both email and in-app)
-7. Timestamps stored in milliseconds (BIGINT)
+1. Each row maps a user address, metadata key, metadata value, and a specific notification type.
+2. `notification_type` is required; only explicit values from `NotificationType` are allowed (no wildcards or `null`).
+3. Currently supported metadata keys are `id` and `communityId`.
+4. Only community-related notification types that expose the supported metadata can be opted out.
+5. Matching notifications are filtered out before they reach the database, so opted-out messages are never stored.
+6. Timestamps are stored in milliseconds (`BIGINT`).
 
 ---
 
