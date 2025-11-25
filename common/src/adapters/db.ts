@@ -45,8 +45,6 @@ export type DbComponent = {
     metadataValue: string,
     notificationType?: string
   ): Promise<void>
-  hasNotificationOptOuts(notifications: NotificationRecord[]): Promise<Set<string>>
-  hasNotificationOptOut(notification: NotificationRecord): Promise<boolean>
 }
 
 export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent {
@@ -494,56 +492,6 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     await pg.query(query)
   }
 
-  async function hasNotificationOptOuts(notifications: NotificationRecord[]): Promise<Set<string>> {
-    if (notifications.length === 0) return new Set()
-
-    const addresses = [...new Set(notifications.filter((n) => n.address).map((n) => n.address!.toLowerCase()))]
-    if (addresses.length === 0) {
-      return new Set()
-    }
-
-    const notificationChecks = notifications.map((n) => {
-      if (!n.address) {
-        const notificationKey = `${n.eventKey}:${n.type}:null`
-        return SQL`(${notificationKey}, NULL, NULL, NULL)`
-      }
-      const notificationKey = `${n.eventKey}:${n.type}:${n.address.toLowerCase()}`
-      return SQL`(${notificationKey}, ${n.address.toLowerCase()}, ${JSON.stringify(n.metadata)}::jsonb, ${n.type})`
-    })
-
-    let query = SQL`
-      WITH notification_checks AS (
-        SELECT * FROM (VALUES `.append(notificationChecks[0])
-    for (let i = 1; i < notificationChecks.length; i++) {
-      query = query.append(SQL`, `).append(notificationChecks[i])
-    }
-    query = query.append(SQL`) AS t(notification_key, address, metadata, notification_type)
-      )
-      SELECT 
-        nc.notification_key
-      FROM notification_checks nc
-      WHERE nc.address IS NOT NULL
-        AND EXISTS (
-          SELECT 1 FROM notification_opt_outs opt
-          WHERE opt.address = nc.address
-            AND jsonb_extract_path_text(nc.metadata, opt.metadata_key) = opt.metadata_value
-            AND opt.notification_type = nc.notification_type
-        )
-    `)
-
-    const result = await pg.query<{ notification_key: string }>(query)
-    return new Set(result.rows.map((row) => row.notification_key))
-  }
-
-  async function hasNotificationOptOut(notification: NotificationRecord): Promise<boolean> {
-    if (!notification.address) {
-      return false
-    }
-    const notificationKey = `${notification.eventKey}:${notification.type}:${notification.address.toLowerCase()}`
-    const optedOutKeys = await hasNotificationOptOuts([notification])
-    return optedOutKeys.has(notificationKey)
-  }
-
   return {
     findNotification,
     findSubscription,
@@ -563,9 +511,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     findNotificationOptOutsForAddresses,
     saveNotificationOptOuts,
     saveNotificationOptOut,
-    deleteNotificationOptOut,
-    hasNotificationOptOuts,
-    hasNotificationOptOut
+    deleteNotificationOptOut
   }
 }
 

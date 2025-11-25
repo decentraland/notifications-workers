@@ -274,8 +274,20 @@ describe('db client tests', () => {
       pg.query = jest.fn().mockResolvedValueOnce({
         rowCount: 2,
         rows: [
-          { id: 'id1', event_key: 'some-event-1', type: NotificationType.WORLDS_ACCESS_RESTRICTED, address: '0x123', xmax: '0' },
-          { id: 'id2', event_key: 'some-event-2', type: NotificationType.WORLDS_PERMISSION_REVOKED, address: null, xmax: '1' }
+          {
+            id: 'id1',
+            event_key: 'some-event-1',
+            type: NotificationType.WORLDS_ACCESS_RESTRICTED,
+            address: '0x123',
+            xmax: '0'
+          },
+          {
+            id: 'id2',
+            event_key: 'some-event-2',
+            type: NotificationType.WORLDS_PERMISSION_REVOKED,
+            address: null,
+            xmax: '1'
+          }
         ]
       })
 
