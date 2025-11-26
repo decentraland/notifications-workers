@@ -549,15 +549,60 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
   /subscription/opt-outs/{metadataKey}/{metadataValue}:
+  /subscription/opt-outs/{metadataKey}/{metadataValue}/{notificationType}:
+    delete:
+      summary: Delete notification opt-outs for a metadata pair
+      description: |
+        Deletes every opt-out configured for the authenticated user and the provided metadata key/value.
+        Use this endpoint when the user wants to reset all notification preferences tied to that entity.
+        The `metadataValue` must be URL-encoded if it contains special characters.
+      operationId: deleteNotificationOptOuts
+      tags:
+        - Subscriptions
+      security:
+        - SignedFetch: []
+      parameters:
+        - name: metadataKey
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: ["id", "communityId"]
+          description: Metadata key for the opt-out (e.g., "communityId")
+        - name: metadataValue
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Metadata value for the opt-out (e.g., community ID). Must be URL-encoded if it contains special characters.
+      responses:
+        "204":
+          description: Notification opt-outs deleted successfully
+        "400":
+          description: Invalid request - missing metadataKey or metadataValue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - invalid or missing signed fetch headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden - signed fetch metadata validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     delete:
       summary: Delete notification opt-out
       description: |
         Deletes notification opt-out configuration(s). The opt-out is identified by `metadataKey` and
         `metadataValue` in the URL path. The `metadataValue` must be URL-encoded if it contains special characters.
 
-        If the optional `notificationType` query parameter is provided, only the opt-out for that specific
-        notification type is deleted. If not provided, all opt-outs for the given (metadataKey, metadataValue)
-        combination are deleted.
+      The notification type is provided as part of the path and must be a valid `NotificationType` string.
       operationId: deleteNotificationOptOut
       tags:
         - Subscriptions
@@ -578,11 +623,11 @@ paths:
             type: string
           description: Metadata value for the opt-out (e.g., community ID). Must be URL-encoded if it contains special characters.
         - name: notificationType
-          in: query
-          required: false
+          in: path
+          required: true
           schema:
             type: string
-          description: Optional notification type. If provided, only deletes the opt-out for this specific type. If omitted, deletes all opt-outs for the given metadata key-value pair.
+          description: Notification type to delete (must be a valid `NotificationType` enum value).
       responses:
         "204":
           description: Notification opt-out deleted successfully

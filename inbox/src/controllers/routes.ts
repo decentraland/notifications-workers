@@ -62,6 +62,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   router.get('/subscription', signedFetchMiddleware, getSubscriptionHandler)
   router.put('/subscription', signedFetchMiddleware, putSubscriptionHandler)
+
   router.get('/subscription/opt-outs', signedFetchMiddleware, getNotificationOptOutsHandler)
   router.post(
     '/subscription/opt-outs',
@@ -74,6 +75,12 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
     signedFetchMiddleware,
     deleteNotificationOptOutHandler
   )
+  router.delete(
+    '/subscription/opt-outs/:metadataKey/:metadataValue/:notificationType',
+    signedFetchMiddleware,
+    deleteNotificationOptOutHandler
+  )
+
   router.get('/unsubscribe/:address', signedUrlMiddleware, unsubscribeAllHandler)
   router.get('/unsubscribe/:address/:notificationType', signedUrlMiddleware, unsubscribeOneHandler)
 
