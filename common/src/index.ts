@@ -1,4 +1,5 @@
 export * from './adapters'
+export * from './entities'
 export * from './subscriptions'
 export * from './signing'
 export * from './types'

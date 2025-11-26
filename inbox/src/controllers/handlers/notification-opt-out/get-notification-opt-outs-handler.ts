@@ -1,39 +1,30 @@
 import { HandlerContextWithPath } from '../../../types'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
-
-type NotificationOptOutResponse = {
-  metadataKey: string
-  metadataValue: string
-  notificationTypes: string[]
-}
+import { NotificationEntity } from '@notifications/common'
+import { InvalidRequestError } from '@dcl/platform-server-commons'
 
 export async function getNotificationOptOutsHandler(
   context: Pick<
-    HandlerContextWithPath<'notificationOptOutsManager' | 'logs', '/subscription/opt-outs'>,
-    'url' | 'components' | 'verification'
+    HandlerContextWithPath<'notificationOptOutsManager' | 'logs', '/subscription/opt-outs/:entity/:entityId'>,
+    'components' | 'verification' | 'params'
   >
 ): Promise<IHttpServerComponent.IResponse> {
   const address = context.verification!.auth
+  const { entity, entityId } = context.params
 
-  const optOuts = await context.components.notificationOptOutsManager.getOptOuts(address)
-
-  // Group by metadata_key and metadata_value
-  const grouped = new Map<string, NotificationOptOutResponse>()
-  for (const optOut of optOuts) {
-    const key = `${optOut.metadata_key}:${optOut.metadata_value}`
-    if (!grouped.has(key)) {
-      grouped.set(key, {
-        metadataKey: optOut.metadata_key,
-        metadataValue: optOut.metadata_value,
-        notificationTypes: []
-      })
-    }
-    grouped.get(key)!.notificationTypes.push(optOut.notification_type)
+  if (!Object.values(NotificationEntity).includes(entity as NotificationEntity)) {
+    throw new InvalidRequestError('Invalid entity')
   }
 
-  const response: NotificationOptOutResponse[] = Array.from(grouped.values())
+  const notificationEntity = entity as NotificationEntity
+
+  const optedOut = await context.components.notificationOptOutsManager.hasOptOut(address, notificationEntity, entityId)
 
   return {
-    body: response
+    body: {
+      entity,
+      entityId,
+      optedOut
+    }
   }
 }

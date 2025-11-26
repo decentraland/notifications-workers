@@ -1,21 +1,12 @@
 import { AppComponents } from '../types'
-import { NotificationOptOutDb } from '@notifications/common'
+import { NotificationOptOutDb, NotificationEntity, ENTITY_METADATA_CONFIGS } from '@notifications/common'
 import { EthAddress } from '@dcl/schemas'
 
 export interface INotificationOptOutsManager {
-  createOptOut(
-    address: EthAddress,
-    metadataKey: string,
-    metadataValue: string,
-    notificationTypes: string[]
-  ): Promise<NotificationOptOutDb[]>
-  deleteOptOut(
-    address: EthAddress,
-    metadataKey: string,
-    metadataValue: string,
-    notificationType?: string
-  ): Promise<void>
+  createOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<NotificationOptOutDb[]>
+  deleteOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<void>
   getOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]>
+  hasOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<boolean>
 }
 
 export function createNotificationOptOutsManager({
@@ -24,67 +15,62 @@ export function createNotificationOptOutsManager({
 }: Pick<AppComponents, 'db' | 'logs'>): INotificationOptOutsManager {
   const logger = logs.getLogger('notification-opt-outs-manager')
 
-  async function createOptOut(
-    address: EthAddress,
-    metadataKey: string,
-    metadataValue: string,
-    notificationTypes: string[]
-  ): Promise<NotificationOptOutDb[]> {
-    if (!notificationTypes || notificationTypes.length === 0) {
-      throw new Error('notificationTypes must be a non-empty array')
+  function buildOptOutRow(address: string, entity: NotificationEntity, entityId: string): NotificationOptOutDb {
+    const config = ENTITY_METADATA_CONFIGS[entity]
+    if (!config) {
+      throw new Error(`Unhandled entity ${entity}`)
     }
 
-    logger.info('Creating notification opt-out', {
-      address,
-      metadataKey,
-      metadataValue,
-      notificationTypesCount: notificationTypes.length
-    })
-
     const now = Date.now()
-    const lowerAddress = address.toLowerCase()
-
-    // Build all opt-outs at once
-    const optOuts: NotificationOptOutDb[] = notificationTypes.map((type) => ({
-      address: lowerAddress,
-      metadata_key: metadataKey,
-      metadata_value: metadataValue,
-      notification_type: type,
+    return {
+      address: address.toLowerCase(),
+      entity,
+      entity_id: entityId,
       created_at: now,
       updated_at: now
-    }))
-
-    // Batch insert all at once (single query)
-    await db.saveNotificationOptOuts(optOuts)
-
-    return optOuts
+    }
   }
 
-  async function deleteOptOut(
+  async function createOptOut(
     address: EthAddress,
-    metadataKey: string,
-    metadataValue: string,
-    notificationType?: string
-  ): Promise<void> {
-    logger.info('Deleting notification opt-out', {
+    entity: NotificationEntity,
+    entityId: string
+  ): Promise<NotificationOptOutDb[]> {
+    logger.info('Creating notification opt-out', {
       address,
-      metadataKey,
-      metadataValue,
-      ...(notificationType && { notificationType })
+      entity,
+      entityId
     })
 
-    await db.deleteNotificationOptOut(address, metadataKey, metadataValue, notificationType)
+    const optOut = buildOptOutRow(address, entity, entityId)
+    await db.saveNotificationOptOuts([optOut])
+    return [optOut]
+  }
+
+  async function deleteOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<void> {
+    logger.info('Deleting notification opt-out', {
+      address,
+      entity,
+      entityId
+    })
+
+    await db.deleteNotificationOptOut(address, entity, entityId)
   }
 
   async function getOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]> {
     logger.debug('Getting notification opt-outs', { address })
-
     return await db.findNotificationOptOuts(address)
+  }
+
+  async function hasOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<boolean> {
+    logger.debug('Checking notification opt-out', { address, entity, entityId })
+    return await db.hasNotificationOptOut(address, entity, entityId)
   }
 
   return {
     createOptOut,
     deleteOptOut,
-    getOptOuts
+    getOptOuts,
+    hasOptOut
   }
 }

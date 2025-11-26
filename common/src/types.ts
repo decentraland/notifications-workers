@@ -22,11 +22,14 @@ export type UnconfirmedEmailDb = {
   updated_at: number
 }
 
+export enum NotificationEntity {
+  Community = 'community'
+}
+
 export type NotificationOptOutDb = {
   address: string
-  metadata_key: string
-  metadata_value: string
-  notification_type: string
+  entity: NotificationEntity
+  entity_id: string
   created_at: number
   updated_at: number
 }

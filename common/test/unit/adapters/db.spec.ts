@@ -296,5 +296,56 @@ describe('db client tests', () => {
       expect(result.inserted).toMatchObject([notification1])
       expect(result.updated).toMatchObject([notification2])
     })
+
+    test('queries include opt-out filter when configs exist', async () => {
+      pg.query = jest.fn().mockResolvedValue({
+        rowCount: 0,
+        rows: []
+      })
+
+      const notification = {
+        eventKey: 'community-event',
+        type: NotificationType.COMMUNITY_POST_ADDED,
+        address: '0x123',
+        metadata: {
+          communityId: 'community-123'
+        },
+        timestamp: Date.now()
+      }
+
+      await db.insertNotifications([notification])
+      expect(pg.query).toHaveBeenCalledTimes(1)
+      const executed = (pg.query as jest.Mock).mock.calls[0][0]
+      expect(executed.text).toContain('NOT EXISTS')
+      expect(executed.text).toContain('notification_opt_outs')
+      expect(executed.text).toContain('jsonb_extract_path_text')
+    })
+  })
+
+  describe('insertNotifications with no opt-out configs', () => {
+    test('appends TRUE when metadata configs are empty', async () => {
+      const queryMock = jest.fn().mockResolvedValue({ rowCount: 0, rows: [] })
+      const pgMock: IPgComponent = {
+        query: queryMock,
+        start: jest.fn(),
+        streamQuery: jest.fn(),
+        getPool: jest.fn(),
+        stop: jest.fn()
+      }
+      const dbWithoutOptOut = createDbComponent({ pg: pgMock }, {})
+
+      const notification = {
+        eventKey: 'community-event',
+        type: NotificationType.COMMUNITY_POST_ADDED,
+        address: '0xabc',
+        metadata: {},
+        timestamp: Date.now()
+      }
+
+      await dbWithoutOptOut.insertNotifications([notification])
+      expect(queryMock).toHaveBeenCalledTimes(1)
+      const executed = queryMock.mock.calls[0][0]
+      expect(executed.text).toContain('OR TRUE')
+    })
   })
 })

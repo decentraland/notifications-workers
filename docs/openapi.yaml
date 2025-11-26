@@ -465,28 +465,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /subscription/opt-outs:
+  /subscription/opt-outs/{entity}/{entityId}:
     get:
-      summary: Get notification opt-outs
+      summary: Check notification opt-out status
       description: |
-        Retrieves all notification opt-out configurations for the authenticated user. Opt-outs allow users to
-        selectively disable notifications based on metadata key-value pairs (e.g., opt out of notifications for a
-        specific community by setting `metadataKey: "communityId"` and `metadataValue: "<community-id>"`).
-        The user's address is extracted from the signed fetch authentication chain.
-      operationId: getNotificationOptOuts
+        Returns whether the authenticated user has opted out from the provided entity and identifier.
+        The user address is extracted from the signed fetch authentication chain.
+      operationId: getNotificationOptOutStatus
       tags:
         - Subscriptions
       security:
         - SignedFetch: []
+      parameters:
+        - name: entity
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: ["community"]
+          description: Entity type for the opt-out
+        - name: entityId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          description: Identifier scoped to the entity (e.g., community ID)
       responses:
         "200":
-          description: Notification opt-outs retrieved successfully
+          description: Notification opt-out status retrieved successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/NotificationOptOut"
+                $ref: "#/components/schemas/NotificationOptOut"
         "401":
           description: Unauthorized - invalid or missing signed fetch headers
           content:
@@ -499,19 +510,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete notification opt-out
+      description: |
+        Removes the opt-out configuration for the specified entity and identifier.
+      operationId: deleteNotificationOptOut
+      tags:
+        - Subscriptions
+      security:
+        - SignedFetch: []
+      parameters:
+        - name: entity
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: ["community"]
+          description: Entity type for the opt-out
+        - name: entityId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          description: Identifier scoped to the entity (e.g., community ID)
+      responses:
+        "204":
+          description: Notification opt-out deleted successfully
+        "401":
+          description: Unauthorized - invalid or missing signed fetch headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden - signed fetch metadata validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /subscription/opt-outs:
     post:
       summary: Create notification opt-out
       description: |
-        Creates notification opt-out configurations for the authenticated user. Opt-outs filter notifications
-        based on metadata key-value pairs. For example, to opt out of notifications for a specific community,
-        set `metadataKey: "communityId"` and `metadataValue: "<community-id>"`.
-
-        The `notificationTypes` array is required and must contain at least one notification type. One opt-out
-        record is created for each notification type in the array. If an opt-out already exists for a given
-        (address, metadataKey, metadataValue, notificationType) combination, it is updated (no error is thrown).
-
-        Currently supported metadata keys: `id`, `communityId`.
-        Currently supported notification types: community-related notification types only.
+        Creates an opt-out configuration for the authenticated user based on an entity and identifier pair.
+        Each entity maps to a canonical metadata configuration that determines which notifications are filtered.
       operationId: createNotificationOptOut
       tags:
         - Subscriptions
@@ -531,108 +574,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/NotificationOptOut"
         "400":
-          description: Invalid request - validation error (invalid metadataKey, invalid notificationTypes, etc.)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Unauthorized - invalid or missing signed fetch headers
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Forbidden - signed fetch metadata validation failed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /subscription/opt-outs/{metadataKey}/{metadataValue}:
-  /subscription/opt-outs/{metadataKey}/{metadataValue}/{notificationType}:
-    delete:
-      summary: Delete notification opt-outs for a metadata pair
-      description: |
-        Deletes every opt-out configured for the authenticated user and the provided metadata key/value.
-        Use this endpoint when the user wants to reset all notification preferences tied to that entity.
-        The `metadataValue` must be URL-encoded if it contains special characters.
-      operationId: deleteNotificationOptOuts
-      tags:
-        - Subscriptions
-      security:
-        - SignedFetch: []
-      parameters:
-        - name: metadataKey
-          in: path
-          required: true
-          schema:
-            type: string
-            enum: ["id", "communityId"]
-          description: Metadata key for the opt-out (e.g., "communityId")
-        - name: metadataValue
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Metadata value for the opt-out (e.g., community ID). Must be URL-encoded if it contains special characters.
-      responses:
-        "204":
-          description: Notification opt-outs deleted successfully
-        "400":
-          description: Invalid request - missing metadataKey or metadataValue
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "401":
-          description: Unauthorized - invalid or missing signed fetch headers
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "403":
-          description: Forbidden - signed fetch metadata validation failed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-    delete:
-      summary: Delete notification opt-out
-      description: |
-        Deletes notification opt-out configuration(s). The opt-out is identified by `metadataKey` and
-        `metadataValue` in the URL path. The `metadataValue` must be URL-encoded if it contains special characters.
-
-      The notification type is provided as part of the path and must be a valid `NotificationType` string.
-      operationId: deleteNotificationOptOut
-      tags:
-        - Subscriptions
-      security:
-        - SignedFetch: []
-      parameters:
-        - name: metadataKey
-          in: path
-          required: true
-          schema:
-            type: string
-            enum: ["id", "communityId"]
-          description: Metadata key for the opt-out (e.g., "communityId")
-        - name: metadataValue
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Metadata value for the opt-out (e.g., community ID). Must be URL-encoded if it contains special characters.
-        - name: notificationType
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Notification type to delete (must be a valid `NotificationType` enum value).
-      responses:
-        "204":
-          description: Notification opt-out deleted successfully
-        "400":
-          description: Invalid request - missing metadataKey or metadataValue
+          description: Invalid request - validation error
           content:
             application/json:
               schema:
@@ -946,66 +888,34 @@ components:
     NotificationOptOut:
       type: object
       properties:
-        metadataKey:
+        entity:
           type: string
-          enum: ["id", "communityId"]
-          description: Metadata key used for filtering notifications
-          example: "communityId"
-        metadataValue:
+          enum: ["community"]
+          description: Entity type targeted by the opt-out
+        entityId:
           type: string
-          description: Metadata value used for filtering notifications
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        notificationTypes:
-          type: array
-          items:
-            type: string
-          minItems: 1
-          description: |
-            Array of notification types to opt out from. Each opt-out record is stored separately per notification type.
-            Currently limited to community-related notification types.
-          example: ["community_post_added", "community_invite_received"]
+          description: Identifier scoped to the entity (e.g., community ID)
+        optedOut:
+          type: boolean
+          description: Whether the authenticated user has opted out
       required:
-        - metadataKey
-        - metadataValue
-        - notificationTypes
+        - entity
+        - entityId
+        - optedOut
     CreateNotificationOptOutRequest:
       type: object
       properties:
-        metadataKey:
+        entity:
           type: string
-          enum: ["id", "communityId"]
-          description: Metadata key for filtering notifications
-          example: "communityId"
-        metadataValue:
+          enum: ["community"]
+          description: Entity type to opt out from
+        entityId:
           type: string
           minLength: 1
-          description: Metadata value for filtering notifications
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        notificationTypes:
-          type: array
-          items:
-            type: string
-            enum:
-              - "community_deleted"
-              - "community_deleted_content_violation"
-              - "community_renamed"
-              - "community_member_banned"
-              - "community_member_removed"
-              - "community_request_to_join_received"
-              - "community_request_to_join_accepted"
-              - "community_invite_received"
-              - "community_ownership_transferred"
-              - "community_post_added"
-          minItems: 1
-          uniqueItems: true
-          description: |
-            Array of notification types to opt out from. Must contain at least one notification type.
-            One opt-out record is created for each notification type. Currently limited to community-related notification types.
-          example: ["community_post_added", "community_invite_received"]
+          description: Identifier scoped to the entity (e.g., community ID)
       required:
-        - metadataKey
-        - metadataValue
-        - notificationTypes
+        - entity
+        - entityId
     Error:
       type: object
       properties:

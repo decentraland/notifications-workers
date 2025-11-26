@@ -21,6 +21,7 @@ export function createDbMock(db: Partial<DbComponent> = {}): DbComponent {
     saveNotificationOptOuts: jest.fn(),
     saveNotificationOptOut: jest.fn(),
     deleteNotificationOptOut: jest.fn(),
+    hasNotificationOptOut: jest.fn().mockResolvedValue(false),
     ...db
   }
 }

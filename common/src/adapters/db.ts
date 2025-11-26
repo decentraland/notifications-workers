@@ -10,6 +10,7 @@ import {
 import { IPgComponent } from '@well-known-components/pg-component'
 import { defaultSubscription } from '../subscriptions'
 import { Email, EthAddress, NotificationChannelType, NotificationType, SubscriptionDetails } from '@dcl/schemas'
+import { ENTITY_METADATA_CONFIGS, EntityMetadataConfig } from '../entities'
 
 export type DbComponents = {
   pg: IPgComponent
@@ -19,6 +20,8 @@ export type UpsertResult<T> = {
   inserted: T[]
   updated: T[]
 }
+
+import { NotificationEntity } from '../types'
 
 export type DbComponent = {
   findSubscription(address: EthAddress): Promise<SubscriptionDb>
@@ -39,15 +42,60 @@ export type DbComponent = {
   findNotificationOptOutsForAddresses(addresses: string[]): Promise<NotificationOptOutDb[]>
   saveNotificationOptOuts(optOuts: NotificationOptOutDb[]): Promise<void>
   saveNotificationOptOut(optOut: NotificationOptOutDb): Promise<void>
-  deleteNotificationOptOut(
-    address: EthAddress,
-    metadataKey: string,
-    metadataValue: string,
-    notificationType?: string
-  ): Promise<void>
+  deleteNotificationOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<void>
+  hasNotificationOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<boolean>
 }
 
-export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent {
+type EntityMetadataConfigMap = Partial<Record<NotificationEntity, EntityMetadataConfig>>
+
+function buildOptOutFilterClause(configs: EntityMetadataConfigMap): string | null {
+  const segments: string[] = []
+
+  for (const [entity, config] of Object.entries(configs)) {
+    if (!config) {
+      continue
+    }
+    if (!config.metadataKeys.length) {
+      continue
+    }
+
+    const metadataConditions = config.metadataKeys
+      .map((metadataKey) => `jsonb_extract_path_text(nti.metadata, '${escapeLiteral(metadataKey)}') = opt.entity_id`)
+      .join(' OR ')
+
+    if (!metadataConditions) {
+      continue
+    }
+
+    const parts: string[] = []
+    parts.push(`opt.entity = '${escapeLiteral(entity)}'`)
+
+    if (config.notificationTypes.length > 0) {
+      const typeList = config.notificationTypes.map((type) => `'${escapeLiteral(type)}'`).join(', ')
+      parts.push(`nti.type IN (${typeList})`)
+    }
+
+    parts.push(`(${metadataConditions})`)
+    segments.push(parts.join(' AND '))
+  }
+
+  if (!segments.length) {
+    return null
+  }
+
+  return segments.join(' OR ')
+}
+
+function escapeLiteral(value: string): string {
+  return value.replace(/'/g, "''")
+}
+
+export function createDbComponent(
+  { pg }: Pick<DbComponents, 'pg'>,
+  entityMetadataConfigs: EntityMetadataConfigMap = ENTITY_METADATA_CONFIGS
+): DbComponent {
+  const optOutFilterClause = buildOptOutFilterClause(entityMetadataConfigs)
+
   async function findSubscription(address: EthAddress): Promise<SubscriptionDb> {
     return (await findSubscriptions([address]))[0]
   }
@@ -330,43 +378,53 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
       }
       return SQL`(${n.eventKey}, ${n.type}, ${n.address.toLowerCase()}, ${JSON.stringify(n.metadata)}::jsonb, ${n.timestamp}::bigint)`
     })
+    const optOutCondition: SQLStatement = optOutFilterClause
+      ? SQL`
+          NOT EXISTS (
+            SELECT 1
+            FROM notification_opt_outs opt
+            WHERE opt.address = nti.address AND (
+        `.append(optOutFilterClause).append(`
+            )
+          )
+        `)
+      : SQL`TRUE`
 
-    let query = SQL`
+    const query = SQL`
       WITH notifications_to_insert AS (
         SELECT * FROM (VALUES `.append(notificationValues[0])
     for (let i = 1; i < notificationValues.length; i++) {
-      query = query.append(SQL`, `).append(notificationValues[i])
+      query.append(SQL`, `).append(notificationValues[i])
     }
-    query = query.append(SQL`) AS t(event_key, type, address, metadata, timestamp)
-      ),
-      filtered_notifications AS (
-        SELECT nti.*
-        FROM notifications_to_insert nti
-        WHERE nti.address IS NULL
-           OR NOT EXISTS (
-             SELECT 1 FROM notification_opt_outs opt
-             WHERE opt.address = nti.address
-               AND jsonb_extract_path_text(nti.metadata, opt.metadata_key) = opt.metadata_value
-               AND opt.notification_type = nti.type
-           )
+    query
+      .append(
+        SQL`) AS t(event_key, type, address, metadata, timestamp)
       )
       INSERT INTO notifications (event_key, type, address, metadata, timestamp, read_at, created_at, updated_at)
       SELECT 
-        fn.event_key,
-        fn.type,
-        fn.address,
-        fn.metadata,
-        fn.timestamp,
+        nti.event_key,
+        nti.type,
+        nti.address,
+        nti.metadata,
+        nti.timestamp,
         NULL,
         ${now},
         ${now}
-      FROM filtered_notifications fn
-      ON CONFLICT (event_key, type, address) DO UPDATE
-        SET metadata = EXCLUDED.metadata,
-            timestamp = EXCLUDED.timestamp,
-            updated_at = ${now}
-      RETURNING id, event_key, type, address, xmax
-    `)
+      FROM notifications_to_insert nti
+      WHERE nti.address IS NULL
+      OR `
+      )
+      .append(optOutCondition)
+
+    query.append(
+      SQL`
+        ON CONFLICT (event_key, type, address) DO UPDATE
+          SET metadata = EXCLUDED.metadata,
+              timestamp = EXCLUDED.timestamp,
+              updated_at = ${now}
+        RETURNING id, event_key, type, address, xmax
+      `
+    )
 
     const result = await pg.query<{
       id: string
@@ -401,15 +459,9 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
 
   async function findNotificationOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]> {
     const query: SQLStatement = SQL`
-      SELECT address,
-             metadata_key,
-             metadata_value,
-             notification_type,
-             created_at,
-             updated_at
+      SELECT address, entity, entity_id, created_at, updated_at
       FROM notification_opt_outs
       WHERE address = ${address.toLowerCase()}
-      ORDER BY created_at DESC
     `
 
     const result = await pg.query<NotificationOptOutDb>(query)
@@ -419,15 +471,11 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
   async function findNotificationOptOutsForAddresses(addresses: string[]): Promise<NotificationOptOutDb[]> {
     if (addresses.length === 0) return []
 
+    const normalizedAddresses = addresses.map((address) => address.toLowerCase())
     const query: SQLStatement = SQL`
-      SELECT address,
-             metadata_key,
-             metadata_value,
-             notification_type,
-             created_at,
-             updated_at
+      SELECT address, entity, entity_id, created_at, updated_at
       FROM notification_opt_outs
-      WHERE address = ANY(${addresses})
+      WHERE address = ANY(${normalizedAddresses})
     `
     const result = await pg.query<NotificationOptOutDb>(query)
     return result.rows
@@ -437,28 +485,27 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     if (optOuts.length === 0) return
 
     const now = Date.now()
-    let query = SQL`INSERT INTO notification_opt_outs (address, metadata_key, metadata_value, notification_type, created_at, updated_at) VALUES `
+    const query = SQL`INSERT INTO notification_opt_outs (address, entity, entity_id, created_at, updated_at) VALUES `
 
     const valueClauses: SQLStatement[] = []
     for (const optOut of optOuts) {
       valueClauses.push(SQL`(
         ${optOut.address.toLowerCase()},
-        ${optOut.metadata_key},
-        ${optOut.metadata_value},
-        ${optOut.notification_type},
+        ${optOut.entity},
+        ${optOut.entity_id},
         ${optOut.created_at || now},
         ${now}
       )`)
     }
 
-    query = query.append(valueClauses[0])
+    query.append(valueClauses[0])
     for (let i = 1; i < valueClauses.length; i++) {
-      query = query.append(SQL`, `).append(valueClauses[i])
+      query.append(SQL`, `).append(valueClauses[i])
     }
 
-    query = query.append(SQL`
-      ON CONFLICT (address, metadata_key, metadata_value, notification_type) DO UPDATE
-        SET updated_at = EXCLUDED.updated_at
+    query.append(SQL`
+      ON CONFLICT (address, entity, entity_id) DO UPDATE
+        SET updated_at = ${now}
     `)
 
     await pg.query(query)
@@ -470,26 +517,33 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
 
   async function deleteNotificationOptOut(
     address: EthAddress,
-    metadataKey: string,
-    metadataValue: string,
-    notificationType?: string
+    entity: NotificationEntity,
+    entityId: string
   ): Promise<void> {
-    const whereClause: SQLStatement[] = [
-      SQL`address = ${address.toLowerCase()}`,
-      SQL`metadata_key = ${metadataKey}`,
-      SQL`metadata_value = ${metadataValue}`
-    ]
-
-    if (notificationType) {
-      whereClause.push(SQL`notification_type = ${notificationType}`)
-    }
-
-    let query = SQL`DELETE FROM notification_opt_outs WHERE `.append(whereClause[0])
-    for (const condition of whereClause.slice(1)) {
-      query = query.append(' AND ').append(condition)
-    }
-
+    const query = SQL`
+      DELETE FROM notification_opt_outs
+      WHERE address = ${address.toLowerCase()}
+        AND entity = ${entity}
+        AND entity_id = ${entityId}
+    `
     await pg.query(query)
+  }
+
+  async function hasNotificationOptOut(
+    address: EthAddress,
+    entity: NotificationEntity,
+    entityId: string
+  ): Promise<boolean> {
+    const query = SQL`
+      SELECT 1
+      FROM notification_opt_outs
+      WHERE address = ${address.toLowerCase()}
+        AND entity = ${entity}
+        AND entity_id = ${entityId}
+      LIMIT 1
+    `
+    const result = await pg.query(query)
+    return result.rowCount > 0
   }
 
   return {
@@ -511,7 +565,8 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     findNotificationOptOutsForAddresses,
     saveNotificationOptOuts,
     saveNotificationOptOut,
-    deleteNotificationOptOut
+    deleteNotificationOptOut,
+    hasNotificationOptOut
   }
 }
 
