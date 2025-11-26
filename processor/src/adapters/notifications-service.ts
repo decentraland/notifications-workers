@@ -1,5 +1,14 @@
 import { AppComponents } from '../types'
-import { NotificationRecord, SubscriptionDb } from '@notifications/common'
+import {
+  ENTITY_METADATA_CONFIGS,
+  EntityMetadataConfig,
+  NotificationEntity,
+  NotificationOptOutDb,
+  NotificationRecord,
+  SubscriptionDb
+} from '@notifications/common'
+
+const ENTITY_METADATA_ENTRIES = Object.entries(ENTITY_METADATA_CONFIGS) as [NotificationEntity, EntityMetadataConfig][]
 
 export type INotificationsService = {
   saveNotifications(notification: NotificationRecord[]): Promise<void>
@@ -15,12 +24,86 @@ export async function createNotificationsService(
   const logger = logs.getLogger('notifications-service')
   const env = await config.requireString('ENV')
 
+  async function filterNotificationsByOptOuts(notifications: NotificationRecord[]): Promise<NotificationRecord[]> {
+    if (notifications.length === 0) {
+      return []
+    }
+
+    const normalizedAddresses = notifications
+      .map((notification) => notification.address?.toLowerCase())
+      .filter((address): address is string => Boolean(address))
+
+    if (normalizedAddresses.length === 0) {
+      return notifications
+    }
+
+    const uniqueAddresses = [...new Set(normalizedAddresses)]
+    const optOutRows = await db.findNotificationOptOutsForAddresses(uniqueAddresses)
+
+    if (optOutRows.length === 0) {
+      return notifications
+    }
+
+    const optOutsByAddress = optOutRows.reduce((map, optOut) => {
+      const address = optOut.address.toLowerCase()
+      const existing = map.get(address)
+      if (existing) {
+        existing.push(optOut)
+      } else {
+        map.set(address, [optOut])
+      }
+      return map
+    }, new Map<string, NotificationOptOutDb[]>())
+
+    return notifications.filter((notification) => {
+      const address = notification.address?.toLowerCase()
+      if (!address) {
+        return true
+      }
+
+      const optOuts = optOutsByAddress.get(address)
+      if (!optOuts || optOuts.length === 0) {
+        return true
+      }
+
+      return !hasOptOutForNotification(notification, optOuts)
+    })
+  }
+
+  function hasOptOutForNotification(notification: NotificationRecord, optOuts: NotificationOptOutDb[]): boolean {
+    const metadata = (notification.metadata ?? {}) as Record<string, unknown>
+    for (const [entity, config] of ENTITY_METADATA_ENTRIES) {
+      if (!config.notificationTypes.includes(notification.type)) {
+        continue
+      }
+
+      for (const metadataKey of config.metadataKeys) {
+        const metadataValue = metadata[metadataKey]
+        if (metadataValue === undefined || metadataValue === null) {
+          continue
+        }
+
+        const entityId = String(metadataValue)
+        if (optOuts.some((optOut) => optOut.entity === entity && optOut.entity_id === entityId)) {
+          return true
+        }
+      }
+    }
+
+    return false
+  }
+
   async function saveNotifications(notifications: NotificationRecord[]): Promise<void> {
     if (notifications.length === 0) {
       return
     }
 
-    const result = await db.insertNotifications(notifications)
+    const filteredNotifications = await filterNotificationsByOptOuts(notifications)
+    if (filteredNotifications.length === 0) {
+      return
+    }
+
+    const result = await db.insertNotifications(filteredNotifications)
     logger.info(
       `Inserted ${result.inserted.length} new notifications and updated ${result.updated.length} existing ones.`
     )

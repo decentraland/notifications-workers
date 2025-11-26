@@ -4,7 +4,7 @@ import { createNotificationsService, INotificationsService } from '../../../src/
 import { createDbMock } from '../../mocks/db-mock'
 import { createLogComponent } from '@well-known-components/logger'
 import { ILoggerComponent } from '@well-known-components/interfaces'
-import { DbComponent, ISendGridClient } from '@notifications/common'
+import { DbComponent, ISendGridClient, NotificationEntity, NotificationOptOutDb } from '@notifications/common'
 import { createSubscriptionsService } from '../../../src/adapters/subscriptions-service'
 import { createSendGridClientMock } from '../../mocks/sendgrid-mock'
 import { NotificationType } from '@dcl/schemas'
@@ -65,5 +65,40 @@ describe('notifications service tests', () => {
     await notificationsService.saveNotifications([])
 
     expect(db.insertNotifications).not.toHaveBeenCalled()
+  })
+
+  it('filters notifications that have matching opt-outs', async () => {
+    const address = '0x69D30b1875d39E13A01AF73CCFED6d84839e84f2'
+    const communityNotification = {
+      type: NotificationType.COMMUNITY_POST_ADDED,
+      address,
+      metadata: {
+        communityId: 'community-123'
+      },
+      timestamp: Date.now(),
+      eventKey: makeid(10)
+    }
+    const otherNotification = {
+      type: NotificationType.WORLDS_ACCESS_RESTORED,
+      address,
+      metadata: {},
+      timestamp: Date.now(),
+      eventKey: makeid(10)
+    }
+
+    const optOutRow: NotificationOptOutDb = {
+      address: address.toLowerCase(),
+      entity: NotificationEntity.Community,
+      entity_id: 'community-123',
+      created_at: Date.now(),
+      updated_at: Date.now()
+    }
+
+    ;(db.findNotificationOptOutsForAddresses as jest.Mock).mockResolvedValue([optOutRow])
+    ;(db.insertNotifications as jest.Mock).mockResolvedValue({ inserted: [otherNotification], updated: [] })
+
+    await notificationsService.saveNotifications([communityNotification, otherNotification])
+
+    expect(db.insertNotifications).toHaveBeenCalledWith([otherNotification])
   })
 })

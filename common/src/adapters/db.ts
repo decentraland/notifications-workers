@@ -10,7 +10,6 @@ import {
 import { IPgComponent } from '@well-known-components/pg-component'
 import { defaultSubscription } from '../subscriptions'
 import { Email, EthAddress, NotificationChannelType, NotificationType, SubscriptionDetails } from '@dcl/schemas'
-import { ENTITY_METADATA_CONFIGS, EntityMetadataConfig } from '../entities'
 
 export type DbComponents = {
   pg: IPgComponent
@@ -46,56 +45,7 @@ export type DbComponent = {
   hasNotificationOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<boolean>
 }
 
-type EntityMetadataConfigMap = Partial<Record<NotificationEntity, EntityMetadataConfig>>
-
-function buildOptOutFilterClause(configs: EntityMetadataConfigMap): string | null {
-  const segments: string[] = []
-
-  for (const [entity, config] of Object.entries(configs)) {
-    if (!config) {
-      continue
-    }
-    if (!config.metadataKeys.length) {
-      continue
-    }
-
-    const metadataConditions = config.metadataKeys
-      .map((metadataKey) => `jsonb_extract_path_text(nti.metadata, '${escapeLiteral(metadataKey)}') = opt.entity_id`)
-      .join(' OR ')
-
-    if (!metadataConditions) {
-      continue
-    }
-
-    const parts: string[] = []
-    parts.push(`opt.entity = '${escapeLiteral(entity)}'`)
-
-    if (config.notificationTypes.length > 0) {
-      const typeList = config.notificationTypes.map((type) => `'${escapeLiteral(type)}'`).join(', ')
-      parts.push(`nti.type IN (${typeList})`)
-    }
-
-    parts.push(`(${metadataConditions})`)
-    segments.push(parts.join(' AND '))
-  }
-
-  if (!segments.length) {
-    return null
-  }
-
-  return segments.join(' OR ')
-}
-
-function escapeLiteral(value: string): string {
-  return value.replace(/'/g, "''")
-}
-
-export function createDbComponent(
-  { pg }: Pick<DbComponents, 'pg'>,
-  entityMetadataConfigs: EntityMetadataConfigMap = ENTITY_METADATA_CONFIGS
-): DbComponent {
-  const optOutFilterClause = buildOptOutFilterClause(entityMetadataConfigs)
-
+export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent {
   async function findSubscription(address: EthAddress): Promise<SubscriptionDb> {
     return (await findSubscriptions([address]))[0]
   }
@@ -378,17 +328,6 @@ export function createDbComponent(
       }
       return SQL`(${n.eventKey}, ${n.type}, ${n.address.toLowerCase()}, ${JSON.stringify(n.metadata)}::jsonb, ${n.timestamp}::bigint)`
     })
-    const optOutCondition: SQLStatement = optOutFilterClause
-      ? SQL`
-          NOT EXISTS (
-            SELECT 1
-            FROM notification_opt_outs opt
-            WHERE opt.address = nti.address AND (
-        `.append(optOutFilterClause).append(`
-            )
-          )
-        `)
-      : SQL`TRUE`
 
     const query = SQL`
       WITH notifications_to_insert AS (
@@ -396,9 +335,8 @@ export function createDbComponent(
     for (let i = 1; i < notificationValues.length; i++) {
       query.append(SQL`, `).append(notificationValues[i])
     }
-    query
-      .append(
-        SQL`) AS t(event_key, type, address, metadata, timestamp)
+    query.append(
+      SQL`) AS t(event_key, type, address, metadata, timestamp)
       )
       INSERT INTO notifications (event_key, type, address, metadata, timestamp, read_at, created_at, updated_at)
       SELECT 
@@ -411,19 +349,12 @@ export function createDbComponent(
         ${now},
         ${now}
       FROM notifications_to_insert nti
-      WHERE nti.address IS NULL
-      OR `
-      )
-      .append(optOutCondition)
-
-    query.append(
-      SQL`
-        ON CONFLICT (event_key, type, address) DO UPDATE
-          SET metadata = EXCLUDED.metadata,
-              timestamp = EXCLUDED.timestamp,
-              updated_at = ${now}
-        RETURNING id, event_key, type, address, xmax
-      `
+      ON CONFLICT (event_key, type, address) DO UPDATE
+        SET metadata = EXCLUDED.metadata,
+            timestamp = EXCLUDED.timestamp,
+            updated_at = ${now}
+      RETURNING id, event_key, type, address, xmax
+    `
     )
 
     const result = await pg.query<{
