@@ -150,7 +150,7 @@ export async function createEventParser({
             timestamp: event.timestamp,
             metadata: {
               senderAddress: event.metadata.senderAddress,
-              receiverAddress: event.metadata.receiverAddress
+              receiverAddress: event.metadata.receiverAddress,
               tokenUri: event.metadata.tokenUri
             }
           }
