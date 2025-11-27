@@ -1,14 +1,5 @@
 import { AppComponents } from '../types'
-import {
-  ENTITY_METADATA_CONFIGS,
-  EntityMetadataConfig,
-  NotificationEntity,
-  NotificationOptOutDb,
-  NotificationRecord,
-  SubscriptionDb
-} from '@notifications/common'
-
-const ENTITY_METADATA_ENTRIES = Object.entries(ENTITY_METADATA_CONFIGS) as [NotificationEntity, EntityMetadataConfig][]
+import { NotificationOptOutDb, NotificationRecord, SubscriptionDb } from '@notifications/common'
 
 export type INotificationsService = {
   saveNotifications(notification: NotificationRecord[]): Promise<void>
@@ -36,9 +27,6 @@ export async function createNotificationsService(
       return acc
     }, {})
 
-  const configurationForType = (type: NotificationRecord['type']) =>
-    ENTITY_METADATA_ENTRIES.filter(([, config]) => config.notificationTypes.includes(type))
-
   const shouldKeepNotification = (
     notification: NotificationRecord,
     optOutsByAddress: Record<string, NotificationOptOutDb[]>
@@ -49,20 +37,12 @@ export async function createNotificationsService(
       return true
     }
 
-    const metadata = (notification.metadata ?? {}) as Record<string, unknown>
-    const configs = configurationForType(notification.type)
+    const entity = notification.entity
+    if (!entity || !entity.type || !entity.id) {
+      return true
+    }
 
-    return configs.every(([entity, config]) => {
-      return !config.metadataKeys.some((metadataKey) => {
-        const metadataValue = metadata[metadataKey]
-        if (metadataValue === undefined || metadataValue === null) {
-          return false
-        }
-
-        const entityId = String(metadataValue)
-        return optOuts.some((optOut) => optOut.entity === entity && optOut.entity_id === entityId)
-      })
-    })
+    return !optOuts.some((optOut) => optOut.entity === entity.type && optOut.entity_id === entity.id)
   }
 
   async function filterNotificationsByOptOuts(notifications: NotificationRecord[]): Promise<NotificationRecord[]> {

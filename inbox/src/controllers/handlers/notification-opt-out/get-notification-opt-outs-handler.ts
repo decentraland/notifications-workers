@@ -1,6 +1,6 @@
 import { HandlerContextWithPath } from '../../../types'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
-import { NotificationEntity } from '@notifications/common'
+import { NotificationEntityType } from '@notifications/common'
 import { InvalidRequestError } from '@dcl/platform-server-commons'
 
 export async function getNotificationOptOutsHandler(
@@ -12,13 +12,17 @@ export async function getNotificationOptOutsHandler(
   const address = context.verification!.auth
   const { entity, entityId } = context.params
 
-  if (!Object.values(NotificationEntity).includes(entity as NotificationEntity)) {
+  if (!Object.values(NotificationEntityType).includes(entity as NotificationEntityType)) {
     throw new InvalidRequestError('Invalid entity')
   }
 
-  const notificationEntity = entity as NotificationEntity
+  const notificationEntityType = entity as NotificationEntityType
 
-  const optedOut = await context.components.notificationOptOutsManager.hasOptOut(address, notificationEntity, entityId)
+  const optedOut = await context.components.notificationOptOutsManager.hasOptOut(
+    address,
+    notificationEntityType,
+    entityId
+  )
 
   return {
     body: {

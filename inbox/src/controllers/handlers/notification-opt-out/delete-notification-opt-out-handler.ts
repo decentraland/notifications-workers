@@ -1,6 +1,6 @@
 import { HandlerContextWithPath } from '../../../types'
 import { IHttpServerComponent } from '@well-known-components/interfaces'
-import { NotificationEntity } from '@notifications/common'
+import { NotificationEntityType } from '@notifications/common'
 
 export async function deleteNotificationOptOutHandler(
   context: Pick<
@@ -10,7 +10,7 @@ export async function deleteNotificationOptOutHandler(
 ): Promise<IHttpServerComponent.IResponse> {
   const logger = context.components.logs.getLogger('delete-notification-opt-out-handler')
   const address = context.verification!.auth
-  const { entity, entityId } = context.params as { entity: NotificationEntity; entityId: string }
+  const { entity, entityId } = context.params as { entity: NotificationEntityType; entityId: string }
 
   await context.components.notificationOptOutsManager.deleteOptOut(address, entity, entityId)
 

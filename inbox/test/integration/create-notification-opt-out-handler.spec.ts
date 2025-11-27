@@ -1,6 +1,6 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest } from '../utils'
-import { NotificationEntity } from '@notifications/common'
+import { NotificationEntityType } from '@notifications/common'
 
 const manageSubscriptionMetadata = {
   signer: 'dcl:account',
@@ -16,7 +16,7 @@ test('POST /subscription/opt-outs', function ({ components }) {
 
   describe('when request is valid', () => {
     const body = {
-      entity: NotificationEntity.Community,
+      entity: NotificationEntityType.Community,
       entityId: 'community-123'
     }
 

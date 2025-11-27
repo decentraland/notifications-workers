@@ -1,6 +1,6 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest } from '../utils'
-import { NotificationEntity } from '@notifications/common'
+import { NotificationEntityType } from '@notifications/common'
 
 const manageSubscriptionMetadata = {
   signer: 'dcl:account',
@@ -9,7 +9,7 @@ const manageSubscriptionMetadata = {
 
 test('DELETE /subscription/opt-outs/:entity/:entityId', function ({ components }) {
   let identity: Identity
-  const entity = NotificationEntity.Community
+  const entity = NotificationEntityType.Community
   const entityId = 'community-123'
 
   beforeEach(async () => {

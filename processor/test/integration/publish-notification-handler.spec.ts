@@ -3,7 +3,7 @@ import { test } from '../components'
 import { getIdentity, Identity } from '../utils'
 import { NotificationType } from '@dcl/schemas'
 import { randomEmail, randomSubscriptionDetails } from '@notifications/inbox/test/utils'
-import { NotificationEntity, NotificationRecord } from '@notifications/common'
+import { NotificationEntityType, NotificationRecord } from '@notifications/common'
 
 test('POST /notifications', function ({ components, stubComponents }) {
   let identity: Identity
@@ -212,7 +212,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
         await components.db.saveNotificationOptOuts([
           {
             address: identity.realAccount.address.toLowerCase(),
-            entity: NotificationEntity.Community,
+            entity: NotificationEntityType.Community,
             entity_id: metadataValue,
             created_at: Date.now(),
             updated_at: Date.now()
@@ -223,6 +223,10 @@ test('POST /notifications', function ({ components, stubComponents }) {
           type: notificationType,
           address: identity.realAccount.address,
           metadata: { [metadataKey]: metadataValue },
+          entity: {
+            type: NotificationEntityType.Community,
+            id: metadataValue
+          },
           timestamp: Date.now(),
           eventKey: '123'
         }
@@ -255,7 +259,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
         await components.db.saveNotificationOptOuts([
           {
             address: identity.realAccount.address.toLowerCase(),
-            entity: NotificationEntity.Community,
+            entity: NotificationEntityType.Community,
             entity_id: optOutMetadataValue,
             created_at: Date.now(),
             updated_at: Date.now()
@@ -266,6 +270,10 @@ test('POST /notifications', function ({ components, stubComponents }) {
           type: notificationType,
           address: identity.realAccount.address,
           metadata: { [metadataKey]: notificationMetadataValue },
+          entity: {
+            type: NotificationEntityType.Community,
+            id: notificationMetadataValue
+          },
           timestamp: Date.now(),
           eventKey: '456'
         }

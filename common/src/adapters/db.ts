@@ -20,7 +20,7 @@ export type UpsertResult<T> = {
   updated: T[]
 }
 
-import { NotificationEntity } from '../types'
+import { NotificationEntityType } from '../types'
 
 export type DbComponent = {
   findSubscription(address: EthAddress): Promise<SubscriptionDb>
@@ -39,8 +39,8 @@ export type DbComponent = {
   insertNotifications(notificationRecord: NotificationRecord[]): Promise<UpsertResult<NotificationRecord>>
   findNotificationOptOutsForAddresses(addresses: string[]): Promise<NotificationOptOutDb[]>
   saveNotificationOptOuts(optOuts: NotificationOptOutDb[]): Promise<void>
-  deleteNotificationOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<void>
-  hasNotificationOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<boolean>
+  deleteNotificationOptOut(address: EthAddress, entity: NotificationEntityType, entityId: string): Promise<void>
+  hasNotificationOptOut(address: EthAddress, entity: NotificationEntityType, entityId: string): Promise<boolean>
 }
 
 export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent {
@@ -431,7 +431,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
 
   async function deleteNotificationOptOut(
     address: EthAddress,
-    entity: NotificationEntity,
+    entity: NotificationEntityType,
     entityId: string
   ): Promise<void> {
     const query = SQL`
@@ -445,7 +445,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
 
   async function hasNotificationOptOut(
     address: EthAddress,
-    entity: NotificationEntity,
+    entity: NotificationEntityType,
     entityId: string
   ): Promise<boolean> {
     const query = SQL`

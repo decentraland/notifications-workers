@@ -22,13 +22,9 @@ export type UnconfirmedEmailDb = {
   updated_at: number
 }
 
-export enum NotificationEntity {
-  Community = 'community'
-}
-
 export type NotificationOptOutDb = {
   address: string
-  entity: NotificationEntity
+  entity: NotificationEntityType
   entity_id: string
   created_at: number
   updated_at: number
@@ -48,6 +44,15 @@ export type SubscriptionDb = Subscription & {
   updated_at: number
 }
 
+export enum NotificationEntityType {
+  Community = 'community'
+}
+
+export type NotificationEntity = {
+  id: string
+  type: NotificationEntityType
+}
+
 export type NotificationRecord = {
   id?: string
   eventKey: string
@@ -55,6 +60,7 @@ export type NotificationRecord = {
   address: string
   metadata: any
   timestamp: number
+  entity?: NotificationEntity
 }
 
 export type Email = {

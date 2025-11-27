@@ -1,5 +1,5 @@
 import { createNotificationOptOutsManager, INotificationOptOutsManager } from '../../../src/logic/notification-opt-out'
-import { DbComponent, NotificationEntity } from '@notifications/common'
+import { DbComponent, NotificationEntity, NotificationEntityType } from '@notifications/common'
 import { ILoggerComponent } from '@well-known-components/interfaces'
 
 describe('Notification Opt-Outs Manager', () => {
@@ -39,7 +39,7 @@ describe('Notification Opt-Outs Manager', () => {
 
   describe('when creating an opt-out', () => {
     const address = '0x1234567890123456789012345678901234567890'
-    const entity = NotificationEntity.Community
+    const entity = NotificationEntityType.Community
     const entityId = 'community-123'
     let result: Awaited<ReturnType<INotificationOptOutsManager['createOptOut']>>
 
@@ -70,7 +70,7 @@ describe('Notification Opt-Outs Manager', () => {
 
   describe('when deleting an opt-out', () => {
     const address = '0x1234567890123456789012345678901234567890'
-    const entity = NotificationEntity.Community
+    const entity = NotificationEntityType.Community
     const entityId = 'community-123'
 
     beforeEach(async () => {
@@ -86,7 +86,7 @@ describe('Notification Opt-Outs Manager', () => {
 
   describe('when checking for an opt-out', () => {
     const address = '0x1234567890123456789012345678901234567890'
-    const entity = NotificationEntity.Community
+    const entity = NotificationEntityType.Community
     const entityId = 'community-123'
     let result: boolean
 
