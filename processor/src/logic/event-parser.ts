@@ -1,4 +1,4 @@
-import { NotificationEntityType, NotificationRecord } from '@notifications/common'
+import { NotificationScope, NotificationRecord } from '@notifications/common'
 import { EthAddress, Event, Events, NotificationType } from '@dcl/schemas'
 import { AppComponents, IEventParser } from '../types'
 import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
@@ -401,9 +401,9 @@ export async function createEventParser({
             address: memberAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
-            entity: {
-              type: NotificationEntityType.Community,
-              id: event.metadata.id
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.id
             },
             metadata: {
               ...event.metadata,
@@ -426,9 +426,9 @@ export async function createEventParser({
             address: event.metadata.memberAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
-            entity: {
-              type: NotificationEntityType.Community,
-              id: event.metadata.id
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.id
             },
             metadata: {
               ...event.metadata,
@@ -448,9 +448,9 @@ export async function createEventParser({
             address: ownerAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
-            entity: {
-              type: NotificationEntityType.Community,
-              id: id
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: id
             },
             metadata: {
               communityId: id,
@@ -466,9 +466,9 @@ export async function createEventParser({
             address: event.metadata.memberAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
-            entity: {
-              type: NotificationEntityType.Community,
-              id: event.metadata.communityId
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
             },
             metadata: {
               ...event.metadata
@@ -482,9 +482,9 @@ export async function createEventParser({
             address: address,
             eventKey: event.key,
             timestamp: event.timestamp,
-            entity: {
-              type: NotificationEntityType.Community,
-              id: event.metadata.communityId
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
             },
             metadata: {
               ...event.metadata,
@@ -499,9 +499,9 @@ export async function createEventParser({
             address: event.metadata.memberAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
-            entity: {
-              type: NotificationEntityType.Community,
-              id: event.metadata.communityId
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
             },
             metadata: {
               ...event.metadata,
@@ -515,9 +515,9 @@ export async function createEventParser({
           address,
           eventKey: event.key,
           timestamp: event.timestamp,
-          entity: {
-            type: NotificationEntityType.Community,
-            id: event.metadata.communityId
+          optOutScope: {
+            scope: NotificationScope.Community,
+            scopeId: event.metadata.communityId
           },
           metadata: {
             communityId: event.metadata.communityId,
@@ -534,9 +534,9 @@ export async function createEventParser({
             address: event.metadata.newOwnerAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
-            entity: {
-              type: NotificationEntityType.Community,
-              id: event.metadata.communityId
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
             },
             metadata: {
               communityId: event.metadata.communityId,
@@ -566,9 +566,9 @@ export async function createEventParser({
             address: event.metadata.attendee,
             eventKey: event.key,
             timestamp: event.timestamp,
-            entity: {
-              type: NotificationEntityType.Community,
-              id: event.metadata.communityId
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
             },
             metadata: {
               title: event.metadata.title,
@@ -588,9 +588,9 @@ export async function createEventParser({
             address: event.metadata.attendee,
             eventKey: event.key,
             timestamp: event.timestamp,
-            /* entity: {
-              type: NotificationEntityType.Community,
-              id: event.metadata.communityId
+            /* optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
             }, */
             metadata: {
               title: event.metadata.title,

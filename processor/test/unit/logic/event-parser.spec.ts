@@ -4,7 +4,7 @@ import { ILoggerComponent } from '@well-known-components/interfaces'
 import { createEventParser } from '../../../src/logic/event-parser'
 import { IEventParser } from '../../../src/types'
 import { Events, NotificationType } from '@dcl/schemas'
-import { NotificationEntityType } from '@notifications/common'
+import { NotificationScope } from '@notifications/common'
 
 describe('when parsing event notifications', () => {
   let config: any
@@ -53,9 +53,9 @@ describe('when parsing event notifications', () => {
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'event-123',
         timestamp: fixedTimestamp,
-        entity: {
-          type: NotificationEntityType.Community,
-          id: 'community-123'
+        optOutScope: {
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
         },
         metadata: {
           title: 'Community Event Added',
@@ -100,6 +100,10 @@ describe('when parsing event notifications', () => {
         address: '0x1234567890123456789012345678901234567890',
         eventKey: 'event-123',
         timestamp: fixedTimestamp,
+        /* optOutScope: {
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
+        }, */
         metadata: {
           title: 'Event started',
           description: 'The event Test Event has begun!',

@@ -37,12 +37,12 @@ export async function createNotificationsService(
       return true
     }
 
-    const entity = notification.entity
-    if (!entity || !entity.type || !entity.id) {
+    const optOutScope = notification.optOutScope
+    if (!optOutScope || !optOutScope.scope || !optOutScope.scopeId) {
       return true
     }
 
-    return !optOuts.some((optOut) => optOut.entity === entity.type && optOut.entity_id === entity.id)
+    return !optOuts.some((optOut) => optOut.scope === optOutScope.scope && optOut.scope_id === optOutScope.scopeId)
   }
 
   async function filterNotificationsByOptOuts(notifications: NotificationRecord[]): Promise<NotificationRecord[]> {

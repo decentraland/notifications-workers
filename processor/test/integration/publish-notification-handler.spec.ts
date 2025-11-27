@@ -3,7 +3,7 @@ import { test } from '../components'
 import { getIdentity, Identity } from '../utils'
 import { NotificationType } from '@dcl/schemas'
 import { randomEmail, randomSubscriptionDetails } from '@notifications/inbox/test/utils'
-import { NotificationEntityType, NotificationRecord } from '@notifications/common'
+import { NotificationRecord, NotificationScope } from '@notifications/common'
 
 test('POST /notifications', function ({ components, stubComponents }) {
   let identity: Identity
@@ -209,23 +209,21 @@ test('POST /notifications', function ({ components, stubComponents }) {
       const notificationType = NotificationType.COMMUNITY_POST_ADDED
       let notification: any
       beforeEach(async () => {
-        await components.db.saveNotificationOptOuts([
-          {
-            address: identity.realAccount.address.toLowerCase(),
-            entity: NotificationEntityType.Community,
-            entity_id: metadataValue,
-            created_at: Date.now(),
-            updated_at: Date.now()
-          }
-        ])
+        await components.db.saveNotificationOptOut({
+          address: identity.realAccount.address.toLowerCase(),
+          scope: NotificationScope.Community,
+          scope_id: metadataValue,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        })
 
         notification = {
           type: notificationType,
           address: identity.realAccount.address,
           metadata: { [metadataKey]: metadataValue },
-          entity: {
-            type: NotificationEntityType.Community,
-            id: metadataValue
+          optOutScope: {
+            scope: NotificationScope.Community,
+            scopeId: metadataValue
           },
           timestamp: Date.now(),
           eventKey: '123'
@@ -256,23 +254,21 @@ test('POST /notifications', function ({ components, stubComponents }) {
       const notificationType = NotificationType.COMMUNITY_POST_ADDED
       let notification: any
       beforeEach(async () => {
-        await components.db.saveNotificationOptOuts([
-          {
-            address: identity.realAccount.address.toLowerCase(),
-            entity: NotificationEntityType.Community,
-            entity_id: optOutMetadataValue,
-            created_at: Date.now(),
-            updated_at: Date.now()
-          }
-        ])
+        await components.db.saveNotificationOptOut({
+          address: identity.realAccount.address.toLowerCase(),
+          scope: NotificationScope.Community,
+          scope_id: optOutMetadataValue,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        })
 
         notification = {
           type: notificationType,
           address: identity.realAccount.address,
           metadata: { [metadataKey]: notificationMetadataValue },
-          entity: {
-            type: NotificationEntityType.Community,
-            id: notificationMetadataValue
+          optOutScope: {
+            scope: NotificationScope.Community,
+            scopeId: notificationMetadataValue
           },
           timestamp: Date.now(),
           eventKey: '456'

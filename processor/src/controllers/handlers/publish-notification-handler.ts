@@ -2,7 +2,7 @@ import { HandlerContextWithPath } from '../../types'
 import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
 import Joi from 'joi'
 import { NotificationType } from '@dcl/schemas'
-import { NotificationEntityType, NotificationRecord } from '@notifications/common'
+import { NotificationScope, NotificationRecord } from '@notifications/common'
 
 const schema = Joi.array().items(
   Joi.object().keys({
@@ -16,12 +16,12 @@ const schema = Joi.array().items(
     eventKey: Joi.string().required(),
     metadata: Joi.object().required(),
     timestamp: Joi.number().integer().required().greater(1672531200000), // 2023-01-01T00:00:00Z
-    entity: Joi.object()
+    optOutScope: Joi.object()
       .keys({
-        type: Joi.string()
-          .valid(...Object.values(NotificationEntityType))
+        scope: Joi.string()
+          .valid(...Object.values(NotificationScope))
           .required(),
-        id: Joi.string().required()
+        scopeId: Joi.string().required()
       })
       .optional()
   })

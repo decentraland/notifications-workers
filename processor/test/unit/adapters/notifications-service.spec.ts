@@ -4,7 +4,7 @@ import { createNotificationsService, INotificationsService } from '../../../src/
 import { createDbMock } from '../../mocks/db-mock'
 import { createLogComponent } from '@well-known-components/logger'
 import { ILoggerComponent } from '@well-known-components/interfaces'
-import { DbComponent, ISendGridClient, NotificationEntityType, NotificationOptOutDb } from '@notifications/common'
+import { DbComponent, ISendGridClient, NotificationOptOutDb, NotificationScope } from '@notifications/common'
 import { createSubscriptionsService } from '../../../src/adapters/subscriptions-service'
 import { createSendGridClientMock } from '../../mocks/sendgrid-mock'
 import { NotificationType } from '@dcl/schemas'
@@ -83,9 +83,9 @@ describe('notifications service tests', () => {
       metadata: {
         communityId: 'community-123'
       },
-      entity: {
-        type: NotificationEntityType.Community,
-        id: 'community-123'
+      optOutScope: {
+        scope: NotificationScope.Community,
+        scopeId: 'community-123'
       },
       timestamp: Date.now(),
       eventKey: makeid(10)
@@ -101,8 +101,8 @@ describe('notifications service tests', () => {
     beforeEach(async () => {
       const optOutRow: NotificationOptOutDb = {
         address: address.toLowerCase(),
-        entity: NotificationEntityType.Community,
-        entity_id: 'community-123',
+        scope: NotificationScope.Community,
+        scope_id: 'community-123',
         created_at: Date.now(),
         updated_at: Date.now()
       }
@@ -124,9 +124,9 @@ describe('notifications service tests', () => {
       metadata: {
         communityId: 'community-123'
       },
-      entity: {
-        type: NotificationEntityType.Community,
-        id: 'community-123'
+      optOutScope: {
+        scope: NotificationScope.Community,
+        scopeId: 'community-123'
       },
       timestamp: Date.now(),
       eventKey: makeid(10)
@@ -142,8 +142,8 @@ describe('notifications service tests', () => {
     beforeEach(async () => {
       const optOutRow: NotificationOptOutDb = {
         address: address.toLowerCase(),
-        entity: NotificationEntityType.Community,
-        entity_id: 'community-123',
+        scope: NotificationScope.Community,
+        scope_id: 'community-123',
         created_at: Date.now(),
         updated_at: Date.now()
       }
@@ -171,8 +171,8 @@ describe('notifications service tests', () => {
     beforeEach(async () => {
       const optOutRow: NotificationOptOutDb = {
         address: address.toLowerCase(),
-        entity: NotificationEntityType.Community,
-        entity_id: 'community-123',
+        scope: NotificationScope.Community,
+        scope_id: 'community-123',
         created_at: Date.now(),
         updated_at: Date.now()
       }

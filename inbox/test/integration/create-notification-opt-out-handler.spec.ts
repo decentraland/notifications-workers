@@ -1,6 +1,6 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest } from '../utils'
-import { NotificationEntityType } from '@notifications/common'
+import { NotificationScope } from '@notifications/common'
 
 const manageSubscriptionMetadata = {
   signer: 'dcl:account',
@@ -16,11 +16,11 @@ test('POST /subscription/opt-outs', function ({ components }) {
 
   describe('when request is valid', () => {
     const body = {
-      entity: NotificationEntityType.Community,
-      entityId: 'community-123'
+      scope: NotificationScope.Community,
+      scopeId: 'community-123'
     }
 
-    it('creates a single opt-out row for the entity', async () => {
+    it('creates a single opt-out row for the scope', async () => {
       const response = await makeRequest(
         components.localFetch,
         '/subscription/opt-outs',
@@ -35,8 +35,8 @@ test('POST /subscription/opt-outs', function ({ components }) {
 
       expect(response.status).toBe(201)
       expect(responseBody).toEqual({
-        entity: body.entity,
-        entityId: body.entityId,
+        scope: body.scope,
+        scopeId: body.scopeId,
         optedOut: true
       })
     })
@@ -51,7 +51,7 @@ test('POST /subscription/opt-outs', function ({ components }) {
           identity,
           {
             method: 'POST',
-            body: JSON.stringify({ entityId: 'community-123' })
+            body: JSON.stringify({ scopeId: 'community-123' })
           },
           manageSubscriptionMetadata
         )
@@ -60,7 +60,7 @@ test('POST /subscription/opt-outs', function ({ components }) {
       })
     })
 
-    describe('when entity is unknown', () => {
+    describe('when scope is unknown', () => {
       it('returns 400', async () => {
         const response = await makeRequest(
           components.localFetch,
@@ -69,8 +69,8 @@ test('POST /subscription/opt-outs', function ({ components }) {
           {
             method: 'POST',
             body: JSON.stringify({
-              entity: 'unknown',
-              entityId: 'community-456'
+              scope: 'unknown',
+              scopeId: 'community-456'
             })
           },
           manageSubscriptionMetadata

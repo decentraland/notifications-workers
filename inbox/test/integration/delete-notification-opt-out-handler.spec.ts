@@ -1,38 +1,36 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest } from '../utils'
-import { NotificationEntityType } from '@notifications/common'
+import { NotificationScope } from '@notifications/common'
 
 const manageSubscriptionMetadata = {
   signer: 'dcl:account',
   intent: 'dcl:account:manage-subscription'
 }
 
-test('DELETE /subscription/opt-outs/:entity/:entityId', function ({ components }) {
+test('DELETE /subscription/opt-outs/:scope/:scopeId', function ({ components }) {
   let identity: Identity
-  const entity = NotificationEntityType.Community
-  const entityId = 'community-123'
+  const scope = NotificationScope.Community
+  const scopeId = 'community-123'
 
   beforeEach(async () => {
     identity = await getIdentity()
   })
 
-  describe('when deleting all opt-outs for the entity', () => {
+  describe('when deleting all opt-outs for the scope', () => {
     beforeEach(async () => {
-      await components.db.saveNotificationOptOuts([
-        {
-          address: identity.realAccount.address.toLowerCase(),
-          entity,
-          entity_id: entityId,
-          created_at: Date.now(),
-          updated_at: Date.now()
-        }
-      ])
+      await components.db.saveNotificationOptOut({
+        address: identity.realAccount.address.toLowerCase(),
+        scope,
+        scope_id: scopeId,
+        created_at: Date.now(),
+        updated_at: Date.now()
+      })
     })
 
     it('returns 204', async () => {
       const response = await makeRequest(
         components.localFetch,
-        `/subscription/opt-outs/${entity}/${entityId}`,
+        `/subscription/opt-outs/${scope}/${scopeId}`,
         identity,
         {
           method: 'DELETE'
@@ -44,30 +42,30 @@ test('DELETE /subscription/opt-outs/:entity/:entityId', function ({ components }
     })
   })
 
-  describe('when deleting only opt-outs for the requested entityId', () => {
+  describe('when deleting only opt-outs for the requested scopeId', () => {
     beforeEach(async () => {
-      await components.db.saveNotificationOptOuts([
+      ;[
         {
           address: identity.realAccount.address.toLowerCase(),
-          entity,
-          entity_id: entityId,
+          scope,
+          scope_id: scopeId,
           created_at: Date.now(),
           updated_at: Date.now()
         },
         {
           address: identity.realAccount.address.toLowerCase(),
-          entity,
-          entity_id: 'community-456',
+          scope,
+          scope_id: 'community-456',
           created_at: Date.now(),
           updated_at: Date.now()
         }
-      ])
+      ].forEach((optOut) => components.db.saveNotificationOptOut(optOut))
     })
 
     it('returns 204', async () => {
       const response = await makeRequest(
         components.localFetch,
-        `/subscription/opt-outs/${entity}/${entityId}`,
+        `/subscription/opt-outs/${scope}/${scopeId}`,
         identity,
         {
           method: 'DELETE'

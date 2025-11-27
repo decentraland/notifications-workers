@@ -1,21 +1,21 @@
 import { Schema } from 'ajv'
-import { NotificationEntityType } from '@notifications/common'
+import { NotificationScope } from '@notifications/common'
 
 export type CreateNotificationOptOutRequestBody = {
-  entity: NotificationEntityType
-  entityId: string
+  scope: NotificationScope
+  scopeId: string
 }
 
 export const CreateNotificationOptOutSchema: Schema = {
   type: 'object',
-  required: ['entity', 'entityId'],
+  required: ['scope', 'scopeId'],
   additionalProperties: false,
   properties: {
-    entity: {
+    scope: {
       type: 'string',
-      enum: Object.values(NotificationEntityType)
+      enum: Object.values(NotificationScope)
     },
-    entityId: {
+    scopeId: {
       type: 'string',
       minLength: 1
     }
