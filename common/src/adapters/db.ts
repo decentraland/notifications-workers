@@ -315,75 +315,40 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
   async function insertNotifications(
     notificationRecords: NotificationRecord[]
   ): Promise<UpsertResult<NotificationRecord>> {
-    if (notificationRecords.length === 0) {
-      return { inserted: [], updated: [] }
+    const upsertResult: UpsertResult<NotificationRecord> = {
+      inserted: [],
+      updated: []
     }
 
-    const now = Date.now()
-    const notificationValues = notificationRecords.map((n) => {
-      if (!n.address) {
-        return SQL`(${n.eventKey}, ${n.type}, NULL, ${JSON.stringify(n.metadata)}::jsonb, ${n.timestamp}::bigint)`
-      }
-      return SQL`(${n.eventKey}, ${n.type}, ${n.address.toLowerCase()}, ${JSON.stringify(n.metadata)}::jsonb, ${n.timestamp}::bigint)`
-    })
+    // TODO: we could optimize this by batching the inserts and updates together in one query
+    for (const notificationRecord of notificationRecords) {
+      const buildQuery = SQL`
+          INSERT INTO notifications (event_key, type, address, metadata, timestamp, read_at, created_at, updated_at)
+          VALUES (${notificationRecord.eventKey},
+                  ${notificationRecord.type},
+                  ${notificationRecord.address?.toLowerCase() || null},
+                  ${notificationRecord.metadata}::jsonb,
+                  ${notificationRecord.timestamp},
+                  NULL,
+                  ${Date.now()},
+                  ${Date.now()})
+          ON CONFLICT (event_key, type, address) DO UPDATE
+              SET metadata   = ${notificationRecord.metadata}::jsonb,
+                  timestamp  = ${notificationRecord.timestamp},
+                  updated_at = ${Date.now()}
+          RETURNING id, xmax;
+      `
 
-    const query = SQL`
-      WITH notifications_to_insert AS (
-        SELECT * FROM (VALUES `.append(notificationValues[0])
-    for (let i = 1; i < notificationValues.length; i++) {
-      query.append(SQL`, `).append(notificationValues[i])
-    }
-    query.append(
-      SQL`) AS t(event_key, type, address, metadata, timestamp)
-      )
-      INSERT INTO notifications (event_key, type, address, metadata, timestamp, read_at, created_at, updated_at)
-      SELECT 
-        nti.event_key,
-        nti.type,
-        nti.address,
-        nti.metadata,
-        nti.timestamp,
-        NULL,
-        ${now},
-        ${now}
-      FROM notifications_to_insert nti
-      ON CONFLICT (event_key, type, address) DO UPDATE
-        SET metadata = EXCLUDED.metadata,
-            timestamp = EXCLUDED.timestamp,
-            updated_at = ${now}
-      RETURNING id, event_key, type, address, xmax
-    `
-    )
-
-    const result = await pg.query<{
-      id: string
-      event_key: string
-      type: string
-      address: string | null
-      xmax: string
-    }>(query)
-
-    const inserted: NotificationRecord[] = []
-    const updated: NotificationRecord[] = []
-
-    for (const row of result.rows) {
-      const notification = notificationRecords.find(
-        (n) =>
-          n.eventKey === row.event_key &&
-          n.type === row.type &&
-          (n.address?.toLowerCase() || null) === (row.address?.toLowerCase() || null)
-      )
-      if (notification) {
-        notification.id = row.id
-        if (row.xmax === '0') {
-          inserted.push(notification)
-        } else {
-          updated.push(notification)
-        }
+      const result = await pg.query(buildQuery)
+      notificationRecord.id = result.rows[0].id
+      if (result.rows[0].xmax === '0') {
+        upsertResult.inserted.push(notificationRecord)
+      } else {
+        upsertResult.updated.push(notificationRecord)
       }
     }
 
-    return { inserted, updated }
+    return upsertResult
   }
 
   async function findNotificationOptOutsForAddresses(addresses: string[]): Promise<NotificationOptOutDb[]> {
