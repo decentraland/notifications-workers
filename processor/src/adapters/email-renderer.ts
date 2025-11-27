@@ -34,17 +34,20 @@ function loadTemplates() {
 
   return Object.values(EmailableNotificationTypeEnum).reduce(
     (acc: any, notificationType: any) => {
-      const subjectPath = path.join(__dirname, `email-templates/${notificationType}.${TemplatePart.SUBJECT}.handlebars`)
-      const contentPath = path.join(__dirname, `email-templates/${notificationType}.${TemplatePart.CONTENT}.handlebars`)
-
-      // Skip notification types that don't have template files
-      if (!fs.existsSync(subjectPath) || !fs.existsSync(contentPath)) {
-        return acc
-      }
-
       acc[notificationType] = {
-        [TemplatePart.SUBJECT]: handlebars.compile(fs.readFileSync(subjectPath, 'utf8'), { noEscape: true }),
-        [TemplatePart.CONTENT]: handlebars.compile(fs.readFileSync(contentPath, 'utf8'))
+        [TemplatePart.SUBJECT]: handlebars.compile(
+          fs.readFileSync(
+            path.join(__dirname, `email-templates/${notificationType}.${TemplatePart.SUBJECT}.handlebars`),
+            'utf8'
+          ),
+          { noEscape: true }
+        ),
+        [TemplatePart.CONTENT]: handlebars.compile(
+          fs.readFileSync(
+            path.join(__dirname, `email-templates/${notificationType}.${TemplatePart.CONTENT}.handlebars`),
+            'utf8'
+          )
+        )
       }
       return acc
     },
