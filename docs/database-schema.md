@@ -193,7 +193,7 @@ Tracks read status for broadcast notifications (notifications without a specific
 
 ## Table: `notification_opt_outs`
 
-Stores user opt-out configurations scoped to an entity type and identifier.
+Stores user opt-out configurations scoped to a scope type and scope identifier.
 
 ### Columns
 
