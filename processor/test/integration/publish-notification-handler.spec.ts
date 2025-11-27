@@ -130,7 +130,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
         } as unknown as NotificationRecord
       })
 
-      it('rejects invalid notification body', async () => {
+      it('should return 400', async () => {
         const { localFetch } = components
 
         const response = await localFetch.fetch('/notifications', {
@@ -165,7 +165,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
         } as unknown as NotificationRecord
       })
 
-      it('rejects invalid notification type', async () => {
+      it('should return 400', async () => {
         const { localFetch } = components
 
         const response = await localFetch.fetch('/notifications', {
@@ -189,7 +189,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
     })
 
     describe('when api key is missing', () => {
-      it('is protected by the api key', async () => {
+      it('should return 401', async () => {
         const { localFetch } = components
 
         const response = await localFetch.fetch('/notifications', {
