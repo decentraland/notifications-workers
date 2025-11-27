@@ -23,10 +23,6 @@ servers:
     description: Production environment
   - url: https://notifications.decentraland.zone
     description: Development environment
-  - url: http://localhost:5001
-    description: Local Inbox worker (default port)
-  - url: http://localhost:5002
-    description: Local Processor worker (default port)
 security: []
 tags:
   - name: Health
@@ -465,11 +461,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /subscription/opt-outs/{entity}/{entityId}:
+  /subscription/opt-outs/{scope}/{scopeId}:
     get:
       summary: Check notification opt-out status
       description: |
-        Returns whether the authenticated user has opted out from the provided entity and identifier.
+        Returns whether the authenticated user has opted out from the provided scope and scope identifier.
         The user address is extracted from the signed fetch authentication chain.
       operationId: getNotificationOptOutStatus
       tags:
@@ -477,20 +473,20 @@ paths:
       security:
         - SignedFetch: []
       parameters:
-        - name: entity
+        - name: scope
           in: path
           required: true
           schema:
             type: string
             enum: ["community"]
-          description: Entity type for the opt-out
-        - name: entityId
+          description: Scope type for the opt-out
+        - name: scopeId
           in: path
           required: true
           schema:
             type: string
             minLength: 1
-          description: Identifier scoped to the entity (e.g., community ID)
+          description: Identifier scoped to the scope (e.g., community ID)
       responses:
         "200":
           description: Notification opt-out status retrieved successfully
@@ -513,27 +509,27 @@ paths:
     delete:
       summary: Delete notification opt-out
       description: |
-        Removes the opt-out configuration for the specified entity and identifier.
+        Removes the opt-out configuration for the specified scope and scope identifier.
       operationId: deleteNotificationOptOut
       tags:
         - Subscriptions
       security:
         - SignedFetch: []
       parameters:
-        - name: entity
+        - name: scope
           in: path
           required: true
           schema:
             type: string
             enum: ["community"]
-          description: Entity type for the opt-out
-        - name: entityId
+          description: Scope type for the opt-out
+        - name: scopeId
           in: path
           required: true
           schema:
             type: string
             minLength: 1
-          description: Identifier scoped to the entity (e.g., community ID)
+          description: Identifier scoped to the scope (e.g., community ID)
       responses:
         "204":
           description: Notification opt-out deleted successfully
@@ -553,8 +549,8 @@ paths:
     post:
       summary: Create notification opt-out
       description: |
-        Creates an opt-out configuration for the authenticated user based on an entity and identifier pair.
-        Each entity maps to a canonical metadata configuration that determines which notifications are filtered.
+        Creates an opt-out configuration for the authenticated user based on a scope and scope identifier pair.
+        Each scope maps to a canonical metadata configuration that determines which notifications are filtered.
       operationId: createNotificationOptOut
       tags:
         - Subscriptions
@@ -888,34 +884,34 @@ components:
     NotificationOptOut:
       type: object
       properties:
-        entity:
+        scope:
           type: string
           enum: ["community"]
-          description: Entity type targeted by the opt-out
-        entityId:
+          description: Scope type targeted by the opt-out
+        scopeId:
           type: string
-          description: Identifier scoped to the entity (e.g., community ID)
+          description: Identifier scoped to the scope (e.g., community ID)
         optedOut:
           type: boolean
           description: Whether the authenticated user has opted out
       required:
-        - entity
-        - entityId
+        - scope
+        - scopeId
         - optedOut
     CreateNotificationOptOutRequest:
       type: object
       properties:
-        entity:
+        scope:
           type: string
           enum: ["community"]
-          description: Entity type to opt out from
-        entityId:
+          description: Scope type to opt out from
+        scopeId:
           type: string
           minLength: 1
-          description: Identifier scoped to the entity (e.g., community ID)
+          description: Identifier scoped to the scope (e.g., community ID)
       required:
-        - entity
-        - entityId
+        - scope
+        - scopeId
     Error:
       type: object
       properties:
