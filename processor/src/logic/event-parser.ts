@@ -588,10 +588,10 @@ export async function createEventParser({
             address: event.metadata.attendee,
             eventKey: event.key,
             timestamp: event.timestamp,
-            /* optOutScope: {
+            optOutScope: {
               scope: NotificationScope.Community,
               scopeId: event.metadata.communityId
-            }, */
+            },
             metadata: {
               title: event.metadata.title,
               description: event.metadata.description,
