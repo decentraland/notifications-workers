@@ -112,4 +112,70 @@ describe('notifications service tests', () => {
       expect(db.insertNotifications).toHaveBeenCalledWith([otherNotification])
     })
   })
+  describe('when multiple notifications share the same address but only some match an opt-out', () => {
+    const address = '0x69D30b1875d39E13A01AF73CCFED6d84839e84f2'
+    const communityNotification = {
+      type: NotificationType.COMMUNITY_POST_ADDED,
+      address,
+      metadata: {
+        communityId: 'community-123'
+      },
+      timestamp: Date.now(),
+      eventKey: makeid(10)
+    }
+    const otherNotification = {
+      type: NotificationType.WORLDS_ACCESS_RESTORED,
+      address,
+      metadata: {},
+      timestamp: Date.now(),
+      eventKey: makeid(10)
+    }
+
+    beforeEach(async () => {
+      const optOutRow: NotificationOptOutDb = {
+        address: address.toLowerCase(),
+        entity: NotificationEntity.Community,
+        entity_id: 'community-123',
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
+
+      ;(db.findNotificationOptOutsForAddresses as jest.Mock).mockResolvedValue([optOutRow])
+      ;(db.insertNotifications as jest.Mock).mockResolvedValue({ inserted: [otherNotification], updated: [] })
+      await notificationsService.saveNotifications([communityNotification, otherNotification])
+    })
+
+    it('persists only the notification that does not match the opt-out', () => {
+      expect(db.insertNotifications).toHaveBeenCalledWith([otherNotification])
+    })
+  })
+
+  describe('when notification metadata lacks the configured opt-out key', () => {
+    const address = '0x69D30b1875d39E13A01AF73CCFED6d84839e84f2'
+    const notification = {
+      type: NotificationType.COMMUNITY_POST_ADDED,
+      address,
+      metadata: {},
+      timestamp: Date.now(),
+      eventKey: makeid(10)
+    }
+
+    beforeEach(async () => {
+      const optOutRow: NotificationOptOutDb = {
+        address: address.toLowerCase(),
+        entity: NotificationEntity.Community,
+        entity_id: 'community-123',
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
+
+      ;(db.findNotificationOptOutsForAddresses as jest.Mock).mockResolvedValue([optOutRow])
+      ;(db.insertNotifications as jest.Mock).mockResolvedValue({ inserted: [notification], updated: [] })
+      await notificationsService.saveNotifications([notification])
+    })
+
+    it('persists the notification because the metadata key is absent', () => {
+      expect(db.insertNotifications).toHaveBeenCalledWith([notification])
+    })
+  })
 })
