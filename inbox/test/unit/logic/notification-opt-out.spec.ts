@@ -37,18 +37,18 @@ describe('Notification Opt-Outs Manager', () => {
     jest.resetAllMocks()
   })
 
-  describe('createOptOut', () => {
+  describe('when creating an opt-out', () => {
     const address = '0x1234567890123456789012345678901234567890'
     const entity = NotificationEntity.Community
     const entityId = 'community-123'
+    let result: Awaited<ReturnType<INotificationOptOutsManager['createOptOut']>>
 
-    beforeEach(() => {
+    beforeEach(async () => {
       mockDb.saveNotificationOptOuts.mockResolvedValue(undefined)
+      result = await notificationOptOutsManager.createOptOut(address.toUpperCase(), entity, entityId)
     })
 
-    it('should normalize address and persist a single opt-out', async () => {
-      await notificationOptOutsManager.createOptOut(address.toUpperCase(), entity, entityId)
-
+    it('persists the normalized opt-out row', () => {
       expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledTimes(1)
       expect(mockDb.saveNotificationOptOuts).toHaveBeenCalledWith([
         expect.objectContaining({
@@ -59,9 +59,7 @@ describe('Notification Opt-Outs Manager', () => {
       ])
     })
 
-    it('should return the saved opt-out row', async () => {
-      const result = await notificationOptOutsManager.createOptOut(address, entity, entityId)
-
+    it('returns the saved opt-out row', () => {
       expect(result).toHaveLength(1)
       expect(result[0]).toMatchObject({
         entity,
@@ -70,33 +68,34 @@ describe('Notification Opt-Outs Manager', () => {
     })
   })
 
-  describe('deleteOptOut', () => {
+  describe('when deleting an opt-out', () => {
     const address = '0x1234567890123456789012345678901234567890'
     const entity = NotificationEntity.Community
     const entityId = 'community-123'
 
-    beforeEach(() => {
+    beforeEach(async () => {
       mockDb.deleteNotificationOptOut.mockResolvedValue(undefined)
+      await notificationOptOutsManager.deleteOptOut(address, entity, entityId)
     })
 
-    it('should remove the opt-out for the entity', async () => {
-      await notificationOptOutsManager.deleteOptOut(address, entity, entityId)
-
+    it('removes the opt-out for the entity', () => {
       expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledTimes(1)
       expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledWith(address, entity, entityId)
     })
   })
 
-  describe('hasOptOut', () => {
+  describe('when checking for an opt-out', () => {
     const address = '0x1234567890123456789012345678901234567890'
     const entity = NotificationEntity.Community
     const entityId = 'community-123'
+    let result: boolean
 
-    it('should delegate to the database', async () => {
+    beforeEach(async () => {
       mockDb.hasNotificationOptOut.mockResolvedValue(true)
+      result = await notificationOptOutsManager.hasOptOut(address, entity, entityId)
+    })
 
-      const result = await notificationOptOutsManager.hasOptOut(address, entity, entityId)
-
+    it('delegates to the database and returns the result', () => {
       expect(mockDb.hasNotificationOptOut).toHaveBeenCalledWith(address, entity, entityId)
       expect(result).toBe(true)
     })

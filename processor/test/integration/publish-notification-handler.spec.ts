@@ -3,7 +3,7 @@ import { test } from '../components'
 import { getIdentity, Identity } from '../utils'
 import { NotificationType } from '@dcl/schemas'
 import { randomEmail, randomSubscriptionDetails } from '@notifications/inbox/test/utils'
-import { NotificationEntity } from '@notifications/common'
+import { NotificationEntity, NotificationRecord } from '@notifications/common'
 
 test('POST /notifications', function ({ components, stubComponents }) {
   let identity: Identity
@@ -25,8 +25,8 @@ test('POST /notifications', function ({ components, stubComponents }) {
     return result.rows[0]
   }
 
-  describe('with valid request', () => {
-    describe('with subscription and email configured', () => {
+  describe('when request is valid', () => {
+    describe('when subscription and email are configured', () => {
       let email: string
       let notification: any
       let renderedEmail: any
@@ -84,7 +84,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
         })
       })
 
-      it('should publish a new notification', async () => {
+      it('persists the notification and sends the email', async () => {
         const { localFetch } = components
 
         const response = await localFetch.fetch('/notifications', {
@@ -95,32 +95,31 @@ test('POST /notifications', function ({ components, stubComponents }) {
           body: JSON.stringify([notification])
         })
 
-        expect(response.status).toEqual(204)
-
-        const found = (
+        const foundNotification = (
           await components.db.findNotifications([notification.address], true, notification.timestamp - 1000, 10)
         )[0]
-        expect(found).toBeDefined()
-        expect(found.metadata).toEqual(notification.metadata)
-        expect(found.read_at).toBeNull()
-        expect(found.timestamp).toEqual(`${notification.timestamp}`)
 
         await new Promise((resolve) => setImmediate(resolve))
 
+        expect(response.status).toEqual(204)
+        expect(foundNotification).toBeDefined()
+        expect(foundNotification.metadata).toEqual(notification.metadata)
+        expect(foundNotification.read_at).toBeNull()
+        expect(foundNotification.timestamp).toEqual(`${notification.timestamp}`)
         expect(
-          stubComponents.emailRenderer.renderEmail.calledWith(email, { ...notification, id: found.id })
+          stubComponents.emailRenderer.renderEmail.calledWith(email, { ...notification, id: foundNotification.id })
         ).toBeTruthy()
         expect(stubComponents.sendGridClient.sendEmail.calledWith(renderedEmail)).toBeTruthy()
       })
     })
   })
 
-  describe('with invalid request', () => {
+  describe('when request is invalid', () => {
     describe('when metadata is missing', () => {
-      it('should reject invalid notification body', async () => {
-        const { localFetch } = components
+      let notification: NotificationRecord
 
-        const notification = {
+      beforeEach(async () => {
+        notification = {
           type: NotificationType.BID_RECEIVED,
           eventKey: 'some-event-key',
           address: identity.realAccount.address,
@@ -128,7 +127,11 @@ test('POST /notifications', function ({ components, stubComponents }) {
             test: `This is a test at ${new Date().toISOString()}`
           },
           timestamp: Date.now()
-        }
+        } as unknown as NotificationRecord
+      })
+
+      it('rejects invalid notification body', async () => {
+        const { localFetch } = components
 
         const response = await localFetch.fetch('/notifications', {
           method: 'POST',
@@ -138,17 +141,20 @@ test('POST /notifications', function ({ components, stubComponents }) {
           body: JSON.stringify([notification])
         })
 
+        const responseBody = await response.json()
+        const foundNotification = await findNotification(notification.eventKey, notification.type, notification.address)
+
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ error: 'Bad request', message: '"[0].metadata" is required' })
-        expect(await findNotification(notification.eventKey, notification.type, notification.address)).toBeUndefined()
+        expect(responseBody).toMatchObject({ error: 'Bad request', message: '"[0].metadata" is required' })
+        expect(foundNotification).toBeUndefined()
       })
     })
 
     describe('when notification type is invalid', () => {
-      it('should reject invalid notification type', async () => {
-        const { localFetch } = components
+      let notification: NotificationRecord
 
-        const notification = {
+      beforeEach(() => {
+        notification = {
           type: 'test',
           eventKey: 'some-event-key',
           address: identity.realAccount.address,
@@ -156,7 +162,11 @@ test('POST /notifications', function ({ components, stubComponents }) {
             test: `This is a test at ${new Date().toISOString()}`
           },
           timestamp: Date.now()
-        }
+        } as unknown as NotificationRecord
+      })
+
+      it('rejects invalid notification type', async () => {
+        const { localFetch } = components
 
         const response = await localFetch.fetch('/notifications', {
           method: 'POST',
@@ -166,17 +176,20 @@ test('POST /notifications', function ({ components, stubComponents }) {
           body: JSON.stringify([notification])
         })
 
+        const responseBody = await response.json()
+        const foundNotification = await findNotification(notification.eventKey, notification.type, notification.address)
+
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({
+        expect(responseBody).toMatchObject({
           error: 'Bad request',
           message: 'Invalid notification type: test'
         })
-        expect(await findNotification(notification.eventKey, notification.type, notification.address)).toBeUndefined()
+        expect(foundNotification).toBeUndefined()
       })
     })
 
     describe('when api key is missing', () => {
-      it('should be protected by api key', async () => {
+      it('is protected by the api key', async () => {
         const { localFetch } = components
 
         const response = await localFetch.fetch('/notifications', {
@@ -189,13 +202,12 @@ test('POST /notifications', function ({ components, stubComponents }) {
     })
   })
 
-  describe('with notification opt-outs', () => {
+  describe('when notification opt-outs are in the database', () => {
     describe('when notification matches opt-out', () => {
       const metadataKey = 'communityId'
       const metadataValue = 'test-community'
       const notificationType = NotificationType.COMMUNITY_POST_ADDED
       let notification: any
-
       beforeEach(async () => {
         await components.db.saveNotificationOptOuts([
           {
@@ -216,9 +228,8 @@ test('POST /notifications', function ({ components, stubComponents }) {
         }
       })
 
-      it('should not store notification when user has opted out', async () => {
+      it('does not store the notification', async () => {
         const { localFetch } = components
-
         const response = await localFetch.fetch('/notifications', {
           method: 'POST',
           headers: {
@@ -227,10 +238,10 @@ test('POST /notifications', function ({ components, stubComponents }) {
           body: JSON.stringify([notification])
         })
 
-        expect(response.status).toEqual(204)
+        const foundNotification = await findNotification(notification.eventKey, notification.type, notification.address)
 
-        const found = await findNotification(notification.eventKey, notification.type, notification.address)
-        expect(found).toBeUndefined()
+        expect(response.status).toEqual(204)
+        expect(foundNotification).toBeUndefined()
       })
     })
 
@@ -240,7 +251,6 @@ test('POST /notifications', function ({ components, stubComponents }) {
       const notificationMetadataValue = 'test-community'
       const notificationType = NotificationType.COMMUNITY_POST_ADDED
       let notification: any
-
       beforeEach(async () => {
         await components.db.saveNotificationOptOuts([
           {
@@ -261,9 +271,8 @@ test('POST /notifications', function ({ components, stubComponents }) {
         }
       })
 
-      it('should store notification when user has not opted out', async () => {
+      it('persists the notification', async () => {
         const { localFetch } = components
-
         const response = await localFetch.fetch('/notifications', {
           method: 'POST',
           headers: {
@@ -272,11 +281,11 @@ test('POST /notifications', function ({ components, stubComponents }) {
           body: JSON.stringify([notification])
         })
 
-        expect(response.status).toEqual(204)
+        const foundNotification = await findNotification(notification.eventKey, notification.type, notification.address)
 
-        const found = await findNotification(notification.eventKey, notification.type, notification.address)
-        expect(found).toBeDefined()
-        expect(found.metadata[metadataKey]).toBe(notificationMetadataValue)
+        expect(response.status).toEqual(204)
+        expect(foundNotification).toBeDefined()
+        expect(foundNotification.metadata[metadataKey]).toBe(notificationMetadataValue)
       })
     })
   })

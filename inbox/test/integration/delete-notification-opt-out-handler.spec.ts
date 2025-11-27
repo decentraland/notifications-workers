@@ -16,58 +16,66 @@ test('DELETE /subscription/opt-outs/:entity/:entityId', function ({ components }
     identity = await getIdentity()
   })
 
-  it('should delete all opt-outs for the entity', async () => {
-    await components.db.saveNotificationOptOuts([
-      {
-        address: identity.realAccount.address.toLowerCase(),
-        entity,
-        entity_id: entityId,
-        created_at: Date.now(),
-        updated_at: Date.now()
-      }
-    ])
+  describe('when deleting all opt-outs for the entity', () => {
+    beforeEach(async () => {
+      await components.db.saveNotificationOptOuts([
+        {
+          address: identity.realAccount.address.toLowerCase(),
+          entity,
+          entity_id: entityId,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        }
+      ])
+    })
 
-    const response = await makeRequest(
-      components.localFetch,
-      `/subscription/opt-outs/${entity}/${entityId}`,
-      identity,
-      {
-        method: 'DELETE'
-      },
-      manageSubscriptionMetadata
-    )
+    it('returns 204', async () => {
+      const response = await makeRequest(
+        components.localFetch,
+        `/subscription/opt-outs/${entity}/${entityId}`,
+        identity,
+        {
+          method: 'DELETE'
+        },
+        manageSubscriptionMetadata
+      )
 
-    expect(response.status).toBe(204)
+      expect(response.status).toBe(204)
+    })
   })
 
-  it('should only delete opt-outs for the requested entityId', async () => {
-    await components.db.saveNotificationOptOuts([
-      {
-        address: identity.realAccount.address.toLowerCase(),
-        entity,
-        entity_id: entityId,
-        created_at: Date.now(),
-        updated_at: Date.now()
-      },
-      {
-        address: identity.realAccount.address.toLowerCase(),
-        entity,
-        entity_id: 'community-456',
-        created_at: Date.now(),
-        updated_at: Date.now()
-      }
-    ])
+  describe('when deleting only opt-outs for the requested entityId', () => {
+    beforeEach(async () => {
+      await components.db.saveNotificationOptOuts([
+        {
+          address: identity.realAccount.address.toLowerCase(),
+          entity,
+          entity_id: entityId,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        },
+        {
+          address: identity.realAccount.address.toLowerCase(),
+          entity,
+          entity_id: 'community-456',
+          created_at: Date.now(),
+          updated_at: Date.now()
+        }
+      ])
+    })
 
-    const response = await makeRequest(
-      components.localFetch,
-      `/subscription/opt-outs/${entity}/${entityId}`,
-      identity,
-      {
-        method: 'DELETE'
-      },
-      manageSubscriptionMetadata
-    )
+    it('returns 204', async () => {
+      const response = await makeRequest(
+        components.localFetch,
+        `/subscription/opt-outs/${entity}/${entityId}`,
+        identity,
+        {
+          method: 'DELETE'
+        },
+        manageSubscriptionMetadata
+      )
 
-    expect(response.status).toBe(204)
+      expect(response.status).toBe(204)
+    })
   })
 })

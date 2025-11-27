@@ -16,102 +16,120 @@ test('GET /subscription/opt-outs/:entity/:entityId', function ({ components }) {
     identity = await getIdentity()
   })
 
-  it('returns optedOut false when no opt-out exists', async () => {
-    const response = await makeRequest(
-      components.localFetch,
-      `/subscription/opt-outs/${entity}/${entityId}`,
-      identity,
-      {},
-      manageSubscriptionMetadata
-    )
+  describe('when no opt-out exists', () => {
+    it('indicates optedOut false', async () => {
+      const response = await makeRequest(
+        components.localFetch,
+        `/subscription/opt-outs/${entity}/${entityId}`,
+        identity,
+        {},
+        manageSubscriptionMetadata
+      )
+      const responseBody = await response.json()
 
-    expect(response.status).toBe(200)
-    expect(await response.json()).toEqual({
-      entity,
-      entityId,
-      optedOut: false
+      expect(response.status).toBe(200)
+      expect(responseBody).toEqual({
+        entity,
+        entityId,
+        optedOut: false
+      })
     })
   })
 
-  it('returns optedOut true when an opt-out exists', async () => {
-    await components.db.saveNotificationOptOuts([
-      {
-        address: identity.realAccount.address.toLowerCase(),
+  describe('when an opt-out exists for the entity', () => {
+    beforeEach(async () => {
+      await components.db.saveNotificationOptOuts([
+        {
+          address: identity.realAccount.address.toLowerCase(),
+          entity,
+          entity_id: entityId,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        }
+      ])
+    })
+
+    it('indicates optedOut true', async () => {
+      const response = await makeRequest(
+        components.localFetch,
+        `/subscription/opt-outs/${entity}/${entityId}`,
+        identity,
+        {},
+        manageSubscriptionMetadata
+      )
+      const responseBody = await response.json()
+
+      expect(response.status).toBe(200)
+      expect(responseBody).toEqual({
         entity,
-        entity_id: entityId,
-        created_at: Date.now(),
-        updated_at: Date.now()
-      }
-    ])
-
-    const response = await makeRequest(
-      components.localFetch,
-      `/subscription/opt-outs/${entity}/${entityId}`,
-      identity,
-      {},
-      manageSubscriptionMetadata
-    )
-
-    expect(response.status).toBe(200)
-    expect(await response.json()).toEqual({
-      entity,
-      entityId,
-      optedOut: true
+        entityId,
+        optedOut: true
+      })
     })
   })
 
-  it('returns optedOut false when only different entityId exists', async () => {
-    await components.db.saveNotificationOptOuts([
-      {
-        address: identity.realAccount.address.toLowerCase(),
+  describe('when only different entityId exists', () => {
+    beforeEach(async () => {
+      await components.db.saveNotificationOptOuts([
+        {
+          address: identity.realAccount.address.toLowerCase(),
+          entity,
+          entity_id: 'community-456',
+          created_at: Date.now(),
+          updated_at: Date.now()
+        }
+      ])
+    })
+
+    it('indicates optedOut false', async () => {
+      const response = await makeRequest(
+        components.localFetch,
+        `/subscription/opt-outs/${entity}/${entityId}`,
+        identity,
+        {},
+        manageSubscriptionMetadata
+      )
+      const responseBody = await response.json()
+
+      expect(response.status).toBe(200)
+      expect(responseBody).toEqual({
         entity,
-        entity_id: 'community-456',
-        created_at: Date.now(),
-        updated_at: Date.now()
-      }
-    ])
-
-    const response = await makeRequest(
-      components.localFetch,
-      `/subscription/opt-outs/${entity}/${entityId}`,
-      identity,
-      {},
-      manageSubscriptionMetadata
-    )
-
-    expect(response.status).toBe(200)
-    expect(await response.json()).toEqual({
-      entity,
-      entityId,
-      optedOut: false
+        entityId,
+        optedOut: false
+      })
     })
   })
 
-  it('ignores opt-outs from other users', async () => {
-    const otherIdentity = await getIdentity()
-    await components.db.saveNotificationOptOuts([
-      {
-        address: otherIdentity.realAccount.address.toLowerCase(),
+  describe('when other users have opt-outs', () => {
+    beforeEach(async () => {
+      const otherIdentity = await getIdentity()
+      await components.db.saveNotificationOptOuts([
+        {
+          address: otherIdentity.realAccount.address.toLowerCase(),
+          entity,
+          entity_id: entityId,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        }
+      ])
+    })
+
+    it('still indicates optedOut false', async () => {
+      const response = await makeRequest(
+        components.localFetch,
+        `/subscription/opt-outs/${entity}/${entityId}`,
+        identity,
+        {},
+        manageSubscriptionMetadata
+      )
+      const responseBody = await response.json()
+
+      expect(response.status).toBe(200)
+      expect(responseBody).toEqual({
         entity,
-        entity_id: entityId,
-        created_at: Date.now(),
-        updated_at: Date.now()
-      }
-    ])
-
-    const response = await makeRequest(
-      components.localFetch,
-      `/subscription/opt-outs/${entity}/${entityId}`,
-      identity,
-      {},
-      manageSubscriptionMetadata
-    )
-
-    expect(response.status).toBe(200)
-    expect(await response.json()).toEqual({
-      entity,
-      entityId,
-      optedOut: false
+        entityId,
+        optedOut: false
+      })
     })
   })
 })

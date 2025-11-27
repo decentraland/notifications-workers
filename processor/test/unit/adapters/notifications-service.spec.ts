@@ -42,7 +42,7 @@ describe('notifications service tests', () => {
     })
   })
 
-  it('should save notifications', async () => {
+  describe('when saving notifications', () => {
     const notification = {
       type: NotificationType.WORLDS_ACCESS_RESTORED,
       address: '0x69D30b1875d39E13A01AF73CCFED6d84839e84f2',
@@ -55,19 +55,27 @@ describe('notifications service tests', () => {
       eventKey: makeid(10)
     }
 
-    ;(db.insertNotifications as any).mockResolvedValue({ inserted: [notification], updated: [] })
-    await notificationsService.saveNotifications([notification])
+    beforeEach(async () => {
+      ;(db.insertNotifications as any).mockResolvedValue({ inserted: [notification], updated: [] })
+      await notificationsService.saveNotifications([notification])
+    })
 
-    expect(db.insertNotifications).toHaveBeenCalledWith([notification])
+    it('persists them in the database', () => {
+      expect(db.insertNotifications).toHaveBeenCalledWith([notification])
+    })
   })
 
-  it('should not do anything if no notifications are passed', async () => {
-    await notificationsService.saveNotifications([])
+  describe('when no notifications are provided', () => {
+    beforeEach(async () => {
+      await notificationsService.saveNotifications([])
+    })
 
-    expect(db.insertNotifications).not.toHaveBeenCalled()
+    it('does not write to the database', () => {
+      expect(db.insertNotifications).not.toHaveBeenCalled()
+    })
   })
 
-  it('filters notifications that have matching opt-outs', async () => {
+  describe('when notifications match opt-outs', () => {
     const address = '0x69D30b1875d39E13A01AF73CCFED6d84839e84f2'
     const communityNotification = {
       type: NotificationType.COMMUNITY_POST_ADDED,
@@ -86,19 +94,22 @@ describe('notifications service tests', () => {
       eventKey: makeid(10)
     }
 
-    const optOutRow: NotificationOptOutDb = {
-      address: address.toLowerCase(),
-      entity: NotificationEntity.Community,
-      entity_id: 'community-123',
-      created_at: Date.now(),
-      updated_at: Date.now()
-    }
+    beforeEach(async () => {
+      const optOutRow: NotificationOptOutDb = {
+        address: address.toLowerCase(),
+        entity: NotificationEntity.Community,
+        entity_id: 'community-123',
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
 
-    ;(db.findNotificationOptOutsForAddresses as jest.Mock).mockResolvedValue([optOutRow])
-    ;(db.insertNotifications as jest.Mock).mockResolvedValue({ inserted: [otherNotification], updated: [] })
+      ;(db.findNotificationOptOutsForAddresses as jest.Mock).mockResolvedValue([optOutRow])
+      ;(db.insertNotifications as jest.Mock).mockResolvedValue({ inserted: [otherNotification], updated: [] })
+      await notificationsService.saveNotifications([communityNotification, otherNotification])
+    })
 
-    await notificationsService.saveNotifications([communityNotification, otherNotification])
-
-    expect(db.insertNotifications).toHaveBeenCalledWith([otherNotification])
+    it('filters out notifications with matching opt-outs', () => {
+      expect(db.insertNotifications).toHaveBeenCalledWith([otherNotification])
+    })
   })
 })

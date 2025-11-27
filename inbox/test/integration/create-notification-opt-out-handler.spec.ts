@@ -14,7 +14,7 @@ test('POST /subscription/opt-outs', function ({ components }) {
     identity = await getIdentity()
   })
 
-  describe('with valid request', () => {
+  describe('when request is valid', () => {
     const body = {
       entity: NotificationEntity.Community,
       entityId: 'community-123'
@@ -31,9 +31,10 @@ test('POST /subscription/opt-outs', function ({ components }) {
         },
         manageSubscriptionMetadata
       )
+      const responseBody = await response.json()
 
       expect(response.status).toBe(201)
-      expect(await response.json()).toEqual({
+      expect(responseBody).toEqual({
         entity: body.entity,
         entityId: body.entityId,
         optedOut: true
@@ -41,37 +42,42 @@ test('POST /subscription/opt-outs', function ({ components }) {
     })
   })
 
-  describe('with invalid request', () => {
-    it('returns 400 when body is missing fields', async () => {
-      const response = await makeRequest(
-        components.localFetch,
-        '/subscription/opt-outs',
-        identity,
-        {
-          method: 'POST',
-          body: JSON.stringify({ entityId: 'community-123' })
-        },
-        manageSubscriptionMetadata
-      )
-      expect(response.status).toBe(400)
+  describe('when request is invalid', () => {
+    describe('when body is missing fields', () => {
+      it('returns 400', async () => {
+        const response = await makeRequest(
+          components.localFetch,
+          '/subscription/opt-outs',
+          identity,
+          {
+            method: 'POST',
+            body: JSON.stringify({ entityId: 'community-123' })
+          },
+          manageSubscriptionMetadata
+        )
+
+        expect(response.status).toBe(400)
+      })
     })
 
-    it('returns 400 when entity is unknown', async () => {
-      const response = await makeRequest(
-        components.localFetch,
-        '/subscription/opt-outs',
-        identity,
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            entity: 'unknown',
-            entityId: 'community-456'
-          })
-        },
-        manageSubscriptionMetadata
-      )
+    describe('when entity is unknown', () => {
+      it('returns 400', async () => {
+        const response = await makeRequest(
+          components.localFetch,
+          '/subscription/opt-outs',
+          identity,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              entity: 'unknown',
+              entityId: 'community-456'
+            })
+          },
+          manageSubscriptionMetadata
+        )
 
-      expect(response.status).toBe(400)
+        expect(response.status).toBe(400)
+      })
     })
   })
 })
