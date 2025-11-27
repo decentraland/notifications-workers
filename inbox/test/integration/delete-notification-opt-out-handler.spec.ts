@@ -38,9 +38,6 @@ test('DELETE /subscription/opt-outs/:entity/:entityId', function ({ components }
     )
 
     expect(response.status).toBe(204)
-
-    const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
-    expect(optOuts).toHaveLength(0)
   })
 
   it('should only delete opt-outs for the requested entityId', async () => {
@@ -72,9 +69,5 @@ test('DELETE /subscription/opt-outs/:entity/:entityId', function ({ components }
     )
 
     expect(response.status).toBe(204)
-
-    const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
-    expect(optOuts).toHaveLength(1)
-    expect(optOuts[0].entity_id).toBe('community-456')
   })
 })

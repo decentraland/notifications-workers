@@ -37,10 +37,8 @@ export type DbComponent = {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
   updateLastUpdateForNotificationType(notificationType: string, timestamp: number): Promise<void>
   insertNotifications(notificationRecord: NotificationRecord[]): Promise<UpsertResult<NotificationRecord>>
-  findNotificationOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]>
   findNotificationOptOutsForAddresses(addresses: string[]): Promise<NotificationOptOutDb[]>
   saveNotificationOptOuts(optOuts: NotificationOptOutDb[]): Promise<void>
-  saveNotificationOptOut(optOut: NotificationOptOutDb): Promise<void>
   deleteNotificationOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<void>
   hasNotificationOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<boolean>
 }
@@ -388,17 +386,6 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     return { inserted, updated }
   }
 
-  async function findNotificationOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]> {
-    const query: SQLStatement = SQL`
-      SELECT address, entity, entity_id, created_at, updated_at
-      FROM notification_opt_outs
-      WHERE address = ${address.toLowerCase()}
-    `
-
-    const result = await pg.query<NotificationOptOutDb>(query)
-    return result.rows
-  }
-
   async function findNotificationOptOutsForAddresses(addresses: string[]): Promise<NotificationOptOutDb[]> {
     if (addresses.length === 0) return []
 
@@ -440,10 +427,6 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     `)
 
     await pg.query(query)
-  }
-
-  async function saveNotificationOptOut(optOut: NotificationOptOutDb): Promise<void> {
-    return saveNotificationOptOuts([optOut])
   }
 
   async function deleteNotificationOptOut(
@@ -492,10 +475,8 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     findUnconfirmedEmail,
     saveUnconfirmedEmail,
     deleteUnconfirmedEmail,
-    findNotificationOptOuts,
     findNotificationOptOutsForAddresses,
     saveNotificationOptOuts,
-    saveNotificationOptOut,
     deleteNotificationOptOut,
     hasNotificationOptOut
   }

@@ -5,7 +5,6 @@ import { EthAddress } from '@dcl/schemas'
 export interface INotificationOptOutsManager {
   createOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<NotificationOptOutDb[]>
   deleteOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<void>
-  getOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]>
   hasOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<boolean>
 }
 
@@ -57,11 +56,6 @@ export function createNotificationOptOutsManager({
     await db.deleteNotificationOptOut(address, entity, entityId)
   }
 
-  async function getOptOuts(address: EthAddress): Promise<NotificationOptOutDb[]> {
-    logger.debug('Getting notification opt-outs', { address })
-    return await db.findNotificationOptOuts(address)
-  }
-
   async function hasOptOut(address: EthAddress, entity: NotificationEntity, entityId: string): Promise<boolean> {
     logger.debug('Checking notification opt-out', { address, entity, entityId })
     return await db.hasNotificationOptOut(address, entity, entityId)
@@ -70,7 +64,6 @@ export function createNotificationOptOutsManager({
   return {
     createOptOut,
     deleteOptOut,
-    getOptOuts,
     hasOptOut
   }
 }

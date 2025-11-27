@@ -1,28 +1,21 @@
 import { createNotificationOptOutsManager, INotificationOptOutsManager } from '../../../src/logic/notification-opt-out'
-import { NotificationOptOutDb, DbComponent, NotificationEntity } from '@notifications/common'
+import { DbComponent, NotificationEntity } from '@notifications/common'
 import { ILoggerComponent } from '@well-known-components/interfaces'
 
 describe('Notification Opt-Outs Manager', () => {
   let mockDb: jest.Mocked<
-    Pick<
-      DbComponent,
-      'findNotificationOptOuts' | 'saveNotificationOptOuts' | 'deleteNotificationOptOut' | 'hasNotificationOptOut'
-    >
+    Pick<DbComponent, 'saveNotificationOptOuts' | 'deleteNotificationOptOut' | 'hasNotificationOptOut'>
   >
   let mockLogs: jest.Mocked<Pick<ILoggerComponent, 'getLogger'>>
   let notificationOptOutsManager: INotificationOptOutsManager
 
   beforeEach(() => {
     mockDb = {
-      findNotificationOptOuts: jest.fn(),
       saveNotificationOptOuts: jest.fn(),
       deleteNotificationOptOut: jest.fn(),
       hasNotificationOptOut: jest.fn()
     } as jest.Mocked<
-      Pick<
-        DbComponent,
-        'findNotificationOptOuts' | 'saveNotificationOptOuts' | 'deleteNotificationOptOut' | 'hasNotificationOptOut'
-      >
+      Pick<DbComponent, 'saveNotificationOptOuts' | 'deleteNotificationOptOut' | 'hasNotificationOptOut'>
     >
 
     mockLogs = {
@@ -91,33 +84,6 @@ describe('Notification Opt-Outs Manager', () => {
 
       expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledTimes(1)
       expect(mockDb.deleteNotificationOptOut).toHaveBeenCalledWith(address, entity, entityId)
-    })
-  })
-
-  describe('getOptOuts', () => {
-    const address = '0x1234567890123456789012345678901234567890'
-    let optOuts: NotificationOptOutDb[]
-
-    beforeEach(() => {
-      optOuts = [
-        {
-          address: address.toLowerCase(),
-          entity: NotificationEntity.Community,
-          entity_id: 'community-123',
-          created_at: Date.now(),
-          updated_at: Date.now()
-        }
-      ]
-
-      mockDb.findNotificationOptOuts.mockResolvedValue(optOuts)
-    })
-
-    it('should return opt-outs for the user', async () => {
-      const result = await notificationOptOutsManager.getOptOuts(address)
-
-      expect(mockDb.findNotificationOptOuts).toHaveBeenCalledTimes(1)
-      expect(mockDb.findNotificationOptOuts).toHaveBeenCalledWith(address)
-      expect(result).toEqual(optOuts)
     })
   })
 

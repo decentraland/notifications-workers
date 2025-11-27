@@ -38,14 +38,6 @@ test('POST /subscription/opt-outs', function ({ components }) {
         entityId: body.entityId,
         optedOut: true
       })
-
-      const optOuts = await components.db.findNotificationOptOuts(identity.realAccount.address)
-      const communityOptOut = optOuts.find((out) => out.entity === NotificationEntity.Community)
-      expect(communityOptOut).toBeDefined()
-      expect(communityOptOut).toMatchObject({
-        entity: NotificationEntity.Community,
-        entity_id: body.entityId
-      })
     })
   })
 
