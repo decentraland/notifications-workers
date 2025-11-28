@@ -112,7 +112,9 @@ const excludedNotificationTypes = [
   NotificationType.COMMUNITY_POST_ADDED,
   NotificationType.COMMUNITY_OWNERSHIP_TRANSFERRED,
   NotificationType.USER_BANNED_FROM_SCENE,
-  NotificationType.USER_UNBANNED_FROM_SCENE
+  NotificationType.USER_UNBANNED_FROM_SCENE,
+  NotificationType.CREDITS_NEW_SEASON_REMINDER,
+  NotificationType.TRANSFER_RECEIVED
 ].map((type) => type.toUpperCase())
 
 type ExcludedNotificationType = (typeof excludedNotificationTypes)[number]

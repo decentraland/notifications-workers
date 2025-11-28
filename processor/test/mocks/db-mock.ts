@@ -16,7 +16,7 @@ export function createDbMock(db: Partial<DbComponent> = {}): DbComponent {
     fetchLastUpdateForNotificationType: jest.fn(),
     updateLastUpdateForNotificationType: jest.fn(),
     insertNotifications: jest.fn(),
-    findNotificationOptOutsForAddresses: jest.fn().mockResolvedValue([]),
+    findNotificationOptOutsForAddressesAndScopes: jest.fn().mockResolvedValue([]),
     saveNotificationOptOut: jest.fn(),
     deleteNotificationOptOut: jest.fn(),
     hasNotificationOptOut: jest.fn().mockResolvedValue(false),

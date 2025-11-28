@@ -107,12 +107,19 @@ describe('notifications service tests', () => {
         updated_at: Date.now()
       }
 
-      ;(db.findNotificationOptOutsForAddresses as jest.Mock).mockResolvedValue([optOutRow])
+      ;(db.findNotificationOptOutsForAddressesAndScopes as jest.Mock).mockResolvedValue([optOutRow])
       ;(db.insertNotifications as jest.Mock).mockResolvedValue({ inserted: [otherNotification], updated: [] })
       await notificationsService.saveNotifications([communityNotification, otherNotification])
     })
 
     it('filters out notifications with matching opt-outs', () => {
+      expect(db.findNotificationOptOutsForAddressesAndScopes).toHaveBeenCalledWith([
+        {
+          address: address.toLowerCase(),
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
+        }
+      ])
       expect(db.insertNotifications).toHaveBeenCalledWith([otherNotification])
     })
   })
@@ -148,12 +155,19 @@ describe('notifications service tests', () => {
         updated_at: Date.now()
       }
 
-      ;(db.findNotificationOptOutsForAddresses as jest.Mock).mockResolvedValue([optOutRow])
+      ;(db.findNotificationOptOutsForAddressesAndScopes as jest.Mock).mockResolvedValue([optOutRow])
       ;(db.insertNotifications as jest.Mock).mockResolvedValue({ inserted: [otherNotification], updated: [] })
       await notificationsService.saveNotifications([communityNotification, otherNotification])
     })
 
     it('persists only the notification that does not match the opt-out', () => {
+      expect(db.findNotificationOptOutsForAddressesAndScopes).toHaveBeenCalledWith([
+        {
+          address: address.toLowerCase(),
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
+        }
+      ])
       expect(db.insertNotifications).toHaveBeenCalledWith([otherNotification])
     })
   })
@@ -177,13 +191,121 @@ describe('notifications service tests', () => {
         updated_at: Date.now()
       }
 
-      ;(db.findNotificationOptOutsForAddresses as jest.Mock).mockResolvedValue([optOutRow])
+      ;(db.findNotificationOptOutsForAddressesAndScopes as jest.Mock).mockResolvedValue([optOutRow])
       ;(db.insertNotifications as jest.Mock).mockResolvedValue({ inserted: [notification], updated: [] })
       await notificationsService.saveNotifications([notification])
     })
 
     it('persists the notification because the metadata key is absent', () => {
+      // Should not call findNotificationOptOutsForAddressesAndScopes when notification has no optOutScope
+      expect(db.findNotificationOptOutsForAddressesAndScopes).not.toHaveBeenCalled()
       expect(db.insertNotifications).toHaveBeenCalledWith([notification])
+    })
+  })
+
+  describe('optimization: only queries relevant opt-out scopes', () => {
+    const address1 = '0x69D30b1875d39E13A01AF73CCFED6d84839e84f2'
+    const address2 = '0x79D30b1875d39E13A01AF73CCFED6d84839e84f3'
+
+    it('only queries for opt-outs matching notification scopes', async () => {
+      const notification1 = {
+        type: NotificationType.COMMUNITY_POST_ADDED,
+        address: address1,
+        metadata: { communityId: 'community-123' },
+        optOutScope: {
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
+        },
+        timestamp: Date.now(),
+        eventKey: makeid(10)
+      }
+
+      const notification2 = {
+        type: NotificationType.COMMUNITY_POST_ADDED,
+        address: address2,
+        metadata: { communityId: 'community-456' },
+        optOutScope: {
+          scope: NotificationScope.Community,
+          scopeId: 'community-456'
+        },
+        timestamp: Date.now(),
+        eventKey: makeid(10)
+      }
+
+      const notification3 = {
+        type: NotificationType.WORLDS_ACCESS_RESTORED,
+        address: address1,
+        metadata: {},
+        timestamp: Date.now(),
+        eventKey: makeid(10)
+      }
+
+      ;(db.findNotificationOptOutsForAddressesAndScopes as jest.Mock).mockResolvedValue([])
+      ;(db.insertNotifications as jest.Mock).mockResolvedValue({
+        inserted: [notification1, notification2, notification3],
+        updated: []
+      })
+
+      await notificationsService.saveNotifications([notification1, notification2, notification3])
+
+      // Should only query for the two notifications with optOutScope, not all opt-outs for the addresses
+      expect(db.findNotificationOptOutsForAddressesAndScopes).toHaveBeenCalledWith([
+        {
+          address: address1.toLowerCase(),
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
+        },
+        {
+          address: address2.toLowerCase(),
+          scope: NotificationScope.Community,
+          scopeId: 'community-456'
+        }
+      ])
+      expect(db.insertNotifications).toHaveBeenCalledWith([notification1, notification2, notification3])
+    })
+
+    it('deduplicates identical address-scope combinations', async () => {
+      const notification1 = {
+        type: NotificationType.COMMUNITY_POST_ADDED,
+        address: address1,
+        metadata: { communityId: 'community-123' },
+        optOutScope: {
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
+        },
+        timestamp: Date.now(),
+        eventKey: makeid(10)
+      }
+
+      const notification2 = {
+        type: NotificationType.COMMUNITY_POST_ADDED,
+        address: address1,
+        metadata: { communityId: 'community-123' },
+        optOutScope: {
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
+        },
+        timestamp: Date.now(),
+        eventKey: makeid(10)
+      }
+
+      ;(db.findNotificationOptOutsForAddressesAndScopes as jest.Mock).mockResolvedValue([])
+      ;(db.insertNotifications as jest.Mock).mockResolvedValue({
+        inserted: [notification1, notification2],
+        updated: []
+      })
+
+      await notificationsService.saveNotifications([notification1, notification2])
+
+      // Should only query once for the duplicate scope combination
+      expect(db.findNotificationOptOutsForAddressesAndScopes).toHaveBeenCalledTimes(1)
+      expect(db.findNotificationOptOutsForAddressesAndScopes).toHaveBeenCalledWith([
+        {
+          address: address1.toLowerCase(),
+          scope: NotificationScope.Community,
+          scopeId: 'community-123'
+        }
+      ])
     })
   })
 })

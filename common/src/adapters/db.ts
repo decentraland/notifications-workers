@@ -37,7 +37,9 @@ export type DbComponent = {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
   updateLastUpdateForNotificationType(notificationType: string, timestamp: number): Promise<void>
   insertNotifications(notificationRecord: NotificationRecord[]): Promise<UpsertResult<NotificationRecord>>
-  findNotificationOptOutsForAddresses(addresses: string[]): Promise<NotificationOptOutDb[]>
+  findNotificationOptOutsForAddressesAndScopes(
+    addressScopePairs: Array<{ address: string; scope: NotificationScope; scopeId: string }>
+  ): Promise<Pick<NotificationOptOutDb, 'address' | 'scope' | 'scope_id'>[]>
   saveNotificationOptOut(optOut: NotificationOptOutDb): Promise<void>
   deleteNotificationOptOut(address: EthAddress, scope: NotificationScope, scopeId: string): Promise<void>
   hasNotificationOptOut(address: EthAddress, scope: NotificationScope, scopeId: string): Promise<boolean>
@@ -351,16 +353,28 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     return upsertResult
   }
 
-  async function findNotificationOptOutsForAddresses(addresses: string[]): Promise<NotificationOptOutDb[]> {
-    if (addresses.length === 0) return []
+  async function findNotificationOptOutsForAddressesAndScopes(
+    addressScopePairs: Array<{ address: string; scope: NotificationScope; scopeId: string }>
+  ): Promise<Pick<NotificationOptOutDb, 'address' | 'scope' | 'scope_id'>[]> {
+    if (addressScopePairs.length === 0) return []
 
-    const normalizedAddresses = addresses.map((address) => address.toLowerCase())
+    // Build conditions for each (address, scope, scopeId) combination
+    const conditions: SQLStatement[] = addressScopePairs.map(
+      ({ address, scope, scopeId }) =>
+        SQL`(address = ${address.toLowerCase()} AND scope = ${scope} AND scope_id = ${scopeId})`
+    )
+
     const query: SQLStatement = SQL`
-      SELECT address, scope, scope_id, created_at, updated_at
+      SELECT address, scope, scope_id
       FROM notification_opt_outs
-      WHERE address = ANY(${normalizedAddresses})
-    `
-    const result = await pg.query<NotificationOptOutDb>(query)
+      WHERE 
+    `.append(conditions[0])
+
+    for (const condition of conditions.slice(1)) {
+      query.append(' OR ').append(condition)
+    }
+
+    const result = await pg.query<Pick<NotificationOptOutDb, 'address' | 'scope' | 'scope_id'>>(query)
     return result.rows
   }
 
@@ -420,7 +434,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     findUnconfirmedEmail,
     saveUnconfirmedEmail,
     deleteUnconfirmedEmail,
-    findNotificationOptOutsForAddresses,
+    findNotificationOptOutsForAddressesAndScopes,
     saveNotificationOptOut,
     deleteNotificationOptOut,
     hasNotificationOptOut
