@@ -200,19 +200,118 @@ test('POST /notifications', function ({ components, stubComponents }) {
         expect(response.status).toEqual(401)
       })
     })
+
+    describe('when the opt out scope is invalid', () => {
+      let notification: NotificationRecord
+
+      beforeEach(() => {
+        notification = {
+          type: NotificationType.COMMUNITY_POST_ADDED,
+          eventKey: 'some-event-key',
+          address: identity.realAccount.address,
+          metadata: {
+            communityId: 'test-community'
+          },
+          timestamp: Date.now()
+        } as unknown as NotificationRecord
+      })
+
+      describe('when the scope is missing', () => {
+        beforeEach(() => {
+          notification = {
+            ...notification,
+            optOutScope: {
+              scopeId: 'test-community'
+            }
+          } as unknown as NotificationRecord
+        })
+
+        it('should return 400', async () => {
+          const { localFetch } = components
+
+          const response = await localFetch.fetch('/notifications', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${apiKey}`
+            },
+            body: JSON.stringify([notification])
+          })
+
+          expect(response.status).toEqual(400)
+        })
+      })
+
+      describe('when the scope is invalid', () => {
+        beforeEach(() => {
+          notification = {
+            ...notification,
+            optOutScope: {
+              scope: 'invalid',
+              scopeId: 'test-community'
+            }
+          } as unknown as NotificationRecord
+        })
+
+        it('should return 400', async () => {
+          const { localFetch } = components
+
+          const response = await localFetch.fetch('/notifications', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${apiKey}`
+            },
+            body: JSON.stringify([notification])
+          })
+
+          expect(response.status).toEqual(400)
+
+          const responseBody = await response.json()
+          expect(responseBody).toMatchObject({
+            error: 'Bad request',
+            message: 'Invalid notification scope: invalid'
+          })
+        })
+      })
+
+      describe('when the scope is valid', () => {
+        describe('and the scope id is missing', () => {
+          beforeEach(() => {
+            notification = {
+              ...notification,
+              optOutScope: {
+                scope: NotificationScope.Community
+              }
+            } as unknown as NotificationRecord
+          })
+
+          it('should return 400', async () => {
+            const { localFetch } = components
+
+            const response = await localFetch.fetch('/notifications', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${apiKey}`
+              },
+              body: JSON.stringify([notification])
+            })
+
+            expect(response.status).toEqual(400)
+          })
+        })
+      })
+    })
   })
 
-  describe('when notification opt-outs are in the database', () => {
-    describe('when notification matches opt-out', () => {
-      const metadataKey = 'communityId'
-      const metadataValue = 'test-community'
+  describe('when the user opted out of receiving notifications from a specific community', () => {
+    describe('and the notification matches the opt-out configuration', () => {
+      const communityId = 'test-community'
       const notificationType = NotificationType.COMMUNITY_POST_ADDED
       let notification: any
       beforeEach(async () => {
         await components.db.saveNotificationOptOut({
           address: identity.realAccount.address.toLowerCase(),
           scope: NotificationScope.Community,
-          scope_id: metadataValue,
+          scope_id: communityId,
           created_at: Date.now(),
           updated_at: Date.now()
         })
@@ -220,17 +319,19 @@ test('POST /notifications', function ({ components, stubComponents }) {
         notification = {
           type: notificationType,
           address: identity.realAccount.address,
-          metadata: { [metadataKey]: metadataValue },
+          metadata: {
+            communityId: communityId
+          },
           optOutScope: {
             scope: NotificationScope.Community,
-            scopeId: metadataValue
+            scopeId: communityId
           },
           timestamp: Date.now(),
           eventKey: '123'
         }
       })
 
-      it('does not store the notification', async () => {
+      it('should not store the notification', async () => {
         const { localFetch } = components
         const response = await localFetch.fetch('/notifications', {
           method: 'POST',
@@ -247,7 +348,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
       })
     })
 
-    describe('when notification does not match opt-out', () => {
+    describe('and the notification does not match the opt-out configuration', () => {
       const metadataKey = 'communityId'
       const optOutMetadataValue = 'other-community'
       const notificationMetadataValue = 'test-community'
@@ -275,7 +376,7 @@ test('POST /notifications', function ({ components, stubComponents }) {
         }
       })
 
-      it('persists the notification', async () => {
+      it('should persist the notification', async () => {
         const { localFetch } = components
         const response = await localFetch.fetch('/notifications', {
           method: 'POST',

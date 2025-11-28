@@ -20,7 +20,10 @@ const schema = Joi.array().items(
       .keys({
         scope: Joi.string()
           .valid(...Object.values(NotificationScope))
-          .required(),
+          .required()
+          .messages({
+            'any.only': 'Invalid notification scope: {#value}'
+          }),
         scopeId: Joi.string().required()
       })
       .optional()
