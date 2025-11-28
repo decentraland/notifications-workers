@@ -1,5 +1,12 @@
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { NotificationDb, NotificationEvent, NotificationRecord, SubscriptionDb, UnconfirmedEmailDb } from '../types'
+import {
+  NotificationDb,
+  NotificationEvent,
+  NotificationRecord,
+  NotificationOptOutDb,
+  SubscriptionDb,
+  UnconfirmedEmailDb
+} from '../types'
 import { IPgComponent } from '@well-known-components/pg-component'
 import { defaultSubscription } from '../subscriptions'
 import { Email, EthAddress, NotificationChannelType, NotificationType, SubscriptionDetails } from '@dcl/schemas'
@@ -12,6 +19,8 @@ export type UpsertResult<T> = {
   inserted: T[]
   updated: T[]
 }
+
+import { NotificationScope } from '../types'
 
 export type DbComponent = {
   findSubscription(address: EthAddress): Promise<SubscriptionDb>
@@ -28,6 +37,12 @@ export type DbComponent = {
   fetchLastUpdateForNotificationType(notificationType: string): Promise<number>
   updateLastUpdateForNotificationType(notificationType: string, timestamp: number): Promise<void>
   insertNotifications(notificationRecord: NotificationRecord[]): Promise<UpsertResult<NotificationRecord>>
+  findNotificationOptOutsForAddressesAndScopes(
+    addressScopePairs: Array<{ address: string; scope: NotificationScope; scopeId: string }>
+  ): Promise<Pick<NotificationOptOutDb, 'address' | 'scope' | 'scope_id'>[]>
+  saveNotificationOptOut(optOut: NotificationOptOutDb): Promise<void>
+  deleteNotificationOptOut(address: EthAddress, scope: NotificationScope, scopeId: string): Promise<void>
+  hasNotificationOptOut(address: EthAddress, scope: NotificationScope, scopeId: string): Promise<boolean>
 }
 
 export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent {
@@ -156,6 +171,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     if (onlyUnread) {
       whereClause.push(SQL`(n.address IS NOT NULL AND n.read_at IS NULL) OR (n.address IS NULL AND br.read_at IS NULL)`)
     }
+
     let where = SQL` WHERE `.append(whereClause[0])
     for (const condition of whereClause.slice(1)) {
       where = where.append(' AND ').append(condition)
@@ -306,6 +322,7 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
       updated: []
     }
 
+    // TODO: we could optimize this by batching the inserts and updates together in one query
     for (const notificationRecord of notificationRecords) {
       const buildQuery = SQL`
           INSERT INTO notifications (event_key, type, address, metadata, timestamp, read_at, created_at, updated_at)
@@ -336,6 +353,72 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     return upsertResult
   }
 
+  async function findNotificationOptOutsForAddressesAndScopes(
+    addressScopePairs: Array<{ address: string; scope: NotificationScope; scopeId: string }>
+  ): Promise<Pick<NotificationOptOutDb, 'address' | 'scope' | 'scope_id'>[]> {
+    if (addressScopePairs.length === 0) return []
+
+    // Build conditions for each (address, scope, scopeId) combination
+    const conditions: SQLStatement[] = addressScopePairs.map(
+      ({ address, scope, scopeId }) =>
+        SQL`(address = ${address.toLowerCase()} AND scope = ${scope} AND scope_id = ${scopeId})`
+    )
+
+    const query: SQLStatement = SQL`
+      SELECT address, scope, scope_id
+      FROM notification_opt_outs
+      WHERE 
+    `.append(conditions[0])
+
+    for (const condition of conditions.slice(1)) {
+      query.append(' OR ').append(condition)
+    }
+
+    const result = await pg.query<Pick<NotificationOptOutDb, 'address' | 'scope' | 'scope_id'>>(query)
+    return result.rows
+  }
+
+  async function saveNotificationOptOut(optOut: NotificationOptOutDb): Promise<void> {
+    const now = Date.now()
+    const query = SQL`
+      INSERT INTO notification_opt_outs (address, scope, scope_id, created_at, updated_at)
+      VALUES (${optOut.address.toLowerCase()}, ${optOut.scope}, ${optOut.scope_id}, ${optOut.created_at || now}, ${now})
+      ON CONFLICT (address, scope, scope_id) DO UPDATE SET updated_at = ${now}
+    `
+    await pg.query(query)
+  }
+
+  async function deleteNotificationOptOut(
+    address: EthAddress,
+    scope: NotificationScope,
+    scopeId: string
+  ): Promise<void> {
+    const query = SQL`
+      DELETE FROM notification_opt_outs
+      WHERE address = ${address.toLowerCase()}
+        AND scope = ${scope}
+        AND scope_id = ${scopeId}
+    `
+    await pg.query(query)
+  }
+
+  async function hasNotificationOptOut(
+    address: EthAddress,
+    scope: NotificationScope,
+    scopeId: string
+  ): Promise<boolean> {
+    const query = SQL`
+      SELECT 1
+      FROM notification_opt_outs
+      WHERE address = ${address.toLowerCase()}
+        AND scope = ${scope}
+        AND scope_id = ${scopeId}
+      LIMIT 1
+    `
+    const result = await pg.query(query)
+    return result.rowCount > 0
+  }
+
   return {
     findNotification,
     findSubscription,
@@ -350,7 +433,11 @@ export function createDbComponent({ pg }: Pick<DbComponents, 'pg'>): DbComponent
     saveSubscriptionEmail,
     findUnconfirmedEmail,
     saveUnconfirmedEmail,
-    deleteUnconfirmedEmail
+    deleteUnconfirmedEmail,
+    findNotificationOptOutsForAddressesAndScopes,
+    saveNotificationOptOut,
+    deleteNotificationOptOut,
+    hasNotificationOptOut
   }
 }
 

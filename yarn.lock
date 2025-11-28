@@ -760,6 +760,11 @@
   resolved "https://registry.yarnpkg.com/@dcl/catalyst-contracts/-/catalyst-contracts-4.4.1.tgz#c05e45c1e58d8633b8e0260f00b6b6908517471a"
   integrity sha512-auKNcpZUQV4u7BiL65TXGB0j+eLRVzvpE7oDd7ML0wyB4A8op9B1Ca+7JKZQLClrhj6nbyXoDT7JzFeSpkipoA==
 
+"@dcl/core-commons@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@dcl/core-commons/-/core-commons-0.5.0.tgz#a3fd055cb1dfb69758b2506b0867cda4547dd800"
+  integrity sha512-Lru7p7LcpTiIeZnpYQKRbYwHNqZBPieB7OLeGZ44kWt7+YdC6N7xj/GpAkn8xMGu+jcd7DaIZcfktZJqw+ELNA==
+
 "@dcl/crypto@^3.4.0", "@dcl/crypto@^3.4.3":
   version "3.4.5"
   resolved "https://registry.yarnpkg.com/@dcl/crypto/-/crypto-3.4.5.tgz#95ca2beab46fa3494b4d38f009bf0d49c87ba235"
@@ -809,6 +814,15 @@
     "@well-known-components/interfaces" "^1.4.2"
     node-fetch "^2.7.0"
 
+"@dcl/schema-validator-component@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@dcl/schema-validator-component/-/schema-validator-component-0.2.0.tgz#538cc558cdad5a2bea9f737a2cb231f47d4ef6b1"
+  integrity sha512-D3+3KO/c4nMC64GbAYeV9IxHonnHmCxvjxGb6gWY6EGLy4oiuhoorbSRvwQO0eoNj9ncw8CKrqcFncUTUBNeCA==
+  dependencies:
+    "@dcl/core-commons" "0.5.0"
+    ajv "^8.17.1"
+    ajv-formats "^3.0.1"
+
 "@dcl/schemas@^11.5.0":
   version "11.12.0"
   resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-11.12.0.tgz#f52493b615ebdea8e02819bc2ed4a456239f3747"
@@ -829,10 +843,10 @@
     ajv-keywords "^5.1.0"
     mitt "^3.0.1"
 
-"@dcl/schemas@^19.8.0":
-  version "19.8.0"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-19.8.0.tgz#0a1edb79b89e359c4c5efa7a8858ab0504a2ece4"
-  integrity sha512-Jx0osV3akupfuzza2p+Ohqzewz9zaE8MCaOSH2+wfvph1WuvBkyQP5WrCEzs8iIZx7Dh2uCr6Q4+o3tgfC+vnQ==
+"@dcl/schemas@^20.3.0":
+  version "20.3.0"
+  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-20.3.0.tgz#38558857274104f4acd1ecdb5e554033c78d8059"
+  integrity sha512-EsDfr6BvW31Vxlz/6EZMIvn56kTouvrHbD7Qh5l49mY8Vy1SWgVSuL6x/yXA2IGCE6gC1aG2YB3Y9LJFt+nhdw==
   dependencies:
     ajv "^8.11.0"
     ajv-errors "^3.0.0"
@@ -2003,6 +2017,13 @@ ajv-errors@^3.0.0:
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-3.0.0.tgz#e54f299f3a3d30fe144161e5f0d8d51196c527bc"
   integrity sha512-V3wD15YHfHz6y0KdhYFjyy9vWtEVALT9UrxfN3zqlI6dMioHnJrqOYfyPKol3oqrnCM9uwkcdCwkJ0WUcbLMTQ==
 
+ajv-formats@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ajv-formats/-/ajv-formats-3.0.1.tgz#3d5dc762bca17679c3c2ea7e90ad6b7532309578"
+  integrity sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==
+  dependencies:
+    ajv "^8.0.0"
+
 ajv-keywords@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-5.1.0.tgz#69d4d385a4733cdbeab44964a1170a88f87f0e16"
@@ -2019,6 +2040,16 @@ ajv@^6.12.4:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
+
+ajv@^8.0.0, ajv@^8.17.1:
+  version "8.17.1"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.17.1.tgz#37d9a5c776af6bc92d7f4f9510eba4c0a60d11a6"
+  integrity sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+    fast-uri "^3.0.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
 
 ajv@^8.11.0:
   version "8.16.0"
@@ -2806,6 +2837,11 @@ fast-levenshtein@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
+
+fast-uri@^3.0.1:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-3.1.0.tgz#66eecff6c764c0df9b762e62ca7edcfb53b4edfa"
+  integrity sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==
 
 fast-xml-parser@4.2.5:
   version "4.2.5"

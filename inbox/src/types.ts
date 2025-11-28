@@ -17,6 +17,8 @@ import { IFeaturesComponent } from '@well-known-components/features-component'
 import { IFeatureFlagsAdapter } from './adapters/feature-flags-adapter'
 import { IChallengerAdapter } from './adapters/challenger-adapter'
 import { IDomainValidator } from './logic/domain-validator'
+import { INotificationOptOutsManager } from './logic/notification-opt-out'
+import { ISchemaValidatorComponent } from '@dcl/schema-validator-component'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -40,6 +42,8 @@ export type BaseComponents = {
   features: IFeaturesComponent
   featureFlagsAdapter: IFeatureFlagsAdapter
   domainValidator: IDomainValidator
+  schemaValidator: ISchemaValidatorComponent<GlobalContext>
+  notificationOptOutsManager: INotificationOptOutsManager
 }
 
 // components used in runtime
