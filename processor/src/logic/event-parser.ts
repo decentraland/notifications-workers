@@ -1,4 +1,4 @@
-import { NotificationRecord } from '@notifications/common'
+import { NotificationScope, NotificationRecord } from '@notifications/common'
 import { EthAddress, Event, Events, NotificationType } from '@dcl/schemas'
 import { AppComponents, IEventParser } from '../types'
 import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
@@ -415,6 +415,10 @@ export async function createEventParser({
             address: memberAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.id
+            },
             metadata: {
               ...event.metadata,
               communityId: event.metadata.id,
@@ -436,6 +440,10 @@ export async function createEventParser({
             address: event.metadata.memberAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.id
+            },
             metadata: {
               ...event.metadata,
               communityId: event.metadata.id,
@@ -454,6 +462,10 @@ export async function createEventParser({
             address: ownerAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: id
+            },
             metadata: {
               communityId: id,
               communityName: name,
@@ -468,6 +480,10 @@ export async function createEventParser({
             address: event.metadata.memberAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
+            },
             metadata: {
               ...event.metadata
             }
@@ -480,6 +496,10 @@ export async function createEventParser({
             address: address,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
+            },
             metadata: {
               ...event.metadata,
               addressesToNotify: undefined
@@ -493,6 +513,10 @@ export async function createEventParser({
             address: event.metadata.memberAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
+            },
             metadata: {
               ...event.metadata,
               memberAddress: undefined
@@ -505,6 +529,10 @@ export async function createEventParser({
           address,
           eventKey: event.key,
           timestamp: event.timestamp,
+          optOutScope: {
+            scope: NotificationScope.Community,
+            scopeId: event.metadata.communityId
+          },
           metadata: {
             communityId: event.metadata.communityId,
             communityName: event.metadata.communityName,
@@ -520,6 +548,10 @@ export async function createEventParser({
             address: event.metadata.newOwnerAddress,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
+            },
             metadata: {
               communityId: event.metadata.communityId,
               communityName: event.metadata.communityName,
@@ -548,6 +580,10 @@ export async function createEventParser({
             address: event.metadata.attendee,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
+            },
             metadata: {
               title: event.metadata.title,
               description: event.metadata.description,
@@ -566,6 +602,10 @@ export async function createEventParser({
             address: event.metadata.attendee,
             eventKey: event.key,
             timestamp: event.timestamp,
+            optOutScope: {
+              scope: NotificationScope.Community,
+              scopeId: event.metadata.communityId
+            },
             metadata: {
               title: event.metadata.title,
               description: event.metadata.description,

@@ -22,6 +22,14 @@ export type UnconfirmedEmailDb = {
   updated_at: number
 }
 
+export type NotificationOptOutDb = {
+  address: string
+  scope: NotificationScope
+  scope_id: string
+  created_at: number
+  updated_at: number
+}
+
 export type NotificationEvent = {
   id: string
   type: string
@@ -36,6 +44,15 @@ export type SubscriptionDb = Subscription & {
   updated_at: number
 }
 
+export enum NotificationScope {
+  Community = 'community'
+}
+
+export type NotificationOptOutScope = {
+  scopeId: string // e.g. community id when scope is community
+  scope: NotificationScope
+}
+
 export type NotificationRecord = {
   id?: string
   eventKey: string
@@ -43,6 +60,7 @@ export type NotificationRecord = {
   address: string
   metadata: any
   timestamp: number
+  optOutScope?: NotificationOptOutScope
 }
 
 export type Email = {
@@ -96,7 +114,9 @@ const excludedNotificationTypes = [
   NotificationType.COMMUNITY_POST_ADDED,
   NotificationType.COMMUNITY_OWNERSHIP_TRANSFERRED,
   NotificationType.USER_BANNED_FROM_SCENE,
-  NotificationType.USER_UNBANNED_FROM_SCENE
+  NotificationType.USER_UNBANNED_FROM_SCENE,
+  NotificationType.CREDITS_NEW_SEASON_REMINDER,
+  NotificationType.TRANSFER_RECEIVED
 ].map((type) => type.toUpperCase())
 
 type ExcludedNotificationType = (typeof excludedNotificationTypes)[number]

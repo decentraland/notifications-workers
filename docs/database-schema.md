@@ -5,11 +5,13 @@ This document describes the database schema for the Notifications Workers servic
 ## Tables Overview
 
 The database contains the following active tables:
+
 1. **`notifications`** - Stores user notifications
 2. **`subscriptions`** - User notification preferences and email subscriptions
 3. **`unconfirmed_emails`** - Email confirmation codes for email verification
 4. **`broadcast_read`** - Tracks read status for broadcast notifications
-5. **`cursors`** - Event processing cursors for tracking processed events
+5. **`notification_opt_outs`** - User opt-out configurations scoped to metadata and notification type
+6. **`cursors`** - Event processing cursors for tracking processed events
 
 ---
 
@@ -28,7 +30,7 @@ erDiagram
         BIGINT created_at "Creation timestamp"
         BIGINT updated_at "Update timestamp"
     }
-    
+
     subscriptions {
         VARCHAR address PK "User address"
         VARCHAR email "Email address"
@@ -36,7 +38,7 @@ erDiagram
         BIGINT created_at "Creation timestamp"
         BIGINT updated_at "Update timestamp"
     }
-    
+
     unconfirmed_emails {
         VARCHAR address PK "User address"
         VARCHAR email "Email address"
@@ -44,26 +46,36 @@ erDiagram
         BIGINT created_at "Creation timestamp"
         BIGINT updated_at "Update timestamp"
     }
-    
+
     broadcast_read {
         UUID notification_id PK FK "Notification reference"
         VARCHAR address PK "User address"
         BIGINT read_at "Read timestamp"
     }
-    
+
+    notification_opt_outs {
+        VARCHAR address PK "User address"
+        VARCHAR scope PK "Scope type"
+        VARCHAR scope_id PK "Scope identifier"
+        BIGINT created_at "Creation timestamp"
+        BIGINT updated_at "Update timestamp"
+    }
+
     cursors {
         VARCHAR id PK "Cursor ID"
         BIGINT last_successful_run_at "Last run timestamp"
         BIGINT created_at "Creation timestamp"
         BIGINT updated_at "Update timestamp"
     }
-    
+
     notifications ||--o{ broadcast_read : "read status"
 ```
 
 **Relationship Notes:**
+
 - **Foreign Key**: `broadcast_read.notification_id` → `notifications.id`
 - **Composite Primary Key**: `broadcast_read` has composite PK `(notification_id, address)`
+- **Composite Primary Key**: `notification_opt_outs` has composite PK `(address, scope, scope_id)`
 - **Unique Constraint**: `notifications` has unique constraint on `(event_key, type, address)` for deduplication
 - **Address Optional**: `notifications.address` can be NULL for broadcast notifications
 
@@ -75,17 +87,17 @@ Stores user notifications from various sources.
 
 ### Columns
 
-| Column | Type | Nullable | Description |
-|--------|------|----------|-------------|
-| `id` | UUID | NOT NULL | **Primary Key**. Unique notification identifier. Auto-generated. |
-| `event_key` | VARCHAR | NOT NULL | Event identifier for deduplication. |
-| `type` | VARCHAR | NOT NULL | Notification type (e.g., `"marketplace_item_sold"`, `"friend_request"`). |
-| `address` | VARCHAR | NULL | Ethereum address of the notification recipient. NULL for broadcast notifications. |
-| `metadata` | JSONB | NOT NULL | Notification metadata (stored as JSON). |
-| `timestamp` | BIGINT | NOT NULL | Event timestamp (in milliseconds). |
-| `read_at` | BIGINT | NULL | Timestamp (in milliseconds) when notification was read. NULL if unread. |
-| `created_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when notification was created. |
-| `updated_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when notification was last updated. |
+| Column       | Type    | Nullable | Description                                                                       |
+| ------------ | ------- | -------- | --------------------------------------------------------------------------------- |
+| `id`         | UUID    | NOT NULL | **Primary Key**. Unique notification identifier. Auto-generated.                  |
+| `event_key`  | VARCHAR | NOT NULL | Event identifier for deduplication.                                               |
+| `type`       | VARCHAR | NOT NULL | Notification type (e.g., `"marketplace_item_sold"`, `"friend_request"`).          |
+| `address`    | VARCHAR | NULL     | Ethereum address of the notification recipient. NULL for broadcast notifications. |
+| `metadata`   | JSONB   | NOT NULL | Notification metadata (stored as JSON).                                           |
+| `timestamp`  | BIGINT  | NOT NULL | Event timestamp (in milliseconds).                                                |
+| `read_at`    | BIGINT  | NULL     | Timestamp (in milliseconds) when notification was read. NULL if unread.           |
+| `created_at` | BIGINT  | NOT NULL | Timestamp (in milliseconds) when notification was created.                        |
+| `updated_at` | BIGINT  | NOT NULL | Timestamp (in milliseconds) when notification was last updated.                   |
 
 ### Indexes
 
@@ -108,13 +120,13 @@ Stores user notification preferences and email subscriptions.
 
 ### Columns
 
-| Column | Type | Nullable | Description |
-|--------|------|----------|-------------|
-| `address` | VARCHAR | NOT NULL | **Primary Key**. Ethereum address of the user. |
-| `email` | VARCHAR | NULL | Email address for email notifications. |
-| `details` | JSONB | NOT NULL | Subscription preferences and details (stored as JSON). |
-| `created_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when subscription was created. |
-| `updated_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when subscription was last updated. |
+| Column       | Type    | Nullable | Description                                                     |
+| ------------ | ------- | -------- | --------------------------------------------------------------- |
+| `address`    | VARCHAR | NOT NULL | **Primary Key**. Ethereum address of the user.                  |
+| `email`      | VARCHAR | NULL     | Email address for email notifications.                          |
+| `details`    | JSONB   | NOT NULL | Subscription preferences and details (stored as JSON).          |
+| `created_at` | BIGINT  | NOT NULL | Timestamp (in milliseconds) when subscription was created.      |
+| `updated_at` | BIGINT  | NOT NULL | Timestamp (in milliseconds) when subscription was last updated. |
 
 ### Indexes
 
@@ -134,13 +146,13 @@ Stores email confirmation codes for email verification flow.
 
 ### Columns
 
-| Column | Type | Nullable | Description |
-|--------|------|----------|-------------|
-| `address` | VARCHAR | NOT NULL | **Primary Key**. Ethereum address of the user. |
-| `email` | VARCHAR | NOT NULL | Email address to be confirmed. |
-| `code` | VARCHAR | NOT NULL | Confirmation code. |
-| `created_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when confirmation record was created. |
-| `updated_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when confirmation record was last updated. |
+| Column       | Type    | Nullable | Description                                                            |
+| ------------ | ------- | -------- | ---------------------------------------------------------------------- |
+| `address`    | VARCHAR | NOT NULL | **Primary Key**. Ethereum address of the user.                         |
+| `email`      | VARCHAR | NOT NULL | Email address to be confirmed.                                         |
+| `code`       | VARCHAR | NOT NULL | Confirmation code.                                                     |
+| `created_at` | BIGINT  | NOT NULL | Timestamp (in milliseconds) when confirmation record was created.      |
+| `updated_at` | BIGINT  | NOT NULL | Timestamp (in milliseconds) when confirmation record was last updated. |
 
 ### Indexes
 
@@ -160,11 +172,11 @@ Tracks read status for broadcast notifications (notifications without a specific
 
 ### Columns
 
-| Column | Type | Nullable | Description |
-|--------|------|----------|-------------|
-| `notification_id` | UUID | NOT NULL | **Primary Key (part 1)**. **Foreign Key** to `notifications.id`. |
-| `address` | VARCHAR | NOT NULL | **Primary Key (part 2)**. Ethereum address of the user who read the notification. |
-| `read_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when the notification was read. |
+| Column            | Type    | Nullable | Description                                                                       |
+| ----------------- | ------- | -------- | --------------------------------------------------------------------------------- |
+| `notification_id` | UUID    | NOT NULL | **Primary Key (part 1)**. **Foreign Key** to `notifications.id`.                  |
+| `address`         | VARCHAR | NOT NULL | **Primary Key (part 2)**. Ethereum address of the user who read the notification. |
+| `read_at`         | BIGINT  | NOT NULL | Timestamp (in milliseconds) when the notification was read.                       |
 
 ### Indexes
 
@@ -179,18 +191,49 @@ Tracks read status for broadcast notifications (notifications without a specific
 
 ---
 
+## Table: `notification_opt_outs`
+
+Stores user opt-out configurations scoped to a scope type and scope identifier.
+
+### Columns
+
+| Column       | Type    | Nullable | Description                                                                        |
+| ------------ | ------- | -------- | ---------------------------------------------------------------------------------- |
+| `address`    | VARCHAR | NOT NULL | **Primary Key (part 1)**. Ethereum address of the user.                            |
+| `scope`      | VARCHAR | NOT NULL | **Primary Key (part 2)**. Scope type (e.g., `"community"`).                        |
+| `scope_id`   | VARCHAR | NOT NULL | **Primary Key (part 3)**. Identifier for the opted-out scope (e.g., community ID). |
+| `created_at` | BIGINT  | NOT NULL | Timestamp (in milliseconds) when the opt-out entry was created.                    |
+| `updated_at` | BIGINT  | NOT NULL | Timestamp (in milliseconds) when the opt-out entry was last updated.               |
+
+### Indexes
+
+- **Composite Primary Key**: `(address, scope, scope_id)` – one opt-out record per user and scope
+- **Index**: On `address` – for efficient opt-out lookups per user
+- **Index**: On `(scope, scope_id)` – fast evaluation of scope-context filtering
+
+### Business Rules
+
+1. Each row maps a user address and scope identifier that should be skipped.
+2. Event filtering uses the canonical metadata configuration for each scope to match notifications without storing notification types.
+3. Currently `scopeId` is the identifier for the scope (e.g. community id when scope is community).
+4. Only notification types that expose the `scope` and `scopeId` metadata can be opted out.
+5. Matching notifications are filtered out before they reach the database, so opted-out messages are never stored.
+6. Timestamps are stored in milliseconds (`BIGINT`).
+
+---
+
 ## Table: `cursors`
 
 Tracks event processing cursors for monitoring processed events.
 
 ### Columns
 
-| Column | Type | Nullable | Description |
-|--------|------|----------|-------------|
-| `id` | VARCHAR | NOT NULL | **Primary Key**. Cursor identifier. |
-| `last_successful_run_at` | BIGINT | NULL | Timestamp (in milliseconds) of the last successful processing run. NULL if never run. |
-| `created_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when cursor was created. |
-| `updated_at` | BIGINT | NOT NULL | Timestamp (in milliseconds) when cursor was last updated. |
+| Column                   | Type    | Nullable | Description                                                                           |
+| ------------------------ | ------- | -------- | ------------------------------------------------------------------------------------- |
+| `id`                     | VARCHAR | NOT NULL | **Primary Key**. Cursor identifier.                                                   |
+| `last_successful_run_at` | BIGINT  | NULL     | Timestamp (in milliseconds) of the last successful processing run. NULL if never run. |
+| `created_at`             | BIGINT  | NOT NULL | Timestamp (in milliseconds) when cursor was created.                                  |
+| `updated_at`             | BIGINT  | NOT NULL | Timestamp (in milliseconds) when cursor was last updated.                             |
 
 ### Indexes
 
@@ -210,4 +253,3 @@ Tracks event processing cursors for monitoring processed events.
 - **Database Logic**: `processor/src/logic/`
 - **Types**: `processor/src/types/`
 - **Database Port**: `processor/src/ports/postgres.ts`
-

@@ -1,5 +1,5 @@
 import { AppComponents } from '../types'
-import { NotificationRecord, SubscriptionDb } from '@notifications/common'
+import { NotificationOptOutDb, NotificationRecord, NotificationScope, SubscriptionDb } from '@notifications/common'
 
 export type INotificationsService = {
   saveNotifications(notification: NotificationRecord[]): Promise<void>
@@ -15,12 +15,76 @@ export async function createNotificationsService(
   const logger = logs.getLogger('notifications-service')
   const env = await config.requireString('ENV')
 
+  const buildOptOutKey = (address: string, scope: NotificationScope, scopeId: string): string => {
+    return `${address.toLowerCase()}:${scope}:${scopeId}`
+  }
+
+  const getUniqueAddressScopePairs = (
+    notifications: NotificationRecord[]
+  ): Array<{ address: string; scope: NotificationScope; scopeId: string }> => {
+    const pairsMap = notifications.reduce((acc, { address, optOutScope }) => {
+      if (!optOutScope?.scope || !optOutScope?.scopeId || !address) {
+        return acc
+      }
+
+      const key = buildOptOutKey(address, optOutScope.scope, optOutScope.scopeId)
+      if (!acc.has(key)) {
+        acc.set(key, {
+          address: address.toLowerCase(),
+          scope: optOutScope!.scope,
+          scopeId: optOutScope!.scopeId
+        })
+      }
+      return acc
+    }, new Map<string, { address: string; scope: NotificationScope; scopeId: string }>())
+    return Array.from(pairsMap.values())
+  }
+
+  const buildOptOutLookup = (optOutRows: Pick<NotificationOptOutDb, 'address' | 'scope' | 'scope_id'>[]): Set<string> =>
+    new Set(optOutRows.map(({ address, scope, scope_id }) => buildOptOutKey(address, scope, scope_id)))
+
+  const shouldKeepNotification = (notification: NotificationRecord, optOutLookup: Set<string>): boolean => {
+    const { optOutScope, address } = notification
+    if (!optOutScope?.scope || !optOutScope?.scopeId || !address) {
+      return true
+    }
+
+    const key = buildOptOutKey(address, optOutScope.scope, optOutScope.scopeId)
+    return !optOutLookup.has(key)
+  }
+
+  async function filterNotificationsByOptOuts(notifications: NotificationRecord[]): Promise<NotificationRecord[]> {
+    if (notifications.length === 0) {
+      return []
+    }
+
+    const addressScopePairs = getUniqueAddressScopePairs(notifications)
+    if (addressScopePairs.length === 0) {
+      // No notifications with optOutScope, return all
+      return notifications
+    }
+
+    const optOutRows = await db.findNotificationOptOutsForAddressesAndScopes(addressScopePairs)
+    if (optOutRows.length === 0) {
+      return notifications
+    }
+
+    const optOutLookup = buildOptOutLookup(optOutRows)
+
+    return notifications.filter((notification) => shouldKeepNotification(notification, optOutLookup))
+  }
+
   async function saveNotifications(notifications: NotificationRecord[]): Promise<void> {
     if (notifications.length === 0) {
       return
     }
 
-    const result = await db.insertNotifications(notifications)
+    const filteredNotifications = await filterNotificationsByOptOuts(notifications)
+    if (filteredNotifications.length === 0) {
+      return
+    }
+
+    const result = await db.insertNotifications(filteredNotifications)
     logger.info(
       `Inserted ${result.inserted.length} new notifications and updated ${result.updated.length} existing ones.`
     )
@@ -54,6 +118,7 @@ export async function createNotificationsService(
 
               continue
             }
+
             notification.metadata.userName = 'Unknown'
 
             const profile = await profiles.getByAddress(notification.address)
