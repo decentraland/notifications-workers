@@ -141,6 +141,20 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Blockchain.TRANSFER_RECEIVED:
+        return [
+          {
+            type: NotificationType.TRANSFER_RECEIVED,
+            address: event.metadata.receiverAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              senderAddress: event.metadata.senderAddress,
+              receiverAddress: event.metadata.receiverAddress,
+              tokenUri: event.metadata.tokenUri
+            }
+          }
+        ]
       case Events.SubType.Badge.GRANTED:
         return [
           {

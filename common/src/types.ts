@@ -100,6 +100,8 @@ const excludedNotificationTypes = [
   NotificationType.SOCIAL_SERVICE_FRIENDSHIP_REQUEST,
   NotificationType.SOCIAL_SERVICE_FRIENDSHIP_ACCEPTED,
   NotificationType.CREDITS_GOAL_COMPLETED,
+  NotificationType.CREDITS_NEW_SEASON_REMINDER,
+  NotificationType.TRANSFER_RECEIVED,
   NotificationType.COMMUNITY_DELETED,
   NotificationType.COMMUNITY_DELETED_CONTENT_VIOLATION,
   NotificationType.COMMUNITY_RENAMED,

@@ -19,6 +19,7 @@ export async function getSubscriptionHandler(
 
   return {
     body: {
+      address,
       email: subscription.email,
       unconfirmedEmail: unconfirmedEmail?.email,
       details: subscription.details
