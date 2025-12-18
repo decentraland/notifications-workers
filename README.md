@@ -9,17 +9,17 @@ This server interacts with AWS SNS for event notifications, PostgreSQL for notif
 ## Table of Contents
 
 - [Features](#features)
-- [Dependencies & Related Services](#dependencies--related-services)
+- [Dependencies](#dependencies)
 - [API Documentation](#api-documentation)
-- [Database Schema](#database-schema)
+- [Database](#database)
+  - [Schema](#schema)
+  - [Migrations](#migrations)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Configuration](#configuration)
   - [Running the Service](#running-the-service)
 - [Testing](#testing)
-- [How to Contribute](#how-to-contribute)
-- [License](#license)
 
 ## Features
 
@@ -30,16 +30,11 @@ This server interacts with AWS SNS for event notifications, PostgreSQL for notif
 - **Real-time Delivery**: Server-Sent Events (SSE) for real-time notification streams to clients.
 - **External Integration**: Accepts notifications from external producers via API with API key authentication.
 
-## Dependencies & Related Services
-
-This service interacts with the following services:
+## Dependencies
 
 - **[Marketplace](https://github.com/decentraland/marketplace)**: Source of marketplace events (item sold, bid received, etc.)
 - **[Social Service](https://github.com/decentraland/social-service-ea)**: Source of social events (friend requests, friend accepted)
 - **[Catalyst](https://github.com/decentraland/catalyst)**: Content server for profile data used in notification metadata
-
-External dependencies:
-
 - **PostgreSQL**: Database for notification storage, user subscriptions, and email confirmations
 - **AWS SNS**: Event bus for receiving notification events from various services
 - **SendGrid**: Email service for notification delivery
@@ -167,9 +162,41 @@ Starts the email confirmation process. The email will be set into a pending stat
 
 Confirms the email ownership using the code sent to the email address.
 
-## Database Schema
+## Database
+
+### Schema
 
 See [docs/database-schema.md](docs/database-schema.md) for detailed schema, column definitions, and relationships.
+
+### Migrations
+
+The service uses `node-pg-migrate` for database migrations. These migrations are located in `processor/src/migrations/`. The service automatically runs the migrations when starting up.
+
+#### Create a new migration
+
+Migrations are created by running the create command:
+
+```bash
+yarn migrate create name-of-the-migration
+```
+
+This will result in the creation of a migration file inside of the `processor/src/migrations/` directory. This migration file MUST contain the migration set up and rollback procedures.
+
+#### Manually applying migrations
+
+If required, these migrations can be run manually.
+
+To run them manually:
+
+```bash
+yarn migrate up
+```
+
+To rollback them manually:
+
+```bash
+yarn migrate down
+```
 
 ## Getting Started
 
@@ -177,7 +204,7 @@ See [docs/database-schema.md](docs/database-schema.md) for detailed schema, colu
 
 Before running this service, ensure you have the following installed:
 
-- **Node.js**: Version 16.x or higher (LTS recommended)
+- **Node.js**: Version 18.x or higher (LTS recommended)
 - **Yarn**: Version 1.22.x or higher
 - **Docker**: For containerized deployment and local development dependencies
 - **PostgreSQL**: Version 14+ (or use Docker Compose)
@@ -205,14 +232,13 @@ yarn build
 
 ### Configuration
 
-The service uses environment variables for configuration. Create a `.env` file in the root directory containing the environment variables for the service to run.
+The service uses environment variables for configuration. Copy the example file and adjust as needed:
 
-Key configuration variables include:
+```bash
+cp .env.default .env
+```
 
-- `PG_COMPONENT_PSQL_CONNECTION_STRING`: PostgreSQL connection string
-- `AWS_SNS_ARN`: SNS topic ARN for receiving notification events
-- `SENDGRID_API_KEY`: SendGrid API key for email delivery
-- `API_KEY`: API key for external notification producers
+See `.env.default` for available configuration options.
 
 ### Running the Service
 
@@ -263,6 +289,18 @@ Run tests in watch mode:
 
 ```bash
 yarn test --watch
+```
+
+Run only unit tests:
+
+```bash
+yarn test test/unit
+```
+
+Run only integration tests:
+
+```bash
+yarn test test/integration
 ```
 
 ### Test Structure
