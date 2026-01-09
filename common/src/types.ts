@@ -113,6 +113,7 @@ const excludedNotificationTypes = [
   NotificationType.COMMUNITY_INVITE_RECEIVED,
   NotificationType.COMMUNITY_POST_ADDED,
   NotificationType.COMMUNITY_OWNERSHIP_TRANSFERRED,
+  NotificationType.COMMUNITY_VOICE_CHAT_STARTED,
   NotificationType.USER_BANNED_FROM_SCENE,
   NotificationType.USER_UNBANNED_FROM_SCENE,
   NotificationType.CREDITS_NEW_SEASON_REMINDER,

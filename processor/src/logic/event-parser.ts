@@ -574,6 +574,22 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Community.VOICE_CHAT_STARTED:
+        return event.metadata.addressesToNotify.map((address: EthAddress) => ({
+          type: NotificationType.COMMUNITY_VOICE_CHAT_STARTED,
+          address,
+          eventKey: event.key,
+          timestamp: event.timestamp,
+          optOutScope: {
+            scope: NotificationScope.Community,
+            scopeId: event.metadata.communityId
+          },
+          metadata: {
+            communityId: event.metadata.communityId,
+            communityName: event.metadata.communityName,
+            thumbnailUrl: event.metadata.thumbnailUrl
+          }
+        }))
       case Events.SubType.Comms.USER_BANNED_FROM_SCENE:
       case Events.SubType.Comms.USER_UNBANNED_FROM_SCENE:
         return [
