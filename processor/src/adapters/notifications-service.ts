@@ -1,5 +1,6 @@
 import { AppComponents } from '../types'
 import { NotificationOptOutDb, NotificationRecord, NotificationScope, SubscriptionDb } from '@notifications/common'
+import { NotificationType } from '@dcl/schemas'
 
 export type INotificationsService = {
   saveNotifications(notification: NotificationRecord[]): Promise<void>
@@ -125,6 +126,16 @@ export async function createNotificationsService(
 
             if (profile && profile.avatars && profile.avatars.length) {
               notification.metadata.userName = profile.avatars[0].name
+            }
+
+            // Enrich sender username for TIP_RECEIVED notifications
+            if (notification.type === NotificationType.TIP_RECEIVED && notification.metadata.senderAddress) {
+              notification.metadata.senderUsername = 'Unknown'
+              const senderProfile = await profiles.getByAddress(notification.metadata.senderAddress)
+
+              if (senderProfile && senderProfile.avatars && senderProfile.avatars.length) {
+                notification.metadata.senderUsername = senderProfile.avatars[0].name
+              }
             }
 
             const email = await emailRenderer.renderEmail(subscription.email, notification)
