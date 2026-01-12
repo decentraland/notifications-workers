@@ -2,9 +2,9 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/decentraland/notifications-workers/badge.svg)](https://coveralls.io/github/decentraland/notifications-workers)
 
-The Notifications Workers service is split into two separate workers for scalability and availability. The service manages user notifications across the Decentraland platform, handling notification production, storage, delivery via Server-Sent Events, and email notifications via SendGrid.
+The Notifications Workers service is split into two separate workers for scalability and availability. The service manages user notifications across the Decentraland platform, handling notification production, storage, delivery via Server-Sent Events, and email notifications via a third party provider.
 
-This server interacts with AWS SNS for event notifications, PostgreSQL for notification storage, and SendGrid for email delivery in order to provide users with real-time notifications about marketplace events, social interactions, and other platform activities.
+This server integrates with AWS SNS for event notifications, PostgreSQL for notification storage, and a third-party email provider (currently SendGrid) to deliver real-time notifications about marketplace events, social interactions, and other platform activities.
 
 ## Table of Contents
 
