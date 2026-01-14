@@ -592,6 +592,27 @@ exports[`email rendering tests rendering streaming_time_exceeded 1`] = `
 }
 `;
 
+exports[`email rendering tests rendering tip_received 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://decentraland.org/marketplace/activity",
+  "actionButtonText": "CHECK IT OUT",
+  "bannerLabel": "Tip Received",
+  "bannerUrl": "https://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/507852ab-c181-4e4f-a06a-1bd07d96bcd0/600x240.png",
+  "content": "<p style='font-family: Inter, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: 0%; text-align: center; text-decoration: underline; text-decoration-style: solid; color: #43404A; margin: 0;'>
+  <span style='font-family: Inter, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 20px; line-height: 24px; letter-spacing: 0%; text-align: center; color: #FF2D55; text-decoration: none;'>CoolBuilder</span> sent you a 10.00 MANA tip for one of your scenes!
+</p>
+
+",
+  "subject": "You've Received a Tip! 💰",
+  "title": "Congratulations",
+  "titleHighlight": "SceneCreator",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/tip_received?signature=bae6faffa5d34bdf6b682bf161b2cfea29d194f86908b274d6bd8d13dca73227",
+}
+`;
+
 exports[`email rendering tests rendering worlds_access_restored 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
