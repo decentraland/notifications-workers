@@ -599,8 +599,8 @@ exports[`email rendering tests rendering tip_received 1`] = `
   "actionButtonText": "CHECK IT OUT",
   "bannerLabel": "Tip Received",
   "bannerUrl": "https://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/507852ab-c181-4e4f-a06a-1bd07d96bcd0/600x240.png",
-  "content": "<p style='font-family: Inter, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: 0%; text-align: center; text-decoration: underline; text-decoration-style: solid; color: #43404A; margin: 0;'>
-  <span style='font-family: Inter, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 20px; line-height: 24px; letter-spacing: 0%; text-align: center; color: #FF2D55; text-decoration: none;'>CoolBuilder</span> sent you a 10.00 MANA tip for one of your scenes!
+  "content": "<p>
+  <span style='color: #FF2D55; text-decoration: underline;'>CoolBuilder</span> sent you a <span style='font-weight: 600; color: #FF2D55; text-transform: uppercase;'>10.00 MANA</span> tip for one of your scenes!
 </p>
 
 ",
