@@ -604,7 +604,7 @@ exports[`email rendering tests rendering tip_received 1`] = `
 </p>
 
 ",
-  "subject": "You've Received a Tip! 💰",
+  "subject": "You‘ve Received a Tip! 💰",
   "title": "Congratulations",
   "titleHighlight": "SceneCreator",
   "to": "email@example.com",
