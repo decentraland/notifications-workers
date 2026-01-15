@@ -14,7 +14,7 @@ jobs:
     with:
       api-spec-file: 'docs/openapi.yaml'
       api-spec-name: 'notifications-inbox-api'
-      node-version: '20'
+      node-version: '24.x'
     secrets: inherit
 
 
