@@ -334,6 +334,20 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
+    [NotificationType.TIP_RECEIVED]: {
+      id: '123456789',
+      type: NotificationType.TIP_RECEIVED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        amount: '10000000000000000000',
+        senderAddress: '0xABCDEF1234567890ABCDEF1234567890ABCDEF12',
+        receiverAddress: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        senderUsername: 'CoolBuilder',
+        userName: 'SceneCreator'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.WORLDS_ACCESS_RESTORED]: {
       id: '123456789',
       type: NotificationType.WORLDS_ACCESS_RESTORED,
