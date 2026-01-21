@@ -164,6 +164,9 @@ export async function createEventParser({
             timestamp: event.timestamp,
             metadata: {
               amount: event.metadata.amount,
+              // NOTE: 'manaAmount' is included for UI2 compatibility, but 'amount' should be the latest field according to TipNotificationMetadataProps.
+              // TODO: Confirm with UI2 team if 'manaAmount' can be removed.
+              manaAmount: (Number(event.metadata.amount) * 1e18).toString(),
               senderAddress: event.metadata.senderAddress,
               receiverAddress: event.metadata.receiverAddress
             }
