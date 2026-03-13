@@ -503,6 +503,30 @@ describe('email rendering tests', () => {
       },
       timestamp: Date.now(),
       eventKey: '123'
+    },
+    [NotificationType.BANNED]: {
+      id: '123456789',
+      type: NotificationType.BANNED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        reason: 'Harassment',
+        bannedAt: '2024-06-01T12:00:00.000Z',
+        expiresAt: '2024-06-08T12:00:00.000Z',
+        customMessage: 'You have been banned for repeated violations.'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.BAN_WARNING]: {
+      id: '123456789',
+      type: NotificationType.BAN_WARNING,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        reason: 'Inappropriate language',
+        warnedAt: '2024-06-01T12:00:00.000Z'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
     }
   }
 
@@ -520,5 +544,63 @@ describe('email rendering tests', () => {
 
   test.each(cases)(`rendering %s`, async (_type: NotificationType, notification: NotificationRecord) => {
     expect(await renderer.renderEmail('email@example.com', notification)).toMatchSnapshot()
+  })
+
+  describe('banned template edge cases', () => {
+    test('renders without optional fields', async () => {
+      const notification: NotificationRecord = {
+        id: '123456789',
+        type: NotificationType.BANNED,
+        address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        metadata: {
+          reason: 'Harassment',
+          bannedAt: '2024-06-01T12:00:00.000Z'
+        },
+        timestamp: Date.now(),
+        eventKey: '123'
+      }
+      const result = await renderer.renderEmail('email@example.com', notification)
+      expect(result!.content).not.toContain('Ban expires')
+      expect(result!.content).not.toContain('Additional details')
+      expect(result!.content).toContain('Harassment')
+    })
+
+    test('HTML-escapes customMessage', async () => {
+      const notification: NotificationRecord = {
+        id: '123456789',
+        type: NotificationType.BANNED,
+        address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        metadata: {
+          reason: 'Spam',
+          bannedAt: '2024-06-01T12:00:00.000Z',
+          customMessage: '<script>alert("xss")</script>'
+        },
+        timestamp: Date.now(),
+        eventKey: '123'
+      }
+      const result = await renderer.renderEmail('email@example.com', notification)
+      expect(result!.content).not.toContain('<script>')
+      expect(result!.content).toContain('&lt;script&gt;')
+    })
+  })
+
+  describe('ban_warning template edge cases', () => {
+    test('renders with minimal fields', async () => {
+      const notification: NotificationRecord = {
+        id: '123456789',
+        type: NotificationType.BAN_WARNING,
+        address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        metadata: {
+          reason: 'Inappropriate language',
+          warnedAt: '2024-06-01T12:00:00.000Z'
+        },
+        timestamp: Date.now(),
+        eventKey: '123'
+      }
+      const result = await renderer.renderEmail('email@example.com', notification)
+      expect(result!.content).toContain('Inappropriate language')
+      expect(result!.content).not.toContain('Additional details')
+    })
+
   })
 })

@@ -116,8 +116,6 @@ const excludedNotificationTypes = [
   NotificationType.COMMUNITY_VOICE_CHAT_STARTED,
   NotificationType.USER_BANNED_FROM_SCENE,
   NotificationType.USER_UNBANNED_FROM_SCENE,
-  NotificationType.BANNED,
-  NotificationType.BAN_WARNING,
   NotificationType.CREDITS_NEW_SEASON_REMINDER,
   NotificationType.TRANSFER_RECEIVED
 ].map((type) => type.toUpperCase())

@@ -1,5 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`email rendering tests rendering ban_warning 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "content": "<p>
+  You have received a warning regarding your Decentraland account.
+</p>
+<p>
+  <span style='font-weight: 600;'>Reason:</span> Inappropriate language
+</p>
+",
+  "subject": "Warning: Your Decentraland Account Is at Risk",
+  "title": "Account",
+  "titleHighlight": "Warning",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/ban_warning?signature=4bd8cdea692d3b94aefe936357c5a5da41f2ed585d3746f603e3ad1ce8ff70c5",
+}
+`;
+
+exports[`email rendering tests rendering banned 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "content": "<p>
+  Your Decentraland account has been banned.
+</p>
+<p>
+  <span style='font-weight: 600;'>Reason:</span> Harassment
+</p>
+<p>
+  <span style='font-weight: 600;'>Ban expires:</span> 2024-06-08T12:00:00.000Z
+</p>
+<p>
+  <span style='font-weight: 600;'>Additional details:</span> You have been banned for repeated violations.
+</p>
+",
+  "subject": "Your Decentraland Account Has Been Banned",
+  "title": "Account",
+  "titleHighlight": "Banned",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/banned?signature=28e3f4bd2fd84a5a530da14cf146c0d6405ba9acd8f9095d25b6ba53ecea5223",
+}
+`;
+
 exports[`email rendering tests rendering bid_accepted 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
