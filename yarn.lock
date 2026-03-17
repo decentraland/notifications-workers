@@ -845,16 +845,6 @@
     ajv-errors "^3.0.0"
     ajv-keywords "^5.1.0"
 
-"@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/moderation-events/dcl-schemas-25.0.1-23062351829.commit-0121346.tgz":
-  version "25.0.1-23062351829.commit-0121346"
-  resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/moderation-events/dcl-schemas-25.0.1-23062351829.commit-0121346.tgz"
-  integrity sha512-V7J/QDHZEDFOcITSUThbcdovrYZiRmWi8ftPpam4mVpRCzoaXo9ue6mG3KXZvIFnuwmVLeTl49qEIAQ6SJA3ZQ==
-  dependencies:
-    ajv "^8.11.0"
-    ajv-errors "^3.0.0"
-    ajv-keywords "^5.1.0"
-    mitt "^3.0.1"
-
 "@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/moderation-events/dcl-schemas-25.1.1-23203167673.commit-a6c7eec.tgz":
   version "25.1.1-23203167673.commit-a6c7eec"
   resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/moderation-events/dcl-schemas-25.1.1-23203167673.commit-a6c7eec.tgz"
@@ -1203,7 +1193,7 @@
   version "0.0.0"
   resolved "file:common"
   dependencies:
-    "@dcl/schemas" "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/moderation-events/dcl-schemas-25.0.1-23062351829.commit-0121346.tgz"
+    "@dcl/schemas" "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/moderation-events/dcl-schemas-25.1.1-23203167673.commit-a6c7eec.tgz"
     "@well-known-components/env-config-provider" "^1.2.0"
     "@well-known-components/interfaces" "^1.5.2"
     "@well-known-components/logger" "^3.1.3"
