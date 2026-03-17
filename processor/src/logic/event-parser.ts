@@ -635,6 +635,18 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Moderation.USER_BAN_LIFTED:
+        return [
+          {
+            type: moderationNotificationTypeByEventSubtype(event.subType),
+            address: event.metadata.bannedAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              liftedAt: event.metadata.liftedAt
+            }
+          }
+        ]
       case Events.SubType.Event.EVENT_CREATED:
         return [
           {

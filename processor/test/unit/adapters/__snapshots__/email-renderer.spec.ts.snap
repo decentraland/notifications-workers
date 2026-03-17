@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`email rendering tests rendering ban_lifted 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "bannerLabel": "Account Ban Lifted",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/440a9fe8-9873-4582-8fec-26d9f9e62bff/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your account ban has been <span style="color: #FF2D55;">lifted</span>. You can now access Decentraland again.
+</p>
+",
+  "subject": "Your Account Ban Has Been Lifted ✅",
+  "title": "Hey there",
+  "titleHighlight": """",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/ban_lifted?signature=94a944ada0b1ac2d96533358f267ebbf75e5b437f89ef0abb20826346f175a15",
+}
+`;
+
 exports[`email rendering tests rendering ban_warning 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",

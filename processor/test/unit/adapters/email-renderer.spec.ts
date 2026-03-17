@@ -527,6 +527,16 @@ describe('email rendering tests', () => {
       },
       timestamp: Date.now(),
       eventKey: '123'
+    },
+    [NotificationType.BAN_LIFTED]: {
+      id: '123456789',
+      type: NotificationType.BAN_LIFTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        liftedAt: 1717243200000
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
     }
   }
 

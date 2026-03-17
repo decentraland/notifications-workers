@@ -944,6 +944,40 @@ describe('when parsing worlds notifications', () => {
     })
   })
 
+  describe('and the event is USER_BAN_LIFTED', () => {
+    let event: any
+
+    beforeEach(() => {
+      event = {
+        type: Events.Type.MODERATION,
+        subType: Events.SubType.Moderation.USER_BAN_LIFTED,
+        key: 'lift-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          id: 'ban-id-123',
+          bannedAddress: '0x1234567890123456789012345678901234567890',
+          liftedBy: '0x0987654321098765432109876543210987654321',
+          liftedAt: fixedTimestamp
+        }
+      }
+    })
+
+    it('should parse to BAN_LIFTED notification addressed to the banned user', () => {
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.BAN_LIFTED,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'lift-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          liftedAt: fixedTimestamp
+        }
+      })
+    })
+  })
+
   describe('and the event is an unknown moderation subtype', () => {
     it('should return an empty array', () => {
       const event = {
