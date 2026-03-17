@@ -560,8 +560,7 @@ describe('email rendering tests', () => {
         eventKey: '123'
       }
       const result = await renderer.renderEmail('email@example.com', notification)
-      expect(result!.content).not.toContain('Ban expires')
-      expect(result!.content).not.toContain('Additional details')
+      expect(result!.content).not.toContain('This ban expires')
       expect(result!.content).toContain('Harassment')
     })
 
@@ -599,7 +598,7 @@ describe('email rendering tests', () => {
       }
       const result = await renderer.renderEmail('email@example.com', notification)
       expect(result!.content).toContain('Inappropriate language')
-      expect(result!.content).not.toContain('Additional details')
+      expect(result!.content).toContain('community guidelines')
     })
 
   })

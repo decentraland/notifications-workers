@@ -1,16 +1,3 @@
-<p>
-  Your Decentraland account has been banned.
+<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your account has been banned for <span style="color: #FF2D55;">{{metadata.reason}}</span>.{{#if metadata.expiresAt}} This ban expires on {{metadata.expiresAt}}.{{/if}}{{#if metadata.customMessage}} {{metadata.customMessage}}{{/if}}
 </p>
-<p>
-  <span style='font-weight: 600;'>Reason:</span> {{metadata.reason}}
-</p>
-{{#if metadata.expiresAt}}
-<p>
-  <span style='font-weight: 600;'>Ban expires:</span> {{metadata.expiresAt}}
-</p>
-{{/if}}
-{{#if metadata.customMessage}}
-<p>
-  <span style='font-weight: 600;'>Additional details:</span> {{metadata.customMessage}}
-</p>
-{{/if}}

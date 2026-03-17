@@ -3,16 +3,15 @@
 exports[`email rendering tests rendering ban_warning 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
-  "content": "<p>
-  You have received a warning regarding your Decentraland account.
-</p>
-<p>
-  <span style='font-weight: 600;'>Reason:</span> Inappropriate language
+  "bannerLabel": "Account Warning",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/440a9fe8-9873-4582-8fec-26d9f9e62bff/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your account has received a warning for <span style="color: #FF2D55;">Inappropriate language</span>. Please review our community guidelines to avoid further action.
 </p>
 ",
-  "subject": "Warning: Your Decentraland Account Is at Risk",
-  "title": "Account",
-  "titleHighlight": "Warning",
+  "subject": "You've Received an Account Warning ⚠️",
+  "title": "Hey there",
+  "titleHighlight": """",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/ban_warning?signature=4bd8cdea692d3b94aefe936357c5a5da41f2ed585d3746f603e3ad1ce8ff70c5",
@@ -22,22 +21,15 @@ exports[`email rendering tests rendering ban_warning 1`] = `
 exports[`email rendering tests rendering banned 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
-  "content": "<p>
-  Your Decentraland account has been banned.
-</p>
-<p>
-  <span style='font-weight: 600;'>Reason:</span> Harassment
-</p>
-<p>
-  <span style='font-weight: 600;'>Ban expires:</span> 2024-06-08T12:00:00.000Z
-</p>
-<p>
-  <span style='font-weight: 600;'>Additional details:</span> You have been banned for repeated violations.
+  "bannerLabel": "Account Banned",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/440a9fe8-9873-4582-8fec-26d9f9e62bff/1200x480.png",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your account has been banned for <span style="color: #FF2D55;">Harassment</span>. This ban expires on 2024-06-08T12:00:00.000Z. You have been banned for repeated violations.
 </p>
 ",
-  "subject": "Your Decentraland Account Has Been Banned",
-  "title": "Account",
-  "titleHighlight": "Banned",
+  "subject": "Your Decentraland Account Has Been Banned 🚫",
+  "title": "Hey there",
+  "titleHighlight": """",
   "to": "email@example.com",
   "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
   "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/banned?signature=28e3f4bd2fd84a5a530da14cf146c0d6405ba9acd8f9095d25b6ba53ecea5223",
