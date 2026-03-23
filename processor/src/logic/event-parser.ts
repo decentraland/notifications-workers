@@ -5,6 +5,7 @@ import { rewardNotificationTypeByEventSubtype } from './rewards-utils'
 import { streamingNotificationTypeByEventSubtype } from './streaming-utils'
 import { referralNotificationTypeByEventSubtype } from './referral-utils'
 import { commsNotificationTypeByEventSubtype } from './comms-utils'
+import { moderationNotificationTypeByEventSubtype } from './moderation-utils'
 
 export async function createEventParser({
   logs,
@@ -603,6 +604,46 @@ export async function createEventParser({
             timestamp: event.timestamp,
             metadata: {
               placeTitle: event.metadata.placeTitle
+            }
+          }
+        ]
+      case Events.SubType.Moderation.USER_BAN_CREATED:
+        return [
+          {
+            type: moderationNotificationTypeByEventSubtype(event.subType),
+            address: event.metadata.bannedAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              reason: event.metadata.reason,
+              bannedAt: event.metadata.bannedAt,
+              expiresAt: event.metadata.expiresAt,
+              customMessage: event.metadata.customMessage
+            }
+          }
+        ]
+      case Events.SubType.Moderation.USER_WARNING_CREATED:
+        return [
+          {
+            type: moderationNotificationTypeByEventSubtype(event.subType),
+            address: event.metadata.warnedAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              reason: event.metadata.reason,
+              warnedAt: event.metadata.warnedAt
+            }
+          }
+        ]
+      case Events.SubType.Moderation.USER_BAN_LIFTED:
+        return [
+          {
+            type: moderationNotificationTypeByEventSubtype(event.subType),
+            address: event.metadata.bannedAddress,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              liftedAt: event.metadata.liftedAt
             }
           }
         ]

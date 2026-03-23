@@ -503,6 +503,40 @@ describe('email rendering tests', () => {
       },
       timestamp: Date.now(),
       eventKey: '123'
+    },
+    [NotificationType.BANNED]: {
+      id: '123456789',
+      type: NotificationType.BANNED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        reason: 'Harassment',
+        bannedAt: '2024-06-01T12:00:00.000Z',
+        expiresAt: '2024-06-08T12:00:00.000Z',
+        customMessage: 'You have been banned for repeated violations.'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.BAN_WARNING]: {
+      id: '123456789',
+      type: NotificationType.BAN_WARNING,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        reason: 'Inappropriate language',
+        warnedAt: '2024-06-01T12:00:00.000Z'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.BAN_LIFTED]: {
+      id: '123456789',
+      type: NotificationType.BAN_LIFTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        liftedAt: 1717243200000
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
     }
   }
 
@@ -520,5 +554,65 @@ describe('email rendering tests', () => {
 
   test.each(cases)(`rendering %s`, async (_type: NotificationType, notification: NotificationRecord) => {
     expect(await renderer.renderEmail('email@example.com', notification)).toMatchSnapshot()
+  })
+
+  describe('banned template edge cases', () => {
+    test('renders permanent ban (no expiresAt) without ban period block', async () => {
+      const notification: NotificationRecord = {
+        id: '123456789',
+        type: NotificationType.BANNED,
+        address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        metadata: {
+          reason: 'Harassment',
+          bannedAt: '2024-06-01T12:00:00.000Z'
+        },
+        timestamp: Date.now(),
+        eventKey: '123'
+      }
+      const result = await renderer.renderEmail('email@example.com', notification)
+      expect(result!.content).toContain('permanently banned')
+      expect(result!.content).not.toContain('Ban period')
+      expect(result!.content).not.toContain('temporarily suspended')
+    })
+
+    test('renders temporary ban with ban period and reason', async () => {
+      const notification: NotificationRecord = {
+        id: '123456789',
+        type: NotificationType.BANNED,
+        address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        metadata: {
+          reason: 'Spam',
+          bannedAt: '2024-06-01T12:00:00.000Z',
+          expiresAt: '2024-06-08T12:00:00.000Z'
+        },
+        timestamp: Date.now(),
+        eventKey: '123'
+      }
+      const result = await renderer.renderEmail('email@example.com', notification)
+      expect(result!.content).toContain('temporarily suspended')
+      expect(result!.content).toContain('Ban period')
+      expect(result!.content).toContain('7 days')
+      expect(result!.content).toContain('Spam')
+    })
+  })
+
+  describe('ban_warning template edge cases', () => {
+    test('renders static warning copy', async () => {
+      const notification: NotificationRecord = {
+        id: '123456789',
+        type: NotificationType.BAN_WARNING,
+        address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+        metadata: {
+          reason: 'Inappropriate language',
+          warnedAt: '2024-06-01T12:00:00.000Z'
+        },
+        timestamp: Date.now(),
+        eventKey: '123'
+      }
+      const result = await renderer.renderEmail('email@example.com', notification)
+      expect(result!.content).toContain('policy violation')
+      expect(result!.content).toContain('further violations could result in a suspension')
+    })
+
   })
 })

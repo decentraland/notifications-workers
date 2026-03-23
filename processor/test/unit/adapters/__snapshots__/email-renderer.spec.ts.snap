@@ -1,5 +1,69 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`email rendering tests rendering ban_lifted 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://play.decentraland.org",
+  "actionButtonText": "Jump In",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your ban has been lifted, and your account is active again. You can jump back into Decentraland.
+</p>
+",
+  "subject": "Your Access Has Been Restored",
+  "title": "Hey there",
+  "titleHighlight": """",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/ban_lifted?signature=94a944ada0b1ac2d96533358f267ebbf75e5b437f89ef0abb20826346f175a15",
+}
+`;
+
+exports[`email rendering tests rendering ban_warning 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://decentraland.org/help",
+  "actionButtonText": "Contact Support",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your account was flagged for a policy violation. This is a warning. You can still use Decentraland, but further violations could result in a suspension.
+</p>
+<p style="font-size: 16px; line-height: 24px; text-align: center; color: #43404A;">
+  If you're not sure what happened, contact Support and they'll explain it.
+</p>
+",
+  "subject": "Policy Violation On Your Account",
+  "title": "Hey there",
+  "titleHighlight": """",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/ban_warning?signature=4bd8cdea692d3b94aefe936357c5a5da41f2ed585d3746f603e3ad1ce8ff70c5",
+}
+`;
+
+exports[`email rendering tests rendering banned 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://decentraland.org/help",
+  "actionButtonText": "Contact Support",
+  "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
+  Your account has been temporarily suspended due to a policy violation. You won't be able to log in until the suspension is lifted.
+</p>
+<p style="font-size: 16px; line-height: 24px; text-align: center; color: #43404A;">
+  <strong>Ban period:</strong> 7 days<br>
+  <strong>Reason:</strong> Harassment
+</p>
+<p style="font-size: 16px; line-height: 24px; text-align: center; color: #43404A;">
+  If you want to understand what happened, contact Support.
+</p>
+",
+  "subject": "Account Temporarily Suspended",
+  "title": "Hey there",
+  "titleHighlight": """",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/banned?signature=28e3f4bd2fd84a5a530da14cf146c0d6405ba9acd8f9095d25b6ba53ecea5223",
+}
+`;
+
 exports[`email rendering tests rendering bid_accepted 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",

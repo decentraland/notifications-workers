@@ -846,4 +846,151 @@ describe('when parsing worlds notifications', () => {
       })
     })
   })
+
+  describe('and the event is USER_BAN_CREATED', () => {
+    let event: any
+
+    beforeEach(() => {
+      event = {
+        type: Events.Type.MODERATION,
+        subType: Events.SubType.Moderation.USER_BAN_CREATED,
+        key: 'ban-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          id: 'ban-id-123',
+          bannedAddress: '0x1234567890123456789012345678901234567890',
+          bannedBy: '0x0987654321098765432109876543210987654321',
+          reason: 'Harassment',
+          bannedAt: fixedTimestamp,
+          expiresAt: fixedTimestamp + 86400000,
+          customMessage: 'You have been banned for 24 hours'
+        }
+      }
+    })
+
+    it('should parse to BANNED notification addressed to the banned user', () => {
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.BANNED,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'ban-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          reason: 'Harassment',
+          bannedAt: fixedTimestamp,
+          expiresAt: fixedTimestamp + 86400000,
+          customMessage: 'You have been banned for 24 hours'
+        }
+      })
+    })
+
+    it('should handle permanent ban (null expiresAt)', () => {
+      event.metadata.expiresAt = null
+      event.metadata.customMessage = undefined
+
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.BANNED,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'ban-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          reason: 'Harassment',
+          bannedAt: fixedTimestamp,
+          expiresAt: null,
+          customMessage: undefined
+        }
+      })
+    })
+  })
+
+  describe('and the event is USER_WARNING_CREATED', () => {
+    let event: any
+
+    beforeEach(() => {
+      event = {
+        type: Events.Type.MODERATION,
+        subType: Events.SubType.Moderation.USER_WARNING_CREATED,
+        key: 'warning-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          id: 'warning-id-123',
+          warnedAddress: '0x1234567890123456789012345678901234567890',
+          warnedBy: '0x0987654321098765432109876543210987654321',
+          reason: 'Inappropriate language',
+          warnedAt: fixedTimestamp
+        }
+      }
+    })
+
+    it('should parse to BAN_WARNING notification addressed to the warned user', () => {
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.BAN_WARNING,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'warning-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          reason: 'Inappropriate language',
+          warnedAt: fixedTimestamp
+        }
+      })
+    })
+  })
+
+  describe('and the event is USER_BAN_LIFTED', () => {
+    let event: any
+
+    beforeEach(() => {
+      event = {
+        type: Events.Type.MODERATION,
+        subType: Events.SubType.Moderation.USER_BAN_LIFTED,
+        key: 'lift-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          id: 'ban-id-123',
+          bannedAddress: '0x1234567890123456789012345678901234567890',
+          liftedBy: '0x0987654321098765432109876543210987654321',
+          liftedAt: fixedTimestamp
+        }
+      }
+    })
+
+    it('should parse to BAN_LIFTED notification addressed to the banned user', () => {
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.BAN_LIFTED,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'lift-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          liftedAt: fixedTimestamp
+        }
+      })
+    })
+  })
+
+  describe('and the event is an unknown moderation subtype', () => {
+    it('should return an empty array', () => {
+      const event = {
+        type: Events.Type.MODERATION,
+        subType: 'unknown-moderation-subtype',
+        key: 'unknown-123',
+        timestamp: fixedTimestamp,
+        metadata: {}
+      }
+
+      const notifications = eventParser.parseToNotifications(event as any)
+
+      expect(notifications).toHaveLength(0)
+    })
+  })
 })
