@@ -31,6 +31,11 @@ function loadTemplates() {
   handlebars.registerHelper('days', (from: string, to: string) => (parseInt(to) - parseInt(from)) / 86400)
   handlebars.registerHelper('insert', (text: string, defaultText: string) => (text ? text : defaultText))
   handlebars.registerHelper('arrayToString', (array: string[]) => (array && array.length > 0 ? array.join('/') : ''))
+  handlebars.registerHelper('durationDays', (from: string, to: string) => {
+    const ms = new Date(to).getTime() - new Date(from).getTime()
+    const days = Math.round(ms / 86400000)
+    return days === 1 ? '1 day' : `${days} days`
+  })
 
   return Object.values(EmailableNotificationTypeEnum).reduce(
     (acc: any, notificationType: any) => {

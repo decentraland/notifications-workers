@@ -3,13 +3,13 @@
 exports[`email rendering tests rendering ban_lifted 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
-  "bannerLabel": "Account Ban Lifted",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/440a9fe8-9873-4582-8fec-26d9f9e62bff/1200x480.png",
+  "actionButtonLink": "https://play.decentraland.org",
+  "actionButtonText": "Jump In",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
-  Your account ban has been <span style="color: #FF2D55;">lifted</span>. You can now access Decentraland again.
+  Your ban has been lifted, and your account is active again. You can jump back into Decentraland.
 </p>
 ",
-  "subject": "Your Account Ban Has Been Lifted ✅",
+  "subject": "Your Access Has Been Restored",
   "title": "Hey there",
   "titleHighlight": """",
   "to": "email@example.com",
@@ -21,13 +21,16 @@ exports[`email rendering tests rendering ban_lifted 1`] = `
 exports[`email rendering tests rendering ban_warning 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
-  "bannerLabel": "Account Warning",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/440a9fe8-9873-4582-8fec-26d9f9e62bff/1200x480.png",
+  "actionButtonLink": "https://decentraland.org/help",
+  "actionButtonText": "Contact Support",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
-  Your account has received a warning for <span style="color: #FF2D55;">Inappropriate language</span>. Please review our community guidelines to avoid further action.
+  Your account was flagged for a policy violation. This is a warning. You can still use Decentraland, but further violations could result in a suspension.
+</p>
+<p style="font-size: 16px; line-height: 24px; text-align: center; color: #43404A;">
+  If you're not sure what happened, contact Support and they'll explain it.
 </p>
 ",
-  "subject": "You've Received an Account Warning ⚠️",
+  "subject": "Policy Violation On Your Account",
   "title": "Hey there",
   "titleHighlight": """",
   "to": "email@example.com",
@@ -39,13 +42,20 @@ exports[`email rendering tests rendering ban_warning 1`] = `
 exports[`email rendering tests rendering banned 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",
-  "bannerLabel": "Account Banned",
-  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/440a9fe8-9873-4582-8fec-26d9f9e62bff/1200x480.png",
+  "actionButtonLink": "https://decentraland.org/help",
+  "actionButtonText": "Contact Support",
   "content": "<p style="font-size: 16px; font-weight: 700; line-height: 24px; text-align: center; color: #43404A;">
-  Your account has been banned for <span style="color: #FF2D55;">Harassment</span>. This ban expires on 2024-06-08T12:00:00.000Z. You have been banned for repeated violations.
+  Your account has been temporarily suspended due to a policy violation. You won't be able to log in until the suspension is lifted.
+</p>
+<p style="font-size: 16px; line-height: 24px; text-align: center; color: #43404A;">
+  <strong>Ban period:</strong> 7 days<br>
+  <strong>Reason:</strong> Harassment
+</p>
+<p style="font-size: 16px; line-height: 24px; text-align: center; color: #43404A;">
+  If you want to understand what happened, contact Support.
 </p>
 ",
-  "subject": "Your Decentraland Account Has Been Banned 🚫",
+  "subject": "Account Temporarily Suspended",
   "title": "Hey there",
   "titleHighlight": """",
   "to": "email@example.com",

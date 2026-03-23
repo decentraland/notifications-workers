@@ -1,7 +1,7 @@
 {
-    "subject": "Your Decentraland Account Has Been Banned 🚫",
+    "subject": "{{#if metadata.expiresAt}}Account Temporarily Suspended{{else}}Your Account Has Been Banned{{/if}}",
+    "actionButtonText": "Contact Support",
+    "actionButtonLink": "https://decentraland.org/help",
     "title": "Hey there",
-    "titleHighlight": "{{ escape metadata.userName }}",
-    "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/440a9fe8-9873-4582-8fec-26d9f9e62bff/1200x480.png",
-    "bannerLabel": "Account Banned"
+    "titleHighlight": "{{ escape metadata.userName }}"
 }

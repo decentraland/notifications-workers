@@ -557,7 +557,7 @@ describe('email rendering tests', () => {
   })
 
   describe('banned template edge cases', () => {
-    test('renders without optional fields', async () => {
+    test('renders permanent ban (no expiresAt) without ban period block', async () => {
       const notification: NotificationRecord = {
         id: '123456789',
         type: NotificationType.BANNED,
@@ -570,11 +570,12 @@ describe('email rendering tests', () => {
         eventKey: '123'
       }
       const result = await renderer.renderEmail('email@example.com', notification)
-      expect(result!.content).not.toContain('This ban expires')
-      expect(result!.content).toContain('Harassment')
+      expect(result!.content).toContain('permanently banned')
+      expect(result!.content).not.toContain('Ban period')
+      expect(result!.content).not.toContain('temporarily suspended')
     })
 
-    test('HTML-escapes customMessage', async () => {
+    test('renders temporary ban with ban period and reason', async () => {
       const notification: NotificationRecord = {
         id: '123456789',
         type: NotificationType.BANNED,
@@ -582,19 +583,21 @@ describe('email rendering tests', () => {
         metadata: {
           reason: 'Spam',
           bannedAt: '2024-06-01T12:00:00.000Z',
-          customMessage: '<script>alert("xss")</script>'
+          expiresAt: '2024-06-08T12:00:00.000Z'
         },
         timestamp: Date.now(),
         eventKey: '123'
       }
       const result = await renderer.renderEmail('email@example.com', notification)
-      expect(result!.content).not.toContain('<script>')
-      expect(result!.content).toContain('&lt;script&gt;')
+      expect(result!.content).toContain('temporarily suspended')
+      expect(result!.content).toContain('Ban period')
+      expect(result!.content).toContain('7 days')
+      expect(result!.content).toContain('Spam')
     })
   })
 
   describe('ban_warning template edge cases', () => {
-    test('renders with minimal fields', async () => {
+    test('renders static warning copy', async () => {
       const notification: NotificationRecord = {
         id: '123456789',
         type: NotificationType.BAN_WARNING,
@@ -607,8 +610,8 @@ describe('email rendering tests', () => {
         eventKey: '123'
       }
       const result = await renderer.renderEmail('email@example.com', notification)
-      expect(result!.content).toContain('Inappropriate language')
-      expect(result!.content).toContain('community guidelines')
+      expect(result!.content).toContain('policy violation')
+      expect(result!.content).toContain('further violations could result in a suspension')
     })
 
   })
