@@ -28,13 +28,16 @@ function loadTemplates() {
     // TODO let's do something better here
     return variable
   })
-  handlebars.registerHelper('days', (from: string, to: string) => (parseInt(to) - parseInt(from)) / 86400)
   handlebars.registerHelper('insert', (text: string, defaultText: string) => (text ? text : defaultText))
   handlebars.registerHelper('arrayToString', (array: string[]) => (array && array.length > 0 ? array.join('/') : ''))
-  handlebars.registerHelper('durationDays', (from: string, to: string) => {
+  handlebars.registerHelper('duration', (from: string, to: string) => {
     const ms = new Date(to).getTime() - new Date(from).getTime()
+    const hours = Math.round(ms / 3600000)
+    if (hours < 24) {
+      return hours === 1 ? '1 HOUR' : `${hours} HOURS`
+    }
     const days = Math.round(ms / 86400000)
-    return days === 1 ? '1 day' : `${days} days`
+    return days === 1 ? '1 DAY' : `${days} DAYS`
   })
 
   return Object.values(EmailableNotificationTypeEnum).reduce(
