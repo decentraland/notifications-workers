@@ -512,7 +512,8 @@ describe('email rendering tests', () => {
         reason: 'Harassment',
         bannedAt: '2024-06-01T12:00:00.000Z',
         expiresAt: '2024-06-08T12:00:00.000Z',
-        customMessage: 'You have been banned for repeated violations.'
+        customMessage: 'You have been banned for repeated violations.',
+        userName: 'TestUser'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -523,7 +524,8 @@ describe('email rendering tests', () => {
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
         reason: 'Inappropriate language',
-        warnedAt: '2024-06-01T12:00:00.000Z'
+        warnedAt: '2024-06-01T12:00:00.000Z',
+        userName: 'TestUser'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -533,7 +535,8 @@ describe('email rendering tests', () => {
       type: NotificationType.BAN_LIFTED,
       address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
       metadata: {
-        liftedAt: 1717243200000
+        liftedAt: 1717243200000,
+        userName: 'TestUser'
       },
       timestamp: Date.now(),
       eventKey: '123'
@@ -564,14 +567,15 @@ describe('email rendering tests', () => {
         address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
         metadata: {
           reason: 'Harassment',
-          bannedAt: '2024-06-01T12:00:00.000Z'
+          bannedAt: '2024-06-01T12:00:00.000Z',
+          userName: 'TestUser'
         },
         timestamp: Date.now(),
         eventKey: '123'
       }
       const result = await renderer.renderEmail('email@example.com', notification)
-      expect(result!.content).toContain('permanently banned')
-      expect(result!.content).not.toContain('Ban period')
+      expect(result!.content).toContain('contact Support')
+      expect(result!.content).not.toContain('BAN PERIOD')
       expect(result!.content).not.toContain('temporarily suspended')
     })
 
@@ -583,15 +587,16 @@ describe('email rendering tests', () => {
         metadata: {
           reason: 'Spam',
           bannedAt: '2024-06-01T12:00:00.000Z',
-          expiresAt: '2024-06-08T12:00:00.000Z'
+          expiresAt: '2024-06-08T12:00:00.000Z',
+          userName: 'TestUser'
         },
         timestamp: Date.now(),
         eventKey: '123'
       }
       const result = await renderer.renderEmail('email@example.com', notification)
       expect(result!.content).toContain('temporarily suspended')
-      expect(result!.content).toContain('Ban period')
-      expect(result!.content).toContain('7 days')
+      expect(result!.content).toContain('BAN PERIOD')
+      expect(result!.content).toContain('7 DAYS')
       expect(result!.content).toContain('Spam')
     })
   })
@@ -604,7 +609,8 @@ describe('email rendering tests', () => {
         address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
         metadata: {
           reason: 'Inappropriate language',
-          warnedAt: '2024-06-01T12:00:00.000Z'
+          warnedAt: '2024-06-01T12:00:00.000Z',
+          userName: 'TestUser'
         },
         timestamp: Date.now(),
         eventKey: '123'
