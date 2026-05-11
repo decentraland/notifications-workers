@@ -161,6 +161,88 @@ describe('when parsing event notifications', () => {
     })
   })
 
+  describe('and the event is EVENT_APPROVED', () => {
+    let event: any
+
+    beforeEach(() => {
+      event = {
+        type: Events.Type.EVENT,
+        subType: Events.SubType.Event.EVENT_APPROVED,
+        key: 'event-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          host: '0x1234567890123456789012345678901234567890',
+          title: 'Your hangout is approved',
+          description: 'Your hangout has been approved.',
+          name: 'Test Event',
+          image: 'https://example.com/image.jpg',
+          link: 'https://decentraland.org/jump?realm=test&id=event-123'
+        }
+      }
+    })
+
+    it('should parse to EVENT_APPROVED notification addressed to the host with myHangouts link', () => {
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.EVENT_APPROVED,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'event-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          title: 'Your hangout is approved',
+          description: 'Your hangout has been approved.',
+          name: 'Test Event',
+          image: 'https://example.com/image.jpg',
+          link: 'https://decentraland.org/jump?realm=test&id=event-123',
+          myHangouts: 'https://decentraland.org/whats-on?tab=my'
+        }
+      })
+    })
+  })
+
+  describe('and the event is EVENT_REJECTED', () => {
+    let event: any
+
+    beforeEach(() => {
+      event = {
+        type: Events.Type.EVENT,
+        subType: Events.SubType.Event.EVENT_REJECTED,
+        key: 'event-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          host: '0x1234567890123456789012345678901234567890',
+          title: 'Your hangout needs updates',
+          description: 'Your hangout submission was not approved.',
+          name: 'Test Event',
+          image: 'https://example.com/image.jpg',
+          reason: 'Submission did not meet the event guidelines.'
+        }
+      }
+    })
+
+    it('should parse to EVENT_REJECTED notification addressed to the host with reason and myHangouts link', () => {
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.EVENT_REJECTED,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'event-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          title: 'Your hangout needs updates',
+          description: 'Your hangout submission was not approved.',
+          name: 'Test Event',
+          image: 'https://example.com/image.jpg',
+          reason: 'Submission did not meet the event guidelines.',
+          myHangouts: 'https://decentraland.org/whats-on?tab=my'
+        }
+      })
+    })
+  })
+
   describe('and the event is an unsupported type', () => {
     let event: any
 

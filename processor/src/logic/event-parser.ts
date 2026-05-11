@@ -708,6 +708,42 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Event.EVENT_APPROVED: {
+        return [
+          {
+            type: NotificationType.EVENT_APPROVED,
+            address: event.metadata.host,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              name: event.metadata.name,
+              image: event.metadata.image,
+              link: event.metadata.link,
+              myHangouts: `${DECENTRALAND_URL}/whats-on?tab=my`
+            }
+          }
+        ]
+      }
+      case Events.SubType.Event.EVENT_REJECTED: {
+        return [
+          {
+            type: NotificationType.EVENT_REJECTED,
+            address: event.metadata.host,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              name: event.metadata.name,
+              image: event.metadata.image,
+              reason: event.metadata.reason,
+              myHangouts: `${DECENTRALAND_URL}/whats-on?tab=my`
+            }
+          }
+        ]
+      }
       case Events.SubType.Governance.PROPOSAL_ENACTED:
         return [
           {

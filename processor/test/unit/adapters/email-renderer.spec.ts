@@ -83,6 +83,36 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
+    [NotificationType.EVENT_APPROVED]: {
+      id: '123456789',
+      type: NotificationType.EVENT_APPROVED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        link: 'https://play.decentraland.org/?position=14%2C100&realm=main',
+        name: 'Live DJ Music and Dancing in the Unity Café',
+        image: 'https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png',
+        title: 'Event approved',
+        description: 'Your event Live DJ Music and Dancing in the Unity Café has been approved.',
+        myHangouts: 'https://decentraland.org/whats-on?tab=my'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
+    [NotificationType.EVENT_REJECTED]: {
+      id: '123456789',
+      type: NotificationType.EVENT_REJECTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        name: 'Live DJ Music and Dancing in the Unity Café',
+        image: 'https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png',
+        title: 'Event rejected',
+        description: 'Your event Live DJ Music and Dancing in the Unity Café was not approved.',
+        reason: 'Submission did not meet the event guidelines.',
+        myHangouts: 'https://decentraland.org/whats-on?tab=my'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.GOVERNANCE_ANNOUNCEMENT]: {
       id: '123456789',
       type: NotificationType.GOVERNANCE_ANNOUNCEMENT,

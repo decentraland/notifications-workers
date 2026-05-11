@@ -170,6 +170,76 @@ exports[`email rendering tests rendering credits_on_demand_granted 1`] = `
 }
 `;
 
+exports[`email rendering tests rendering event_approved 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://decentraland.org/whats-on?tab=my",
+  "actionButtonText": "MY HANGOUTS",
+  "bannerLabel": "Hangout Approved!",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/c0771e25-3e0d-4313-8164-ffc16de5f0d7/600x240.png",
+  "content": "<table style="width: 100%; max-width: 600px; margin: 0 auto; text-align: center;">
+  <tr>
+    <td>
+      <p
+        style="color: #43404A; text-align: center; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-weight: 700; line-height: 24px;">
+        Your hangout &lsquo;<span style="color: #FF2D55; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-weight: 700; line-height: 24px;">Live DJ Music and Dancing in the Unity Café</span>&rsquo; has been approved. You can find it in My Hangouts. Invite your friends or copy the link to share it!
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img
+        src="https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png"
+        alt="Hangout Image"
+        style="width: 100%; max-width: 600px; border-radius: 12px;" />
+    </td>
+  </tr>
+</table>
+",
+  "subject": "Your hangout is approved 🎉",
+  "title": "Hey there",
+  "titleHighlight": """",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/event_approved?signature=02834c0262f26bf82314224ad54170997d31c6217183bb19d1c3175be8f9362f",
+}
+`;
+
+exports[`email rendering tests rendering event_rejected 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://decentraland.org/whats-on?tab=my",
+  "actionButtonText": "MY HANGOUTS",
+  "bannerLabel": "Hangout Rejected",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/f4fee425-e2fe-4c83-b76f-331c8418564a/600x240.png",
+  "content": "<table style="width: 100%; max-width: 600px; margin: 0 auto; text-align: center;">
+  <tr>
+    <td>
+      <p
+        style="color: #43404A; text-align: center; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-weight: 700; line-height: 24px;">
+        Your hangout &lsquo;<span style="color: #FF2D55; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-weight: 700; line-height: 24px;">Live DJ Music and Dancing in the Unity Café</span>&rsquo; needs a few updates before approval. You can find the details marked in the form under edit hangout in My Hangouts. Make the changes and submit it again &mdash; you&rsquo;re almost there 🙂
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img
+        src="https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png"
+        alt="Hangout Image"
+        style="width: 100%; max-width: 600px; border-radius: 12px;" />
+    </td>
+  </tr>
+</table>
+",
+  "subject": "🚨 [Action Needed] Your hangout needs some changes ⏳",
+  "title": "Hey there ",
+  "titleHighlight": """",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/event_rejected?signature=d26b44767c1253e43198202f2bfdc18f976764a566734056c73095ae52fefd46",
+}
+`;
+
 exports[`email rendering tests rendering events_started 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",

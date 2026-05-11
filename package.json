@@ -19,6 +19,6 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@dcl/schemas": "25.2.0"
+    "@dcl/schemas": "^26.3.0"
   }
 }
