@@ -174,7 +174,6 @@ describe('when parsing event notifications', () => {
           host: '0x1234567890123456789012345678901234567890',
           title: 'Your hangout is approved',
           description: 'Your hangout has been approved.',
-          name: 'Test Event',
           image: 'https://example.com/image.jpg',
           link: 'https://decentraland.org/jump?realm=test&id=event-123'
         }
@@ -193,7 +192,6 @@ describe('when parsing event notifications', () => {
         metadata: {
           title: 'Your hangout is approved',
           description: 'Your hangout has been approved.',
-          name: 'Test Event',
           image: 'https://example.com/image.jpg',
           link: 'https://decentraland.org/jump?realm=test&id=event-123',
           myHangouts: 'https://decentraland.org/whats-on?tab=my'
@@ -215,7 +213,6 @@ describe('when parsing event notifications', () => {
           host: '0x1234567890123456789012345678901234567890',
           title: 'Your hangout needs updates',
           description: 'Your hangout submission was not approved.',
-          name: 'Test Event',
           image: 'https://example.com/image.jpg',
           reason: 'Submission did not meet the event guidelines.'
         }
@@ -234,7 +231,6 @@ describe('when parsing event notifications', () => {
         metadata: {
           title: 'Your hangout needs updates',
           description: 'Your hangout submission was not approved.',
-          name: 'Test Event',
           image: 'https://example.com/image.jpg',
           reason: 'Submission did not meet the event guidelines.',
           myHangouts: 'https://decentraland.org/whats-on?tab=my'
