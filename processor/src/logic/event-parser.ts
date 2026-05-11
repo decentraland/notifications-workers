@@ -718,7 +718,6 @@ export async function createEventParser({
             metadata: {
               title: event.metadata.title,
               description: event.metadata.description,
-              name: event.metadata.name,
               image: event.metadata.image,
               link: event.metadata.link,
               myHangouts: `${DECENTRALAND_URL}/whats-on?tab=my`
@@ -736,7 +735,6 @@ export async function createEventParser({
             metadata: {
               title: event.metadata.title,
               description: event.metadata.description,
-              name: event.metadata.name,
               image: event.metadata.image,
               reason: event.metadata.reason,
               myHangouts: `${DECENTRALAND_URL}/whats-on?tab=my`
