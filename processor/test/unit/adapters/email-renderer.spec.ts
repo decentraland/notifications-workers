@@ -91,7 +91,7 @@ describe('email rendering tests', () => {
         link: 'https://play.decentraland.org/?position=14%2C100&realm=main',
         name: 'Live DJ Music and Dancing in the Unity Café',
         image: 'https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png',
-        title: 'Event approved',
+        title: 'Live DJ Music and Dancing in the Unity Café',
         description: 'Your event Live DJ Music and Dancing in the Unity Café has been approved.',
         myHangouts: 'https://decentraland.org/whats-on?tab=my'
       },
@@ -105,7 +105,7 @@ describe('email rendering tests', () => {
       metadata: {
         name: 'Live DJ Music and Dancing in the Unity Café',
         image: 'https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png',
-        title: 'Event rejected',
+        title: 'Live DJ Music and Dancing in the Unity Café',
         description: 'Your event Live DJ Music and Dancing in the Unity Café was not approved.',
         reason: 'Submission did not meet the event guidelines.',
         myHangouts: 'https://decentraland.org/whats-on?tab=my'
