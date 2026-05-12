@@ -13,7 +13,8 @@ Project-scoped config for Claude Code. Auto-loaded when repo open.
 ├── hooks/
 │   ├── pre-bash-block-destructive.sh
 │   ├── pre-write-warn-criticals.sh
-│   └── session-start.sh
+│   ├── session-start.sh
+│   └── show-token-usage.sh         ← opt-in, see "Optional hooks"
 ├── skills/
 │   ├── add-notification-type/SKILL.md
 │   ├── bump-schemas-dep/SKILL.md
@@ -41,6 +42,30 @@ echo '{"tool_input":{"command":"rm -rf processor/src/migrations"}}' \
   | .claude/hooks/pre-bash-block-destructive.sh
 echo $?     # 2 = blocked
 ```
+
+## Optional hooks
+
+`hooks/show-token-usage.sh` is **available but not registered** in `.claude/settings.json` (intentional — many devs already track this elsewhere). To opt-in for yourself only, add to `.claude/settings.local.json` (gitignored):
+
+```json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/show-token-usage.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The hook prints one line at the end of each turn: tokens for that turn + cumulative session, broken down into input / output / cache_read / cache_write. Cache reads are ~10× cheaper than fresh input, so the breakdown matters when comparing the cost of two turns of equal total size.
 
 ## Updating
 
