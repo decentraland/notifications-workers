@@ -190,6 +190,6 @@ git commit -m "feat: support MY_NEW_TYPE notification"
 
 - CLAUDE.md rules 4, 5, 6, 7, 8, 10, 11
 - `processor/src/logic/event-parser.ts` — pattern reference
-- `processor/src/adapters/notifications-service.ts:123-138` — userName / senderUsername auto-enrichment
+- `processor/src/adapters/notifications-service.ts` — see the `saveNotifications` loop for `userName` / `senderUsername` auto-enrichment from `profiles.getByAddress`
 - `processor/src/controllers/handlers/publish-notification-handler.ts` — Joi schema for `POST /notifications` payloads
 - `common/src/types.ts:excludedNotificationTypes`

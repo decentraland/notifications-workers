@@ -77,14 +77,14 @@ docs/
 
 1. **Use `yarn install` from monorepo root**, never per-workspace. Lockfile at root.
 2. After bumping cross-workspace dep (especially `@dcl/schemas`), delete stale nested `node_modules` before reinstall: `rm -rf node_modules common/node_modules inbox/node_modules processor/node_modules && yarn install`. Hoisted + nested copies diverge silently.
-3. `@dcl/*` and `decentraland-*` use caret (`^`). Others use exact pinning.
+3. `@dcl/*` and `decentraland-*` use caret (`^`). Others use exact pinning. **Exception: `@dcl/schemas` is exact-pinned** (no caret) across all 4 `package.json` files — the enum-parity coupling described in rules 2 and 4 makes a silent minor bump too risky.
 
 ### Notifications domain
 
 4. **`NotificationType` (`common`) and `Events.SubType.*` (`@dcl/schemas`) are parallel enums.** `NotificationType` is DB key (snake_case); `Events.SubType` is SNS message discriminator (kebab-case). Add channel requires both.
 5. **Email opt-in is opt-out by default.** `NotificationType.X` emailable unless listed in `excludedNotificationTypes` (`common/src/types.ts`). Template without unblocking type → silent drop. Listed without template → log "no template for type" + drop.
 6. **Email templates come in pairs**: `<type>.subject.handlebars` (JSON-shaped) + `<type>.content.handlebars` (HTML). File name uses snake_case enum value. Subject must be valid JSON after handlebars expansion — unescaped `"` in interpolations breaks renderer at runtime.
-7. **`metadata.userName` is auto-injected** by `processor/src/adapters/notifications-service.ts` from `notification.address` via `profiles.getByAddress`. Producers (events service, comms-gatekeeper, etc.) must NOT include `userName` in SNS payloads. Same for derived URLs built from `DECENTRALAND_URL` — stitched in `event-parser.ts`, not by producer.
+7. **`metadata.userName` is auto-injected** by `processor/src/adapters/notifications-service.ts` from `notification.address` via `profiles.getByAddress`. For `TIP_RECEIVED` an additional `metadata.senderUsername` is auto-injected from `metadata.senderAddress` via the same `profiles.getByAddress` lookup. Producers (events service, comms-gatekeeper, etc.) must NOT include `userName` or `senderUsername` in SNS payloads — only the address(es). Same for derived URLs built from `DECENTRALAND_URL` — stitched in `event-parser.ts`, not by producer.
 8. **Never edit existing migrations** in `processor/src/migrations/`. Create new one with higher timestamp.
 
 ### Testing
