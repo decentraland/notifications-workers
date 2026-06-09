@@ -742,6 +742,23 @@ export async function createEventParser({
           }
         ]
       }
+      case Events.SubType.Event.EVENT_DELETED: {
+        return [
+          {
+            type: NotificationType.EVENT_DELETED,
+            address: event.metadata.host,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              title: event.metadata.title,
+              description: event.metadata.description,
+              image: event.metadata.image,
+              reason: event.metadata.reason,
+              myHangouts: `${DECENTRALAND_URL}/whats-on?tab=my`
+            }
+          }
+        ]
+      }
       case Events.SubType.Governance.PROPOSAL_ENACTED:
         return [
           {

@@ -239,6 +239,45 @@ describe('when parsing event notifications', () => {
     })
   })
 
+  describe('and the event is EVENT_DELETED', () => {
+    let event: any
+
+    beforeEach(() => {
+      event = {
+        type: Events.Type.EVENT,
+        subType: Events.SubType.Event.EVENT_DELETED,
+        key: 'event-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          host: '0x1234567890123456789012345678901234567890',
+          title: 'Your hangout was deleted',
+          description: 'Your hangout was deleted by an admin.',
+          image: 'https://example.com/image.jpg',
+          reason: 'Hangout was removed by an admin.'
+        }
+      }
+    })
+
+    it('should parse to EVENT_DELETED notification addressed to the host with reason and myHangouts link', () => {
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.EVENT_DELETED,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'event-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          title: 'Your hangout was deleted',
+          description: 'Your hangout was deleted by an admin.',
+          image: 'https://example.com/image.jpg',
+          reason: 'Hangout was removed by an admin.',
+          myHangouts: 'https://decentraland.org/whats-on?tab=my'
+        }
+      })
+    })
+  })
+
   describe('and the event is an unsupported type', () => {
     let event: any
 
