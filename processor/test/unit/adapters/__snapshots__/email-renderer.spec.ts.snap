@@ -221,14 +221,6 @@ exports[`email rendering tests rendering event_deleted 1`] = `
       </p>
     </td>
   </tr>
-  <tr>
-    <td>
-      <img
-        src="https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png"
-        alt="Hangout Image"
-        style="width: 100%; max-width: 600px; border-radius: 12px;" />
-    </td>
-  </tr>
 </table>
 ",
   "subject": "Hangout Deleted",
