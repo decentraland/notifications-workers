@@ -205,6 +205,41 @@ exports[`email rendering tests rendering event_approved 1`] = `
 }
 `;
 
+exports[`email rendering tests rendering event_deleted 1`] = `
+{
+  "accountLink": "https://decentraland.zone/account",
+  "actionButtonLink": "https://decentraland.org/whats-on?tab=my",
+  "actionButtonText": "MY HANGOUTS",
+  "bannerLabel": "Hangout Deleted",
+  "bannerUrl": "http://cdn.mcauto-images-production.sendgrid.net/2322095804444b83/f4fee425-e2fe-4c83-b76f-331c8418564a/600x240.png",
+  "content": "<table style="width: 100%; max-width: 600px; margin: 0 auto; text-align: center;">
+  <tr>
+    <td>
+      <p
+        style="color: #43404A; text-align: center; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-weight: 700; line-height: 24px;">
+        Your hangout &lsquo;<span style="color: #FF2D55; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-weight: 700; line-height: 24px;">Live DJ Music and Dancing in the Unity Café</span>&rsquo; was successfully deleted. You can view your remaining hangouts in My Hangouts.
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img
+        src="https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png"
+        alt="Hangout Image"
+        style="width: 100%; max-width: 600px; border-radius: 12px;" />
+    </td>
+  </tr>
+</table>
+",
+  "subject": "Hangout Deleted",
+  "title": "Hey there ",
+  "titleHighlight": """",
+  "to": "email@example.com",
+  "unsubscribeAllUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678?signature=fd03dab02225f386464bdc0ea85ddffb0dd4ad1bc53e6be420224fd381cc58e5",
+  "unsubscribeOneUrl": "https://notifications.decentraland.org/unsubscribe/0x1234567890ABCDEF1234567890ABCDEF12345678/event_deleted?signature=f21a7a3d734ea90ae6d57f2faca8687b3d63e89cd113e88f368c0c86724d2e51",
+}
+`;
+
 exports[`email rendering tests rendering event_rejected 1`] = `
 {
   "accountLink": "https://decentraland.zone/account",

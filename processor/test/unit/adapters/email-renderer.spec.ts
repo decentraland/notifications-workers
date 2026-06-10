@@ -97,6 +97,20 @@ describe('email rendering tests', () => {
       timestamp: Date.now(),
       eventKey: '123'
     },
+    [NotificationType.EVENT_DELETED]: {
+      id: '123456789',
+      type: NotificationType.EVENT_DELETED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        image: 'https://events-assets-099ac00.decentraland.org/poster/3b8e6fc465ee4488.png',
+        title: 'Live DJ Music and Dancing in the Unity Café',
+        description: 'Your hangout Live DJ Music and Dancing in the Unity Café was deleted.',
+        reason: 'Hangout was removed by an admin.',
+        myHangouts: 'https://decentraland.org/whats-on?tab=my'
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    },
     [NotificationType.EVENT_REJECTED]: {
       id: '123456789',
       type: NotificationType.EVENT_REJECTED,

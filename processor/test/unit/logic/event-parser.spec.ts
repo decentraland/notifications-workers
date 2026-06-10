@@ -276,6 +276,27 @@ describe('when parsing event notifications', () => {
         }
       })
     })
+
+    it('should parse to EVENT_DELETED notification without reason when the event omits it', () => {
+      delete event.metadata.reason
+
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toHaveLength(1)
+      expect(notifications[0]).toEqual({
+        type: NotificationType.EVENT_DELETED,
+        address: '0x1234567890123456789012345678901234567890',
+        eventKey: 'event-123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          title: 'Your hangout was deleted',
+          description: 'Your hangout was deleted by an admin.',
+          image: 'https://example.com/image.jpg',
+          reason: undefined,
+          myHangouts: 'https://decentraland.org/whats-on?tab=my'
+        }
+      })
+    })
   })
 
   describe('and the event is an unsupported type', () => {
