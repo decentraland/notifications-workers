@@ -1,13 +1,12 @@
 import {
   IBaseComponent,
   IConfigComponent,
-  IFetchComponent,
-  IHttpServerComponent,
   ILoggerComponent,
   IMetricsComponent
 } from '@well-known-components/interfaces'
+import { IFetchComponent, IHttpServerComponent } from '@dcl/core-commons'
 import { metricDeclarations } from '@well-known-components/logger'
-import { IPgComponent } from '@well-known-components/pg-component'
+import { IPgComponent } from '@dcl/pg-component'
 import { NotificationType, Event } from '@dcl/schemas'
 import { Message } from '@aws-sdk/client-sqs'
 import { DbComponent, ISendGridClient, NotificationRecord, IProfilesComponent } from '@notifications/common'

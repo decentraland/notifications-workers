@@ -1,5 +1,5 @@
 import { HandlerContextWithPath } from '../../types'
-import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
+import { InvalidRequestError, parseJson } from '@dcl/http-commons'
 
 export async function readNotificationsHandler(
   context: Pick<HandlerContextWithPath<'db' | 'logs', '/notifications/read'>, 'request' | 'components' | 'verification'>

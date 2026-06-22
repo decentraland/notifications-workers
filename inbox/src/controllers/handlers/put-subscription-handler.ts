@@ -1,6 +1,6 @@
 import { HandlerContextWithPath } from '../../types'
-import { IHttpServerComponent } from '@well-known-components/interfaces'
-import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
+import { IHttpServerComponent } from '@dcl/core-commons'
+import { InvalidRequestError, parseJson } from '@dcl/http-commons'
 import { SubscriptionDetails } from '@dcl/schemas'
 
 export async function putSubscriptionHandler(

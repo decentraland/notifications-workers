@@ -1,5 +1,5 @@
 import { HandlerContextWithPath } from '../../types'
-import { InvalidRequestError } from '@dcl/platform-server-commons'
+import { InvalidRequestError } from '@dcl/http-commons'
 import { NotificationDb, NotificationRecord } from '@notifications/common'
 import { NotificationType } from '@dcl/schemas'
 

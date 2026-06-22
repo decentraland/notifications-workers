@@ -5,7 +5,7 @@ import {
   NotificationRecord,
   NotificationScope
 } from '../../../src'
-import { IPgComponent } from '@well-known-components/pg-component'
+import { IPgComponent } from '@dcl/pg-component'
 import { NotificationType } from '@dcl/schemas'
 import { randomEmail } from '@notifications/inbox/test/utils'
 
@@ -19,7 +19,9 @@ describe('db client tests', () => {
       start: jest.fn(),
       streamQuery: jest.fn(),
       getPool: jest.fn(),
-      stop: jest.fn()
+      stop: jest.fn(),
+      withTransaction: jest.fn(),
+      withAsyncContextTransaction: jest.fn()
     }
 
     db = createDbComponent({ pg })

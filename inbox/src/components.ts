@@ -1,14 +1,14 @@
 import { createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
 import { createLogComponent } from '@well-known-components/logger'
-import { createMetricsComponent } from '@well-known-components/metrics'
-import { createPgComponent } from '@well-known-components/pg-component'
-import { createFetchComponent } from '@well-known-components/fetch-component'
-import { createFeaturesComponent } from '@well-known-components/features-component'
+import { createMetricsComponent } from '@dcl/metrics'
+import { createPgComponent } from '@dcl/pg-component'
+import { createFetchComponent } from '@dcl/fetch-component'
+import { createFeaturesComponent } from '@dcl/features-component'
 import {
   createServerComponent,
   createStatusCheckComponent,
   instrumentHttpServerWithPromClientRegistry
-} from '@well-known-components/http-server'
+} from '@dcl/http-server'
 
 import { AppComponents, GlobalContext } from './types'
 import { metricDeclarations } from './metrics'

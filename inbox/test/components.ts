@@ -1,16 +1,16 @@
 // This file is the "test-environment" analogous for src/components.ts
 // Here we define the test components to be used in the testing environment
 
-import { createLocalFetchCompoment, createRunner } from '@well-known-components/test-helpers'
+import { createLocalFetchComponent, createRunner } from '@dcl/test-helpers'
 
 import { main } from '../src/service'
 import { TestComponents } from '../src/types'
 import { initComponents as originalInitComponents } from '../src/components'
-import { createTestMetricsComponent } from '@well-known-components/metrics'
+import { createTestMetricsComponent } from '@dcl/metrics'
 import { metricDeclarations } from '../src/metrics'
 import { createConfigComponent } from '@well-known-components/env-config-provider'
 import { createLogComponent } from '@well-known-components/logger'
-import { createPgComponent } from '@well-known-components/pg-component'
+import { createPgComponent } from '@dcl/pg-component'
 import path from 'path'
 import { createDbComponent, createDummyDataWarehouseClient } from '@notifications/common'
 import { createNotificationOptOutsManager } from '../src/logic/notification-opt-out'
@@ -40,19 +40,9 @@ async function initComponents(): Promise<TestComponents> {
     SERVICE_BASE_URL: 'https://notifications-workers.decentraland.zone'
   })
 
-  let databaseUrl: string | undefined = await config.getString('PG_COMPONENT_PSQL_CONNECTION_STRING')
-  if (!databaseUrl) {
-    const dbUser = await config.requireString('PG_COMPONENT_PSQL_USER')
-    const dbDatabaseName = await config.requireString('PG_COMPONENT_PSQL_DATABASE')
-    const dbPort = await config.requireString('PG_COMPONENT_PSQL_PORT')
-    const dbHost = await config.requireString('PG_COMPONENT_PSQL_HOST')
-    const dbPassword = await config.requireString('PG_COMPONENT_PSQL_PASSWORD')
-    databaseUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbDatabaseName}`
-  }
   // This worker writes to the database, so it runs the migrations
   const pg = await createPgComponent(components, {
     migration: {
-      databaseUrl,
       dir: path.resolve(__dirname, '../../processor/src/migrations'),
       migrationsTable: 'pgmigrations',
       ignorePattern: '.*\\.map',
@@ -74,7 +64,7 @@ async function initComponents(): Promise<TestComponents> {
     db,
     logs,
     config,
-    localFetch: await createLocalFetchCompoment(config),
+    localFetch: await createLocalFetchComponent(config),
     metrics: createTestMetricsComponent(metricDeclarations),
     dataWarehouseClient,
     notificationOptOutsManager

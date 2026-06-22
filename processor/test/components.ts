@@ -1,12 +1,12 @@
 // This file is the "test-environment" analogous for src/components.ts
 // Here we define the test components to be used in the testing environment
 
-import { createRunner, createLocalFetchCompoment } from '@well-known-components/test-helpers'
+import { createRunner, createLocalFetchComponent } from '@dcl/test-helpers'
 
 import { main } from '../src/service'
 import { IQueueConsumer, TestComponents } from '../src/types'
 import { initComponents as originalInitComponents } from '../src/components'
-import { createTestMetricsComponent } from '@well-known-components/metrics'
+import { createTestMetricsComponent } from '@dcl/metrics'
 import { metricDeclarations } from '../src/metrics'
 import { createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
 
@@ -43,7 +43,7 @@ async function initComponents(): Promise<TestComponents> {
     ...components,
     config,
     metrics: createTestMetricsComponent(metricDeclarations),
-    localFetch: await createLocalFetchCompoment(config),
+    localFetch: await createLocalFetchComponent(config),
     queueConsumer,
     messageProcessor: {
       start: jest.fn(),

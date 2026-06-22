@@ -1,8 +1,8 @@
-import { Router } from '@well-known-components/http-server'
+import { Router } from '@dcl/http-server'
 import { statusHandler } from './handlers/status-handler'
 import { notificationsHandler } from './handlers/notifications-handler'
-import { bearerTokenMiddleware, errorHandler, NotAuthorizedError } from '@dcl/platform-server-commons'
-import { wellKnownComponents } from '@dcl/platform-crypto-middleware'
+import { bearerTokenMiddleware, errorHandler, NotAuthorizedError } from '@dcl/http-commons'
+import { wellKnownComponents } from '@dcl/crypto-middleware'
 import { GlobalContext } from '../types'
 import { readNotificationsHandler } from './handlers/read-notifications-handler'
 import { getSubscriptionHandler } from './handlers/get-subscription-handler'
@@ -15,7 +15,7 @@ import {
   getNotificationOptOutsHandler,
   CreateNotificationOptOutSchema
 } from './handlers/notification-opt-out'
-import { IHttpServerComponent } from '@well-known-components/interfaces'
+import { IHttpServerComponent } from '@dcl/core-commons'
 import { hasValidSignature } from '@notifications/common'
 import { commonEmailHandler } from './handlers/common-email-handlers'
 

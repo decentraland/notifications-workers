@@ -1,19 +1,18 @@
 import type {
   IConfigComponent,
   ILoggerComponent,
-  IHttpServerComponent,
   IBaseComponent,
-  IMetricsComponent,
-  IFetchComponent
+  IMetricsComponent
 } from '@well-known-components/interfaces'
+import type { IFetchComponent, IHttpServerComponent } from '@dcl/core-commons'
 import { metricDeclarations } from './metrics'
-import { IPgComponent } from '@well-known-components/pg-component'
-import { DecentralandSignatureContext } from '@dcl/platform-crypto-middleware'
+import { IPgComponent } from '@dcl/pg-component'
+import { DecentralandSignatureContext } from '@dcl/crypto-middleware'
 import { Readable } from 'node:stream'
 import { DbComponent, IDataWarehouseClient, ISendGridClient, IProfilesComponent } from '@notifications/common'
 import { IEmailRenderer } from './adapters/email-renderer'
 import { IPageRenderer } from './adapters/page-renderer'
-import { IFeaturesComponent } from '@well-known-components/features-component'
+import { IFeaturesComponent } from '@dcl/features-component'
 import { IFeatureFlagsAdapter } from './adapters/feature-flags-adapter'
 import { IChallengerAdapter } from './adapters/challenger-adapter'
 import { IDomainValidator } from './logic/domain-validator'

@@ -1,5 +1,6 @@
 import { createLambdasClient } from 'dcl-catalyst-client'
-import { IFetchComponent, IConfigComponent, ILoggerComponent } from '@well-known-components/interfaces'
+import { IConfigComponent, ILoggerComponent } from '@well-known-components/interfaces'
+import { IFetchComponent } from '@dcl/core-commons'
 import { Profile } from 'dcl-catalyst-client/dist/client/specs/lambdas-client'
 
 type AppComponents = {
@@ -19,7 +20,12 @@ export async function createProfilesComponent({ fetch, config, logs }: AppCompon
     catalystLambdasUrl += '/lambdas'
   }
 
-  const lambdasClient = createLambdasClient({ url: catalystLambdasUrl, fetcher: fetch })
+  const lambdasClient = createLambdasClient({
+    url: catalystLambdasUrl,
+    // dcl-catalyst-client@21 types `fetcher` against the node-fetch WKC IFetchComponent;
+    // the native fetch is runtime-compatible (only `.fetch(url, opts)` is used).
+    fetcher: fetch as unknown as Parameters<typeof createLambdasClient>[0]['fetcher']
+  })
   const logger = logs.getLogger('create-profiles-component')
 
   async function getByAddress(address: string): Promise<Profile | null> {

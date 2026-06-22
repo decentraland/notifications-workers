@@ -1,4 +1,3 @@
-import sinon from 'sinon'
 import { test } from '../components'
 import { getIdentity, Identity } from '../utils'
 import { NotificationType } from '@dcl/schemas'
@@ -77,11 +76,11 @@ test('POST /notifications', function ({ components, stubComponents }) {
           bannerLabel: 'World access Restored'
         }
 
-        stubComponents.emailRenderer.renderEmail.withArgs(email, sinon.match(notification)).resolves(renderedEmail)
-        stubComponents.sendGridClient.sendEmail.withArgs(renderedEmail).resolves()
-        await stubComponents.profiles.getByAddress.withArgs(identity.realAccount.address).resolves({
+        stubComponents.emailRenderer.renderEmail.mockResolvedValue(renderedEmail)
+        stubComponents.sendGridClient.sendEmail.mockResolvedValue(undefined)
+        stubComponents.profiles.getByAddress.mockResolvedValue({
           avatars: [{ name: 'Unknown' }]
-        })
+        } as any)
       })
 
       it('persists the notification and sends the email', async () => {
@@ -106,10 +105,11 @@ test('POST /notifications', function ({ components, stubComponents }) {
         expect(foundNotification.metadata).toEqual(notification.metadata)
         expect(foundNotification.read_at).toBeNull()
         expect(foundNotification.timestamp).toEqual(`${notification.timestamp}`)
-        expect(
-          stubComponents.emailRenderer.renderEmail.calledWith(email, { ...notification, id: foundNotification.id })
-        ).toBeTruthy()
-        expect(stubComponents.sendGridClient.sendEmail.calledWith(renderedEmail)).toBeTruthy()
+        expect(stubComponents.emailRenderer.renderEmail).toHaveBeenCalledWith(email, {
+          ...notification,
+          id: foundNotification.id
+        })
+        expect(stubComponents.sendGridClient.sendEmail).toHaveBeenCalledWith(renderedEmail, expect.anything())
       })
     })
   })

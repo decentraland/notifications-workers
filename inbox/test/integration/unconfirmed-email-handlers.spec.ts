@@ -25,7 +25,7 @@ test('PUT /set-email', function ({ components, stubComponents, spyComponents }) 
   it('should store the email as an unconfirmed email in the db', async () => {
     const email = randomEmail()
 
-    stubComponents.sendGridClient.sendEmail.withArgs(expect.objectContaining({ to: email })).resolves()
+    stubComponents.sendGridClient.sendEmail.mockResolvedValue(undefined)
 
     const response = await makeRequest(
       components.localFetch,
@@ -41,7 +41,7 @@ test('PUT /set-email', function ({ components, stubComponents, spyComponents }) 
     )
 
     expect(response.status).toBe(204)
-    expect(stubComponents.sendGridClient.sendEmail.calledOnce).toBeTruthy()
+    expect(stubComponents.sendGridClient.sendEmail).toHaveBeenCalledTimes(1)
 
     const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
     expect(unconfirmedEmail).toMatchObject({
@@ -89,7 +89,7 @@ test('PUT /set-email', function ({ components, stubComponents, spyComponents }) 
       // TODO: return error code so client can render whatever they want
       message: 'Email already registered to another account. Please use a different email to proceed'
     })
-    expect(stubComponents.sendGridClient.sendEmail.notCalled).toBeTruthy()
+    expect(stubComponents.sendGridClient.sendEmail).not.toHaveBeenCalled()
   })
 
   it('should allow the same address to reconfirm their own email', async () => {
@@ -115,7 +115,7 @@ test('PUT /set-email', function ({ components, stubComponents, spyComponents }) 
     )
 
     expect(response.status).toBe(204)
-    expect(stubComponents.sendGridClient.sendEmail.notCalled).toBeTruthy()
+    expect(stubComponents.sendGridClient.sendEmail).not.toHaveBeenCalled()
 
     const unconfirmedEmail = await components.db.findUnconfirmedEmail(identity.realAccount.address)
     expect(unconfirmedEmail).toBeUndefined()
@@ -266,7 +266,7 @@ test('PUT /set-email', function ({ components, stubComponents, spyComponents }) 
         manageSubscriptionMetadata
       )
 
-      expect(stubComponents.sendGridClient.sendEmail.notCalled).toBeTruthy()
+      expect(stubComponents.sendGridClient.sendEmail).not.toHaveBeenCalled()
     })
   })
 })
