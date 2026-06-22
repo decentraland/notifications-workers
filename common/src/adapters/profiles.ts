@@ -22,9 +22,7 @@ export async function createProfilesComponent({ fetch, config, logs }: AppCompon
 
   const lambdasClient = createLambdasClient({
     url: catalystLambdasUrl,
-    // dcl-catalyst-client@21 types `fetcher` against the node-fetch WKC IFetchComponent;
-    // the native fetch is runtime-compatible (only `.fetch(url, opts)` is used).
-    fetcher: fetch as unknown as Parameters<typeof createLambdasClient>[0]['fetcher']
+    fetcher: fetch
   })
   const logger = logs.getLogger('create-profiles-component')
 
