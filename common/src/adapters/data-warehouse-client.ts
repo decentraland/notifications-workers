@@ -54,7 +54,7 @@ export async function createDwhGenericEventsClient(
   async function sendEvent(event: Event): Promise<void> {
     logger.info(`Sending event to DataWarehouse ${event.event}"`)
 
-    await fetch.fetch(apiBaseUrl, {
+    const response = await fetch.fetch(apiBaseUrl, {
       method: 'POST',
       headers: {
         'x-token': apiToken,
@@ -68,6 +68,9 @@ export async function createDwhGenericEventsClient(
         }
       })
     })
+
+    // The response is not consumed, so cancel its body to avoid leaking the connection.
+    await response?.body?.cancel().catch(() => undefined)
   }
 
   return {
