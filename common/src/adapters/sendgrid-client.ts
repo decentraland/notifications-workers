@@ -74,7 +74,7 @@ export async function createSendGrid(
       }
     }
 
-    await fetch.fetch(`${apiBaseUrl}/v3/mail/send`, {
+    const response = await fetch.fetch(`${apiBaseUrl}/v3/mail/send`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -82,6 +82,9 @@ export async function createSendGrid(
       },
       body: JSON.stringify(data)
     })
+
+    // The response is not consumed, so cancel its body to avoid leaking the connection.
+    await response?.body?.cancel().catch(() => undefined)
   }
 
   return {

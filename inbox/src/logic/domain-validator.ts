@@ -23,6 +23,8 @@ export function createEmailDomainValidator({
       const response = await fetch.fetch(DISPOSABLE_EMAIL_LIST_URL)
 
       if (!response.ok) {
+        // The error response body is not consumed, so cancel it to avoid leaking the connection.
+        await response.body?.cancel().catch(() => undefined)
         throw new Error(`Failed to fetch disposable email domains: ${response.status} ${response.statusText}`)
       }
 
