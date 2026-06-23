@@ -1,4 +1,5 @@
-import { IConfigComponent, IFetchComponent, ILoggerComponent } from '@well-known-components/interfaces'
+import { IConfigComponent, ILoggerComponent } from '@well-known-components/interfaces'
+import { IFetchComponent } from '@dcl/core-commons'
 import { createConfigComponent } from '@well-known-components/env-config-provider'
 import { createLogComponent } from '@well-known-components/logger'
 import { createDataWarehouseClient, Event } from '../../../src'

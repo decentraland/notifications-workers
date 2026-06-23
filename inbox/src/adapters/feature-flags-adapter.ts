@@ -1,6 +1,6 @@
 import { IBaseComponent, START_COMPONENT, STOP_COMPONENT } from '@well-known-components/interfaces'
 import { AppComponents, Feature } from '../types'
-import { ApplicationName } from '@well-known-components/features-component'
+import { ApplicationName } from '@dcl/features-component'
 
 export type IFeatureFlagsAdapter = IBaseComponent & {
   refreshFeatureFlags: () => Promise<void>

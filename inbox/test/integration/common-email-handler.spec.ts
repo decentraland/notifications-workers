@@ -33,8 +33,8 @@ test('POST /notifications/email', function ({ components, stubComponents }) {
     }
 
     // Setup default mocks
-    stubComponents.sendGridClient.sendEmail.resolves()
-    stubComponents.emailRenderer.renderEmail.resolves({
+    stubComponents.sendGridClient.sendEmail.mockResolvedValue(undefined)
+    stubComponents.emailRenderer.renderEmail.mockResolvedValue({
       to: testEmail,
       subject: testSubject,
       content: '<html>test</html>'
@@ -55,24 +55,24 @@ test('POST /notifications/email', function ({ components, stubComponents }) {
         })
 
         expect(response.status).toBe(204)
-        expect(stubComponents.sendGridClient.sendEmail.calledOnce).toBeTruthy()
-        expect(stubComponents.emailRenderer.renderEmail.calledOnce).toBeTruthy()
+        expect(stubComponents.sendGridClient.sendEmail).toHaveBeenCalledTimes(1)
+        expect(stubComponents.emailRenderer.renderEmail).toHaveBeenCalledTimes(1)
 
-        const sendEmailCall = stubComponents.sendGridClient.sendEmail.getCall(0)
-        expect(sendEmailCall.args[0]).toMatchObject({
+        const sendEmailCall = stubComponents.sendGridClient.sendEmail.mock.calls[0]
+        expect(sendEmailCall[0]).toMatchObject({
           to: testEmail,
           subject: testSubject,
           content: '<html>test</html>'
         })
-        expect(sendEmailCall.args[1]).toMatchObject({
+        expect(sendEmailCall[1]).toMatchObject({
           environment: 'dev',
           email_type: 'notification'
         })
 
-        const renderEmailCall = stubComponents.emailRenderer.renderEmail.getCall(0)
-        expect(renderEmailCall.args[0]).toBe('common')
-        expect(renderEmailCall.args[1]).toBe(testEmail)
-        expect(renderEmailCall.args[2]).toMatchObject({
+        const renderEmailCall = stubComponents.emailRenderer.renderEmail.mock.calls[0]
+        expect(renderEmailCall[0]).toBe('common')
+        expect(renderEmailCall[1]).toBe(testEmail)
+        expect(renderEmailCall[2]).toMatchObject({
           content: testContent,
           subject: testSubject,
           title: testTitle,
@@ -101,8 +101,8 @@ test('POST /notifications/email', function ({ components, stubComponents }) {
 
         expect(response.status).toBe(204)
 
-        const renderEmailCall = stubComponents.emailRenderer.renderEmail.getCall(0)
-        expect(renderEmailCall.args[2]).toMatchObject({
+        const renderEmailCall = stubComponents.emailRenderer.renderEmail.mock.calls[0]
+        expect(renderEmailCall[2]).toMatchObject({
           content: testContent,
           subject: testSubject,
           title: 'New',
@@ -224,7 +224,7 @@ test('POST /notifications/email', function ({ components, stubComponents }) {
 
     describe('and the email renderer fails', () => {
       it('should respond with a 500 and the error', async () => {
-        stubComponents.emailRenderer.renderEmail.rejects(new Error('Render error'))
+        stubComponents.emailRenderer.renderEmail.mockRejectedValue(new Error('Render error'))
 
         const response = await components.localFetch.fetch('/notifications/email', {
           method: 'POST',
@@ -238,7 +238,7 @@ test('POST /notifications/email', function ({ components, stubComponents }) {
 
     describe('and the sendGridClient fails', () => {
       it('should respond with a 500 and the error', async () => {
-        stubComponents.sendGridClient.sendEmail.rejects(new Error('SendGrid error'))
+        stubComponents.sendGridClient.sendEmail.mockRejectedValue(new Error('SendGrid error'))
 
         const response = await components.localFetch.fetch('/notifications/email', {
           method: 'POST',

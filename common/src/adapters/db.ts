@@ -7,7 +7,7 @@ import {
   SubscriptionDb,
   UnconfirmedEmailDb
 } from '../types'
-import { IPgComponent } from '@well-known-components/pg-component'
+import { IPgComponent } from '@dcl/pg-component'
 import { defaultSubscription } from '../subscriptions'
 import { Email, EthAddress, NotificationChannelType, NotificationType, SubscriptionDetails } from '@dcl/schemas'
 

@@ -119,10 +119,12 @@ test('GET /unsubscribe/:address/:notificationType', function ({ components }) {
   })
 
   it('should fail for unknown notification type', async () => {
-    await expect(() =>
-      components.fetch.fetch(
-        signUrl(signingKey, `${baseUrl}/unsubscribe/${identity.realAccount.address}/invalid-notification-type`)
-      )
-    ).rejects.toThrow('Invalid notification type: invalid-notification-type')
+    const response = await components.fetch.fetch(
+      signUrl(signingKey, `${baseUrl}/unsubscribe/${identity.realAccount.address}/invalid-notification-type`)
+    )
+
+    expect(response.status).toBe(400)
+    const body = await response.json()
+    expect(body.message).toBe('Invalid notification type: invalid-notification-type')
   })
 })

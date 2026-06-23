@@ -1,7 +1,6 @@
 import { createLogComponent } from '@well-known-components/logger'
-import { Request } from 'node-fetch'
 import { readNotificationsHandler } from '../../../../src/controllers/handlers/read-notifications-handler'
-import { InvalidRequestError } from '@dcl/platform-server-commons'
+import { InvalidRequestError } from '@dcl/http-commons'
 import { DbComponent } from '@notifications/common'
 import { createDbMock } from '@notifications/processor/test/mocks/db-mock'
 
@@ -12,7 +11,7 @@ describe('read notifications handler unit test', () => {
       auth: 'user1',
       authMetadata: {}
     }
-    const request = new Request('', {
+    const request = new Request('http://localhost/notifications/read', {
       method: 'POST',
       body: JSON.stringify(body)
     })

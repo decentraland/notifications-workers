@@ -1,7 +1,7 @@
-import { Router } from '@well-known-components/http-server'
+import { Router } from '@dcl/http-server'
 import { publishNotificationHandler } from './handlers/publish-notification-handler'
 import { GlobalContext } from '../types'
-import { bearerTokenMiddleware, errorHandler } from '@dcl/platform-server-commons'
+import { bearerTokenMiddleware, errorHandler } from '@dcl/http-commons'
 import { statusHandler } from './handlers/status-handler'
 import { testNotificationPreviewHandler, testRandomNotificationsHandler } from './handlers/test-notifications-handler'
 

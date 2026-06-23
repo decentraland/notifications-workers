@@ -1,5 +1,5 @@
 import { HandlerContextWithPath } from '../../types'
-import { InvalidRequestError, parseJson } from '@dcl/platform-server-commons'
+import { InvalidRequestError, parseJson } from '@dcl/http-commons'
 import Joi from 'joi'
 import { NotificationType } from '@dcl/schemas'
 import { NotificationScope, NotificationRecord } from '@notifications/common'

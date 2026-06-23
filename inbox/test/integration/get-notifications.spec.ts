@@ -1,7 +1,6 @@
 import { test } from '../components'
 import { getIdentity, Identity, makeRequest, randomNotification } from '../utils'
 import { createNotification } from '../db'
-import * as fetch from 'node-fetch'
 import { NotificationDb } from '@notifications/common'
 
 const seeNotificationsMetadata = {
@@ -25,7 +24,7 @@ test('GET /notifications', function ({ components }) {
     const broadcastNotificationId = await createNotification({ pg }, broadcastNotificationEvent)
 
     async function checkResponseForNotifications(
-      response: fetch.Response,
+      response: Response,
       notificationEvent: NotificationDb,
       broadcastNotificationEvent: NotificationDb,
       read: boolean
