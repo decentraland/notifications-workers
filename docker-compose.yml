@@ -2,7 +2,7 @@ version: '3.8'
 services:
   postgres:
     container_name: "notifications_worker_db"
-    image: 'postgres:latest'
+    image: 'postgres:14'
     restart: always
     user: postgres
     volumes:
