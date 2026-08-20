@@ -14,10 +14,11 @@ test('GET /notifications with a scene signer', function ({ components }) {
   })
 
   it('should reject a request that signed the canonical signer but delivered a mixed-case spelling', async () => {
-    // The canonical payload is lowercased before signing, so a metadata value differing only in
-    // case shares the signature. Overwriting the header after signing leaves the request genuinely
-    // authentic while reading differently to any case-sensitive comparison downstream. This is the
-    // attack, not a mock: nothing here weakens the signature.
+    // Before 6.0.0 the whole payload was lowercased before signing, so a metadata value differing
+    // only in case shared the signature: overwriting the header after signing left the request
+    // genuinely authentic while reading differently to any case-sensitive comparison downstream.
+    // 6.0.0 signs the metadata bytes verbatim, so this delivery no longer verifies either -- but
+    // the refusal must not depend on that, which is what this test pins.
     const headers = getAuthHeaders('GET', '/notifications', SIGNED_METADATA, (payload) =>
       Authenticator.signPayload(
         {
@@ -33,11 +34,13 @@ test('GET /notifications with a scene signer', function ({ components }) {
     const response = await components.localFetch.fetch('/notifications', { method: 'GET', headers })
     const body = await response.json()
 
-    // Without this guard the mixed-case spelling fails the strict `!== 'decentraland-kernel-scene'`
-    // check in routes.ts, so the scene request is read as a directly user-signed one and served.
+    // `rejectIfSigner` refuses a non-canonical `signer` rather than comparing it, and runs before
+    // signature verification -- so the refusal is a 400 from the gate, not a 401 from the signature.
+    // Under the old strict `!== 'decentraland-kernel-scene'` check the re-cased value read as a
+    // different signer entirely and the scene request was served as a directly user-signed one.
     expect(response.status).toBe(400)
-    // The raw metadata is echoed back truncated at 64 characters, so match the prefix.
-    expect(body.error).toMatch(/^Invalid chain metadata: /)
+    // The metadata is echoed back truncated at 64 characters, so match the prefix.
+    expect(body.error).toMatch(/^Invalid metadata content: /)
   })
 
   it('should reject a request that delivers the canonical signer exactly as signed', async () => {

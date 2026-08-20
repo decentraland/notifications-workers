@@ -2,7 +2,7 @@ import { Router } from '@dcl/http-server'
 import { statusHandler } from './handlers/status-handler'
 import { notificationsHandler } from './handlers/notifications-handler'
 import { bearerTokenMiddleware, errorHandler, NotAuthorizedError } from '@dcl/http-commons'
-import { wellKnownComponents } from '@dcl/crypto-middleware'
+import { rejectIfSigner, wellKnownComponents } from '@dcl/crypto-middleware'
 import { GlobalContext } from '../types'
 import { readNotificationsHandler } from './handlers/read-notifications-handler'
 import { getSubscriptionHandler } from './handlers/get-subscription-handler'
@@ -33,7 +33,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
     fetcher: fetch,
     optional: false,
     expiration: FIVE_MINUTES,
-    metadataValidator: (metadata: Record<string, any>): boolean => metadata.signer !== 'decentraland-kernel-scene',
+    metadataValidator: rejectIfSigner('decentraland-kernel-scene'),
     onError: (err: any) => ({
       error: err.message,
       message: 'This endpoint requires a signed fetch request. See ADR-44.'
