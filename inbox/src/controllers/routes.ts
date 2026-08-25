@@ -22,14 +22,22 @@ import { commonEmailHandler } from './handlers/common-email-handlers'
 const FIVE_MINUTES = 5 * 60 * 1000
 
 /**
- * Metadata keys this service authorizes on, in their canonical spelling.
+ * Metadata keys `PUT /notifications/read` authorizes on, in their canonical spelling.
  *
- * Declaring them opts the routes below into accepting requests still signed with the pre-6.0.0
+ * Declaring them opts that one route into accepting requests still signed with the pre-6.0.0
  * payload, which folded the whole joined string before signing while delivering the metadata header
  * verbatim. Since 6.0.0 the metadata bytes are signed as delivered, so the two disagree for any
- * metadata carrying uppercase -- and every current caller sends some. `PUT /notifications/read`
- * carries `notificationIds`, so decentraland-dapps (builder, marketplace, profile, account) and
- * godot-explorer get a 401 on every call without this.
+ * metadata carrying uppercase.
+ *
+ * That route is the only one where a caller sends such metadata:
+ *
+ *   decentraland-dapps  sends `{ notificationIds, signer, intent }` here, and an all-lowercase
+ *                       `{ signer, intent }` on every other route, which folds to itself
+ *   godot-explorer      signs the request *body* as its metadata, which is
+ *                       `{"notificationIds":[…]}` here and `{}` on its only other call
+ *
+ * unity-explorer and `sites` sign `{}` throughout, so they are unaffected either way. Without this
+ * the navbar's "mark as read" is a 401 in builder, marketplace, profile, account and godot.
  *
  * Only `signer` is declared, and it is not read by a handler: it is what `rejectIfSigner` gates on,
  * and the fold leaves key casing outside the signature, so a legacy request could otherwise deliver
@@ -40,9 +48,9 @@ const FIVE_MINUTES = 5 * 60 * 1000
  * recovered signature -- so no other key can change an authorization outcome, and declaring one
  * would describe a boundary this service does not enforce.
  *
- * Removable once every caller signs the 6.x payload.
+ * Removable once decentraland-dapps and godot-explorer sign the 6.x payload.
  */
-const CANONICAL_METADATA_KEYS = ['signer']
+const READ_NOTIFICATIONS_CANONICAL_METADATA_KEYS = ['signer']
 
 // We return the entire router because it will be easier to test than a whole server
 export async function setupRouter({ components }: GlobalContext): Promise<Router<GlobalContext>> {
@@ -52,17 +60,33 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
 
   const signingKey = await config.requireString('SIGNING_KEY')
 
-  const signedFetchMiddleware = wellKnownComponents({
-    fetcher: fetch,
-    optional: false,
-    expiration: FIVE_MINUTES,
-    metadataValidator: rejectIfSigner('decentraland-kernel-scene'),
-    canonicalMetadataKeys: CANONICAL_METADATA_KEYS,
-    onError: (err: any) => ({
-      error: err.message,
-      message: 'This endpoint requires a signed fetch request. See ADR-44.'
+  /**
+   * Builds a signed-fetch middleware (ADR-44). Blocks scene-originated requests.
+   *
+   * @param canonicalMetadataKeys When present, opts the routes using this instance into accepting
+   *   the pre-6.0.0 signed payload as a fallback. Absent — the default — means current format only.
+   */
+  const createSignedFetchMiddleware = (canonicalMetadataKeys?: string[]) =>
+    wellKnownComponents({
+      fetcher: fetch,
+      optional: false,
+      expiration: FIVE_MINUTES,
+      metadataValidator: rejectIfSigner('decentraland-kernel-scene'),
+      canonicalMetadataKeys,
+      onError: (err: any) => ({
+        error: err.message,
+        message: 'This endpoint requires a signed fetch request. See ADR-44.'
+      })
     })
-  })
+
+  // Current signed-payload format only. Every caller sends metadata that folds to itself on these
+  // routes, so none of them needs a fallback — keeping it off is what stops the relaxation becoming
+  // service-wide by default.
+  const signedFetchMiddleware = createSignedFetchMiddleware()
+
+  // `PUT /notifications/read` only. See READ_NOTIFICATIONS_CANONICAL_METADATA_KEYS above for why
+  // that route needs the older format accepted and why nothing more is declared.
+  const readNotificationsSignedFetchMiddleware = createSignedFetchMiddleware(READ_NOTIFICATIONS_CANONICAL_METADATA_KEYS)
 
   const signedUrlMiddleware = async (
     ctx: IHttpServerComponent.DefaultContext<any>,
@@ -82,7 +106,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
   router.get('/status', statusHandler)
 
   router.get('/notifications', signedFetchMiddleware, notificationsHandler)
-  router.put('/notifications/read', signedFetchMiddleware, readNotificationsHandler)
+  router.put('/notifications/read', readNotificationsSignedFetchMiddleware, readNotificationsHandler)
 
   router.get('/subscription', signedFetchMiddleware, getSubscriptionHandler)
   router.put('/subscription', signedFetchMiddleware, putSubscriptionHandler)

@@ -4,24 +4,27 @@ import { test } from '../components'
 import { getIdentity, Identity } from '../utils'
 
 /**
- * Pins that callers still on the pre-6.0.0 payload can reach these routes.
+ * Pins that callers still on the pre-6.0.0 payload can mark a notification read.
  *
  * They fold the whole joined string before signing while delivering the metadata header verbatim.
  * Since 6.0.0 the metadata bytes are signed as delivered, so the two disagree for any metadata
- * carrying uppercase -- and every current caller sends some. Without the declared key list these are
- * all 401s: decentraland-dapps (builder, marketplace, profile, account) and godot-explorer stop being
- * able to mark a notification read at all.
+ * carrying uppercase.
+ *
+ * `PUT /notifications/read` is the only route where a caller sends such metadata: decentraland-dapps
+ * adds `notificationIds` to it here and nowhere else, and godot-explorer signs the request body as
+ * its metadata, which is `{"notificationIds":[…]}` on this route. Without the declared key list the
+ * navbar's "mark as read" is a 401 in builder, marketplace, profile, account and godot.
  *
  * `getAuthHeaders` in the shared utils signs the 6.x payload, which is why the suite stayed green
  * while production would not have been. These build the folded payload instead.
  */
-const PATH = '/notifications'
+const PATH = '/notifications/read'
 
-/** What decentraland-dapps sends on a read: `notificationIds` is the key that breaks the fold. */
+/** Exactly what decentraland-dapps sends: `notificationIds` is the key that breaks the fold. */
 const CALLER_METADATA = {
-  signer: 'dcl:explorer',
-  intent: 'dcl:explorer:notifications',
-  notificationIds: ['b7B1e0d2-0000-4000-8000-000000000001']
+  notificationIds: ['b7B1e0d2-0000-4000-8000-000000000001'],
+  signer: 'dcl:navbar',
+  intent: 'dcl:navbar:read-notifications'
 }
 
 /** The body the signed-fetch middleware answers with when it refuses a request itself. */
@@ -72,30 +75,29 @@ test('when a caller signs the pre-6.0.0 folded payload', function ({ components 
     return headers
   }
 
+  /** The route takes its ids from the body, not the metadata. */
+  function readRequest(headers: Record<string, string>) {
+    return components.localFetch.fetch(PATH, {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notificationIds: CALLER_METADATA.notificationIds })
+    })
+  }
+
   describe('and the metadata is delivered as signed', () => {
     let response: Awaited<ReturnType<typeof components.localFetch.fetch>>
 
     beforeEach(async () => {
-      response = await components.localFetch.fetch(PATH, {
-        method: 'GET',
-        headers: legacyHeaders('GET', PATH, CALLER_METADATA)
-      })
+      response = await readRequest(legacyHeaders('PUT', PATH, CALLER_METADATA))
     })
 
     it('should reach the handler rather than be refused by signed-fetch verification', async () => {
       expect(response.status).toBe(200)
     })
 
-    it('should serve nothing addressed to a different wallet', async () => {
-      // Broadcast rows other suites leave behind are visible to every address, so assert only that
-      // accepting the older signature did not widen whose feed is returned.
-      const body = await response.json()
-
-      for (const notification of body.notifications) {
-        expect(notification.address ?? identity.realAccount.address.toLowerCase()).toBe(
-          identity.realAccount.address.toLowerCase()
-        )
-      }
+    it('should report how many rows it updated', async () => {
+      // The ids belong to no one, so nothing is updated — the point is that the handler ran at all.
+      await expect(response.json()).resolves.toEqual({ updated: 0 })
     })
   })
 
@@ -106,10 +108,9 @@ test('when a caller signs the pre-6.0.0 folded payload', function ({ components 
       // Folded, `Signer` signs identically to `signer`, so only the declared-key guard can refuse it.
       // Read as absent, `rejectIfSigner` would wave through metadata that names the signer it exists
       // to refuse.
-      response = await components.localFetch.fetch(PATH, {
-        method: 'GET',
-        headers: legacyHeaders('GET', PATH, CALLER_METADATA, respell(CALLER_METADATA, 'signer', 'Signer'))
-      })
+      response = await readRequest(
+        legacyHeaders('PUT', PATH, CALLER_METADATA, respell(CALLER_METADATA, 'signer', 'Signer'))
+      )
     })
 
     it('should be refused rather than read as carrying no signer', async () => {
@@ -122,21 +123,15 @@ test('when a caller signs the pre-6.0.0 folded payload', function ({ components 
     let response: Awaited<ReturnType<typeof components.localFetch.fetch>>
 
     beforeEach(async () => {
-      response = await components.localFetch.fetch(PATH, {
-        method: 'GET',
-        headers: legacyHeaders(
-          'GET',
-          PATH,
-          CALLER_METADATA,
-          respell(CALLER_METADATA, 'notificationIds', 'NotificationIds')
-        )
-      })
+      response = await readRequest(
+        legacyHeaders('PUT', PATH, CALLER_METADATA, respell(CALLER_METADATA, 'notificationIds', 'NotificationIds'))
+      )
     })
 
     it('should still be served, since no authorization decision reads it', async () => {
       // States the boundary rather than leaving it implied: no handler here reads `authMetadata` at
-      // all -- `readNotificationsHandler` takes the ids from the request body and the address from
-      // the recovered signature -- so this key's spelling cannot change an outcome.
+      // all -- this one takes the ids from the request body and the address from the recovered
+      // signature -- so this key's spelling cannot change an outcome.
       expect(response.status).toBe(200)
     })
   })
@@ -145,15 +140,32 @@ test('when a caller signs the pre-6.0.0 folded payload', function ({ components 
     let response: Awaited<ReturnType<typeof components.localFetch.fetch>>
 
     beforeEach(async () => {
-      response = await components.localFetch.fetch(PATH, {
-        method: 'GET',
-        headers: legacyHeaders('GET', PATH, { ...CALLER_METADATA, signer: 'decentraland-kernel-scene' })
-      })
+      response = await readRequest(
+        legacyHeaders('PUT', PATH, { ...CALLER_METADATA, signer: 'decentraland-kernel-scene' })
+      )
     })
 
     it('should still be refused, so the fallback has not widened who may call', async () => {
       expect(response.status).toBe(400)
       await expect(response.json()).resolves.toMatchObject({ message: ADR44_REFUSAL })
+    })
+  })
+
+  describe('and the same payload targets another signed route', () => {
+    let response: Awaited<ReturnType<typeof components.localFetch.fetch>>
+
+    beforeEach(async () => {
+      // The fallback is scoped to the read route. Every caller of the others sends metadata that
+      // folds to itself -- decentraland-dapps an all-lowercase `{ signer, intent }`, godot `{}` --
+      // so none of them needs the older format accepted, and it is not.
+      response = await components.localFetch.fetch('/notifications', {
+        method: 'GET',
+        headers: legacyHeaders('GET', '/notifications', CALLER_METADATA)
+      })
+    })
+
+    it('should respond with 401, so the relaxation has not become service-wide', async () => {
+      expect(response.status).toBe(401)
     })
   })
 })
