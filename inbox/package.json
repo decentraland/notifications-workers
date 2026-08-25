@@ -14,7 +14,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@dcl/eslint-config": "^2.1.0",
-    "@dcl/test-helpers": "^0.2.0",
+    "@dcl/test-helpers": "^0.3.2",
     "@types/node": "^20.11.24",
     "copyfiles": "^2.4.1",
     "sql-template-strings": "^2.2.2",
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@dcl/core-commons": "^0.10.1",
-    "@dcl/crypto-middleware": "^6.2.0",
+    "@dcl/crypto-middleware": "^6.3.0",
     "@dcl/features-component": "^1.0.2",
     "@dcl/fetch-component": "^1.1.1",
     "@dcl/http-commons": "^2.0.0",

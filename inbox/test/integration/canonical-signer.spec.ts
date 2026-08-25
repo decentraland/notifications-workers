@@ -5,6 +5,9 @@ import { getAuthHeaders, getIdentity, Identity, makeRequest } from '../utils'
 
 const SIGNED_METADATA = { signer: 'decentraland-kernel-scene' }
 const DELIVERED_METADATA = JSON.stringify({ signer: 'Decentraland-Kernel-Scene' })
+// The re-spelled key is the attack under test, so it has to be spelled exactly this way.
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const RESPELLED_METADATA = { Signer: 'decentraland-kernel-scene' }
 
 test('GET /notifications with a scene signer', function ({ components }) {
   let identity: Identity
@@ -45,6 +48,19 @@ test('GET /notifications with a scene signer', function ({ components }) {
 
   it('should reject a request that delivers the canonical signer exactly as signed', async () => {
     const response = await makeRequest(components.localFetch, '/notifications', identity, {}, SIGNED_METADATA)
+    const body = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(body.error).toMatch(/^Invalid metadata content: /)
+  })
+
+  it('should reject a request whose signed metadata spells the signer key as Signer', async () => {
+    // Nothing is tampered with here: the re-spelled key is signed as delivered, so the signature
+    // verifies and the request is genuinely authentic. `rejectIfSigner` reads the exact `signer`
+    // key, so before the `hasFoldedVariant` guard this metadata presented no signer at all and the
+    // gate answered "allowed" for a request that visibly names the signer it exists to refuse.
+    // This route declares no `canonicalMetadataKeys`, so the guard is the only thing catching it.
+    const response = await makeRequest(components.localFetch, '/notifications', identity, {}, RESPELLED_METADATA)
     const body = await response.json()
 
     expect(response.status).toBe(400)
