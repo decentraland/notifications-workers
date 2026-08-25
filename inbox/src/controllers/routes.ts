@@ -21,6 +21,29 @@ import { commonEmailHandler } from './handlers/common-email-handlers'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 
+/**
+ * Metadata keys this service authorizes on, in their canonical spelling.
+ *
+ * Declaring them opts the routes below into accepting requests still signed with the pre-6.0.0
+ * payload, which folded the whole joined string before signing while delivering the metadata header
+ * verbatim. Since 6.0.0 the metadata bytes are signed as delivered, so the two disagree for any
+ * metadata carrying uppercase -- and every current caller sends some. `PUT /notifications/read`
+ * carries `notificationIds`, so decentraland-dapps (builder, marketplace, profile, account) and
+ * godot-explorer get a 401 on every call without this.
+ *
+ * Only `signer` is declared, and it is not read by a handler: it is what `rejectIfSigner` gates on,
+ * and the fold leaves key casing outside the signature, so a legacy request could otherwise deliver
+ * `Signer` and have the gate read the field as absent.
+ *
+ * Nothing else belongs here. No handler in this service reads `authMetadata` at all --
+ * `readNotificationsHandler` takes `notificationIds` from the request body and the address from the
+ * recovered signature -- so no other key can change an authorization outcome, and declaring one
+ * would describe a boundary this service does not enforce.
+ *
+ * Removable once every caller signs the 6.x payload.
+ */
+const CANONICAL_METADATA_KEYS = ['signer']
+
 // We return the entire router because it will be easier to test than a whole server
 export async function setupRouter({ components }: GlobalContext): Promise<Router<GlobalContext>> {
   const router = new Router<GlobalContext>()
@@ -34,6 +57,7 @@ export async function setupRouter({ components }: GlobalContext): Promise<Router
     optional: false,
     expiration: FIVE_MINUTES,
     metadataValidator: rejectIfSigner('decentraland-kernel-scene'),
+    canonicalMetadataKeys: CANONICAL_METADATA_KEYS,
     onError: (err: any) => ({
       error: err.message,
       message: 'This endpoint requires a signed fetch request. See ADR-44.'
