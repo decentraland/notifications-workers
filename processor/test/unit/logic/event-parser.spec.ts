@@ -299,6 +299,77 @@ describe('when parsing event notifications', () => {
     })
   })
 
+  describe('and the event is ON_DEMAND_CREDITS_GRANTED', () => {
+    const grantEvent = (metadata: Record<string, unknown>): any => ({
+      type: Events.Type.CREDITS_SERVICE,
+      subType: Events.SubType.CreditsService.ON_DEMAND_CREDITS_GRANTED,
+      key: 'credit-123',
+      timestamp: fixedTimestamp,
+      metadata: {
+        creditsGranted: 1250,
+        address: '0xplayer',
+        granterAddress: '0xgranter',
+        ...metadata
+      }
+    })
+
+    describe("and it is a studio's gift of Shop credits", () => {
+      it('should name the studio, say the credits never expire, link to the Shop and keep what the inbox needs', () => {
+        const [notification] = eventParser.parseToNotifications(
+          grantEvent({ denomination: 'USD', usdCents: 12500, studioId: 'studio-1', studioName: 'Pixel Forge' })
+        )
+
+        expect(notification).toEqual({
+          type: NotificationType.CREDITS_ON_DEMAND_GRANTED,
+          address: '0xplayer',
+          eventKey: 'credit-123',
+          timestamp: fixedTimestamp,
+          metadata: {
+            creditsGranted: 1250,
+            denomination: 'USD',
+            usdCents: 12500,
+            studioName: 'Pixel Forge',
+            image: 'https://cdn.decentraland.orgcredits/notification-icon.png',
+            title: 'A gift from Pixel Forge',
+            description: 'Pixel Forge gifted you 1,250 Credits. They never expire: spend them in the Shop.',
+            link: 'https://decentraland.org/shop'
+          }
+        })
+      })
+    })
+
+    describe('and it is a grant of Shop credits with no studio', () => {
+      it('should word it as credits added to the account, with no studio', () => {
+        const [notification] = eventParser.parseToNotifications(grantEvent({ denomination: 'USD', usdCents: 12500 }))
+
+        expect(notification.metadata).toEqual({
+          creditsGranted: 1250,
+          denomination: 'USD',
+          usdCents: 12500,
+          image: 'https://cdn.decentraland.orgcredits/notification-icon.png',
+          title: 'Credits added to your account',
+          description: 'You received 1,250 Credits. They never expire: spend them in the Shop.',
+          link: 'https://decentraland.org/shop'
+        })
+      })
+    })
+
+    describe('and it is a season grant, which names no denomination', () => {
+      it('should keep the season copy and the marketplace link', () => {
+        const [notification] = eventParser.parseToNotifications(grantEvent({}))
+
+        expect(notification.metadata).toEqual({
+          creditsGranted: 1250,
+          image: 'https://cdn.decentraland.orgcredits/notification-icon.png',
+          title: 'Bonus credits unlocked',
+          description:
+            "Congrats! You've earned extra Credits for this season. Make sure to use them before they expire!",
+          link: 'https://decentraland.org/marketplace'
+        })
+      })
+    })
+  })
+
   describe('and the event is an unsupported type', () => {
     let event: any
 
