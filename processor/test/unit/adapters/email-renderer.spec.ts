@@ -601,6 +601,46 @@ describe('email rendering tests', () => {
     expect(await renderer.renderEmail('email@example.com', notification)).toMatchSnapshot()
   })
 
+  describe('credits_on_demand_granted template edge cases', () => {
+    const shopCredits = (metadata: Record<string, unknown>): NotificationRecord => ({
+      id: '123456789',
+      type: NotificationType.CREDITS_ON_DEMAND_GRANTED,
+      address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+      metadata: {
+        creditsGranted: 100,
+        denomination: 'USD',
+        usdCents: 1000,
+        link: 'https://decentraland.org/shop',
+        ...metadata
+      },
+      timestamp: Date.now(),
+      eventKey: '123'
+    })
+
+    test("names the studio for a studio's gift, and says the credits never expire and go to the Shop", async () => {
+      const result = await renderer.renderEmail('email@example.com', shopCredits({ studioName: 'Pixel Forge' }))
+      expect(result!.subject).toBe('🎁 Credits added to your account')
+      expect(result!.actionButtonText).toBe('GO TO THE SHOP')
+      expect(result!.actionButtonLink).toBe('https://decentraland.org/shop')
+      expect(result!.content).toContain('Pixel Forge gifted you Credits.')
+      expect(result!.content).toContain('They never expire: spend them in the Shop.')
+      expect(result!.content).not.toContain('season')
+      expect(result!.content).not.toContain('before they expire')
+    })
+
+    test('escapes a studio name', async () => {
+      const result = await renderer.renderEmail('email@example.com', shopCredits({ studioName: '<b>Pixel</b> & Co' }))
+      expect(result!.content).toContain('&lt;b&gt;Pixel&lt;/b&gt; &amp; Co gifted you Credits.')
+    })
+
+    test('words a grant with no studio as credits received', async () => {
+      const result = await renderer.renderEmail('email@example.com', shopCredits({}))
+      expect(result!.subject).toBe('🎁 Credits added to your account')
+      expect(result!.content).toContain('You received Credits.')
+      expect(result!.content).toContain('They never expire: spend them in the Shop.')
+    })
+  })
+
   describe('banned template edge cases', () => {
     test('renders permanent ban (no expiresAt) without ban period block', async () => {
       const notification: NotificationRecord = {

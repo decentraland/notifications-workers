@@ -15,6 +15,47 @@ export async function createEventParser({
   const DECENTRALAND_URL = (await config.getString('DECENTRALAND_URL')) || 'https://decentraland.org'
   const logger = logs.getLogger('event-parse')
 
+  /**
+   * What a player is told about credits granted on demand.
+   *
+   * Shop credits carry `denomination: 'USD'` (credits-server sends it with every USD grant, with `usdCents`, and with
+   * `studioName` when a studio gave them): they never expire and are spent in the Shop. A grant without a
+   * denomination is a retired season grant, which did expire, and keeps its original copy. The extra fields are kept
+   * on the notification so the inbox and the email can word it the same way.
+   */
+  function onDemandCreditsMetadata(eventMetadata: { creditsGranted: number }) {
+    const { creditsGranted, denomination, usdCents, studioName } = eventMetadata as {
+      creditsGranted: number
+      denomination?: unknown
+      usdCents?: unknown
+      studioName?: unknown
+    }
+    const image = `${CDN_URL}credits/notification-icon.png`
+    if (denomination !== 'USD') {
+      return {
+        creditsGranted,
+        image,
+        title: 'Bonus credits unlocked',
+        description: "Congrats! You've earned extra Credits for this season. Make sure to use them before they expire!",
+        link: `${DECENTRALAND_URL}/marketplace`
+      }
+    }
+    const studio = typeof studioName === 'string' && studioName.trim() ? studioName.trim() : undefined
+    const amount = `${Number(creditsGranted).toLocaleString('en-US')} Credits`
+    return {
+      creditsGranted,
+      denomination: 'USD',
+      ...(typeof usdCents === 'number' ? { usdCents } : {}),
+      ...(studio ? { studioName: studio } : {}),
+      image,
+      title: studio ? `A gift from ${studio}` : 'Credits added to your account',
+      description: studio
+        ? `${studio} gifted you ${amount}. They never expire: spend them in the Shop.`
+        : `You received ${amount}. They never expire: spend them in the Shop.`,
+      link: `${DECENTRALAND_URL}/shop`
+    }
+  }
+
   function parseToNotifications(event: Event): NotificationRecord[] {
     logger.info(`Parse notification - type: ${event.type}, subtype: ${event.subType}, key: ${event.key}`)
 
@@ -322,14 +363,7 @@ export async function createEventParser({
             address: event.metadata.address,
             eventKey: event.key,
             timestamp: event.timestamp,
-            metadata: {
-              creditsGranted: event.metadata.creditsGranted,
-              image: `${CDN_URL}credits/notification-icon.png`,
-              title: 'Bonus credits unlocked',
-              description:
-                "Congrats! You've earned extra Credits for this season. Make sure to use them before they expire!",
-              link: `${DECENTRALAND_URL}/marketplace`
-            }
+            metadata: onDemandCreditsMetadata(event.metadata)
           }
         ]
       case Events.SubType.CreditsService.COMPLETE_GOALS_REMINDER:
