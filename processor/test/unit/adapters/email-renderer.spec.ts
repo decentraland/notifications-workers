@@ -628,6 +628,18 @@ describe('email rendering tests', () => {
       expect(result!.content).not.toContain('before they expire')
     })
 
+    test("draws the Shop's Credits hero with the amount as text, instead of the old banner and icon", async () => {
+      const result = await renderer.renderEmail('email@example.com', shopCredits({ studioName: 'Pixel Forge' }))
+      const shopEmailAssets = 'https://cdn.decentraland.org/@dcl/shop/1.3.1-31179091387.commit-ec5b1ea/email'
+      expect({
+        banner: result!.bannerUrl,
+        hero: result!.content.includes(`${shopEmailAssets}/hero-credits.png`),
+        glyph: result!.content.includes(`${shopEmailAssets}/credit-glyph.png`),
+        amount: />100<\/td>/.test(result!.content),
+        oldImages: result!.content.includes('sendgrid.net')
+      }).toEqual({ banner: undefined, hero: true, glyph: true, amount: true, oldImages: false })
+    })
+
     test('escapes a studio name', async () => {
       const result = await renderer.renderEmail('email@example.com', shopCredits({ studioName: '<b>Pixel</b> & Co' }))
       expect(result!.content).toContain('&lt;b&gt;Pixel&lt;/b&gt; &amp; Co gifted you Credits.')
