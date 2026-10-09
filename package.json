@@ -24,6 +24,6 @@
     "ts-jest": "29.2.0"
   },
   "dependencies": {
-    "@dcl/schemas": "26.5.0"
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/item-discounted-event/dcl-schemas-27.2.1-37935639324.commit-702f2c1.tgz"
   }
 }

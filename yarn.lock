@@ -897,16 +897,6 @@
     ajv "^8.17.1"
     ajv-formats "^3.0.1"
 
-"@dcl/schemas@26.5.0":
-  version "26.5.0"
-  resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-26.5.0.tgz#58beee57bfa8ab15797aa8c54053cdebd4aa250a"
-  integrity sha512-R7/IXI3g4SFGsVKtsLzwUk7romfV9vxWtI0A7pbwlNEyfPtIVgdIqpgHAXD06vDTAyrEZAWMyzhHxcBEoIXniQ==
-  dependencies:
-    ajv "^8.11.0"
-    ajv-errors "^3.0.0"
-    ajv-keywords "^5.1.0"
-    mitt "^3.0.1"
-
 "@dcl/schemas@^18.0.0":
   version "18.8.0"
   resolved "https://registry.yarnpkg.com/@dcl/schemas/-/schemas-18.8.0.tgz#fe8e3fb47d01b848481f54887008118aafee0f51"
@@ -945,6 +935,15 @@
     ajv "^8.11.0"
     ajv-errors "^3.0.0"
     ajv-keywords "^5.1.0"
+
+"@dcl/schemas@https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/item-discounted-event/dcl-schemas-27.2.1-37935639324.commit-702f2c1.tgz":
+  version "27.2.1-37935639324.commit-702f2c1"
+  resolved "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/item-discounted-event/dcl-schemas-27.2.1-37935639324.commit-702f2c1.tgz#d4e1c2c0f7b85924a1776fe1996addbce64e4736"
+  dependencies:
+    ajv "^8.11.0"
+    ajv-errors "^3.0.0"
+    ajv-keywords "^5.1.0"
+    mitt "^3.0.1"
 
 "@dcl/test-helpers@^0.3.2":
   version "0.3.2"

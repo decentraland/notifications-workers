@@ -35,7 +35,7 @@
     "@dcl/http-server": "^2.1.0",
     "@dcl/metrics": "^1.0.1",
     "@dcl/pg-component": "^0.2.0",
-    "@dcl/schemas": "26.5.0",
+    "@dcl/schemas": "https://sdk-team-cdn.decentraland.org/@dcl/schemas/branch/feat/item-discounted-event/dcl-schemas-27.2.1-37935639324.commit-702f2c1.tgz",
     "@notifications/common": "0.0.0",
     "@well-known-components/env-config-provider": "^1.2.0",
     "@well-known-components/interfaces": "^1.5.2",
