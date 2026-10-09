@@ -143,6 +143,31 @@ export async function createEventParser({
             }
           }
         ]
+      case Events.SubType.Marketplace.ITEM_DISCOUNTED:
+        return [
+          {
+            type: NotificationType.ITEM_DISCOUNTED,
+            address: event.metadata.address,
+            eventKey: event.key,
+            timestamp: event.timestamp,
+            metadata: {
+              image: event.metadata.image,
+              category: event.metadata.category,
+              rarity: event.metadata.rarity,
+              nftName: event.metadata.nftName,
+              contractAddress: event.metadata.contractAddress,
+              itemId: event.metadata.itemId,
+              link: event.metadata.link,
+              discountPct: event.metadata.discountPct,
+              listPrice: event.metadata.listPrice,
+              salePrice: event.metadata.salePrice,
+              endsAt: event.metadata.endsAt,
+              title: event.metadata.title,
+              description: event.metadata.description,
+              network: event.metadata.network
+            }
+          }
+        ]
       case Events.SubType.Blockchain.RENTAL_ENDED:
         return [
           {

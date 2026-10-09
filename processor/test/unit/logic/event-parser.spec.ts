@@ -70,6 +70,79 @@ describe('when parsing event notifications', () => {
     })
   })
 
+  describe('and the event is ITEM_DISCOUNTED', () => {
+    let event: any
+
+    beforeEach(() => {
+      event = {
+        type: Events.Type.MARKETPLACE,
+        subType: Events.SubType.Marketplace.ITEM_DISCOUNTED,
+        key: 'item-discounted-coupon-1-0xabc-1-0x123',
+        timestamp: fixedTimestamp,
+        metadata: {
+          address: '0x1234567890123456789012345678901234567890',
+          image: 'https://example.com/thumbnail.png',
+          category: 'wearable',
+          rarity: 'epic',
+          nftName: 'Pumpkin Hat',
+          contractAddress: '0xabc',
+          itemId: '1',
+          link: 'https://decentraland.org/shop/item/0xabc/1',
+          discountPct: 30,
+          listPrice: '100',
+          salePrice: '70',
+          endsAt: fixedTimestamp + 86_400_000,
+          title: 'A favorite is on sale',
+          description: 'Pumpkin Hat is 30% off.',
+          network: 'MATIC'
+        }
+      }
+    })
+
+    it('should parse to an ITEM_DISCOUNTED notification for the favoriting user, keeping the sale details', () => {
+      const notifications = eventParser.parseToNotifications(event)
+
+      expect(notifications).toEqual([
+        {
+          type: NotificationType.ITEM_DISCOUNTED,
+          address: '0x1234567890123456789012345678901234567890',
+          eventKey: 'item-discounted-coupon-1-0xabc-1-0x123',
+          timestamp: fixedTimestamp,
+          metadata: {
+            image: 'https://example.com/thumbnail.png',
+            category: 'wearable',
+            rarity: 'epic',
+            nftName: 'Pumpkin Hat',
+            contractAddress: '0xabc',
+            itemId: '1',
+            link: 'https://decentraland.org/shop/item/0xabc/1',
+            discountPct: 30,
+            listPrice: '100',
+            salePrice: '70',
+            endsAt: fixedTimestamp + 86_400_000,
+            title: 'A favorite is on sale',
+            description: 'Pumpkin Hat is 30% off.',
+            network: 'MATIC'
+          }
+        }
+      ])
+    })
+    describe('and the item has no name or rarity', () => {
+      beforeEach(() => {
+        delete event.metadata.nftName
+        delete event.metadata.rarity
+      })
+
+      it('should still parse it, leaving both undefined', () => {
+        const [notification] = eventParser.parseToNotifications(event)
+
+        expect(notification.type).toBe(NotificationType.ITEM_DISCOUNTED)
+        expect(notification.metadata.nftName).toBeUndefined()
+        expect(notification.metadata.rarity).toBeUndefined()
+      })
+    })
+  })
+
   describe('and the event is EVENT_STARTED', () => {
     let event: any
 

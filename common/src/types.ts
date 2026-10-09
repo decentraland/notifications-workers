@@ -97,6 +97,7 @@ const excludedNotificationTypes = [
   NotificationType.REWARD_DELAYED,
   NotificationType.REWARD_IN_PROGRESS,
   NotificationType.ITEM_PUBLISHED,
+  NotificationType.ITEM_DISCOUNTED,
   NotificationType.SOCIAL_SERVICE_FRIENDSHIP_REQUEST,
   NotificationType.SOCIAL_SERVICE_FRIENDSHIP_ACCEPTED,
   NotificationType.CREDITS_GOAL_COMPLETED,
