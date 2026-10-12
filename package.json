@@ -24,6 +24,6 @@
     "ts-jest": "29.2.0"
   },
   "dependencies": {
-    "@dcl/schemas": "26.5.0"
+    "@dcl/schemas": "27.3.0"
   }
 }
